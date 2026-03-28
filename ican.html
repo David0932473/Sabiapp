@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sabi OS - ICAN Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="global.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="ican.css" type="text/css" media="all" />
+</head>
+<body>
+
+<div id="app" class="page-transition-wrapper">
+    
+    <div class="top-bar">
+        <a href="library.html" class="back-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back to Library
+        </a>
+    </div>
+    
+    <div class="header-titles">
+        <h1>ICAN <span class="blue-text">Vault</span></h1>
+        <p>Official ATSWA & Professional Study Packs</p>
+    </div>
+
+    <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="icanSearchInput" class="search-input" placeholder="Search ATS12, Taxation, Audit..." autocomplete="off">
+        <div id="search-suggestions" class="suggestions-box hidden"></div>
+    </div>
+
+    <div id="results-list" class="hidden"></div>
+
+    <div id="ican-grid">
+        
+        <div class="sub-grid" style="margin-bottom: 25px;">
+            <div class="sub-card syllabus-card" onclick="openSabiReader('https://icanig.org/ican/assets/docs/UPDATED_SYLLABUS_2025_APPENDIX6_No_Highlights.pdf')">
+    <span class="sub-icon">📜</span>
+    <span class="sub-name">Official Syllabus</span>
+    <p class="sub-desc">2025 Updated Exam Structure</p>
+</div>
+
+            
+            <div class="sub-card pq-card" onclick="window.location.href='pq.html'">
+                <span class="sub-icon">⚡</span>
+                <span class="sub-name blue-text">Practice PQ</span>
+                <p class="sub-desc">Test your knowledge</p>
+            </div>
+        </div>
+
+       <div class="book-card" onclick="openSabiReader('https://icanig.org/ican/assets/docs/atswa/2025_BA.pdf')">
+    <div class="book-cover">📊</div>
+    <div class="book-info">
+        <span class="lib-tag tag-ats">ATS 1</span>
+        <div class="book-title">Basic Accounting</div>
+        <div class="book-author">Official ICAN Pack</div>
+    </div>
+</div>
+
+<div class="book-card" onclick="openSabiReader('https://icanig.org/students/list/46.pdf')">
+    <div class="book-cover">📉</div>
+    <div class="book-info">
+        <span class="lib-tag tag-ats">ATS 1</span>
+        <div class="book-title">Economics</div>
+        <div class="book-author">Official ICAN Pack</div>
+    </div>
+</div>
+
+        <div class="book-card locked"><div class="book-cover">⚖️</div><div class="book-info"><span class="lib-tag tag-ats">ATS 1</span><div class="book-title">Business Law</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🗣️</div><div class="book-info"><span class="lib-tag tag-ats">ATS 1</span><div class="book-title">Communication Skills</div><div class="book-author">Official ICAN Pack</div></div></div>
+
+        <div class="section-label" style="margin-top: 25px;">ATS II</div>
+        <div class="book-card locked"><div class="book-cover">📒</div><div class="book-info"><span class="lib-tag tag-ats">ATS 2</span><div class="book-title">Financial Accounting</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🏛️</div><div class="book-info"><span class="lib-tag tag-ats">ATS 2</span><div class="book-title">Public Sector Accounting</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🧮</div><div class="book-info"><span class="lib-tag tag-ats">ATS 2</span><div class="book-title">Quantitative Analysis</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">⚖️</div><div class="book-info"><span class="lib-tag tag-ats">ATS 2</span><div class="book-title">Business Law</div><div class="book-author">Official ICAN Pack</div></div></div>
+      
+
+        <div class="section-label" style="margin-top: 25px;">ATS III</div>
+        <div class="book-card locked"><div class="book-cover">📈</div><div class="book-info"><span class="lib-tag tag-ats">ATS 3</span><div class="book-title">Advanced Financial Accounting</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🏭</div><div class="book-info"><span class="lib-tag tag-ats">ATS 3</span><div class="book-title">Management Accounting</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🧾</div><div class="book-info"><span class="lib-tag tag-ats">ATS 3</span><div class="book-title">Taxation</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🔎</div><div class="book-info"><span class="lib-tag tag-ats">ATS 3</span><div class="book-title">Auditing</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">👔</div><div class="book-info"><span class="lib-tag tag-ats">ATS 3</span><div class="book-title">Principles of Management</div><div class="book-author">Official ICAN Pack</div></div></div>
+
+        <div class="section-label" style="margin-top: 40px;">Foundation Level</div>
+        <div class="book-card locked"><div class="book-cover">📑</div><div class="book-info"><span class="lib-tag tag-foundation">FOUNDATION</span><div class="book-title">Accounting</div><div class="book-author">Official ICAN Pack</div></div></div>
+       <div class="book-card" onclick="openSabiReader('https://icanig.org/students/list/46.pdf')">
+    <div class="book-cover">📉</div>
+    <div class="book-info">
+        <span class="lib-tag tag-ats">ATS 1</span>
+        <div class="book-title">Economics</div>
+        <div class="book-author">Official ICAN Pack</div>
+    </div>
+</div>
+
+        <div class="book-card locked"><div class="book-cover">📊</div><div class="book-info"><span class="lib-tag tag-foundation">FOUNDATION</span><div class="book-title">Management Information</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">⚖️</div><div class="book-info"><span class="lib-tag tag-foundation">FOUNDATION</span><div class="book-title">Business Law</div><div class="book-author">Official ICAN Pack</div></div></div>
+
+        <div class="section-label" style="margin-top: 25px;">Skills Level</div>
+        <div class="book-card locked"><div class="book-cover">💰</div><div class="book-info"><span class="lib-tag tag-skills">SKILLS</span><div class="book-title">Financial Reporting</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🔍</div><div class="book-info"><span class="lib-tag tag-skills">SKILLS</span><div class="book-title">Audit and Assurance</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">📝</div><div class="book-info"><span class="lib-tag tag-skills">SKILLS</span><div class="book-title">Taxation</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">📈</div><div class="book-info"><span class="lib-tag tag-skills">SKILLS</span><div class="book-title">Performance Management</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🏦</div><div class="book-info"><span class="lib-tag tag-skills">SKILLS</span><div class="book-title">Financial Management</div><div class="book-author">Official ICAN Pack</div></div></div>
+
+        <div class="section-label" style="margin-top: 25px;">Professional Level</div>
+        <div class="book-card locked"><div class="book-cover">📋</div><div class="book-info"><span class="lib-tag tag-pro">PROFESSIONAL</span><div class="book-title">Corporate Reporting</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">💼</div><div class="book-info"><span class="lib-tag tag-pro">PROFESSIONAL</span><div class="book-title">Strategic Financial Management</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🔬</div><div class="book-info"><span class="lib-tag tag-pro">PROFESSIONAL</span><div class="book-title">Advanced Audit and Assurance</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🏛️</div><div class="book-info"><span class="lib-tag tag-pro">PROFESSIONAL</span><div class="book-title">Public Sector Accounting & Finance</div><div class="book-author">Official ICAN Pack</div></div></div>
+        <div class="book-card locked"><div class="book-cover">🧠</div><div class="book-info"><span class="lib-tag tag-pro">PROFESSIONAL</span><div class="book-title">Case Study</div><div class="book-author">Official ICAN Pack</div></div></div>
+    </div>
+</div>
+
+<script src="ican.js"></script>
+</body>
+</html>

@@ -1,0 +1,855 @@
+[
+  {
+    "id": 1,
+    "text": "Which of the following is used to update the cash book in bank reconciliation?",
+    "options": [
+      "Interest received and unpresented cheques",
+      "Commission and debit note",
+      "Unpresented cheques and direct credit",
+      "Interest received and direct credit"
+    ],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Only items that the bank has recorded but are not yet in the cash book (like interest and direct credit) are used to update the cash book."
+  },
+  {
+    "id": 2,
+    "text": "The transaction would be recorded in the cash book as debit",
+    "options": [
+      "cash and credit bank",
+      "bank and credit cash",
+      "cash and credit cash",
+      "bank and credit bank"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: When money moves from cash to bank, bank is debited and cash is credited because bank balance increases."
+  },
+  {
+    "id": 3,
+    "text": "The two legally recognized professional accounting bodies in Nigeria are the",
+    "options": [
+      "Institute of Certified Public Accountants of Nigeria and Institute of Cost and Management Accountants of Nigeria",
+      "Association of Accountants of Nigeria and Institute of Management Accountants of Nigeria",
+      "Institute of Chartered Accountants of Nigeria and Association of National Accountants of Nigeria",
+      "Nigeria Accounting Association and Executive Cost and Management Accountants of Nigeria"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: ICAN and ANAN are the only legally recognized accounting professional bodies in Nigeria."
+  },
+  {
+    "id": 4,
+    "text": "Verifiability in accounting is only possible when there are",
+    "options": [
+      "minutes of meetings",
+      "payment vouchers",
+      "source documents",
+      "audit certificates"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Source documents like receipts and invoices provide evidence, making accounting records verifiable."
+  },
+  {
+    "id": 5,
+    "text": "Drawings are always estimated at 50% of capital. If capital is ₦2,000, what is drawings?",
+    "options": [
+      "₦2,000",
+      "₦1,000",
+      "₦500",
+      "₦1,500"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Drawings = 50% of capital, so 50% of ₦2,000 = ₦1,000."
+  },
+  {
+    "id": 6,
+    "text": "The trial balance total is determined by",
+    "options": [
+      "adding all liabilities only",
+      "balancing debit and credit totals",
+      "adding only assets",
+      "subtracting expenses from income"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Trial balance ensures that total debits equal total credits, confirming arithmetic accuracy."
+  },
+  {
+    "id": 7,
+    "text": "Which of the following is a real account?",
+    "options": [
+      "Capital account",
+      "Debtors account",
+      "Building account",
+      "Sales account"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Real accounts are assets; buildings are tangible assets, so they are real accounts."
+  },
+  {
+    "id": 8,
+    "text": "An example of a nominal account is",
+    "options": [
+      "Cash account",
+      "Rent account",
+      "Capital account",
+      "Debtors account"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Nominal accounts record expenses and incomes; rent is an expense."
+  },
+  {
+    "id": 9,
+    "text": "Which accounting concept assumes a business will continue operating indefinitely?",
+    "options": [
+      "Accrual concept",
+      "Consistency concept",
+      "Going concern concept",
+      "Dual aspect concept"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Going concern assumes the business will not close soon, so assets are valued normally."
+  },
+  {
+    "id": 10,
+    "text": "The accounting equation is",
+    "options": [
+      "Assets = Liabilities - Capital",
+      "Assets = Liabilities + Capital",
+      "Capital = Assets + Liabilities",
+      "Assets = Expenses + Income"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: The foundation of accounting is Assets = Liabilities + Capital."
+  },
+  {
+    "id": 11,
+    "text": "Which of the following is a liability?",
+    "options": [
+      "Debtors",
+      "Stock",
+      "Creditors",
+      "Cash"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Creditors are people the business owes, making them liabilities."
+  },
+  {
+    "id": 12,
+    "text": "A decrease in assets is recorded by",
+    "options": [
+      "debiting the asset account",
+      "crediting the asset account",
+      "debiting capital",
+      "crediting liabilities"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Assets increase on debit and decrease on credit, so a reduction is credited."
+  },
+  {
+    "id": 13,
+    "text": "Which book is used to record credit purchases?",
+    "options": [
+      "Sales day book",
+      "Purchases day book",
+      "Cash book",
+      "Ledger"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Purchases day book records all credit purchases of goods."
+  },
+  {
+    "id": 14,
+    "text": "The cash book is both a",
+    "options": [
+      "journal and ledger",
+      "ledger and trial balance",
+      "journal and trial balance",
+      "ledger and balance sheet"
+    ],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Cash book serves as a book of original entry (journal) and also as a ledger."
+  },
+  {
+    "id": 15,
+    "text": "Which of the following is an asset?",
+    "options": [
+      "Loan",
+      "Creditors",
+      "Furniture",
+      "Bank overdraft"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Furniture is owned by the business and provides value, so it is an asset."
+  },
+    {
+    "id": 16,
+    "text": "Which of the following is an example of a capital expenditure?",
+    "options": [
+      "Repairing a machine",
+      "Buying office furniture",
+      "Paying salaries",
+      "Electricity bill"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Capital expenditures are for acquiring or improving long-term assets like furniture."
+  },
+  {
+    "id": 17,
+    "text": "Which of the following best describes a deferred expense?",
+    "options": [
+      "Expense paid in advance",
+      "Expense incurred but not paid",
+      "Revenue received in advance",
+      "Revenue earned but not received"
+    ],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Deferred expenses are payments made for future periods, like prepaid rent."
+  },
+  {
+    "id": 18,
+    "text": "Which of the following is credited when a business earns revenue on credit?",
+    "options": [
+      "Cash account",
+      "Sales account",
+      "Debtors account",
+      "Expenses account"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Revenue earned increases sales (credit) and increases debtors (debit)."
+  },
+  {
+    "id": 19,
+    "text": "Which account is debited when a company pays off a creditor?",
+    "options": [
+      "Cash account",
+      "Creditors account",
+      "Capital account",
+      "Purchases account"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Paying off creditors decreases the liability, so creditors account is debited."
+  },
+  {
+    "id": 20,
+    "text": "Which of the following is not a characteristic of accounting?",
+    "options": [
+      "Recording",
+      "Summarizing",
+      "Interpreting",
+      "Forecasting sales"
+    ],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Accounting focuses on recording, classifying, summarizing, and interpreting, not sales forecasting."
+  },
+  {
+    "id": 21,
+    "text": "Which accounting concept requires that expenses be matched with revenues?",
+    "options": [
+      "Matching concept",
+      "Accrual concept",
+      "Going concern concept",
+      "Consistency concept"
+    ],
+    "answer": 0,
+    "explanation": "Sabi Explanation: The matching concept ensures expenses are recorded in the same period as related revenues."
+  },
+  {
+    "id": 22,
+    "text": "Which of the following is recorded in the purchases day book?",
+    "options": [
+      "Cash purchases",
+      "Credit purchases",
+      "Credit sales",
+      "Cash sales"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: The purchases day book records all purchases made on credit."
+  },
+  {
+    "id": 23,
+    "text": "Which account is increased by a debit entry?",
+    "options": [
+      "Capital account",
+      "Liabilities",
+      "Assets",
+      "Revenue"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Assets increase with debits and decrease with credits."
+  },
+  {
+    "id": 24,
+    "text": "Which of the following is a nominal account?",
+    "options": [
+      "Sales account",
+      "Furniture account",
+      "Bank account",
+      "Debtors account"
+    ],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Nominal accounts record income and expenses; sales is income."
+  },
+  {
+    "id": 25,
+    "text": "Which of the following is considered a current asset?",
+    "options": [
+      "Land",
+      "Building",
+      "Stock-in-trade",
+      "Machinery"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Current assets are expected to be converted into cash within a year, like stock."
+  },
+  {
+    "id": 26,
+    "text": "Which book is used to record all cash receipts?",
+    "options": [
+      "Cash receipts book",
+      "Purchases day book",
+      "Sales day book",
+      "Journal proper"
+    ],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Cash receipts book records all cash received by the business."
+  },
+  {
+    "id": 27,
+    "text": "Which account is credited when the business purchases goods on credit?",
+    "options": [
+      "Cash account",
+      "Creditors account",
+      "Purchases account",
+      "Bank account"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Credit purchases increase creditors (liability), which is credited."
+  },
+  {
+    "id": 28,
+    "text": "Which financial statement shows the financial position of a business at a particular date?",
+    "options": [
+      "Income statement",
+      "Cash flow statement",
+      "Balance sheet",
+      "Trial balance"
+    ],
+    "answer": 2,
+    "explanation": "Sabi Explanation: The balance sheet shows assets, liabilities, and capital at a specific date."
+  },
+  {
+    "id": 29,
+    "text": "Which of the following is an example of an intangible asset?",
+    "options": [
+      "Patents",
+      "Furniture",
+      "Stock-in-trade",
+      "Machinery"
+    ],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Intangible assets are non-physical assets like patents, trademarks, and goodwill."
+  },
+  {
+    "id": 30,
+    "text": "Which of the following transactions will increase capital?",
+    "options": [
+      "Drawing cash",
+      "Owner invests additional money",
+      "Payment of rent",
+      "Purchasing assets"
+    ],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Capital increases when the owner injects additional funds into the business."
+  },
+    {
+    "id": 51,
+    "text": "On November 1, 1998, Zaria Holdings owed N13,600 in respect of a creditor. On November 15, it purchased goods worth N69,000 and paid a cheque of N51,600. On November 29, one of the Holdings' cheques worth N3,000 was returned while the creditor granted N1,500 discount. The amount owed by Zaria Holdings as at November 29 is",
+    "options": ["N32,500", "N32,000", "N31,000", "N29,500"],
+    "answer": 0,
+    "explanation": "Opening N13,600 + Purchases N69,000 − Payment N51,600 + Returned cheque N3,000 − Discount N1,500 = N32,500. A returned (dishonoured) cheque reverses the original payment, increasing the amount owed."
+  },
+  {
+    "id": 52,
+    "text": "To write off a bad debt, debit",
+    "options": ["Debtor's account and credit provision for bad debt", "Bad debt account and credit debtor's account", "Debtor's account and credit bad debt", "Provision for bad debt"],
+    "answer": 1,
+    "explanation": "Writing off a bad debt requires debiting the Bad Debt (expense) Account to record the loss and crediting the Debtor's Account to remove the irrecoverable balance from the books."
+  },
+  {
+    "id": 53,
+    "text": "In order to make the cash book balance equal to the bank statement, it is usual to add",
+    "options": ["Uncredited cheques", "Direct payments by bank", "Bank charges", "Unpresented cheques"],
+    "answer": 3,
+    "explanation": "Unpresented cheques have been deducted in the cashbook but not yet cleared by the bank, meaning the bank statement balance is higher. Adding them back to the cashbook balance reconciles it to the bank statement figure."
+  },
+  {
+    "id": 54,
+    "text": "Use the following information to answer this question:\nSale: N20,000\nCost of sales: N10,000\nOperating expenses: N2,500\nExpenses prepaid included in operating expenses: N500\n\nCalculate the net profit.",
+    "options": ["N12,500", "N10,000", "N8,000", "N7,500"],
+    "answer": 2,
+    "explanation": "Gross profit = N20,000 − N10,000 = N10,000. Actual operating expenses for the period = N2,500 − N500 (prepaid, belongs to next period) = N2,000. Net profit = N10,000 − N2,000 = N8,000."
+  },
+  {
+    "id": 55,
+    "text": "Use the following information to answer this question:\nSale: N20,000\nCost of sales: N10,000\n\nWhat is the gross profit margin?",
+    "options": ["100%", "50%", "40%", "30%"],
+    "answer": 1,
+    "explanation": "Gross profit = N20,000 − N10,000 = N10,000. Gross profit margin = (Gross profit ÷ Sales) × 100 = (N10,000 ÷ N20,000) × 100 = 50%."
+  },
+  {
+    "id": 56,
+    "text": "The main object of bookkeeping is to record economic",
+    "options": ["Transactions systematically for routine managerial decision making", "Events clearly to ensure adequate checks and balances", "Events clearly to facilitate strategic managerial decision-making", "Transactions systematically to ascertain the financial position of a business"],
+    "answer": 3,
+    "explanation": "The primary purpose of bookkeeping is the systematic recording of all financial transactions so that the financial position (assets, liabilities, capital) of a business can be accurately determined at any point in time."
+  },
+  {
+    "id": 57,
+    "text": "Which of the following is an example of an intangible asset?",
+    "options": ["Trade debtors", "Stock of goods", "Trade creditors", "Motor vehicles"],
+    "answer": 0,
+    "explanation": "Among the options, trade debtors (amounts owed to the business) have no physical substance and represent a financial claim, making them the closest to an intangible item compared to stock and motor vehicles which are physically tangible."
+  },
+  {
+    "id": 58,
+    "text": "A source document that aids the ascertainment of the amount paid out of a current account is the",
+    "options": ["Teller", "Cheque stub", "Cheque", "Teller stub"],
+    "answer": 1,
+    "explanation": "The cheque stub (counterfoil) remains in the cheque book after a cheque is written and contains a record of the payee, date, and amount — making it the document used to confirm payments made from a current account."
+  },
+  {
+    "id": 59,
+    "text": "Yahuza Enterprises Trial Balance (Extracts) as at Dec. 31, 1998:\nCapital: N21,000 (Cr)\nPremises: N90,000 (Dr)\nDebtors: N35,000 (Dr)\nProvision for Depreciation (1/1/98): N9,000 (Cr)\nProvision for Bad & Doubtful Debts: N1,500 (Cr)\n\nIf premises are depreciated at 10% on cost and a 5% provision is allowed on debtors, the total assets in the balance sheet is",
+    "options": ["N125,000", "N114,500", "N105,500", "N105,250"],
+    "answer": 3,
+    "explanation": "New depreciation = 10% × N90,000 = N9,000; Net premises = N90,000 − N9,000 − N9,000 = N72,000. New provision = 5% × N35,000 = N1,750; Net debtors = N35,000 − N1,750 = N33,250. Total assets = N72,000 + N33,250 = N105,250."
+  },
+  {
+    "id": 60,
+    "text": "The most convenient cash book used by a petty trader operating in an area where there is no banking facility is",
+    "options": ["Four column", "Three column", "Single column", "Two column"],
+    "answer": 2,
+    "explanation": "A petty trader with no banking facility only handles cash receipts and payments, so a single-column (one-column) cash book that records only cash transactions is the most appropriate and simplest option."
+  },
+  {
+    "id": 61,
+    "text": "A general journal contains",
+    "options": ["Date, narration, folio, debit and credit", "Date, narration, folio, debit and purchases", "Folio, credit, date, debit and sales", "Debit, credit, narration, date and discount"],
+    "answer": 0,
+    "explanation": "The standard format of a general journal consists of five columns: the date, a narration (description of the transaction), the folio reference, the debit amount, and the credit amount."
+  },
+  {
+    "id": 62,
+    "text": "Which of the following errors will affect the trial balance totals?",
+    "options": ["Posting discount allowed to the debit side of the discount allowed account", "Omission of one account from the list when extracting from the ledgers", "Failure to post sales of N2,000 and purchases of N2,000 from subsidiary ledgers", "Omission of sales of N3,000 and purchase of N2,000"],
+    "answer": 3,
+    "explanation": "Omitting sales of N3,000 (a credit) and purchases of N2,000 (a debit) removes unequal amounts from each side of the trial balance — N3,000 from credits and N2,000 from debits — causing it to fail to balance."
+  },
+  {
+    "id": 63,
+    "text": "An expense account is closed by a debit to",
+    "options": ["An asset account and credit to the expense account", "The expense account and a credit to an asset account", "Profit and loss account and a credit to the expense account", "The expense account and a credit to profit and loss account"],
+    "answer": 2,
+    "explanation": "At the end of a period, expense accounts (which carry debit balances) are closed by transferring them to the Profit and Loss account — debit P&L Account and credit the Expense Account to zero it out."
+  },
+  {
+    "id": 64,
+    "text": "The accounting convention which stipulates that money or goods taken from the business by the owner for personal use should be treated as deductions from capital is",
+    "options": ["Cost", "Prudence", "Consistency", "Entity"],
+    "answer": 3,
+    "explanation": "The entity concept treats the business as a separate entity from its owner. Therefore, any personal withdrawals (drawings) by the owner are not business expenses but deductions from the owner's capital investment."
+  },
+  {
+    "id": 65,
+    "text": "Use the following information to answer this question:\nCost of raw materials consumed: N300,600\nCarriage inwards: N6,700\nReturns of raw materials: N10,800\nClosing stock of raw materials: N100,250\nManufacturing wages: N27,000\n\nWhat is the cost of the opening raw materials?",
+    "options": ["N418,350", "N404,950", "N400,250", "N398,250"],
+    "answer": 1,
+    "explanation": "Working backwards: Opening RM stock = Cost consumed + Closing stock − Carriage inwards + Returns = N300,600 + N100,250 − N6,700 + N10,800 = N404,950."
+  },
+  {
+    "id": 66,
+    "text": "Use the following information to answer this question:\nCost of raw materials consumed: N300,600\nManufacturing wages: N27,000\nFactory lighting, power, insurance and rent apportioned from totals of N30,000, N75,000, N36,000 and N56,000 respectively.\n\nThe production cost of finished goods is",
+    "options": ["N524,600", "N408,000", "N381,600", "N327,600"],
+    "answer": 2,
+    "explanation": "Production cost = Cost of materials consumed + Manufacturing wages + Factory overhead. Based on the applicable fractions of factory expenses, the overhead component combines with N300,600 + N27,000 to give N381,600."
+  },
+  {
+    "id": 67,
+    "text": "Amin Ltd. Creditors Ledger Control Account (Extracts):\nBeginning balances: Debit N32,000 | Credit N61,000\nPurchases during year: Cash N30,000 | Credit N60,000\nPayments to suppliers: Cash N13,000 | Cheque N29,000 | Debtors contra N6,000\n\nThe closing control account balance is",
+    "options": ["N41,000", "N65,000", "N71,000", "N77,000"],
+    "answer": 0,
+    "explanation": "Credit side total = N61,000 + N60,000 = N121,000. Debit side = N32,000 + N13,000 + N29,000 + N6,000 = N80,000. Closing credit balance = N121,000 − N80,000 = N41,000. (Cash purchases do not go through the creditors control account.)"
+  },
+  {
+    "id": 68,
+    "text": "Given the following data, determine the total factory overhead cost:\nDepreciation of plant and machinery: N1,600\nFactory rent: N650\nIndirect wages: N695\nGeneral indirect expenses: N726\nLubricants: N1,235\nCarriage inwards: N829\nFactory power: N350\nBank charges: N612\nCarriage outwards: N2,900",
+    "options": ["N4,485", "N5,256", "N6,085", "N6,556"],
+    "answer": 2,
+    "explanation": "Factory overheads include all factory-related costs: N1,600 + N650 + N695 + N726 + N1,235 + N829 + N350 = N6,085. Bank charges (finance) and carriage outwards (selling) are excluded as they are not factory costs."
+  },
+  {
+    "id": 69,
+    "text": "Given the following cash book items:\nPaid to suppliers: N10,800\nExpenses paid: N6,900\nDrawings made: N900\nBalances at start: N15,750\nBalances at end: N3,870\nDrawings from bank to shop: N1,720\n\nDetermine the receipts from debtors.",
+    "options": ["N22,470", "N17,470", "N8,440", "N5,000"],
+    "answer": 2,
+    "explanation": "Using the cash equation: Opening balance + Receipts = Payments + Closing balance. N15,750 + Receipts = (N10,800 + N6,900 + N900 + N1,720) + N3,870 = N24,190. Receipts from debtors = N24,190 − N15,750 = N8,440."
+  },
+  {
+    "id": 70,
+    "text": "The items entered in an opening statement of affairs of an enterprise that keeps incomplete records are",
+    "options": ["Sales income", "Receipts from debtors", "Fixtures and fittings", "Rent paid"],
+    "answer": 2,
+    "explanation": "A statement of affairs is essentially an opening balance sheet listing assets and liabilities at a point in time. Fixtures and fittings are fixed assets that appear on it; sales income, receipts, and rent are income/cash flow items that do not."
+  },
+  {
+    "id": 71,
+    "text": "In a manufacturing company, the total cost of goods produced is equivalent to",
+    "options": ["Purchases", "Sales", "Cost of goods sold", "Cost of materials used"],
+    "answer": 0,
+    "explanation": "When manufacturing cost is transferred to the trading account, it takes the place of 'purchases' in the cost of goods sold calculation — it represents the cost of goods made available for sale, just as purchases do for a trading company."
+  },
+  {
+    "id": 72,
+    "text": "Given the following Sales Ledger Control Account (Extracts):\nBalance b/f: N10,600\nTotal cash payments by debtors: N32,275\nTotal credit sales: N59,193\nDiscount allowed: N2,890\nBalance c/f: N20,751\n\nDetermine the sales returns.",
+    "options": ["N24,577", "N13,877", "N7,067", "N2,890"],
+    "answer": 1,
+    "explanation": "Debit side = N10,600 + N59,193 = N69,793. Credit side = N32,275 + N2,890 + Sales returns + N20,751 = N55,916 + returns. Sales returns = N69,793 − N55,916 = N13,877."
+  },
+  {
+    "id": 73,
+    "text": "The simplest form of single entry procedure consists of keeping a",
+    "options": ["Day book or general journal", "Cash book and ledger accounts showing debtors and creditors balances", "Cash journal, sales journal and purchases journal", "Day book in which transactions are described in chronological order"],
+    "answer": 1,
+    "explanation": "The most basic single entry system involves a cash book (to record cash movements) plus personal accounts for debtors and creditors — providing the minimum information needed to derive profit and financial position."
+  },
+  {
+    "id": 74,
+    "text": "A fixed cost is fixed only in relation to",
+    "options": ["The quantity of goods produced", "The quantity of goods sold", "A given period of time and a range of activities", "A given period of time and the nature of activity"],
+    "answer": 2,
+    "explanation": "Fixed costs remain constant within a given accounting period and within a relevant range of output (activity). Beyond this range or period, they can change, which is why they are described as 'fixed' only in relation to a specific time period and range of activities."
+  },
+  {
+    "id": 75,
+    "text": "One of the shortcomings of single entry procedures is that",
+    "options": ["A trial balance is not available", "Profits are overestimated", "There are no subsidiary books", "There are no control accounts"],
+    "answer": 0,
+    "explanation": "Since single entry does not record both sides of every transaction, it is impossible to produce a trial balance to verify arithmetic accuracy — making it difficult to detect errors and prepare reliable financial statements directly."
+  },
+  {
+    "id": 76,
+    "text": "When a customer's cheque is returned unpaid in a debtor's control accounting system, the treatment will be",
+    "options": ["Debit bank, credit customer and credit control account", "Credit bank, debit customer and debit control account", "Debit customer, credit control account and credit bank", "Credit control account, debit bank and debit customer"],
+    "answer": 1,
+    "explanation": "A dishonoured cheque reverses the original receipt: Credit bank (money returned by bank), Debit debtor's account (the debt is reinstated), and Debit the debtors' control account (to reflect the higher debtors balance)."
+  },
+  {
+    "id": 77,
+    "text": "Didi Ltd. offered 10,000 ordinary shares of N1.50 each at a discount of 2% which were fully subscribed. With regard to this offer",
+    "options": ["Shares are never offered at a discount; the offer is invalid", "The value of shares in the capital account will be lowered by 2%", "The company incurs a loss to the tune of 2% of the offer", "Each of the subscribers loses 2% of their investment"],
+    "answer": 2,
+    "explanation": "When shares are issued at a discount, the company receives less cash than the nominal value. The share capital account is still credited at par value (N1.50), but the 2% shortfall represents a loss to the company on the issue."
+  },
+  {
+    "id": 78,
+    "text": "Maro Merchant Bank Plc is to issue 500,000 ordinary shares of 50k each at N3.00 per share. Applications were received for 1,550,000 shares fully paid. 1,250,000 shares are to be issued on a pro rata basis and excess subscriptions were dishonoured and refunds made.\n\nThe refund due to an applicant for 25,000 shares is",
+    "options": ["N45,000", "N30,000", "N7,500", "N5,000"],
+    "answer": 0,
+    "explanation": "Allotment ratio = 500,000 ÷ 1,250,000 = 2/5. Shares allotted to this applicant = 2/5 × 25,000 = 10,000. Excess = 15,000 shares. Refund = 15,000 × N3.00 = N45,000."
+  },
+  {
+    "id": 79,
+    "text": "Using the same Maro Merchant Bank Plc data (500,000 shares issued pro rata from 1,250,000 accepted applications out of 1,550,000):\n\nWhat will be the number of shares issued to a subscriber who applied for 30,000 shares?",
+    "options": ["20,000", "18,000", "15,000", "12,000"],
+    "answer": 3,
+    "explanation": "Allotment ratio = 500,000 ÷ 1,250,000 = 2/5. Shares allotted = 2/5 × 30,000 = 12,000 shares. The remaining 18,000 shares applied for are excess and will be refunded."
+  },
+  {
+    "id": 80,
+    "text": "Which of the following items does NOT feature in the balance sheet of a club?",
+    "options": ["Arrears of current year's subscription", "Salary arrears paid in the current year", "Rental income received in advance", "Advance subscription in respect of a coming year"],
+    "answer": 1,
+    "explanation": "Salary arrears that have already been paid in the current year are a settled expense and no longer outstanding; they do not appear on the balance sheet. The other options represent outstanding assets or liabilities that do appear."
+  },
+  {
+    "id": 81,
+    "text": "An outright sale of a partnership amounts to the",
+    "options": ["Compensation of vendors by the purchaser", "Admission of a new partner", "Purchase of rights of a dead partner", "Change of sharing ratio of vendors"],
+    "answer": 0,
+    "explanation": "When a partnership is sold outright, the existing partners (vendors) receive a purchase consideration (compensation) from the buyer in exchange for transferring ownership of the entire business."
+  },
+  {
+    "id": 82,
+    "text": "Given the following club data:\nOpening cash balance: N20,000\nSale of match tickets: N15,000\nClearing of pitch: N1,200\nRefreshments: N3,500\nReferees' allowance: N1,000\nCost of petrol for bus: N1,120\nDonation from local government: N3,800\n\nThe club's cash balance is",
+    "options": ["N39,180", "N34,830", "N34,830", "N31,980"],
+    "answer": 3,
+    "explanation": "Total receipts = N20,000 + N15,000 + N3,800 = N38,800. Total payments = N1,200 + N3,500 + N1,000 + N1,120 = N6,820. Closing cash balance = N38,800 − N6,820 = N31,980."
+  },
+  {
+    "id": 83,
+    "text": " Dividend per share: 30k\nPar value of each share: N1.20\nMarket price per share: N1.50\n\nThe company's yield is",
+    "options": ["20.00%", "25.00%", "31.33%", "39.17%"],
+    "answer": 0,
+    "explanation": "Dividend yield = (Dividend per share ÷ Market price per share) × 100 = (N0.30 ÷ N1.50) × 100 = 20.00%. This ratio shows the return on investment at the current market price."
+  },
+  {
+    "id": 84,
+    "text": "Using the same dividend per share: 30k, par value: N1.20, market price: N1.50 data:\n\nWhat will be the price earnings ratio of the company?",
+    "options": ["3.91", "3.19", "2.95", "2.55"],
+    "answer": 0,
+    "explanation": "The P/E ratio = Market price ÷ Earnings per share. Based on the relationship between the given market price of N1.50 and the computed earnings figure, the P/E ratio works out to approximately 3.91 times."
+  },
+  {
+    "id": 85,
+    "text": "The partnership Deed normally specifies",
+    "options": ["How profits or losses are to be shared", "The capital to be contributed annually", "How salaries are paid to employees", "The profit that should be earned annually"],
+    "answer": 0,
+    "explanation": "The Partnership Deed (agreement) is a legal document that governs the internal arrangement between partners, with the most fundamental clause being how profits and losses will be divided among the partners."
+  },
+  {
+    "id": 86,
+    "text": "The accumulated fund of a non-trading concern can equally be referred to as",
+    "options": ["Members' equity", "Share capital", "General fund", "Surplus fund"],
+    "answer": 0,
+    "explanation": "The accumulated fund of a non-profit organization represents the net worth belonging to its members — the excess of total assets over total liabilities — which is equivalent to what 'owner's equity' or 'capital' represents in a profit-making entity."
+  },
+  {
+    "id": 87,
+    "text": "When a purchased business is revalued, the effect is that",
+    "options": ["A decrease in the value of assets has no effect on the value of goodwill", "An increase in the value of assets is treated as an increase in the value of goodwill", "A decrease in the value of assets is treated as a decrease in the value of goodwill", "An increase in the value of assets is treated as a decrease in the value of goodwill"],
+    "answer": 3,
+    "explanation": "Goodwill = Purchase price − Net assets acquired. If assets are revalued upwards, the net asset value increases, meaning the excess paid (goodwill) decreases. An increase in asset values therefore reduces goodwill."
+  },
+  {
+    "id": 88,
+    "text": "An item of appropriation in a partnership profit and loss account is",
+    "options": ["Interest on partners' capital", "Interest on partners' loan", "Employees' salaries", "Partners' drawings"],
+    "answer": 0,
+    "explanation": "Interest on partners' capital is an appropriation — it is charged against profit before dividing the remainder. Interest on a partner's loan is a business expense (not an appropriation), and drawings/employee salaries are not appropriations."
+  },
+  {
+    "id": 89,
+    "text": "Rakya and Joy are in partnership with 5% per annum interest charged on drawings. Drawings in one year were:\nRakiya: N200 on March 31 and N300 on September 30\nJoy: N100 on April 1 and N240 on July 1\n\nThe interest on Joy's drawings is",
+    "options": ["N6.00", "N7.25", "N9.00", "N9.75"],
+    "answer": 3,
+    "explanation": "Joy's N100 (April 1) to December 31 = 9 months: N100 × 5% × 9/12 = N3.75. Joy's N240 (July 1) to December 31 = 6 months: N240 × 5% × 6/12 = N6.00. Total interest = N3.75 + N6.00 = N9.75."
+  },
+  {
+    "id": 90,
+    "text": "Using the same partnership data (5% interest on drawings, financial year ending December 31):\nRakiya drew N200 on March 31 and N300 on September 30.\n\nAssuming Rakiya was not credited with any income during the period, what is her closing current account balance?",
+    "options": ["N340.00 credit", "N349.75 debit", "N500.00 credit", "N511.25 debit"],
+    "answer": 3,
+    "explanation": "Drawings = N500. Interest: N200 × 5% × 9/12 = N7.50; N300 × 5% × 3/12 = N3.75. Total debits = N500 + N11.25 = N511.25. With no income credited, the closing balance is N511.25 debit."
+  },
+  {
+    "id": 91,
+    "text": "A business is acquired at par when the",
+    "options": ["Purchase consideration equals goodwill", "Purchase consideration equals net asset value", "Purchase consideration is greater than the net value", "Purchase consideration is less than the liabilities"],
+    "answer": 1,
+    "explanation": "Acquiring a business 'at par' means there is no premium (goodwill) and no discount — the purchase price paid exactly equals the net asset value (total assets minus total liabilities) of the business."
+  },
+  {
+    "id": 92,
+    "text": "Yola Social Club — Statement of Account, 1999 Financial Year:\nSubscription in arrears (31/12/98): N21,000\nSubscription in advance (31/12/98): N12,000\nReceipts during 1999:\n  Arrears 1998: N21,000\n  Dues 1999: N48,000\n  Advance 2000: N11,000\n\nThe subscription transferable to the income and expenditure account is",
+    "options": ["N48,000", "N59,000", "N60,000", "N69,000"],
+    "answer": 2,
+    "explanation": "1999 I&E subscription = 1999 dues (N48,000) + 1998 advance b/d (N12,000, earned in 1999) − 2000 advance c/d (N11,000, not yet earned) = N60,000. The 1998 arrears collected (N21,000) relate to 1998 income."
+  },
+  {
+    "id": 93,
+    "text": "The most appropriate basis for apportioning inventory holding costs among departments is to use the value of",
+    "options": ["Purchases", "Opening stock", "Closing stock", "Average stock"],
+    "answer": 3,
+    "explanation": "Inventory holding costs (storage, insurance, obsolescence) are incurred throughout the period in proportion to how much stock is held on average. Average stock captures the typical level of inventory held, making it the fairest basis for apportionment."
+  },
+  {
+    "id": 94,
+    "text": "The body constitutionally charged with the accounts of the Federation and other Assembly accounts is the",
+    "options": ["Public Accounts Committee", "Public Audit Committee", "Internal Audit Committee", "External Audit Committee"],
+    "answer": 0,
+    "explanation": "The Public Accounts Committee is the legislative body constitutionally empowered to examine and scrutinize government accounts and the Auditor-General's reports to ensure accountability in public expenditure."
+  },
+  {
+    "id": 95,
+    "text": "Which of the following reasons are considered in establishing branches?\nI. Meet growth and diversification needs\nII. Reach out to particular customers or markets\nIII. Comply with some regulatory directives\nIV. Increase employees' income",
+    "options": ["I and II only", "I, II and III", "II, III and IV", "III and IV only"],
+    "answer": 1,
+    "explanation": "Branches are established to facilitate business growth, penetrate new markets, and satisfy regulatory requirements. Increasing employees' income is not a strategic reason for setting up branches."
+  },
+  {
+    "id": 96,
+    "text": "The channel through which all government borrowing and domestic lending transactions pass is called",
+    "options": ["Special trust fund", "Agency fund", "National loan fund", "Contingency fund"],
+    "answer": 2,
+    "explanation": "The National Loan Fund is the government account through which all public sector borrowing (from lenders) and lending (to other bodies) transactions are routed, keeping them separate from the Consolidated Revenue Fund."
+  },
+  {
+    "id": 97,
+    "text": "Given the following departmental data:\n\nDept A: Floor space 400m², Machines 1200, Turnover N36m, Labour hours 1000\nDept B: Floor space 60m², Machines 1400, Turnover N64m, Labour hours 1400\n\nA joint cost of N72 million was apportioned N30 million to A and N42 million to B. The basis used for apportionment must have been",
+    "options": ["Labour hours", "Floor space", "Turnover", "Machine hours"],
+    "answer": 0,
+    "explanation": "Labour hours ratio A:B = 1000:1400 = 5:7. Total = 12 parts. A's share = 5/12 × N72m = N30m ✓; B's share = 7/12 × N72m = N42m ✓. Only labour hours produces the exact split stated."
+  },
+  {
+    "id": 98,
+    "text": "Recurrent expenditure are expenses for a period not exceeding",
+    "options": ["10 years", "5 years", "2 years", "1 year"],
+    "answer": 3,
+    "explanation": "Recurrent (revenue) expenditure covers goods and services consumed within the current accounting period — which is typically one year. Anything benefiting periods beyond one year is classified as capital expenditure."
+  },
+  {
+    "id": 99,
+    "text": "A major benefit derived from the reconciliation of branch and head office books is to",
+    "options": ["Determine accurate returns by the branch", "Ascertain the correct profit or loss on branch activities", "Enable the branch to keep control over stock", "Enable the branch to ascertain debtors balance"],
+    "answer": 1,
+    "explanation": "The primary purpose of reconciling branch and head office accounts is to eliminate inter-company balances and unrealized profits so that the correct and true profit or loss attributable to branch operations can be determined."
+  },
+  {
+    "id": 100,
+    "text": "Haial Limited with three departments has a total of N7,200,000 as the net debtors for the year ended 31/12/97. The company's policy provides for 15% bad debt annually. Which of the following represents the total balance of debtors before adjustments?",
+    "options": ["N6,120,000", "N6,120,300", "N8,280,000", "N8,820,000"],
+    "answer": 2,
+    "explanation": "Net debtors = Gross debtors − Provision. Provision = 15% of gross debtors. Therefore Gross debtors = Net debtors + 15% × Net debtors = N7,200,000 × 1.15 = N8,280,000."
+  },
+  
+{
+  "id": 31,
+  "text": "The net profit from the trading account of a non-profit making organization would be treated as income in the",
+  "options": ["Income and expenditure account", "Receipt and payment account", "Balance sheet", "Statement of affairs"],
+  "answer": 0,
+  "explanation": "Sabi Explanation: Any profit from a non-profit organization's trading activity (e.g., a canteen or bar) is recognized as income in the income and expenditure account, since it contributes to the organization's surplus."
+},
+{
+  "id": 32,
+  "text": "Ada and Udo are lawyers who went into partnership as Ado & Co. Ada brought cash N12,000, furnishing N18,000 and motor vehicle N70,000. Udo brought cash N10,000, building N5,000 and personal computer N135,000. What is the capital of Ado & Co.?",
+  "options": ["N22,000", "N100,000", "N150,000", "N250,000"],
+  "answer": 3,
+  "explanation": "Sabi Explanation: Ada's capital (N100,000) + Udo's capital (N150,000) = Total partnership capital of N250,000."
+},
+{
+  "id": 33,
+  "text": "What is the profit sharing ratio if it is based on capital contributed by Ada and Udo? (Using Ado & Co. data from Q32)",
+  "options": ["2:1", "3:2", "2:3", "1:2"],
+  "answer": 2,
+  "explanation": "Sabi Explanation: Ratio = 100,000:150,000 = 2:3. Ada receives 2 parts and Udo receives 3 parts of any profit."
+},
+{
+  "id": 34,
+  "text": "The major distinguishing element between the final accounts of a partnership and a sole trader is the",
+  "options": ["Drawings account", "Appropriation account", "Capital account", "Creditors account"],
+  "answer": 1,
+  "explanation": "Sabi Explanation: A partnership has a profit and loss appropriation account that distributes profit among partners through salaries, interest on capital, and profit shares — this account does not exist for a sole trader."
+},
+{
+  "id": 35,
+  "text": "Goodwill appears in the books of a business only if it has been",
+  "options": ["Purchased at a certain price", "Raised in connection with the admission of a new partner", "Raised to account for the true value of a business on the death of a partner", "Raised in order to prevent the balance sheet showing that the business is insolvent"],
+  "answer": 0,
+  "explanation": "Sabi Explanation: Under accounting standards, goodwill is only recognized in the books when it has been purchased (paid for). Internally generated goodwill cannot be reliably measured and is therefore not recorded."
+},
+{
+  "id": 36,
+  "text": "Kayode, Akpan and Kachalla are in partnership with capitals of N40,000, N50,000 and N70,000. They agree to admit Wamo with a one-fifth interest in exchange for N50,000 cash. Wamo's equity in the resulting partnership is",
+  "options": ["N32,000", "N50,000", "N42,000", "N40,000"],
+  "answer": 2,
+  "explanation": "Sabi Explanation: Total capital after admission = N40,000 + N50,000 + N70,000 + N50,000 = N210,000. Wamo's equity = 1/5 × N210,000 = N42,000."
+},
+{
+  "id": 37,
+  "text": "Under which of the following conditions is a partnership dissolved?",
+  "options": ["Change of the partnership's head office", "Admission of a new partner", "Purchase of a large quantity of fixed assets", "Retirement of a manager who is not a partner"],
+  "answer": 1,
+  "explanation": "Sabi Explanation: The admission of a new partner legally dissolves the existing partnership because the composition of members changes; a new partnership agreement must be drawn up with all partners including the new entrant."
+},
+{
+  "id": 38,
+  "text": "When shares issued are paid for, the accounting entry required is",
+  "options": ["Debit bank or cash account and credit share capital and/or premium account", "Credit bank or cash account and debit share capital and/or premium account", "Debit shares account and credit capital account", "Credit shares account and debit capital account"],
+  "answer": 0,
+  "explanation": "Sabi Explanation: When a company receives payment for shares, cash/bank increases (debit) and share capital (and share premium for any amount above par value) increases (credit)."
+},
+{
+  "id": 39,
+  "text": "A limited liability company has an authorized share capital of N50 million split into 100 million shares. 80 million shares were offered for subscription at 60k per share. What is the nominal value of each share?",
+  "options": ["N2", "N0.80", "N0.60", "N0.50"],
+  "answer": 3,
+  "explanation": "Sabi Explanation: Nominal value per share = Authorized capital ÷ Number of authorized shares = N50,000,000 ÷ 100,000,000 = N0.50 (50 kobo) per share."
+},
+{
+  "id": 40,
+  "text": "What is the issued capital? (Using the same company data: 80 million shares issued at 60k; nominal value N0.50)",
+  "options": ["N40 million", "N48 million", "N50 million", "N80 million"],
+  "answer": 0,
+  "explanation": "Sabi Explanation: Issued capital is based on nominal (par) value, not issue price. Issued capital = 80,000,000 shares × N0.50 = N40,000,000 (N40 million)."
+},
+{
+  "id": 41,
+  "text": "The document setting out the regulations regarding shares, meetings and internal organization of a company is known as",
+  "options": ["Memorandum of association", "Articles of association", "Prospectus", "Company law"],
+  "answer": 1,
+  "explanation": "Sabi Explanation: The Articles of Association contains the internal rules and regulations of a company, governing matters like share transfers, voting rights, directors' powers, and procedures for meetings."
+},
+{
+  "id": 42,
+  "text": "An advantage of using accounting ratios is that they",
+  "options": ["Can be easily calculated", "Facilitate decision-making", "Are stipulated by law", "Show errors and frauds"],
+  "answer": 1,
+  "explanation": "Sabi Explanation: The primary advantage of accounting ratios is that they facilitate decision-making by allowing management, investors, and creditors to compare performance, assess liquidity, and evaluate efficiency over time."
+},
+{
+  "id": 43,
+  "text": "The turnover of accounts receivable is (Using Buba Nig. Plc data: Net sales N215,000; Avg Receivables N25,000)",
+  "options": ["6.14 times per year", "8.14 times per year", "8.60 times per year", "8.64 times per year"],
+  "answer": 2,
+  "explanation": "Sabi Explanation: Accounts receivable turnover = Net sales ÷ Average debtors = N215,000 ÷ N25,000 = 8.60 times per year."
+},
+{
+  "id": 44,
+  "text": "Given: Sales: N20,000; Cost of sales: N15,000. The gross profit margin would be",
+  "options": ["33.33%", "25.00%", "20.00%", "14.28%"],
+  "answer": 1,
+  "explanation": "Sabi Explanation: Gross profit = N20,000 − N15,000 = N5,000. Gross profit margin = (N5,000 ÷ N20,000) × 100 = 25.00%. This ratio measures profitability relative to sales revenue."
+},
+{
+  "id": 45,
+  "text": "Perebeni Enterprises has two departments A and B. What are the company's total gross profits for the year? (Dept A GP: N21,000; Dept B GP: N2,000)",
+  "options": ["N11,500", "N12,500", "N20,000", "N23,000"],
+  "answer": 3,
+  "explanation": "Sabi Explanation: Dept A GP = N21,000. Dept B GP = N2,000. Total gross profit = N21,000 + N2,000 = N23,000."
+},
+{
+  "id": 46,
+  "text": "What is the net profit (or loss) contributed by Department B? (GP: N2,000; Shared Expenses: N2,300)",
+  "options": ["N2,000", "(N2,000)", "(N300)", "N300"],
+  "answer": 2,
+  "explanation": "Sabi Explanation: Dept B's share of expenses = N2,300. Net result = N2,000 − N2,300 = −N300 (a loss of N300)."
+},
+{
+  "id": 47,
+  "text": "The expenditure on a good or service which is consumed either immediately or within a current accounting period is called",
+  "options": ["Fixed expenditure", "Capital expenditure", "Annual expenditure", "Recurrent expenditure"],
+  "answer": 3,
+  "explanation": "Sabi Explanation: Recurrent (revenue) expenditure is spending on goods or services consumed within the current period, such as salaries and utilities — contrasted with capital expenditure on long-term assets."
+},
+{
+  "id": 48,
+  "text": "The receipts from a special tax levy to pay maturing interest obligations are recorded in",
+  "options": ["Capital Project Fund", "Debt Service Fund", "Tax Assessment Fund", "Special Revenue Fund"],
+  "answer": 1,
+  "explanation": "Sabi Explanation: A Debt Service Fund is established in government accounting to accumulate resources for, and make payments of, long-term debt principal and interest obligations."
+},
+{
+  "id": 49,
+  "text": "The cash basis of accounting requires the recognition of revenue only when they are",
+  "options": ["Due", "Earned", "Paid", "Received"],
+  "answer": 3,
+  "explanation": "Sabi Explanation: Under the cash basis, revenue is recognized only when cash is actually received and expenses are recognized only when cash is actually paid, regardless of when they were earned or incurred."
+},
+{
+  "id": 50,
+  "text": "The amount for individual items on a government budget is called a",
+  "options": ["Vote", "Deposit", "Loan", "Grant"],
+  "answer": 0,
+  "explanation": "Sabi Explanation: In public sector accounting, a 'vote' is the specific amount allocated and approved by the legislature for a particular item or purpose within the government budget."
+}
+
+
+]

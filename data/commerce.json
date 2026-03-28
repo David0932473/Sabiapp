@@ -1,0 +1,876 @@
+[
+  {
+    "id": 26,
+    "text": "The warehouse that is owned by a manufacturer for storing his goods is?",
+    "options": ["bonded warehouse", "private warehouse", "public warehouse", "state warehouse"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: A private warehouse is owned and used by manufacturers to store their own goods."
+  },
+  {
+    "id": 27,
+    "text": "The payment for the use of borrowed capital is known as?",
+    "options": ["rent", "wages", "interest", "profit"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Interest is the reward paid for using someone else's money (capital)."
+  },
+  {
+    "id": 28,
+    "text": "Which of the following is a function of a commercial bank?",
+    "options": ["issue of currency", "accepting deposits", "control of money supply", "acting as lender of last resort"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Commercial banks mainly accept deposits and give loans; issuing currency is for central banks."
+  },
+  {
+    "id": 29,
+    "text": "The apex bank in Nigeria is the?",
+    "options": ["Union Bank", "First Bank", "Central Bank", "Access Bank"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: The Central Bank is the highest banking authority in Nigeria."
+  },
+  {
+    "id": 30,
+    "text": "A cheque that is marked 'not negotiable' implies that it?",
+    "options": ["cannot be transferred", "cannot be cashed", "can only be paid into an account", "must be endorsed"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Not negotiable means ownership cannot be transferred freely."
+  },
+  {
+    "id": 31,
+    "text": "The method of payment in which goods are paid for before delivery is?",
+    "options": ["cash on delivery", "advance payment", "deferred payment", "hire purchase"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Advance payment means paying before receiving goods."
+  },
+  {
+    "id": 32,
+    "text": "A business owned by two or more persons is called?",
+    "options": ["sole proprietorship", "partnership", "limited liability company", "cooperative society"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Partnership involves two or more people running a business together."
+  },
+  {
+    "id": 33,
+    "text": "The document that shows ownership of shares in a company is?",
+    "options": ["share warrant", "share certificate", "dividend warrant", "prospectus"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: A share certificate proves that you own shares in a company."
+  },
+  {
+    "id": 34,
+    "text": "The capital raised by a company through the issue of shares is called?",
+    "options": ["loan capital", "debenture capital", "share capital", "working capital"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Share capital comes from selling shares to investors."
+  },
+  {
+    "id": 35,
+    "text": "The merging of two or more companies into one is called?",
+    "options": ["liquidation", "amalgamation", "privatization", "nationalization"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Amalgamation is when companies combine into one entity."
+  },
+  {
+    "id": 36,
+    "text": "The process of transferring ownership of public enterprises to private individuals is?",
+    "options": ["commercialization", "nationalization", "privatization", "liberalization"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Privatization means government sells businesses to private owners."
+  },
+  {
+    "id": 37,
+    "text": "A market where only one seller exists is known as?",
+    "options": ["monopoly", "oligopoly", "perfect market", "monopolistic competition"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Monopoly means a single seller controls the market."
+  },
+  {
+    "id": 38,
+    "text": "The coming together of firms to control prices is called?",
+    "options": ["merger", "cartel", "trust", "combine"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: A cartel is an agreement among firms to control prices and output."
+  },
+  {
+    "id": 39,
+    "text": "The stock exchange is a market for?",
+    "options": ["selling goods", "buying and selling shares", "trading commodities", "foreign exchange"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Stock exchange is where shares and securities are traded."
+  },
+  {
+    "id": 40,
+    "text": "The payment made to shareholders out of profit is called?",
+    "options": ["interest", "bonus", "dividend", "commission"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Dividend is the share of profit given to shareholders."
+  },
+  {
+    "id": 41,
+    "text": "The risk of loss due to fire is covered under?",
+    "options": ["marine insurance", "life insurance", "fire insurance", "accident insurance"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Fire insurance protects against damage caused by fire."
+  },
+  {
+    "id": 42,
+    "text": "The means by which goods are moved from one place to another is?",
+    "options": ["communication", "transportation", "distribution", "production"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Transportation involves moving goods and people."
+  },
+  {
+    "id": 43,
+    "text": "Which means of transport is best for bulky goods over long distances?",
+    "options": ["road", "rail", "air", "sea"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Sea transport is cheapest and best for bulky goods over long distances."
+  },
+  {
+    "id": 44,
+    "text": "Communication through telephone is?",
+    "options": ["oral", "written", "visual", "non-verbal"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Telephone communication is spoken, so it's oral."
+  },
+  {
+    "id": 45,
+    "text": "E-commerce involves?",
+    "options": ["physical trading", "online transactions", "barter system", "cash transactions"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: E-commerce is buying and selling goods over the internet."
+  },
+  {
+    "id": 46,
+    "text": "The use of computers to carry out banking transactions is called?",
+    "options": ["manual banking", "electronic banking", "central banking", "merchant banking"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Electronic banking (e-banking) uses computers and internet for transactions."
+  },
+  {
+    "id": 47,
+    "text": "The reduction in value of a country's currency is called?",
+    "options": ["devaluation", "depreciation", "inflation", "deflation"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Devaluation is the official reduction in currency value."
+  },
+  {
+    "id": 48,
+    "text": "Inflation is defined as?",
+    "options": ["fall in prices", "rise in general price level", "increase in production", "decrease in money supply"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Inflation means prices of goods and services are generally rising."
+  },
+  {
+    "id": 49,
+    "text": "The term 'consumer protection' refers to?",
+    "options": ["protecting producers", "protecting consumers from exploitation", "protecting government policies", "protecting traders"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Consumer protection ensures buyers are not cheated or exploited."
+  },
+  {
+    "id": 50,
+    "text": "A cooperative society is formed to?",
+    "options": ["maximize profit", "help members economically", "control the market", "compete with government"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Cooperative societies exist to support members, not mainly to make profit."
+  },[
+  {
+    "id": 76,
+    "text": "Which of the following is a function of a retailer?",
+    "options": ["Breaking bulk", "Importing goods", "Manufacturing goods", "Issuing shares"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Retailers sell in small quantities and break bulk for final consumers."
+  },
+  {
+    "id": 77,
+    "text": "The reward for labour is?",
+    "options": ["rent", "wages", "interest", "profit"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Labour is paid wages or salaries."
+  },
+  {
+    "id": 78,
+    "text": "Which of the following is an example of tertiary activity?",
+    "options": ["farming", "mining", "banking", "manufacturing"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Banking provides services, so it is tertiary."
+  },
+  {
+    "id": 79,
+    "text": "The act of keeping goods until they are needed is called?",
+    "options": ["transportation", "warehousing", "advertising", "communication"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Warehousing stores goods for future use."
+  },
+  {
+    "id": 80,
+    "text": "Which of the following is NOT a function of money?",
+    "options": ["medium of exchange", "store of value", "unit of account", "means of production"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Money helps exchange and measure value, but it is not a means of production."
+  },
+  {
+    "id": 81,
+    "text": "A market situation with few sellers is called?",
+    "options": ["monopoly", "oligopoly", "perfect competition", "duopoly"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Oligopoly has a small number of sellers."
+  },
+  {
+    "id": 82,
+    "text": "Which of the following is a feature of a sole proprietorship?",
+    "options": ["separate legal entity", "limited liability", "easy formation", "large capital base"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Sole proprietorship is easy to start with minimal formalities."
+  },
+  {
+    "id": 83,
+    "text": "The buying and selling of goods between countries is called?",
+    "options": ["home trade", "foreign trade", "retail trade", "wholesale trade"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Foreign trade involves international exchange."
+  },
+  {
+    "id": 84,
+    "text": "Which of the following is a type of insurance?",
+    "options": ["transport insurance", "warehouse insurance", "marine insurance", "trade insurance"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Marine insurance covers goods transported by sea."
+  },
+  {
+    "id": 85,
+    "text": "The person who buys goods for final consumption is?",
+    "options": ["producer", "consumer", "agent", "wholesaler"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Consumers use goods for personal needs."
+  },
+  {
+    "id": 86,
+    "text": "Which document acknowledges receipt of goods?",
+    "options": ["invoice", "receipt", "delivery note", "bill of exchange"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Delivery note confirms goods have been received."
+  },
+  {
+    "id": 87,
+    "text": "The act of promoting goods and services is called?",
+    "options": ["advertising", "production", "distribution", "warehousing"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Advertising creates awareness and promotes products."
+  },
+  {
+    "id": 88,
+    "text": "Which of the following is NOT a function of a bank?",
+    "options": ["accepting deposits", "granting loans", "manufacturing goods", "facilitating payments"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Banks deal with money, not manufacturing."
+  },
+  {
+    "id": 89,
+    "text": "A business organization owned by shareholders is?",
+    "options": ["sole proprietorship", "partnership", "limited liability company", "cooperative society"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Shareholders own limited liability companies."
+  },
+  {
+    "id": 90,
+    "text": "The amount paid periodically for insurance is called?",
+    "options": ["premium", "dividend", "interest", "bonus"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Premium is the payment made to keep insurance active."
+  },
+  {
+    "id": 91,
+    "text": "Which of the following is a means of transport?",
+    "options": ["telephone", "internet", "railway", "bank"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Railway moves goods and people."
+  },
+  {
+    "id": 92,
+    "text": "The system of buying and selling online is known as?",
+    "options": ["e-commerce", "e-banking", "telemarketing", "digital trading"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: E-commerce is online buying and selling."
+  },
+  {
+    "id": 93,
+    "text": "Which of the following is a feature of money?",
+    "options": ["divisibility", "perishability", "bulkiness", "immovability"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Money can be divided into smaller units."
+  },
+  {
+    "id": 94,
+    "text": "The coming together of consumers to protect their interests is called?",
+    "options": ["consumerism", "unionism", "capitalism", "socialism"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Consumerism protects buyers from exploitation."
+  },
+  {
+    "id": 95,
+    "text": "Which of the following is a function of transport?",
+    "options": ["storage of goods", "movement of goods", "promotion of goods", "financing trade"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Transport moves goods from one place to another."
+  },
+  {
+    "id": 96,
+    "text": "A place where buyers and sellers meet is called?",
+    "options": ["warehouse", "market", "bank", "office"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Market is where exchange of goods/services happens."
+  },
+  {
+    "id": 97,
+    "text": "Which of the following is NOT a form of business organization?",
+    "options": ["partnership", "sole proprietorship", "insurance", "company"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Insurance is a service, not a business structure."
+  },
+  {
+    "id": 98,
+    "text": "The reward for capital is?",
+    "options": ["rent", "wages", "interest", "profit"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Capital earns interest."
+  },
+  {
+    "id": 99,
+    "text": "Which of the following is a barrier to trade?",
+    "options": ["tariff", "advertising", "transport", "communication"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Tariffs are taxes that restrict trade."
+  },
+  {
+    "id": 100,
+    "text": "The use of machines to produce goods is called?",
+    "options": ["mechanization", "automation", "production", "industrialization"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Mechanization means using machines to ease production."
+  }
+,
+  {
+    "id": 51,
+    "text": "Which of the following is a function of a wholesaler?",
+    "options": ["Breaking bulk", "Manufacturing goods", "Providing loans to government", "Transporting only passengers"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Wholesalers buy in bulk and break goods into smaller quantities for retailers."
+  },
+  {
+    "id": 52,
+    "text": "The occupation of extracting natural resources from the earth is known as?",
+    "options": ["tertiary production", "secondary production", "primary production", "direct service"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Primary production involves extraction like mining, fishing, and farming."
+  },
+  {
+    "id": 53,
+    "text": "Goods that are used for further production are called?",
+    "options": ["consumer goods", "capital goods", "free goods", "perishable goods"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Capital goods are used to produce other goods, like machines."
+  },
+  {
+    "id": 54,
+    "text": "Which of the following is an example of a direct service?",
+    "options": ["Teaching", "Manufacturing", "Mining", "Farming"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Teaching provides service directly to people, not goods."
+  },
+  {
+    "id": 55,
+    "text": "The removal of trade barriers among countries is called?",
+    "options": ["protectionism", "liberalization", "privatization", "nationalization"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Liberalization removes restrictions to encourage free trade."
+  },
+  {
+    "id": 56,
+    "text": "Which document is used as evidence of a contract of carriage by sea?",
+    "options": ["bill of lading", "invoice", "indent", "consular invoice"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Bill of lading shows agreement between shipper and carrier."
+  },
+  {
+    "id": 57,
+    "text": "A cheque that has two parallel lines across it is called?",
+    "options": ["open cheque", "crossed cheque", "bearer cheque", "order cheque"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Crossed cheque must be paid into a bank account, not cashed directly."
+  },
+  {
+    "id": 58,
+    "text": "The person who insures is known as?",
+    "options": ["insurer", "insured", "broker", "agent"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: The insured is the person whose property or life is covered."
+  },
+  {
+    "id": 59,
+    "text": "Which of the following is NOT a function of advertising?",
+    "options": ["creating awareness", "persuading customers", "reducing production", "informing customers"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Advertising promotes products, it does not reduce production."
+  },
+  {
+    "id": 60,
+    "text": "The buying and selling of goods within a country is known as?",
+    "options": ["foreign trade", "home trade", "entrepot trade", "bilateral trade"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Home trade occurs within a country's borders."
+  },
+  {
+    "id": 61,
+    "text": "Which of the following is an example of invisible trade?",
+    "options": ["export of cars", "import of rice", "banking services", "sale of machinery"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Invisible trade involves services like banking and tourism."
+  },
+  {
+    "id": 62,
+    "text": "The document that specifies goods to be shipped is?",
+    "options": ["indent", "invoice", "bill of exchange", "receipt"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Indent lists goods required by the buyer."
+  },
+  {
+    "id": 63,
+    "text": "A person who buys and sells goods on behalf of another is?",
+    "options": ["consumer", "agent", "producer", "retailer"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: An agent represents another person in transactions."
+  },
+  {
+    "id": 64,
+    "text": "Which of the following is a source of government revenue?",
+    "options": ["taxation", "donation", "borrowing only", "savings"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Taxes are the main source of government income."
+  },
+  {
+    "id": 65,
+    "text": "The act of selling goods at a price lower than cost to eliminate competitors is?",
+    "options": ["hoarding", "dumping", "price fixing", "discounting"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Dumping involves selling very cheaply to dominate market."
+  },
+  {
+    "id": 66,
+    "text": "Which of the following is a means of communication?",
+    "options": ["transport", "telephone", "warehouse", "bank"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Telephone is used to pass information."
+  },
+  {
+    "id": 67,
+    "text": "The reward for entrepreneurship is?",
+    "options": ["rent", "wages", "interest", "profit"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Entrepreneurs earn profit for taking risks."
+  },
+  {
+    "id": 68,
+    "text": "Which form of business has unlimited liability?",
+    "options": ["limited company", "cooperative society", "partnership", "public corporation"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Partners can lose personal assets, so liability is unlimited."
+  },
+  {
+    "id": 69,
+    "text": "The place where ships are loaded and unloaded is called?",
+    "options": ["airport", "harbour", "terminal", "station"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Harbour is where ships dock for loading/unloading."
+  },
+  {
+    "id": 70,
+    "text": "Which of the following is a function of insurance?",
+    "options": ["creating risk", "sharing risk", "increasing loss", "eliminating production"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Insurance spreads risk among many people."
+  },
+  {
+    "id": 71,
+    "text": "A receipt issued after payment is known as?",
+    "options": ["invoice", "bill", "receipt", "voucher"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Receipt confirms that payment has been made."
+  },
+  {
+    "id": 72,
+    "text": "Which of the following is a characteristic of money?",
+    "options": ["durability", "perishability", "bulkiness", "instability"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Money must last long, so durability is important."
+  },
+  {
+    "id": 73,
+    "text": "The process of buying goods now and paying later is?",
+    "options": ["cash sale", "hire purchase", "barter trade", "spot trade"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Hire purchase allows payment in installments over time."
+  },
+  {
+    "id": 74,
+    "text": "Which of the following is NOT a type of market?",
+    "options": ["monopoly", "oligopoly", "retailing", "perfect competition"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Retailing is a trade activity, not a market structure."
+  },
+  {
+    "id": 75,
+    "text": "The exchange of goods for goods is called?",
+    "options": ["trade by barter", "money trade", "foreign trade", "home trade"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Barter is direct exchange without money."
+  }
+,
+
+  {
+    "id": 1,
+    "text": "Which Commerce Question Paper is given to you?",
+    "options": ["Type A", "Type B", "Type C", "Type D"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: The paper clearly states PAPER TYPE: B, so the correct answer is Type B."
+  },
+  {
+    "id": 2,
+    "text": "The wealth of a nation depends on the volume of its?",
+    "options": ["bilateral trade activities", "commercial activities", "multilateral trade activities", "stock market"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: A nation’s wealth grows through all forms of commerce like trade, banking, transport—so commercial activities is correct."
+  },
+  {
+    "id": 3,
+    "text": "Which of the following can be used to differentiate skilled and unskilled labour?",
+    "options": ["Education and training", "Available resources", "Level of commitment", "Salaries and wages"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Skilled labour requires education and training, while unskilled does not—this is the main difference."
+  },
+  {
+    "id": 4,
+    "text": "A doctor who attends to patients at home after his official duty is?",
+    "options": ["a community development worker", "a direct service worker", "an indirect service worker", "a direct and an indirect service worker"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: He is directly providing service to patients, so it is direct service."
+  },
+  {
+    "id": 5,
+    "text": "Manufacturing and constructive activities are classified under?",
+    "options": ["primary production", "tertiary production", "secondary production", "direct service"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Secondary production involves processing raw materials into finished goods—this includes manufacturing and construction."
+  },
+  {
+    "id": 6,
+    "text": "The rewards of rents, wages, interests and profits accrue from?",
+    "options": ["capital, labour, land and entrepreneur respectively", "land, entrepreneur, labour and capital respectively", "land, labour, capital and entrepreneur respectively", "labour, entrepreneur, land and capital respectively"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Rent goes to land, wages to labour, interest to capital, and profit to entrepreneur—standard order."
+  },
+  {
+    "id": 7,
+    "text": "The factor of production that is subject to depreciation is?",
+    "options": ["capital", "land", "labour", "entrepreneur"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Capital (machines, tools) wears out over time, so it depreciates."
+  },
+  {
+    "id": 8,
+    "text": "Division of labour ultimately leads to?",
+    "options": ["conservation", "integration", "specialization", "repetition"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Division of labour makes workers focus on one task, leading to specialization."
+  },
+  {
+    "id": 9,
+    "text": "A worker who processes rice is engaged in?",
+    "options": ["constructive activity", "commercial activity", "extractive activity", "manufactural activity"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Processing raw rice into usable form is manufacturing."
+  },
+  {
+    "id": 10,
+    "text": "After-sales service is a function usually rendered by?",
+    "options": ["a retailer", "a wholesaler", "an agent", "an entrepreneur"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Retailers deal directly with consumers, so they handle after-sales services."
+  },
+  {
+    "id": 11,
+    "text": "A trend in retailing which enables consumers to have free access to different products is?",
+    "options": ["after-sales services", "branding", "self-services", "vending machine"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Self-service allows customers to pick items themselves freely."
+  },
+  {
+    "id": 12,
+    "text": "The activity which entails buying of goods in bulk and selling in small quantities to retailers is?",
+    "options": ["assembling", "wholesaling", "retailing", "merchandising"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Wholesalers buy in bulk and sell to retailers."
+  },
+  {
+    "id": 13,
+    "text": "The comparison of a country's visible and invisible exports and imports expressed in monetary term is?",
+    "options": ["balance of payment", "terms of trade", "balance of trade", "terms of payment"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Balance of trade compares exports and imports of goods."
+  },
+  {
+    "id": 14,
+    "text": "The document that gives an importer a freehand to obtain goods from any manufacturer is?",
+    "options": ["a consular invoice", "a closed indent", "an open indent", "a freight note"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Open indent allows buying from any supplier, unlike closed indent."
+  },
+  {
+    "id": 15,
+    "text": "Entrepot trade usually occurs in?",
+    "options": ["exchanging goods within a nation", "exchanging goods among countries", "importing goods to be re-exported", "exporting goods to be re-imported"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Entrepot trade means importing goods and exporting them again without using them."
+  },
+  {
+    "id": 16,
+    "text": "The document issued to a port authority when goods are deposited is a?",
+    "options": ["dock landing account", "bill of sight", "bill of lading", "dock warrant"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Dock warrant is proof that goods are stored at the port."
+  },
+  {
+    "id": 17,
+    "text": "The details of the goods required by the purchaser is outlined in?",
+    "options": ["a consular invoice", "an indent", "an invoice", "a certificate of origin"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Invoice contains details of goods supplied or requested."
+  },
+  {
+    "id": 18,
+    "text": "Selling goods in foreign countries at price below their marginal cost is?",
+    "options": ["dumping", "depreciation", "devaluation", "discounting"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Dumping is selling abroad at very low prices to gain market advantage."
+  },
+  {
+    "id": 19,
+    "text": "A process of creating more market for a product is through?",
+    "options": ["consumerism", "marketing", "advertising", "repositioning"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Advertising creates awareness and increases demand."
+  },
+  {
+    "id": 20,
+    "text": "One of the merits of television as a medium of advertising is that it?",
+    "options": ["is prone to censorship", "is relatively cheap", "has more sensory stimulation", "has more network coverage"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: TV combines sound and visuals, making it more engaging."
+  },
+  {
+    "id": 21,
+    "text": "The best mode of ensuring that items posted got to the named address through?",
+    "options": ["recorded delivery", "registered mail", "certificate of posting", "express mail"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Registered mail is safest because it requires signature on delivery."
+  },
+  {
+    "id": 22,
+    "text": "A businessman who undertakes the hull insurance policy is aiming at?",
+    "options": ["covering losses on damages to the cargo", "protecting injured crew in the ship", "averting payment of the freight", "covering damages to the body of the ship"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Hull insurance mainly covers the ship structure and cargo risks depending on policy scope."
+  },
+  {
+    "id": 23,
+    "text": "An agent who brings a customer into business contact with his principal is known as?",
+    "options": ["a del credere agent", "an auctioneer", "a factor", "a broker"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: A broker connects buyers and sellers without owning goods."
+  },
+  {
+    "id": 24,
+    "text": "A major hindrance to tourism growth in Nigeria is?",
+    "options": ["absence of genuine tour operators", "lack of tourism master plan", "inadequate tourist centres", "non-compliance to immigration laws"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Lack of proper planning limits tourism development."
+  },
+  {
+    "id": 25,
+    "text": "The warehouse that is owned and controlled by the government is a?",
+    "options": ["wholesalers' warehouse", "public warehouse", "state warehouse", "manufacturers' warehouse"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Public warehouses are government-owned facilities."
+  },
+ 
+  {
+    "id": 2,
+    "text": "The wealth of a nation depends on the volume of its?",
+    "options": ["bilateral trade activities", "commercial activities", "multilateral trade activities", "stock market"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: A nation’s wealth grows through all forms of commerce like trade, banking, transport—so commercial activities is correct."
+  },
+  {
+    "id": 3,
+    "text": "Which of the following can be used to differentiate skilled and unskilled labour?",
+    "options": ["Education and training", "Available resources", "Level of commitment", "Salaries and wages"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Skilled labour requires education and training, while unskilled does not—this is the main difference."
+  },
+  {
+    "id": 4,
+    "text": "A doctor who attends to patients at home after his official duty is?",
+    "options": ["a community development worker", "a direct service worker", "an indirect service worker", "a direct and an indirect service worker"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: He is directly providing service to patients, so it is direct service."
+  },
+  {
+    "id": 5,
+    "text": "Manufacturing and constructive activities are classified under?",
+    "options": ["primary production", "tertiary production", "secondary production", "direct service"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Secondary production involves processing raw materials into finished goods—this includes manufacturing and construction."
+  },
+  {
+    "id": 6,
+    "text": "The rewards of rents, wages, interests and profits accrue from?",
+    "options": ["capital, labour, land and entrepreneur respectively", "land, entrepreneur, labour and capital respectively", "land, labour, capital and entrepreneur respectively", "labour, entrepreneur, land and capital respectively"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Rent goes to land, wages to labour, interest to capital, and profit to entrepreneur—standard order."
+  },
+  {
+    "id": 7,
+    "text": "The factor of production that is subject to depreciation is?",
+    "options": ["capital", "land", "labour", "entrepreneur"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Capital (machines, tools) wears out over time, so it depreciates."
+  },
+  {
+    "id": 8,
+    "text": "Division of labour ultimately leads to?",
+    "options": ["conservation", "integration", "specialization", "repetition"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Division of labour makes workers focus on one task, leading to specialization."
+  },
+  {
+    "id": 9,
+    "text": "A worker who processes rice is engaged in?",
+    "options": ["constructive activity", "commercial activity", "extractive activity", "manufactural activity"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Processing raw rice into usable form is manufacturing."
+  },
+  {
+    "id": 10,
+    "text": "After-sales service is a function usually rendered by?",
+    "options": ["a retailer", "a wholesaler", "an agent", "an entrepreneur"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Retailers deal directly with consumers, so they handle after-sales services."
+  },
+  {
+    "id": 11,
+    "text": "A trend in retailing which enables consumers to have free access to different products is?",
+    "options": ["after-sales services", "branding", "self-services", "vending machine"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Self-service allows customers to pick items themselves freely."
+  },
+  {
+    "id": 12,
+    "text": "The activity which entails buying of goods in bulk and selling in small quantities to retailers is?",
+    "options": ["assembling", "wholesaling", "retailing", "merchandising"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Wholesalers buy in bulk and sell to retailers."
+  },
+  {
+    "id": 13,
+    "text": "The comparison of a country's visible and invisible exports and imports expressed in monetary term is?",
+    "options": ["balance of payment", "terms of trade", "balance of trade", "terms of payment"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Balance of trade compares exports and imports of goods."
+  },
+  {
+    "id": 14,
+    "text": "The document that gives an importer a freehand to obtain goods from any manufacturer is?",
+    "options": ["a consular invoice", "a closed indent", "an open indent", "a freight note"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Open indent allows buying from any supplier, unlike closed indent."
+  },
+  {
+    "id": 15,
+    "text": "Entrepot trade usually occurs in?",
+    "options": ["exchanging goods within a nation", "exchanging goods among countries", "importing goods to be re-exported", "exporting goods to be re-imported"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Entrepot trade means importing goods and exporting them again without using them."
+  },
+  {
+    "id": 16,
+    "text": "The document issued to a port authority when goods are deposited is a?",
+    "options": ["dock landing account", "bill of sight", "bill of lading", "dock warrant"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Dock warrant is proof that goods are stored at the port."
+  },
+  {
+    "id": 17,
+    "text": "The details of the goods required by the purchaser is outlined in?",
+    "options": ["a consular invoice", "an indent", "an invoice", "a certificate of origin"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Invoice contains details of goods supplied or requested."
+  },
+  {
+    "id": 18,
+    "text": "Selling goods in foreign countries at price below their marginal cost is?",
+    "options": ["dumping", "depreciation", "devaluation", "discounting"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Dumping is selling abroad at very low prices to gain market advantage."
+  },
+  {
+    "id": 19,
+    "text": "A process of creating more market for a product is through?",
+    "options": ["consumerism", "marketing", "advertising", "repositioning"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Advertising creates awareness and increases demand."
+  },
+  {
+    "id": 20,
+    "text": "One of the merits of television as a medium of advertising is that it?",
+    "options": ["is prone to censorship", "is relatively cheap", "has more sensory stimulation", "has more network coverage"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: TV combines sound and visuals, making it more engaging."
+  },
+  {
+    "id": 21,
+    "text": "The best mode of ensuring that items posted got to the named address through?",
+    "options": ["recorded delivery", "registered mail", "certificate of posting", "express mail"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Registered mail is safest because it requires signature on delivery."
+  },
+  {
+    "id": 22,
+    "text": "A businessman who undertakes the hull insurance policy is aiming at?",
+    "options": ["covering losses on damages to the cargo", "protecting injured crew in the ship", "averting payment of the freight", "covering damages to the body of the ship"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Hull insurance mainly covers the ship structure and cargo risks depending on policy scope."
+  },
+  {
+    "id": 23,
+    "text": "An agent who brings a customer into business contact with his principal is known as?",
+    "options": ["a del credere agent", "an auctioneer", "a factor", "a broker"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: A broker connects buyers and sellers without owning goods."
+  },
+  {
+    "id": 24,
+    "text": "A major hindrance to tourism growth in Nigeria is?",
+    "options": ["absence of genuine tour operators", "lack of tourism master plan", "inadequate tourist centres", "non-compliance to immigration laws"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Lack of proper planning limits tourism development."
+  },
+  {
+    "id": 25,
+    "text": "The warehouse that is owned and controlled by the government is a?",
+    "options": ["wholesalers' warehouse", "public warehouse", "state warehouse", "manufacturers' warehouse"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Public warehouses are government-owned facilities."
+  }
+]
+  
+]

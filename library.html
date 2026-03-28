@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sabi OS - Digital Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="global.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="library.css" type="text/css" media="all" />
+</head>
+<body>
+
+<div id="app" class="page-transition-wrapper">
+    
+    <div class="top-bar">
+        <a href="index.html" class="back-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Dashboard
+        </a>
+    </div>
+    
+    <div class="header-titles">
+        <h1>Digital <span class="blue-text">Library</span></h1>
+        <p>Official NOUN Vault & Core Textbooks</p>
+    </div>
+
+    <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="libSearchInput" class="search-input" placeholder="Search BIO101, Physics, Law..." autocomplete="off">
+        <div id="search-suggestions" class="suggestions-box hidden"></div>
+    </div>
+
+    <div class="filter-tabs">
+        <div class="tab active" onclick="setTab(this, 'all')">All Vaults</div>
+        <div class="tab" onclick="setTab(this, 'tertiary')">Tertiary/UNI </div>
+        <div class="tab" onclick="setTab(this, 'secondary')">Secondary School</div>
+        <div class="tab" onclick="setTab(this, 'pro')">Professional</div>
+    </div>
+
+    <div id="results-list">
+        <div id="empty-state">
+            <div class="icon">📚</div>
+            <p>Enter a course code or subject above<br>to pull from the Sabi Vault.</p>
+        </div>
+    </div>
+
+    <div id="nerdc-grid" class="hidden">
+        <div class="section-label">NERDC Approved Texts</div>
+        
+        <div class="book-card" onclick="openSabiReader('https://9jabaz.ng/wp-content/uploads/2021/12/Lamlad-Physics.pdf')">
+            <div class="book-cover">🧪</div>
+            <div class="book-info">
+                <span class="lib-tag tag-waec">O-LEVEL</span>
+                <div class="book-title">Lamlad Physics</div>
+                <div class="book-author">By O.J. OLAOYE</div>
+            </div>
+        </div>
+
+        <div class="book-card locked">
+            <div class="book-cover">⚗️</div>
+            <div class="book-info">
+                <span class="lib-tag tag-locked">COMING SOON</span>
+                <div class="book-title">New School Chemistry</div>
+                <div class="book-author">By O.Y. ABABIO</div>
+            </div>
+        </div>
+
+        <div class="book-card locked">
+            <div class="book-cover">🧬</div>
+            <div class="book-info">
+                <span class="lib-tag tag-locked">COMING SOON</span>
+                <div class="book-title">Modern Biology</div>
+                <div class="book-author">By S.T. RAMALINGAM</div>
+            </div>
+        </div>
+
+        <div class="book-card locked">
+            <div class="book-cover">📐</div>
+            <div class="book-info">
+                <span class="lib-tag tag-locked">COMING SOON</span>
+                <div class="book-title">New General Mathematics</div>
+                <div class="book-author">By M.F. MACRAE</div>
+            </div>
+        </div>
+
+        <div class="book-card locked">
+            <div class="book-cover">📈</div>
+            <div class="book-info">
+                <span class="lib-tag tag-locked">COMING SOON</span>
+                <div class="book-title">Comprehensive Economics</div>
+                <div class="book-author">By M.W. ANYAKOHA</div>
+            </div>
+        </div>
+
+        <div class="book-card locked">
+            <div class="book-cover">📖</div>
+            <div class="book-info">
+                <span class="lib-tag tag-locked">COMING SOON</span>
+                <div class="book-title">The Life Changer (Novel)</div>
+                <div class="book-author">By KHADIJA ABUBAKAR JALLI</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="professional-grid" class="sub-grid hidden">
+        <div class="sub-card" onclick="openProSection('law')">
+            <span class="sub-icon">⚖️</span>
+            <span class="sub-name">Law / NBA</span>
+            <p class="sub-desc">Bar Exams & Procedures</p>
+        </div>
+        
+<div class="sub-card" onclick="window.location.href='ican.html'">
+    <span class="sub-icon">📊</span>
+    <span class="sub-name">ICAN / ACCA</span>
+    <p class="sub-desc">Accounting & Finance</p>
+</div>
+
+        
+        <div class="sub-card" onclick="openProSection('nursing')">
+            <span class="sub-icon">🏥</span>
+            <span class="sub-name">NMCN</span>
+            <p class="sub-desc">Nursing Council Manuals</p>
+        </div>
+        
+        <div class="sub-card" onclick="openProSection('engineering')">
+            <span class="sub-icon">🏗️</span>
+            <span class="sub-name">COREN</span>
+            <p class="sub-desc">Engineering Regulations</p>
+        </div>
+    </div>
+</div>
+
+<nav class="app-bottom-nav">
+    <div class="nav-indicator" id="nav-indicator"></div>
+
+    <a href="index.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="nav-label">Home</span>
+    </a>
+
+    <a href="pq.html" class="nav-item"> 
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+        </svg>
+        <span class="nav-label">PQ Engine</span>
+    </a>
+
+    <a href="wiki.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+        <span class="nav-label">Wiki</span>
+    </a>
+
+    <a href="library.html" class="nav-item active">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        <span class="nav-label">Library</span>
+    </a>
+</nav>
+
+<script src="vault.js"></script>
+<script src="library.js"></script>
+<script src="global.js"></script>
+</body>
+</html>

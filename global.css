@@ -1,0 +1,157 @@
+/* =========================================
+   SABI OS v3.0: MASTER GLOBAL STYLES
+   Theme: OLED Midnight / Neon Blue
+========================================= */
+
+:root {
+    --sabi-blue: #3D8EFF;
+    --sabi-blue-glow: rgba(61, 142, 255, 0.3);
+    --sabi-green: #10B981;
+    --sabi-red: #EF4444;
+    --zinc-900: #0A0A0A;
+    --zinc-800: #18181B;
+    --zinc-700: #27272A;
+    --zinc-400: #A1A1AA;
+    --zinc-100: #FAFAFA;
+}
+
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: #000000; /* Pure Black */
+    color: var(--zinc-100);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    padding-bottom: 100px; /* Space for the Floating Dock */
+}
+
+/* --- 1. GLOBAL ANIMATIONS --- */
+.page-transition-wrapper {
+    animation: sabiPageEnter 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    opacity: 0;
+}
+
+@keyframes sabiPageEnter {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes activeFloat {
+    0%, 100% { transform: translateY(-3px); }
+    50% { transform: translateY(-6px); }
+}
+
+/* --- 2. HOME SCREEN (INDEX.HTML) STYLES --- */
+.home-header { padding: 30px 20px; display: flex; justify-content: space-between; align-items: center; }
+.main-logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; }
+.blue-text { color: var(--sabi-blue); }
+.brand-tag { font-size: 10px; font-weight: 800; color: var(--zinc-400); display: block; text-transform: uppercase; }
+
+.welcome-card { background: var(--zinc-900); border: 1px solid var(--zinc-700); border-radius: 20px; padding: 25px; margin: 0 20px 25px; }
+.welcome-card h2 { font-size: 20px; margin-bottom: 8px; font-weight: 800; }
+.welcome-card p { font-size: 14px; color: var(--zinc-400); }
+
+.mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; margin-bottom: 30px; }
+.mode-card { background: var(--zinc-900); border: 1px solid var(--zinc-700); border-radius: 16px; padding: 20px; text-align: center; transition: 0.3s; cursor: pointer; }
+.mode-card.active { border-color: var(--sabi-blue); background: rgba(61, 142, 255, 0.05); }
+.mode-icon { font-size: 24px; display: block; margin-bottom: 10px; }
+
+.subject-section { padding: 0 20px; }
+.section-head { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
+.count-tag { font-size: 12px; font-weight: 800; color: var(--sabi-blue); background: rgba(61, 142, 255, 0.1); padding: 4px 10px; border-radius: 20px; }
+.subject-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { background: var(--zinc-800); border: 1px solid var(--zinc-700); padding: 10px 18px; border-radius: 30px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.chip.active { background: var(--sabi-blue); border-color: var(--sabi-blue); color: white; }
+
+.launch-btn { 
+    display: block; width: calc(100% - 40px); margin: 30px 20px; padding: 18px; 
+    background: var(--sabi-blue); border: none; border-radius: 16px; color: white; 
+    font-weight: 900; font-size: 16px; box-shadow: 0 10px 20px var(--sabi-blue-glow); cursor: pointer;
+}
+
+/* --- 3. EXAM ROOM (TEST-ROOM.HTML) STYLES --- */
+.exam-header { background: var(--zinc-900); display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--zinc-700); position: sticky; top: 0; z-index: 100; }
+.subject-tabs { display: flex; background: var(--zinc-900); padding: 0 20px; gap: 20px; overflow-x: auto; border-bottom: 1px solid var(--zinc-700); scrollbar-width: none; }
+.sub-tab { padding: 15px 5px; font-weight: 700; font-size: 14px; color: var(--zinc-400); cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; transition: 0.3s; }
+.sub-tab.active { color: var(--sabi-blue); border-bottom: 3px solid var(--sabi-blue); }
+
+.question-container { padding: 25px 20px; max-width: 800px; margin: 0 auto; }
+#q-text-display { font-size: 18px; font-weight: 600; line-height: 1.5; margin-bottom: 25px; }
+
+.option-card { background: var(--zinc-900); border: 2px solid var(--zinc-700); border-radius: 14px; padding: 16px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); margin-bottom: 12px; }
+.option-card.selected { border-color: var(--sabi-blue); background: rgba(61, 142, 255, 0.08); }
+.option-card.correct { border-color: var(--sabi-green); background: rgba(16, 185, 129, 0.08); }
+.option-card.wrong { border-color: var(--sabi-red); background: rgba(239, 68, 68, 0.08); }
+
+.opt-circle { width: 34px; height: 34px; border-radius: 50%; background: var(--zinc-800); display: flex; justify-content: center; align-items: center; font-weight: 800; border: 1px solid var(--zinc-700); flex-shrink: 0; }
+.option-card.selected .opt-circle { background: var(--sabi-blue); border-color: var(--sabi-blue); color: white; }
+
+/* Question Grid Sheet */
+.grid-bottom-sheet { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--zinc-900); border-radius: 24px 24px 0 0; z-index: 1100; padding: 25px 20px; border-top: 1px solid var(--zinc-700); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.8); }
+.grid-bottom-sheet.hidden { transform: translateY(100%); }
+.grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 12px; max-height: 50vh; overflow-y: auto; padding-bottom: 20px; }
+.q-bubble { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 700; border: 2px solid var(--zinc-700); background: var(--zinc-800); color: var(--zinc-400); cursor: pointer; }
+.q-bubble.answered { background: var(--sabi-blue); color: white; border-color: var(--sabi-blue); }
+.q-bubble.active { border-color: var(--sabi-green); border-width: 3px; }
+
+/* --- 4. ANALYTICS (RESULTS.HTML) STYLES --- */
+.score-card { background: var(--zinc-900); border: 1px solid var(--zinc-700); border-radius: 20px; padding: 40px 20px; text-align: center; margin: 20px; }
+.score-display { display: flex; justify-content: center; align-items: baseline; gap: 8px; margin: 15px 0; }
+.score-number { font-size: 72px; font-weight: 900; line-height: 1; }
+.score-max { font-size: 24px; font-weight: 700; color: var(--zinc-400); }
+.badge-box { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 30px; margin-bottom: 15px; border: 1px solid transparent; }
+.stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+.stat-box { background: var(--zinc-900); border: 1px solid var(--zinc-700); border-radius: 16px; padding: 20px; text-align: center; }
+.breakdown-grid { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+.sub-card { background: var(--zinc-900); border: 1px solid var(--zinc-700); border-radius: 14px; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
+
+/* --- 5. THE NEON FLOATING DOCK (BOTTOM NAV) --- */
+.app-bottom-nav {
+    position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+    width: 90%; max-width: 380px; background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px;
+    display: flex; padding: 8px; z-index: 1200; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+}
+
+.nav-indicator {
+    position: absolute; height: calc(100% - 16px); top: 8px;
+    background: rgba(61, 142, 255, 0.15); border-radius: 18px;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 15px var(--sabi-blue-glow); z-index: 0;
+}
+
+.nav-item {
+    position: relative; flex: 1; display: flex; flex-direction: column;
+    align-items: center; text-decoration: none; color: #52525B;
+    padding: 10px 0; z-index: 2; transition: color 0.4s ease;
+}
+
+.nav-item.active { color: var(--sabi-blue); }
+.nav-svg { width: 22px; height: 22px; stroke: currentColor; transition: 0.3s; }
+.nav-item.active .nav-svg { filter: drop-shadow(0 0 8px var(--sabi-blue)); transform: translateY(-3px); animation: activeFloat 3s ease-in-out infinite; }
+.nav-label { font-size: 9px; font-weight: 800; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
+
+/* --- 6. UTILITIES --- */
+.hidden { display: none !important; }
+.blue-text { color: var(--sabi-blue); }
+.top-submit-btn {
+    background-color: #EF4444; /* Sabi Red */
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 15px;
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+}
+/* Hide the old submit button from the bottom bar */
+#bottom-bar .submit-btn {
+    display: none; 
+}

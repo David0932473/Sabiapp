@@ -1,0 +1,611 @@
+[
+  {
+    "id": 1,
+    "text": "Which Economics question paper type is given to you?",
+    "options": ["Type A", "Type B", "Type C", "Type D"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: The paper header states 'PAPER TYPE: C', so the correct answer is Type C."
+  },
+  {
+    "id": 2,
+    "text": "Economics is the study of human behaviour as it relates to the",
+    "options": ["efficient allocation of resources", "production of goods", "operation of companies", "generation of income"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: As defined by Lionel Robbins, Economics studies human behaviour in relation to ends and scarce means — essentially how limited resources are allocated efficiently to satisfy unlimited wants."
+  },
+  {
+    "id": 3,
+    "text": "The downturn in the prices of shares on stock markets is a highlight of",
+    "options": ["efficient allocation of resources", "the invisible hand", "the regulatory nature of the market", "consumer rationality"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Adam Smith's 'invisible hand' describes how market forces automatically self-correct without central planning. Falling share prices are a natural market signal reallocating resources — a classic example of the invisible hand at work."
+  },
+  {
+    "id": 4,
+    "text": "If the arithmetic mean (x̄) = 6 and N = 6, determine the value of Σfx",
+    "options": ["36", "12", "1", "72"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: The mean formula is x̄ = Σfx / N. Rearranging: Σfx = x̄ × N = 6 × 6 = 36."
+  },
+  {
+    "id": 5,
+    "text": "The standard deviation of a set of data is",
+    "options": ["always measured from the mode", "the most representative of averages", "always measured from the median", "a measure of dispersion"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Standard deviation measures how spread out values are around the mean. It is a measure of dispersion — not a measure of central tendency like mean, median, or mode."
+  },
+  {
+    "id": 6,
+    "text": "The mean is the best measure of central tendency because it",
+    "options": ["is not affected by extreme values in a data", "is a midpoint value in an array of data", "is a balancing point in an observation", "can be calculated from incomplete data"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: The mean is considered the best average because it uses all values in the dataset and acts as a mathematical balancing point — the sum of all deviations above and below the mean equals zero."
+  },
+  {
+    "id": 7,
+    "text": "The most popular sizes of dresses and shoes are determined by the",
+    "options": ["range", "mean", "mode", "median"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Per the document key, the answer is range (A). Note: In standard statistics, the MODE — the most frequently occurring value — is the correct measure for finding the most popular size. The range only shows the spread between the highest and lowest values."
+  },
+  {
+    "id": 8,
+    "text": "If the demand for a good is more elastic than its supply, the tax burden is borne",
+    "options": ["equally by consumers and producers", "more by producers", "more by consumers", "more by retailers and producers"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, the answer is C (more by consumers). Note: Standard economic theory states that when demand is MORE elastic than supply, consumers can more easily switch to substitutes, so the burden falls MORE on producers (the less elastic side). The document key may contain an error here."
+  },
+  {
+    "id": 9,
+    "text": "If the price of a commodity with elastic demand increases, the revenue accruing to the producer will",
+    "options": ["double", "increase", "be constant", "decrease"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (be constant). Note: Standard economics teaches that when demand is elastic (PED > 1), a price increase causes a proportionally larger fall in quantity demanded, so Total Revenue (TR = P × Q) actually DECREASES. 'Be constant' describes unit-elastic demand. The document key appears to contain an error."
+  },
+  {
+    "id": 10,
+    "text": "An excess demand for beans will result from",
+    "options": ["an increase in the price of beans", "a decrease in the price of beans", "an increase in the supply of beans", "a decrease in the supply of beans"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Per the document key, answer is A. Note: Standard theory states excess demand (shortage) arises when price is BELOW equilibrium — caused by a price fall or a price ceiling, not a price increase. A decrease in supply (D) could also cause a shortage. The document key may contain an error."
+  },
+  {
+    "id": 11,
+    "text": "Consumer surplus tends to be higher when demand is",
+    "options": ["inelastic", "perfectly elastic", "elastic", "unitarily elastic"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (elastic). Note: Standard theory holds that consumer surplus is actually GREATER when demand is more inelastic — because inelastic consumers are willing to pay far above the market price, yielding a large gap between willingness-to-pay and actual price."
+  },
+  {
+    "id": 12,
+    "text": "One of the assumptions of ordinal utility theory is that",
+    "options": ["choice is not consistent", "utility can be ranked", "total utility is a function of price", "satisfaction is measurable"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Per the document key, answer is D (satisfaction is measurable). Note: Ordinal utility theory (indifference curve analysis) assumes utility can be RANKED or ordered, not precisely measured. The assumption that satisfaction is measurable in specific units belongs to CARDINAL utility theory."
+  },
+  {
+    "id": 13,
+    "text": "The law of diminishing marginal utility explains why",
+    "options": ["the slope of a normal demand curve is negative", "an abnormal demand curve slopes upwards", "the slope of a normal demand curve is positive", "the consumption of inferior goods increases with income"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B. Standard economics states that diminishing marginal utility explains the NEGATIVE slope of a normal demand curve (A): as you consume more, marginal utility falls, so you are willing to pay less — hence demand falls as price rises."
+  },
+  {
+    "id": 14,
+    "text": "If a consumer plans to spend 120k on four oranges but spent 80k, his consumer surplus is",
+    "options": ["N1.50", "N0.40", "N1.00", "N2.00"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Consumer surplus = Willingness to pay − Actual payment = 120k − 80k = 40k total for 4 oranges = 10k per orange. The document key gives C (N1.00), which may reflect a different unit conversion in the original question context."
+  },
+  {
+    "id": 15,
+    "text": "A set of factors that can shift the supply curve are changes in",
+    "options": ["weather, price and technology", "technology, weather and population", "technology, price and taste", "population, price and taste"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: The supply curve SHIFTS due to non-price determinants: weather (affects harvest/output), technology (improves productivity), and input costs/subsidies. Note: a change in the commodity's own price causes movement ALONG the curve, not a shift. Per document key: A."
+  },
+  {
+    "id": 16,
+    "text": "If the coefficient of price elasticity of supply is greater than one, the supply is said to be",
+    "options": ["perfectly elastic", "fairly inelastic", "infinitely inelastic", "fairly elastic"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (infinitely inelastic). Note: Standard economics states that PES > 1 means supply is ELASTIC (fairly elastic) — producers respond more than proportionally to price changes. PES > 1 does NOT mean inelastic. The document key appears to contain an error; the correct answer is D (fairly elastic)."
+  },
+  {
+    "id": 17,
+    "text": "If commodity X is a by-product of commodity Y, this implies that both commodities are",
+    "options": ["in competitive supply", "in composite supply", "jointly supplied", "in excess supply"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Joint supply occurs when producing one good automatically results in the production of another. Classic examples include beef and leather from cattle, or petrol and kerosene from crude oil refining. A by-product is the textbook definition of joint supply."
+  },
+  {
+    "id": 18,
+    "text": "In perfect competition, price is determined by the",
+    "options": ["government", "sellers", "buyers", "market"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: In perfect competition, no individual buyer or seller has any power to influence price. Price is determined by the collective market forces of demand and supply. Individual firms are price-takers, not price-makers."
+  },
+  {
+    "id": 19,
+    "text": "In order to reduce hardship faced by consumers due to high prices, government can introduce",
+    "options": ["maximum prices", "commodity boards", "minimum prices", "price control boards"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Price control boards and maximum prices (price ceilings) are used to prevent prices from rising above an affordable level, protecting consumers from exploitation. The document key indicates D (price control boards), which are the institutions that enforce such controls."
+  },
+  {
+    "id": 20,
+    "text": "Average product is less than marginal product when",
+    "options": ["there is constant returns to scale", "there is increasing returns to scale", "there is decreasing returns to scale", "diminishing returns set in"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: When MP > AP, the AP is being pulled UP by each additional unit. Once diminishing returns set in and MP starts falling, eventually MP falls below AP, causing AP to fall too. At the point where MP = AP, AP is at its maximum. Per document key: D."
+  },
+  {
+    "id": 21,
+    "text": "A firm enjoying economies of scale is said to be",
+    "options": ["reducing average cost as production increases", "benefiting from the activities of other firms", "maximizing profits as production increases", "having an upward-sloping average cost curve"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Economies of scale occur when expanding output leads to a FALL in the average (unit) cost of production. This happens due to bulk purchasing, specialisation, and spreading fixed costs over more units."
+  },
+  {
+    "id": 22,
+    "text": "The rising portion of the long-run average cost curve of a firm is an indication that it is experiencing",
+    "options": ["increasing efficiency", "economies of scale", "diseconomies of scale", "increasing marginal returns"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Per the document key, answer is A (increasing efficiency). Note: Standard economics states the rising portion of the LRAC curve represents DISECONOMIES of scale (C) — when the firm grows too large, coordination problems and inefficiencies cause average costs to rise. The document key appears to contain an error."
+  },
+  {
+    "id": 23,
+    "text": "An industry's supply curve is more likely to be elastic when firms are",
+    "options": ["enjoying free entry and exit", "operating at full capacity", "operating below capacity", "maximizing profits"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: When firms have spare (idle) capacity, they can quickly and cheaply increase output in response to a rise in price. This makes supply more elastic. Firms at full capacity cannot raise output easily, making supply inelastic."
+  },
+  {
+    "id": 24,
+    "text": "One of the characteristics of monopolistic competition is that",
+    "options": ["there is mobility of factors of production", "no single seller dominates the market", "the firms are price-takers", "consumers have perfect knowledge of price"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (firms are price-takers). Note: In standard theory, firms in monopolistic competition are actually PRICE-MAKERS to a degree (due to product differentiation). Pure price-takers exist in perfect competition. The defining feature is many sellers with differentiated products and free entry/exit."
+  },
+  {
+    "id": 25,
+    "text": "The demand curve for factors of production",
+    "options": ["is perfectly elastic", "slopes upwards", "slopes downward", "is perfectly inelastic"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (slopes upwards). Note: Standard economics states the factor demand curve slopes DOWNWARD — as the price of a factor (e.g., wage) rises, firms demand fewer units of that factor. Factor demand is derived from product demand."
+  },
+  {
+    "id": 26,
+    "text": "An agreement among firms on price and market segmentation is termed",
+    "options": ["cartel", "collusion", "haggling", "specialization"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: A cartel is a formal agreement among competing firms (typically in an oligopoly) to fix prices, share markets, or restrict output. OPEC is the world's most famous example of a cartel."
+  },
+  {
+    "id": 27,
+    "text": "In national income accounting, tax is determined by the",
+    "options": ["level of income", "level of consumption", "level of investment", "rate of savings"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: In macroeconomic models, tax revenue (T) is modelled as a function of income: T = tY, where t is the tax rate and Y is national income. As income rises, so does tax revenue proportionally."
+  },
+  {
+    "id": 28,
+    "text": "A decrease in aggregate spending in an economy will ultimately lead to",
+    "options": ["boom", "inflation", "deflation", "recession"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (inflation). Note: Standard macroeconomics states that a DECREASE in aggregate spending reduces demand, leading to lower output, higher unemployment, and possibly DEFLATION or a RECESSION (D or C). Inflation results from an INCREASE in aggregate demand. The document key appears to contain an error."
+  },
+  {
+    "id": 29,
+    "text": "If MPC is 0.7 while government expenditure increased by N150m, the equilibrium national income is",
+    "options": ["N214 million", "N45 million", "N105 million", "N500 million"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (N45m). Standard calculation: Multiplier = 1/(1 − MPC) = 1/(1 − 0.7) = 1/0.3 ≈ 3.33. Change in income = 3.33 × N150m = N500m (option D). The document key gives B (N45m), which does not match the standard formula."
+  },
+  {
+    "id": 30,
+    "text": "The function of money which makes division of labour possible is its",
+    "options": ["unit of account", "store of value", "medium of exchange", "standard of deferred payment"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (store of value). Standard economics teaches that it is money as a MEDIUM OF EXCHANGE (C) that makes division of labour possible — workers can specialise, sell their output for money, and use that money to buy goods from other specialists, eliminating the need for barter."
+  },
+  {
+    "id": 31,
+    "text": "By buying treasury bills, the Central Bank of Nigeria intends to",
+    "options": ["increase money supply in the economy", "reduce the cash reserve ratio for banks", "reduce money supply in the economy", "increase the capital base of commercial banks"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (reduce cash reserve ratio). Standard Open Market Operations (OMO): when the CBN BUYS treasury bills, it pays banks with new money, thereby INCREASING money supply (A). Buying = expansionary policy. The document key may contain an error."
+  },
+  {
+    "id": 32,
+    "text": "The velocity of money (V) is best represented by which formula, given MV = PQ?",
+    "options": ["V = PQ/M", "V = MQ/P", "V = MP/Q", "V = PM/Q"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: From Fisher's Quantity Theory of Money: MV = PQ. Rearranging for V: V = PQ/M, where P is the price level, Q is real output, and M is the money supply. This shows how many times money circulates to support economic transactions."
+  },
+  {
+    "id": 33,
+    "text": "One of the functions of commercial banks is",
+    "options": ["maintaining stable price in the economy", "regulating monetary policies", "granting loans to customers", "issuing bank notes and coins"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (regulating monetary policies). Note: Regulating monetary policy is the Central Bank's role. A core function of commercial banks is to GRANT LOANS to customers (C), accept deposits, and create credit. The document key may contain an error."
+  },
+  {
+    "id": 34,
+    "text": "A strategy for curbing unemployment is to",
+    "options": ["implement government stabilization policy", "increase taxes and decrease government expenditure", "increase government expenditure and decrease taxes", "ensure even distribution of job opportunities"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Per the document key, answer is D (ensure even distribution of job opportunities). The standard economic strategy to reduce unemployment is expansionary fiscal policy: increase government spending (creates jobs) and reduce taxes (boosts consumer demand) — which is option C."
+  },
+  {
+    "id": 35,
+    "text": "To stimulate economic growth in Nigeria, the government should adopt (Note: question text is incomplete in original PDF; options relate to budget types)",
+    "options": ["balanced budgeting", "deficit budgeting", "surplus budgeting", "zero budgeting"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (surplus budgeting). Note: The question text appears truncated in the PDF. Standard economics recommends DEFICIT budgeting (spending more than revenue) to stimulate growth during a downturn, as it injects spending into the economy."
+  },
+  {
+    "id": 36,
+    "text": "National development plans in Nigeria fail mainly because of",
+    "options": ["overdependence on foreign aids", "inadequate funding of projects", "poor implementation strategies", "shortage of skilled manpower"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Nigeria's national development plans have repeatedly failed primarily due to inadequate funding — projects are either abandoned or poorly executed because financial resources are insufficient. This is compounded by oil revenue volatility."
+  },
+  {
+    "id": 37,
+    "text": "The ultimate aim of agricultural policies in Nigeria is to achieve",
+    "options": ["food sufficiency", "industrialization", "full employment", "industrial capacity utilization"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: The primary goal of Nigeria's agricultural policies is food security and sufficiency — ensuring enough food is produced domestically to feed the population affordably and reduce dependence on food imports."
+  },
+  {
+    "id": 38,
+    "text": "Government can boost agricultural output in Nigeria primarily by",
+    "options": ["embarking on buffer stock programmes", "placing embargo on food importation", "granting subsidies on farm inputs", "placing farmers on monthly income"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (placing embargo on food importation). This protects domestic farmers from cheaper foreign competition, incentivising local production. However, economists often argue that granting subsidies on farm inputs (C) is a more direct and effective way to boost output."
+  },
+  {
+    "id": 39,
+    "text": "Localization of industries refers to the",
+    "options": ["spread of firms producing different products", "siting of industries near the market", "concentration of firms of an industry in one area", "siting of firms producing different products in one location"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Per document key, answer is D. Localization of industry refers to the geographical concentration of firms belonging to the SAME industry in one area (e.g., textile firms in Kano, auto parts in Nnewi). This enables shared infrastructure and labour pools."
+  },
+  {
+    "id": 40,
+    "text": "In developing countries, governments influence the location of industries in order to",
+    "options": ["spread development", "redistribute wealth", "encourage entrepreneurs", "encourage industries to earn high profits"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Governments in developing countries direct industries to less-developed or rural regions to promote balanced regional development, reduce geographical inequalities, and ensure that economic growth benefits all parts of the country."
+  },
+  {
+    "id": 41,
+    "text": "A disadvantage of Nigeria's dependence on imported petroleum products is the",
+    "options": ["instability in the demand for the products", "dominance of multinational firms", "instability in the supply of the product", "poor maintenance of the refineries"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (dominance of multinational firms). Nigeria's dependence on petroleum imports gives multinational oil companies enormous leverage over the Nigerian market, including pricing and supply decisions, to the detriment of national economic sovereignty."
+  },
+  {
+    "id": 42,
+    "text": "The maximum number of shareholders for a limited liability company is",
+    "options": ["twenty", "five", "seven", "infinite"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: A public limited liability company (Plc) can sell shares to the general public through a stock exchange, meaning there is NO upper limit (infinite) on the number of shareholders. A private limited company, by contrast, is capped at 50 shareholders."
+  },
+  {
+    "id": 43,
+    "text": "The primary motive for an individual engaging in production is to",
+    "options": ["make profit", "satisfy basic human wants", "redistribute wealth", "put inputs into use"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (redistribute wealth). Note: Standard economic theory states the primary motive of a producer/entrepreneur is PROFIT MAXIMISATION (A) — earning a return on their investment of capital, time, and risk-taking."
+  },
+  {
+    "id": 44,
+    "text": "Use the table: Year 2000 – Pop: 25,000 / Working Pop: 13,000. Year 2001 – Pop: 30,000 / Working Pop: 19,000. Year 2002 – Pop: 40,000 / Working Pop: 32,000. Year 2003 – Pop: 50,000 / Working Pop: 49,000. What is the population growth rate in 2003?",
+    "options": ["33.3%", "20.0%", "11.0%", "50%"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Per the document key, answer is D (50%). Standard calculation from 2002 to 2003: (50,000 − 40,000)/40,000 × 100 = 25%, which is not among the obvious options. The 50% may represent the population figure (50,000) relative to a base, or reflect a different base year used in the original question."
+  },
+  {
+    "id": 45,
+    "text": "Use the table: Year 2000 – Pop: 25,000 / Working Pop: 13,000. Year 2001 – Pop: 30,000 / Working Pop: 19,000. Year 2002 – Pop: 40,000 / Working Pop: 32,000. Year 2003 – Pop: 50,000 / Working Pop: 49,000. The percentage of working population in 2002 is",
+    "options": ["50%", "25%", "8%", "80%"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Working population as a percentage of total population in 2002 = (32,000 / 40,000) × 100 = 80%. Answer D (80%) is both mathematically correct and matches the document key."
+  },
+  {
+    "id": 46,
+    "text": "One of the characteristics of a free trade zone is",
+    "options": ["common tariff against non-member countries", "different trade policies of non-member countries", "free factor mobility within the zone", "harmonized trade among member countries"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: In a free trade zone, member countries eliminate tariffs and trade barriers among themselves, resulting in harmonised/free trade. Unlike a customs union, each member maintains its own independent trade policy with non-members. Document key: D."
+  },
+  {
+    "id": 47,
+    "text": "If Nigeria imports vehicles from Japan, the transaction will appear as a",
+    "options": ["debit on Japan's balance of payments", "credit on Japan's balance of payments", "credit on Nigeria's balance of trade", "credit on Nigeria's balance of payment"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (credit on Nigeria's balance of trade). Note: Standard theory says this should be a CREDIT on Japan's BOP (Japan earns foreign exchange from its export) and a DEBIT on Nigeria's BOP (Nigeria pays out foreign exchange). The document key appears to contain an error."
+  },
+  {
+    "id": 48,
+    "text": "One of the objectives of the African Development Bank (ADB) is to",
+    "options": ["provide subsidies on imported goods to member countries", "mobilize short-term loans for member countries", "promote economic and social development of member countries", "provide technical assistance to only poor member countries"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (mobilize short-term loans). The AfDB primarily mobilizes financial resources and provides long-term loans for infrastructure and development projects. Its core mandate is the economic and social development of member states (C), though the document key indicates B."
+  },
+  {
+    "id": 49,
+    "text": "The choice of the method of production in an economy is determined by the",
+    "options": ["level of technical know-how", "rate of population growth", "availability of natural resources", "level of income"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (availability of natural resources). The level of technical know-how (A) most directly determines whether an economy can adopt capital-intensive or must rely on labour-intensive production methods. Natural resource availability also shapes production choices."
+  },
+  {
+    "id": 50,
+    "text": "The amount of labour hired depends on the",
+    "options": ["number of skilled labour available", "skill of labour", "marginal productivity of labour", "price of the inputs"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: A profit-maximising firm hires labour up to the point where the Marginal Revenue Product of Labour (MRPL) equals the wage rate (W). Therefore, the amount of labour hired is fundamentally governed by the marginal productivity of labour — firms stop hiring when the extra revenue from one more worker equals that worker's cost."
+  },
+  {
+    "id": 51,
+    "text": "An effective way of controlling inflation in a mixed economy is to",
+    "options": ["increase productivity", "reduce income tax", "ration available output", "increase imports"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Increasing productivity means more goods and services are produced for the same cost, which increases the supply side of the economy. When supply rises to meet demand, upward price pressure (inflation) is reduced. This is a sustainable, non-distortionary anti-inflation strategy."
+  },
+  {
+    "id": 52,
+    "text": "One of the limitations of the Production Possibility Curve (PPC) assumption is that there is",
+    "options": ["no indication of technological development", "no recognition of preferred goods for countries", "technical inefficiency", "abundant resources"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: The PPC assumes all resources are fixed and fully employed, and does not account for technological change over time. Therefore, a key limitation is that it gives no indication of how technology can shift the frontier outward, thus no indication of technological development."
+  },
+  {
+    "id": 53,
+    "text": "A major disadvantage of the arithmetic mean is that it is",
+    "options": ["not useful for large data", "not suitable for further statistical analysis", "cumbersome to determine the actual value", "affected by extreme data"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: The arithmetic mean is heavily influenced by outliers or extreme values. For example, if most students score 40/100 but one scores 100, the mean is pulled far above what is representative of the group. This is the mean's primary weakness compared to the median or mode."
+  },
+  {
+    "id": 54,
+    "text": "Demand patterns are determined by the market on the basis of",
+    "options": ["scale of preference", "consumer sovereignty", "consumer rationality", "price of the commodity"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Consumer sovereignty means that in a free market, consumers have the power to determine what is produced through their spending decisions. Producers respond to consumer preferences and willingness to pay, meaning demand patterns are ultimately shaped by consumer sovereignty."
+  },
+  {
+    "id": 55,
+    "text": "A consumer surplus measures the",
+    "options": ["benefits derived from consuming a cheap commodity", "excess of total expenditure over total utility", "difference between marginal utility and marginal cost", "excess of marginal utility over price"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Consumer surplus is the difference between what a consumer is WILLING to pay (their marginal utility expressed in money) and what they ACTUALLY pay (the market price). Essentially it is the excess of willingness-to-pay (marginal utility) over the actual price paid."
+  },
+  {
+    "id": 56,
+    "text": "If the demand for one commodity excludes another, it is said to be",
+    "options": ["complementary demand", "competitive demand", "composite demand", "derived demand"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Competitive demand (also called substitute demand) occurs when two goods satisfy the same want, so buying one means you do NOT buy the other — they compete for the consumer's money. Examples include Pepsi vs Coca-Cola, or butter vs margarine."
+  },
+  {
+    "id": 57,
+    "text": "Given the schedule: Price (N): 1, 2, 3, 4, 5 — Quantity (Kg): 100, 120, 150, 180, 200. The graph of this schedule will depict",
+    "options": ["a kinked demand curve", "a normal demand curve", "an abnormal demand curve", "a diminishing marginal utility curve"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: In a normal (standard) demand curve, quantity FALLS as price rises. But in this schedule, quantity INCREASES as price rises (from 100kg at N1 to 200kg at N5). This is an abnormal (Giffen/Veblen) demand curve — it slopes upward from left to right."
+  },
+  {
+    "id": 58,
+    "text": "The median of an odd-numbered set of scores is the",
+    "options": ["middle value in the set", "highest value in the set", "arithmetic mean of the set", "most frequently occurring score"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: When data is arranged in ascending or descending order, the median is the exact middle value. For an odd number of observations (e.g., 7 values), the median is the 4th value — with three values on each side. It is not calculated; it is located."
+  },
+  {
+    "id": 59,
+    "text": "If demand increases without a change in supply, equilibrium price and quantity will",
+    "options": ["remain unchanged", "shift inward", "fall", "rise"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: When demand increases (shifts right) while supply is unchanged, there is now excess demand at the original price. Competition among buyers bids up the price until a new, higher equilibrium is reached at a higher price AND higher quantity."
+  },
+  {
+    "id": 60,
+    "text": "In the process of production, total output is at maximum when",
+    "options": ["MP = 0", "MP > 0", "AP = 0", "AP > 0"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Total Product (TP) reaches its maximum point when Marginal Product (MP) = 0. At this point, adding one more unit of the variable input adds nothing extra to total output. Beyond this point, MP becomes negative and TP begins to fall."
+  },
+  {
+    "id": 61,
+    "text": "Given the supply schedule: Price (N1 = 60 bags, N2 = 120 bags), the price elasticity of supply is",
+    "options": ["4", "25", "1", "2"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: PES = (% change in Qs) / (% change in P). % change in Qs = (120−60)/60 × 100 = 100%. % change in P = (2−1)/1 × 100 = 100%. PES = 100/100 = 1. This is unit elastic supply. Answer: C."
+  },
+  {
+    "id": 62,
+    "text": "When a consumer is at equilibrium, the Marginal Rate of Substitution (MRSxy) is equal to the",
+    "options": ["sum of the prices", "product of the two prices", "ratio of the two prices", "difference of the two prices"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Per the document key, answer is A (sum of prices). Standard economics: Consumer equilibrium on an indifference curve occurs where MRSxy = Px/Py (the RATIO of the two prices). The document key may contain an error; the correct answer is C."
+  },
+  {
+    "id": 63,
+    "text": "Minimum price legislation by government will",
+    "options": ["reduce supply", "increase supply", "reduce demand and create surplus", "increase demand and create scarcity"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: A minimum price (price floor) is set ABOVE the equilibrium price. At this higher price, producers are incentivised to supply MORE, while consumers demand LESS. This creates a surplus (excess supply), not scarcity. Example: minimum wage legislation."
+  },
+  {
+    "id": 64,
+    "text": "Ranking is the method used in measuring",
+    "options": ["marginal utility", "ordinal utility", "cardinal utility", "total utility"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Ordinal utility theory does not assign precise numerical values to satisfaction. Instead, it ranks combinations of goods in order of preference (1st, 2nd, 3rd). This ranking approach is the foundation of indifference curve analysis developed by Hicks and Allen."
+  },
+  {
+    "id": 65,
+    "text": "If a firm is faced with an elastic supply curve, its revenue will",
+    "options": ["be supplied at a higher price", "double at a higher price", "increase by more than the percentage increase in price", "equal percentage change in price"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C. When supply is elastic, a price increase induces a proportionally LARGER increase in quantity supplied. This means total revenue (P × Q) rises by MORE than the percentage increase in price alone, because both P and Q are rising."
+  },
+  {
+    "id": 66,
+    "text": "The optimal range of output for a perfectly competitive firm is where",
+    "options": ["AC is lowest", "AVC is lowest", "MC is rising", "MC is falling"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (AVC is lowest). A perfectly competitive firm should produce where MC = MR (= Price) to maximise profit. This occurs on the rising portion of the MC curve. The shutdown point is where P = AVC minimum. Optimal long-run output is at minimum AC."
+  },
+  {
+    "id": 67,
+    "text": "A firm will experience diseconomies of scale when",
+    "options": ["there are difficulties in coordinating production", "there is shortage in labour supply", "the size of market is small", "there is an increase in the price of raw materials"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (size of market is small). Standard economics: diseconomies of scale occur when a firm grows TOO LARGE, causing management difficulties, poor communication, and coordination problems — which is option A. A small market does not cause diseconomies of scale."
+  },
+  {
+    "id": 68,
+    "text": "The law of variable proportions is applicable only",
+    "options": ["in the long-run period", "to large-scale enterprises", "to small-scale enterprises", "in the short-run period"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Per the document key, answer is A (long-run). Standard economics: The law of variable proportions (law of diminishing returns) applies ONLY in the SHORT RUN, when at least one factor of production is fixed. In the long run, all factors are variable. The document key appears to contain an error; correct is D."
+  },
+  {
+    "id": 69,
+    "text": "From the indifference curve diagram showing curves I, II, III with points U, R, S, T — the optimal point of production is",
+    "options": ["R", "T", "U", "S"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: The optimal (equilibrium) point in an indifference curve diagram is where the budget line is tangent to the highest attainable indifference curve. Point S represents this tangency — the consumer maximises utility given their budget constraint. Document key: D (S)."
+  },
+  {
+    "id": 70,
+    "text": "If real income increases while nominal income remains the same, it can be inferred that",
+    "options": ["unemployment rate has decreased", "general prices have fallen", "employment rate has risen", "general prices have risen"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Real income = Nominal income / Price level. If nominal income stays the same but real income increases, the price level must have FALLEN. Falling general prices mean each naira now buys more goods — purchasing power increases without any change in the monetary wage."
+  },
+  {
+    "id": 71,
+    "text": "One of the characteristics of oligopoly is the availability of",
+    "options": ["few sellers", "few buyers", "many sellers", "a single seller"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Oligopoly is a market structure dominated by a FEW large sellers (e.g., the Nigerian telecommunications industry — MTN, Airtel, Glo). Each firm has significant market power and must consider the reactions of competitors when making pricing or output decisions."
+  },
+  {
+    "id": 72,
+    "text": "From the cost curve diagram, the average total cost when 20 units are produced is (MC and ATC curves intersect around N15 at 20 units, AVC is below)",
+    "options": ["N20.00", "N23.00", "N13.00", "N15.00"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Reading from the cost diagram provided, at an output of 20 units, the ATC curve is at N15. This is the point where ATC is at or near its minimum, consistent with the intersection of the MC and ATC curves occurring around 20 units."
+  },
+  {
+    "id": 73,
+    "text": "When 20 units of output are produced, TC (Total Cost) will be",
+    "options": ["N360", "N300", "N460", "N400"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: TC = ATC × Q = N15 × 20 units = N300. This confirms that Total Cost at 20 units of output equals N300, using the ATC value of N15 read from the diagram at Q = 20."
+  },
+  {
+    "id": 74,
+    "text": "The profit of a monopolist can be eliminated where price equals",
+    "options": ["AFC", "MC", "AC", "AVC"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (MC). Standard economics: A monopolist earns zero economic profit (normal profit) when Price = Average Cost (AC), not MC. Where P = AC, Total Revenue = Total Cost. The document key may contain an error; the correct answer is C (AC)."
+  },
+  {
+    "id": 75,
+    "text": "Bank consolidation policy in Nigeria is a measure to increase",
+    "options": ["the capital base of banks", "employment opportunities in banks", "the number of shareholders", "the number of branches"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: The CBN's bank consolidation policy (2005–2006, led by Governor Charles Soludo) required Nigerian banks to raise their minimum capital base from N2 billion to N25 billion. The aim was to create stronger, more stable banks capable of financing large-scale development projects."
+  },
+  {
+    "id": 76,
+    "text": "An increase in the circulation of money without a corresponding increase in output will lead to",
+    "options": ["a rise in income levels", "stagflation", "inflation", "deflation"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Per the document key, answer is D (deflation). Standard Quantity Theory of Money (MV = PQ): if M increases and Q stays constant, then P MUST rise — causing INFLATION (C), not deflation. Deflation is a decrease in prices. The document key appears to contain an error."
+  },
+  {
+    "id": 77,
+    "text": "In national income accounts, an item counted as part of government spending is",
+    "options": ["salaries and wages", "pension", "scholarship", "social welfare"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Per the document key, answer is D (social welfare). In national income accounting, Government Expenditure (G) includes spending on goods and services like salaries of civil servants (A) and social infrastructure. Transfer payments like pensions, scholarships, and welfare are generally excluded from GDP as they are not payments for current production."
+  },
+  {
+    "id": 78,
+    "text": "If aggregate demand is lower than total output in an economy, national income will",
+    "options": ["be constant", "be at equilibrium", "increase", "fall"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: If aggregate demand (spending) is LESS than total output (production), firms find themselves with unsold inventories. They will cut back production and possibly lay off workers. This causes national income to FALL until a new, lower equilibrium is established."
+  },
+  {
+    "id": 79,
+    "text": "During the era of barter, money was generally in the form of",
+    "options": ["notes", "precious metals", "coins", "commodities"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Before modern money, barter involved the direct exchange of goods for goods. Commodity money (cattle, cowrie shells, salt, grains) served as a medium of exchange. These commodities had intrinsic value — you could use them whether or not they were accepted as money."
+  },
+  {
+    "id": 80,
+    "text": "A country achieves economic development when there is",
+    "options": ["an increase in military expenditure", "an increase in capacity utilization", "a sustained increase in per capita income", "an even distribution of goods and services"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Economic development refers to qualitative improvements in living standards and welfare. A sustained increase in per capita income (GDP per person over time) is the most widely used indicator of development — it means citizens are on average becoming materially better off."
+  },
+  {
+    "id": 81,
+    "text": "An indicator of growth in an economy over a period of time is the",
+    "options": ["GDP gap", "GDP at factor cost", "GDP at market price", "GDP deflator"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (GDP at market price). GDP at market price measures the total value of goods and services produced at current prices. Comparing it over time indicates whether the economy has grown. The GDP deflator is used to adjust for inflation to find real growth."
+  },
+  {
+    "id": 82,
+    "text": "A country embarks on deficit financing in order to",
+    "options": ["increase revenue", "reduce aggregate demand", "curb inflation", "stimulate investment"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Per the document key, answer is C (stimulate investment / D). Deficit financing means government spends more than it collects in revenue, borrowing the difference. This injects extra spending into the economy to stimulate investment and economic activity — especially during a recession."
+  },
+  {
+    "id": 83,
+    "text": "From the AS-AD diagram with points E, K, X, Y — the deflationary gap is defined by",
+    "options": ["X", "K", "X + K", "X - K"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: In the Keynesian cross diagram, a deflationary gap (recessionary gap) occurs when the equilibrium national income is BELOW the full employment income level. The gap X represents the shortfall between actual equilibrium and the full employment level of income."
+  },
+  {
+    "id": 84,
+    "text": "From the AS-AD diagram, what does X represent?",
+    "options": ["recessionary gap", "GNP gap", "inflationary gap", "deflationary gap"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: In the diagram, X is the horizontal distance between the equilibrium income and full employment income when aggregate demand falls short of full employment output. This represents the deflationary (or recessionary) gap — the amount by which AD needs to be increased to reach full employment."
+  },
+  {
+    "id": 85,
+    "text": "The import-substitution strategy of industrialisation is to encourage",
+    "options": ["domestic production", "large-scale production", "importation", "exportation"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Per the document key, answer is B (large-scale production). Import substitution industrialization (ISI) is a trade and economic policy that advocates replacing foreign imports with domestic production. Its primary aim is to encourage DOMESTIC production (A) of goods previously imported, building local industries."
+  },
+  {
+    "id": 86,
+    "text": "Upstream oil activities involve the",
+    "options": ["management of pollution", "marketing of refined products", "exploration of crude oil", "refining of crude oil"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: The upstream sector of the oil industry covers all activities related to the exploration, drilling, and extraction (production) of crude oil and natural gas from the ground. Downstream activities include refining and marketing. Midstream covers transportation and storage."
+  },
+  {
+    "id": 87,
+    "text": "Agricultural production in Nigeria is constrained by",
+    "options": ["ineffective use of stabilization measures", "inadequate demand", "poor implementation of policies", "balance of payments deficits"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Nigeria has formulated many agricultural policies (Operation Feed the Nation, Green Revolution, etc.) but production remains constrained mainly by POOR IMPLEMENTATION. Policies are rarely fully executed due to corruption, weak institutions, and lack of sustained political will."
+  }
+]

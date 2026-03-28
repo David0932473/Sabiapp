@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sabi - CBT Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="test-room.css">
+</head>
+<body>
+    <header class="exam-header">
+        <div class="header-left">
+            <button class="exit-btn" onclick="window.location.href='index.html'">EXIT</button>
+            <div class="divider"></div>
+            <span class="subject-indicator" id="active-sub-name">Loading...</span>
+        </div>
+        
+        <div class="header-right">
+            <div class="timer-box">
+                <div class="timer-label" id="mode-display">REAL MODE</div>
+                <div class="timer-countdown" id="timer-display">00:00</div>
+            </div>
+            <button class="top-submit-btn" onclick="endExam()">SUBMIT</button>
+        </div>
+    </header>
+
+    <nav class="subject-tabs" id="subject-tabs"></nav>
+
+    <main class="question-container">
+        <div class="q-meta">
+            <span class="q-number" id="q-number-display">Question 1</span>
+            <span class="q-points" id="progress-text">1 / 40</span>
+        </div>
+        <div class="q-text" id="q-text-display">Initialising Sabi Engine...</div>
+        <div class="options-grid" id="options-grid"></div>
+
+        <div id="explanation-box" class="explanation-box hidden">
+            <div class="exp-header"><h4>SABI EXPLANATION</h4></div>
+            <p id="explanation-text"></p>
+        </div>
+    </main>
+
+    <footer class="bottom-nav">
+        <button class="nav-btn secondary" onclick="prevQuestion()">PREV</button>
+        
+        <button class="nav-btn grid-btn" onclick="toggleGrid()">
+            <span class="grid-icon">▦</span>
+            <span id="grid-status" style="font-size: 11px;">0/0</span>
+        </button>
+
+        <button class="nav-btn primary" onclick="nextQuestion()">NEXT</button>
+    </footer>
+
+    <div id="grid-overlay" class="grid-overlay hidden" onclick="toggleGrid()"></div>
+    <div id="grid-bottom-sheet" class="grid-bottom-sheet hidden">
+        <div class="grid-sheet-header">
+            <h3>Question Map (<span id="active-sub-grid-name">Subject</span>)</h3>
+            <button class="close-grid" onclick="toggleGrid()">×</button>
+        </div>
+        <div class="grid-container" id="grid-container">
+            </div>
+    </div>
+
+    <script src="test-room.js"></script>
+</body>
+</html>

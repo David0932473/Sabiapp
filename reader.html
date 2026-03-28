@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sabi OS - Reading Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root { 
+    --bg: #000000; 
+    --surface: rgba(24, 24, 27, 0.75); /* Frosted Glass */
+    --accent: #2DD4BF; /* Mint Blue */
+    --accent-glow: rgba(45, 212, 191, 0.2);
+    --text: #F4F4F5; 
+    --text-muted: #A1A1AA;
+    --border: rgba(255, 255, 255, 0.08);
+  }
+
+  body, html { 
+    margin: 0; padding: 0; background: var(--bg); 
+    font-family: 'Outfit', sans-serif; height: 100vh; 
+    overflow: hidden; display: flex; flex-direction: column; 
+  }
+
+  /* --- PREMIUM GLASS HEADER --- */
+  .reader-header {
+    height: 60px; background: var(--surface); 
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    display: flex; align-items: center; justify-content: space-between; 
+    padding: 0 20px; border-bottom: 1px solid var(--border); 
+    z-index: 100; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .back-btn { 
+    color: var(--text-muted); text-decoration: none; 
+    font-size: 13px; font-weight: 700; text-transform: uppercase; 
+    letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;
+    transition: 0.2s ease;
+  }
+  .back-btn:active { color: var(--accent); transform: translateX(-2px); }
+
+  .doc-title {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    letter-spacing: 1px; text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+
+  /* --- ICON BUTTONS --- */
+  .action-btn { 
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
+    width: 36px; height: 36px; border-radius: 12px; 
+    cursor: pointer; display: flex; justify-content: center; align-items: center; 
+    color: var(--text); transition: all 0.2s ease;
+  }
+  .action-btn:active {
+    background: var(--accent-glow); border-color: rgba(45, 212, 191, 0.4); 
+    color: var(--accent); transform: scale(0.95);
+  }
+
+  /* --- VIEWER & IFRAME --- */
+  #viewer-container { 
+    flex: 1; position: relative; width: 100%; 
+    background: #18181B; 
+    transition: filter 0.4s ease; 
+  }
+  iframe { width: 100%; height: 100%; border: none; display: block; }
+
+  /* --- SMART NIGHT MODE (Inverts PDF colors for eye protection) --- */
+  .night-mode #viewer-container { filter: invert(90%) hue-rotate(180deg) contrast(95%); }
+  
+  /* Active state for night mode button */
+  .night-mode .night-btn { background: rgba(255, 215, 0, 0.1); border-color: rgba(255, 215, 0, 0.3); color: #FFD700; }
+
+  /* --- CINEMATIC LOADER --- */
+  #sabi-loader {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg); display: flex; flex-direction: column; 
+    justify-content: center; align-items: center; z-index: 10;
+  }
+  
+  .spinner {
+    width: 40px; height: 40px; border: 3px solid rgba(45, 212, 191, 0.1); 
+    border-top-color: var(--accent); border-radius: 50%; 
+    animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+  .loader-text { margin-top: 15px; font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; animation: pulse 1.5s infinite; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+</style>
+</head>
+
+<body class="night-mode">
+
+  <div class="reader-header">
+    <a href="#" onclick="goBack()" class="back-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Vault
+    </a>
+
+    <div class="doc-title" id="display-title">Reading Room</div>
+    
+    <div class="header-actions">
+      <a id="download-link" href="#" class="action-btn" download title="Save Offline">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      </a>
+
+      <button class="action-btn night-btn" onclick="toggleNight()" title="Toggle Light/Dark Mode">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="viewer-container">
+    <div id="sabi-loader">
+      <div class="spinner"></div>
+      <div class="loader-text">Decrypting File</div>
+    </div>
+    <iframe id="pdf-frame" src=""></iframe>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    let pdfUrl = params.get('url') || localStorage.getItem('sabi_current_pdf');
+    let sourcePage = document.referrer; 
+
+    // Smart Back Button Logic
+    function goBack() {
+        if (sourcePage.includes('ican.html')) {
+            window.location.href = 'ican.html';
+        } else {
+            window.location.href = 'library.html';
+        }
+    }
+
+    if (pdfUrl && pdfUrl !== "undefined") {
+      // Load Google Docs Viewer
+      const finalUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+      document.getElementById('pdf-frame').src = finalUrl;
+
+      // Set Download Link
+      document.getElementById('download-link').href = pdfUrl;
+
+      // Hide Loader when loaded
+      document.getElementById('pdf-frame').onload = () => {
+        document.getElementById('sabi-loader').style.display = 'none';
+      };
+    } else {
+      goBack();
+    }
+
+    // Toggle Smart Invert (Night Mode -> Light Mode)
+    function toggleNight() {
+      document.body.classList.toggle('night-mode');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+/* ==========================================
+   SABI LIBRARY STYLES
+========================================== */
+:root {
+    --bg: #000000;
+    --surface: #0A0A0A;
+    --surface-light: #121212;
+    --border: #27272A;
+    --accent: #3D8EFF;
+    --text-main: #FAFAFA;
+    --text-muted: #A1A1AA;
+}
+
+#app { padding: 24px 20px; max-width: 600px; margin: 0 auto; }
+
+/* HEADER */
+.top-bar { display: flex; align-items: center; margin-bottom: 25px; }
+.back-btn { background: var(--surface-light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; letter-spacing: 0.5px; text-transform: uppercase; }
+.back-btn:active { transform: scale(0.95); background: rgba(61, 142, 255, 0.1); color: var(--accent); border-color: rgba(61, 142, 255, 0.3); }
+
+.header-titles { margin-bottom: 25px; }
+.header-titles h1 { font-size: 34px; font-weight: 900; line-height: 1.1; letter-spacing: -1px; margin-bottom: 6px; }
+.header-titles p { font-size: 14px; color: var(--text-muted); font-weight: 500; }
+.blue-text { color: var(--accent); }
+
+/* SEARCH BAR */
+.search-wrap { position: relative; margin-bottom: 25px; z-index: 100; }
+.search-input { width: 100%; background: var(--surface-light); border: 1px solid var(--border); padding: 18px 18px 18px 50px; border-radius: 20px; color: var(--text-main); font-size: 15px; font-weight: 500; outline: none; transition: 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+.search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(61, 142, 255, 0.15), 0 4px 20px rgba(0,0,0,0.5); background: var(--surface); }
+.search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 18px; opacity: 0.7; }
+
+/* SUGGESTIONS */
+.suggestions-box { position: absolute; top: calc(100% + 10px); left: 0; width: 100%; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px); border: 1px solid var(--accent); border-radius: 16px; max-height: 260px; overflow-y: auto; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9); }
+.suggestion-pill { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; transition: 0.2s; }
+.suggestion-pill:last-child { border-bottom: none; }
+.suggestion-pill:active { background: rgba(61, 142, 255, 0.1); }
+.pill-left { display: flex; align-items: center; gap: 12px; }
+.pill-icon { font-size: 16px; }
+.pill-code { font-weight: 800; color: var(--accent); font-size: 13px; display: block; margin-bottom: 2px; }
+.pill-title { color: var(--text-main); font-size: 14px; font-weight: 600;}
+.pill-action { font-size: 10px; font-weight: 800; background: rgba(61, 142, 255, 0.1); color: var(--accent); padding: 6px 12px; border-radius: 8px; letter-spacing: 0.5px; }
+
+/* FILTER TABS */
+.filter-tabs { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 30px; padding-bottom: 5px; -ms-overflow-style: none; scrollbar-width: none; }
+.filter-tabs::-webkit-scrollbar { display: none; }
+.tab { background: var(--surface-light); border: 1px solid var(--border); padding: 12px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+.tab.active { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 5px 15px rgba(61, 142, 255, 0.2); }
+
+/* LISTINGS & EMPTY STATE */
+.section-label { font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; margin-left: 5px; }
+#empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--surface); border: 1px dashed var(--border); border-radius: 24px; margin-top: 10px; display: flex; flex-direction: column; align-items: center; }
+#empty-state .icon { font-size: 40px; margin-bottom: 15px; opacity: 0.4; }
+#empty-state p { font-size: 14px; line-height: 1.5; font-weight: 500; }
+
+.book-card { background: var(--surface-light); border: 1px solid var(--border); border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; }
+.book-card:active { transform: scale(0.97); border-color: var(--accent); background: rgba(61, 142, 255, 0.05); }
+.book-cover { width: 50px; height: 65px; background: #18181B; border: 1px solid #27272A; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 2px 4px 10px rgba(0,0,0,0.4); }
+.book-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.book-title { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+.book-author { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+/* TAGS */
+.lib-tag { align-self: flex-start; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 6px; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+.tag-noun { background: rgba(168, 85, 247, 0.15); color: #C084FC; }
+.tag-waec { background: rgba(16, 185, 129, 0.15); color: #34D399; }
+.tag-pro { background: rgba(245, 158, 11, 0.15); color: #FBBF24; }
+
+/* LOCKED STATE */
+.book-card.locked { opacity: 0.5; border-style: dashed; cursor: not-allowed; filter: grayscale(1); }
+.book-card.locked:active { transform: none; background: var(--surface-light); border-color: var(--border); }
+.tag-locked { background: rgba(113, 113, 122, 0.15); color: #A1A1AA; }
+
+/* PRO GRID */
+.sub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+.sub-card { background: var(--surface-light); border: 1px solid var(--border); border-radius: 24px; padding: 24px 20px; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; transition: 0.2s; }
+.sub-card:active { transform: scale(0.95); border-color: #FBBF24; background: rgba(245, 158, 11, 0.05); }
+.sub-icon { font-size: 32px; margin-bottom: 16px; }
+.sub-name { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
+.sub-desc { font-size: 12px; color: var(--text-muted); font-weight: 500; line-height: 1.4; }
+.hidden { display: none !important; }
+/* ICAN SPECIFIC TAG COLORS */
+.lib-tag { align-self: flex-start; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 6px; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+.tag-ats { background: rgba(59, 130, 246, 0.15); color: #60A5FA; } /* Blue for ATSWA */
+.tag-foundation { background: rgba(168, 85, 247, 0.15); color: #C084FC; } /* Purple for Foundation */
+.tag-skills { background: rgba(239, 68, 68, 0.15); color: #F87171; } /* Red for Skills */
+.tag-pro { background: rgba(245, 158, 11, 0.15); color: #FBBF24; } /* Gold for Advanced */
+
+.book-card.locked { opacity: 0.5; border-style: dashed; cursor: not-allowed; filter: grayscale(1); }

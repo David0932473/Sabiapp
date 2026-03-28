@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabi OS - Review Room</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="test-room.css"> <style>
+        .review-container { padding: 20px; max-width: 800px; margin: 0 auto; }
+        .review-item { 
+            background: #0A0A0A; border: 1px solid #27272A; 
+            padding: 20px; border-radius: 16px; margin-bottom: 25px; 
+        }
+        .review-q-text { font-size: 18px; font-weight: 600; margin-bottom: 15px; }
+        .review-meta { color: #3D8EFF; font-weight: 800; font-size: 12px; margin-bottom: 10px; text-transform: uppercase; }
+        .status-badge { 
+            display: inline-block; padding: 4px 10px; border-radius: 6px; 
+            font-size: 11px; font-weight: 800; margin-bottom: 15px;
+        }
+        .status-correct { background: rgba(16, 185, 129, 0.1); color: #10B981; }
+        .status-wrong { background: rgba(239, 68, 68, 0.1); color: #EF4444; }
+    </style>
+</head>
+<body>
+    <header class="exam-header">
+        <div class="header-left">
+            <button class="exit-btn" onclick="window.location.href='results.html'">BACK</button>
+            <div class="divider"></div>
+            <span class="subject-indicator">REVIEW ROOM</span>
+        </div>
+    </header>
+
+    <main class="review-container" id="review-list">
+        </main>
+
+    <script src="review.js"></script>
+</body>
+</html>

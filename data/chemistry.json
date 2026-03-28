@@ -1,0 +1,695 @@
+[
+  {
+    "id": 1,
+    "text": "Which chemistry paper type is given to you",
+    "options": ["Type A", "Type B", "Type C", "Type D"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: The paper clearly states PAPER TYPE: A, so the correct answer is Type A."
+  },
+  {
+    "id": 2,
+    "text": "Which of the following is an example of a mixture?",
+    "options": ["Common salt", "Blood", "Sand", "Washing soda"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Blood is a mixture because it contains different components like plasma, cells, and proteins physically combined."
+  },
+  {
+    "id": 3,
+    "text": "Calculate the percentage by mass of nitrogen in calcium trioxonitrate (V) [Ca = 40, N = 14, O = 16]",
+    "options": ["8.5%", "13.1%", "17.1%", "27.6%"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Molar mass = 40 + (2×14) + (6×16) = 164. Nitrogen mass = 28. Percentage = (28/164)×100 = 17.1%."
+  },
+  {
+    "id": 4,
+    "text": "The droplets of water observed around a bottle of milk taken out of the refrigerator is due to the fact that the",
+    "options": ["water vapour in the air around the bottle gains some energy from the bottle", "temperature of the milk drops as it loses heat into the surroundings", "saturated vapour pressure of the milk is equal to the atmospheric pressure", "water vapour in the air around the bottle loses some of its energy to the bottle"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Water vapour loses heat to the cold bottle, condenses, and forms droplets."
+  },
+  {
+    "id": 5,
+    "text": "The volume of a given gas is V cm3 at pressure P mm Hg. What is the new volume if the pressure is reduced to half at constant temperature?",
+    "options": ["4V cm3", "2V cm3", "V/2 cm3", "V cm3"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: By Boyle's law, pressure is inversely proportional to volume. Halving pressure doubles volume."
+  },
+  {
+    "id": 6,
+    "text": "Moving from left to right across a period, the general rise in the first ionization energy can be attributed to the",
+    "options": ["decrease in nuclear charge", "increase in nuclear charge", "decrease in screening effect", "increase in screening effect"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Nuclear charge increases across a period, pulling electrons closer and increasing ionization energy."
+  },
+  {
+    "id": 7,
+    "text": "How many unpaired electron(s) are there in the nitrogen sub-levels?",
+    "options": ["3", "2", "1", "none"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Nitrogen has configuration 2p3, meaning three unpaired electrons."
+  },
+  {
+    "id": 8,
+    "text": "The stability of the noble gases is due to the fact that they",
+    "options": ["have no electron in their outermost shells", "have duplet or octet electron configurations", "belong to group zero of the periodic table", "are volatile in nature"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Noble gases are stable because their outer shells are completely filled."
+  },
+  {
+    "id": 9,
+    "text": "The maximum number of electrons in the L shell of an atom is",
+    "options": ["2", "8", "18", "32"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: L shell is n=2, so max electrons = 2n^2 = 8."
+  },
+  {
+    "id": 10,
+    "text": "Elements in the same period in the periodic table have the same",
+    "options": ["number of shells", "atomic number", "chemical properties", "physical properties"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Elements in the same period have the same number of electron shells."
+  },
+  {
+    "id": 11,
+    "text": "21D + 31T → 42He + 10n + energy. The reaction illustrates",
+    "options": ["alpha decay", "artificial transmutation", "nuclear fusion", "nuclear fission"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Two light nuclei combine to form a heavier nucleus, which is fusion."
+  },
+  {
+    "id": 12,
+    "text": "A noble gas with high fog penetration used in aerodrome beacons is",
+    "options": ["krypton", "argon", "helium", "neon"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Krypton produces intense light suitable for penetrating fog."
+  },
+  {
+    "id": 13,
+    "text": "Permanent hardness of water can be removed by",
+    "options": ["filtration", "adding slaked lime", "adding caustic soda", "boiling"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Permanent hardness is removed by adding sodium carbonate or caustic soda."
+  },
+  {
+    "id": 14,
+    "text": "Substances employed as drying agents are usually",
+    "options": ["amphoteric", "hygroscopic", "efflorescent", "acidic"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Hygroscopic substances absorb moisture from the air."
+  },
+  {
+    "id": 15,
+    "text": "Calculate the solubility in mol dm-3 of 40g of CuSO4 dissolved in 100g of water at 120°C [Cu=64, S=32, O=16]",
+    "options": ["4.00", "2.50", "0.40", "0.25"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Molar mass = 160. Moles = 40/160 = 0.25. Volume approx 0.1 dm3, so concentration = 2.5 mol dm-3."
+  },
+  {
+    "id": 16,
+    "text": "Coffee stains can best be removed by",
+    "options": ["kerosene", "turpentine", "solution of borax", "ammonia solution"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Ammonia removes organic stains effectively."
+  },
+  {
+    "id": 17,
+    "text": "Carbon (II) oxide is dangerous mainly because it",
+    "options": ["injures nervous system", "competes with oxygen in blood", "competes with CO2", "causes lung cancer"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: CO binds to haemoglobin, preventing oxygen transport."
+  },
+  {
+    "id": 18,
+    "text": "The acid used to remove rust is",
+    "options": ["boric", "hydrochloric", "nitric", "sulphuric"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: HCl dissolves iron oxide (rust)."
+  },
+  {
+    "id": 19,
+    "text": "Calculate the volume of 0.5 mol dm-3 H2SO4 neutralized by 25 cm3 of 0.1 mol dm-3 NaOH",
+    "options": ["5.0 cm3", "2.5 cm3", "0.4 cm3", "0.1 cm3"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Use mole ratio 1:2. Moles NaOH = 0.0025. H2SO4 needed = 0.00125 mol. Volume = 0.00125/0.5 = 0.0025 dm3 = 2.5 cm3."
+  },
+  {
+    "id": 20,
+    "text": "The colour of methyl orange in alkaline medium is",
+    "options": ["yellow", "pink", "orange", "red"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Methyl orange is yellow in alkaline solution."
+  },
+  {
+    "id": 21,
+    "text": "Which salt is slightly soluble in water?",
+    "options": ["AgCl", "CaSO4", "Na2CO3", "PbCl2"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Calcium sulphate is only slightly soluble."
+  },
+  {
+    "id": 22,
+    "text": "6AgNO3(aq) + PH3(g) + 3H2O(l) → 6Ag(s) + H3PO3(g) + 6HNO3(aq). The reducing agent is",
+    "options": ["HNO3", "H2O", "PH3", "AgNO3"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: PH3 loses electrons (is oxidized), so it is the reducing agent."
+  },
+  {
+    "id": 23,
+    "text": "The IUPAC name of LiAlH4 is",
+    "options": ["lithiumtetrahydridoaluminate (III)", "aluminium tetrahydrido lithium", "tetrahydrido lithium aluminate", "lithium aluminium hydride"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Proper IUPAC naming gives lithium tetrahydridoaluminate (III)."
+  },
+  {
+    "id": 24,
+    "text": "Iron can be protected from corrosion by coating with",
+    "options": ["gold", "silver", "copper", "zinc"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Zinc coating (galvanization) prevents rusting."
+  },
+  {
+    "id": 25,
+    "text": "What mass of aluminium is deposited by 10A current in 1930s? [F=96500]",
+    "options": ["0.2 g", "1.8 g", "5.4 g", "14.2 g"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Q=It=19300C. M = (27×19300)/(3×96500) = 1.8g."
+  },
+  {
+    "id": 26,
+    "text": "In which is entropy change positive?",
+    "options": ["thermal dissociation of ammonium chloride", "acid-base reaction", "adding acid to water", "dissolving sodium"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Dissociation increases disorder, so entropy increases."
+  },
+  {
+    "id": 27,
+    "text": "If reaction is exothermic with great disorder, then",
+    "options": ["static", "equilibrium", "increase in free energy", "decrease in free energy"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Exothermic and increased entropy leads to decrease in Gibbs free energy."
+  },
+  {
+    "id": 28,
+    "text": "Catalyst in KClO3 decomposition works by",
+    "options": ["lowering pressure", "increasing surface area", "increasing rate", "lowering activation energy"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Catalysts lower activation energy."
+  },
+  {
+    "id": 29,
+    "text": "The graph demonstrates the effect of",
+    "options": ["surface area", "catalyst", "pressure", "concentration"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Surface area affects reaction rate as shown in such graphs."
+  },
+  {
+    "id": 30,
+    "text": "For exothermic reaction, increasing temperature causes equilibrium constant to",
+    "options": ["remain unchanged", "become zero", "decrease", "increase"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Increasing temperature shifts equilibrium backward, reducing K."
+  },
+  {
+    "id": 31,
+    "text": "Brown ring test confirms presence of",
+    "options": ["CO", "Cl-", "SO4", "NO3-"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Brown ring test is for nitrate ions."
+  },
+  {
+    "id": 32,
+    "text": "In the diagram, the gas produced is",
+    "options": ["NO", "NO2", "N2O", "N2O4"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Nitric oxide (NO) is produced initially."
+  },
+  {
+    "id": 33,
+    "text": "Which is used in rocket fuels?",
+    "options": ["HNO3", "CH3COOH", "H2SO4", "HCl"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Nitric acid is used as an oxidizer in rocket fuels."
+  },
+  {
+    "id": 34,
+    "text": "Purpose of asbestos is to",
+    "options": ["absorb impurities", "catalyse reaction", "solidify gas", "dry gas"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Asbestos acts as a support for catalysts."
+  },
+  {
+    "id": 35,
+    "text": "Common constituent of bronze and solder is",
+    "options": ["lead", "silver", "copper", "tin"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Tin is common in both alloys."
+  },
+  {
+    "id": 36,
+    "text": "Rusting produces",
+    "options": ["hydrated iron (III) oxide", "anhydrous iron (III) oxide", "iron (II) oxide", "hydrated iron (II) oxide"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Rust is hydrated Fe2O3."
+  },
+  {
+    "id": 37,
+    "text": "Orange-red flame indicates presence of",
+    "options": ["Na+", "Ca2+", "Fe3+", "Fe2+"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Calcium gives brick-red/orange flame."
+  },
+  {
+    "id": 38,
+    "text": "Stainless steel is used for making",
+    "options": ["magnets", "tools", "coins and medals", "clock parts"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Stainless steel is corrosion-resistant and used in coins."
+  },
+  {
+    "id": 39,
+    "text": "Residual petroleum solids are used as",
+    "options": ["coating pipes", "cracking raw material", "tractor fuel", "jet fuel"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Bitumen is used for coating and roads."
+  },
+  {
+    "id": 40,
+    "text": "The IUPAC name of the compound is",
+    "options": ["4-ethyloctane", "5-ethyloctane", "5-propylheptane", "3-propylheptane"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Correct numbering gives 3-propylheptane."
+  },
+  {
+    "id": 41,
+    "text": "Fuel used in miners' lamp is",
+    "options": ["ethanal", "ethyne", "ethene", "ethane"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Ethyne (acetylene) burns brightly."
+  },
+  {
+    "id": 42,
+    "text": "Most soluble organic compound in water is",
+    "options": ["CH3COOH", "C2H2", "C2H4", "CH3COOC2H5"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Acetic acid forms hydrogen bonds with water."
+  },
+  {
+    "id": 43,
+    "text": "Benzene reacts with hydrogen to form",
+    "options": ["xylene", "toluene", "cyclopentane", "cyclohexane"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Hydrogenation converts benzene to cyclohexane."
+  },
+  {
+    "id": 44,
+    "text": "Gas used to ripen fruit is",
+    "options": ["ethene", "ethanol", "ethyne", "ethane"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Ethene (ethylene) promotes ripening."
+  },
+  {
+    "id": 45,
+    "text": "Final product of methane chlorination is",
+    "options": ["trichloromethane", "dichloromethane", "tetrachloromethane", "chloromethane"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Full substitution gives CCl4."
+  },
+  {
+    "id": 46,
+    "text": "Correct order of increasing boiling point",
+    "options": ["C3H7OH → C4H10 → C7H16", "C4H10 → C7H16 → C3H7OH", "C7H16 → C3H7OH → C4H10", "C4H10 → C3H7OH → C7H16"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Alcohol has H-bonding, so highest. Alkane increases with chain length."
+  },
+  {
+    "id": 47,
+    "text": "Major use of alkanes is",
+    "options": ["fuel", "hydrogenation", "textiles", "plastics"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Alkanes are widely used as fuels."
+  },
+  {
+    "id": 48,
+    "text": "Haloalkanes used in dry cleaning are",
+    "options": ["trichloromethane and tetrachloromethane", "chloroethene and dichloroethene", "trichloroethene and tetrachloroethene", "chloroethane and dichloroethane"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: These are common organic solvents for cleaning."
+  },
+  {
+    "id": 49,
+    "text": "Hydrocarbon Y that does not decolorize bromine water is",
+    "options": ["benzene", "alkynes", "alkenes", "alkanes"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Alkanes are saturated and do not react with bromine water."
+  },
+  {
+    "id": 50,
+    "text": "Compound used as anaesthetic is",
+    "options": ["CCl4", "CHCl3", "CH2Cl2", "CH3Cl"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Chloroform (CHCl3) was historically used as an anaesthetic."
+  },
+  {
+    "id": 52,
+    "text": "What is the concentration of a solution containing 2g of NaOH in 100cm3 of solution? [Na = 23, O = 16, H = 1]",
+    "options": ["0.40 mol dm-3", "0.50 mol dm-3", "0.05 mol dm-3", "0.30 mol dm-3"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Molar mass = 40. Moles = 2/40 = 0.05. Volume = 0.1 dm3. Concentration = 0.05/0.1 = 0.50 mol dm-3."
+  },
+  {
+    "id": 53,
+    "text": "Which of the following properties is NOT peculiar to matter?",
+    "options": ["kinetic energy increases from solid to gas", "random motion increases from liquid to gas", "orderliness increases from gas to liquid", "random motion increases from gas to solid"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Random motion decreases when going from gas to solid, not increases."
+  },
+  {
+    "id": 54,
+    "text": "The principle of column chromatography is based on the ability of the constituents to",
+    "options": ["move at different speeds in the column", "dissolve in each other", "react with solvent", "react with each other"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Components move at different speeds due to different adsorption properties."
+  },
+  {
+    "id": 55,
+    "text": "From the diagram, an ideal gas is represented by",
+    "options": ["M", "N", "K", "L"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: The ideal gas follows straight line behavior; curve N fits ideal conditions."
+  },
+  {
+    "id": 56,
+    "text": "Which statement is correct about the periodic table?",
+    "options": ["non-metallic properties decrease across period", "valence electrons increase across period", "same group have same shells", "same period have same valence electrons"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Across a period, valence electrons increase progressively."
+  },
+  {
+    "id": 57,
+    "text": "Relative atomic mass of lithium with 90% Li-7 and 10% Li-6 is",
+    "options": ["6.9", "7.1", "6.2", "6.8"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: RAM = (0.9×7) + (0.1×6) = 6.9."
+  },
+  {
+    "id": 58,
+    "text": "An isotope with atomic number 15 and mass number 31 has how many protons?",
+    "options": ["16", "15", "46", "31"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Atomic number equals number of protons."
+  },
+  {
+    "id": 59,
+    "text": "The molecular lattice of iodine is held together by",
+    "options": ["dative bond", "metallic bond", "hydrogen bond", "van der Waals forces"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Iodine molecules are held by weak intermolecular forces."
+  },
+  {
+    "id": 60,
+    "text": "Arrangement of particles in crystal lattices can be studied using",
+    "options": ["X-rays", "gamma rays", "alpha rays", "beta rays"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: X-ray diffraction reveals crystal structure."
+  },
+  {
+    "id": 61,
+    "text": "From the diagram, amount of solute deposited when cooled is",
+    "options": ["0.10 mole", "0.20 mole", "0.01 mole", "0.02 mole"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: From solubility difference on cooling, 0.20 mole crystallizes."
+  },
+  {
+    "id": 62,
+    "text": "Importance of sodium aluminate in water treatment is to",
+    "options": ["cause coagulation", "neutralize acidity", "prevent goitre", "kill germs"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: It coagulates suspended particles."
+  },
+  {
+    "id": 63,
+    "text": "Bond between elements with atomic numbers 12 and 17 is",
+    "options": ["electrovalent", "metallic", "covalent", "dative"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Magnesium (12) and chlorine (17) form ionic bond."
+  },
+  {
+    "id": 64,
+    "text": "Hardness of water is due to presence of",
+    "options": ["Ca(OH)2", "CaCO3 or CaSO4", "NaOH", "CaCl2"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Calcium and magnesium salts cause hardness."
+  },
+  {
+    "id": 65,
+    "text": "Suitable solvent for iodine and naphthalene is",
+    "options": ["carbon disulphide", "ethanol", "water", "benzene"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Ethanol dissolves both organic substances well."
+  },
+  {
+    "id": 66,
+    "text": "Noble gas commonly found in atmosphere is",
+    "options": ["xenon", "neon", "helium", "argon"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Argon is about 1% of air."
+  },
+  {
+    "id": 67,
+    "text": "For N2O4 ⇌ 2NO2, increasing temperature will",
+    "options": ["increase equilibrium constant", "decrease equilibrium constant", "increase reactant", "shift left"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Endothermic forward reaction increases with temperature."
+  },
+  {
+    "id": 68,
+    "text": "CH3COO- is",
+    "options": ["conjugate base", "acid", "base", "conjugate acid"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: It is the conjugate base of acetic acid."
+  },
+  {
+    "id": 69,
+    "text": "Number of cations from potassium aluminium sulphate is",
+    "options": ["3", "4", "1", "2"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: KAl(SO4)2 gives K+ and Al3+ = 2 cations."
+  },
+  {
+    "id": 70,
+    "text": "Which is NOT an alkali?",
+    "options": ["NH3", "Mg(OH)2", "Ca(OH)2", "NaOH"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: NH3 is a weak base but not an alkali (not hydroxide)."
+  },
+  {
+    "id": 71,
+    "text": "Effect of thermal pollution is",
+    "options": ["water volume reduces", "waste increases", "NOx increases", "oxygen reduces"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Higher temperature lowers dissolved oxygen."
+  },
+  {
+    "id": 72,
+    "text": "Which is deliquescent?",
+    "options": ["Na2CO3", "CaCl2", "CuO", "Na2CO3.10H2O"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: CaCl2 absorbs moisture and dissolves."
+  },
+  {
+    "id": 73,
+    "text": "Reaction where hydration energy > lattice energy is",
+    "options": ["spontaneous", "endothermic", "exothermic", "reversible"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: More energy released during hydration, so exothermic."
+  },
+  {
+    "id": 74,
+    "text": "Function of zinc electrode is to",
+    "options": ["undergo reduction", "be positive electrode", "produce electrons", "use electrons"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Zinc oxidizes and releases electrons."
+  },
+  {
+    "id": 75,
+    "text": "Factor influencing rate of CH4 + Cl2 reaction is",
+    "options": ["catalyst", "temperature", "concentration", "light"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Reaction requires UV light for initiation."
+  },
+  {
+    "id": 76,
+    "text": "Condition for corrosion is presence of",
+    "options": ["water and CO2", "water CO2 oxygen", "oxygen CO2", "water and oxygen"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Both oxygen and moisture are needed."
+  },
+  {
+    "id": 77,
+    "text": "In the diagram, X is",
+    "options": ["enthalpy", "enthalpy change", "activation energy", "activated complex"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: X represents difference between reactants and products."
+  },
+  {
+    "id": 78,
+    "text": "Diagram shows decrease in",
+    "options": ["concentration", "temperature", "surface area", "pressure"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Lower concentration reduces rate as shown."
+  },
+  {
+    "id": 79,
+    "text": "In MnO4- reaction, Y is",
+    "options": ["5H+", "4H+", "10H+", "8H+"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Balanced redox equation requires 5H+ ions."
+  },
+  {
+    "id": 80,
+    "text": "Faraday's first law is",
+    "options": ["M = Q/E", "M = EQ", "M = Q", "M = E/Q"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Mass deposited is proportional to charge: M = EQ."
+  },
+  {
+    "id": 81,
+    "text": "Impurities in chlorine preparation are removed by",
+    "options": ["water", "NH3", "H2SO4", "HCl"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Water removes soluble impurities like HCl."
+  },
+  {
+    "id": 82,
+    "text": "Impurities like carbon in iron",
+    "options": ["increase strength", "make ductile", "increase melting point", "lower melting point"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Impurities disrupt structure, lowering melting point."
+  },
+  {
+    "id": 83,
+    "text": "Brown solution with HNO3 indicates presence of",
+    "options": ["Pb2+", "Cu2+", "Fe3+", "Fe2+"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Fe2+ oxidizes to Fe3+ giving brown color."
+  },
+  {
+    "id": 84,
+    "text": "Bleaching action of chlorine depends on",
+    "options": ["HCl", "water", "air", "oxygen"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Chlorine reacts with water to release nascent oxygen."
+  },
+  {
+    "id": 85,
+    "text": "Dried oxygen is collected over",
+    "options": ["HCl", "mercury", "CaCl2", "H2SO4"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Concentrated H2SO4 dries gases effectively."
+  },
+  {
+    "id": 86,
+    "text": "Property of H2SO4 used to prepare HNO3 is",
+    "options": ["boiling point", "density", "oxidizing", "dehydrating"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: It acts as strong oxidizing agent."
+  },
+  {
+    "id": 87,
+    "text": "Bronze preferred to copper because",
+    "options": ["stronger", "low temp resistance", "lighter", "low strength"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Bronze is lighter and more durable."
+  },
+  {
+    "id": 88,
+    "text": "Baking powder component that causes rising is",
+    "options": ["NaHCO3", "NaOH", "Na2CO3", "NaCl"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Sodium bicarbonate releases CO2 gas."
+  },
+  {
+    "id": 89,
+    "text": "Which compound is gaseous fuel?",
+    "options": ["alkyne", "alcohol", "acid", "alkane"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Alkanes like methane are fuels."
+  },
+  {
+    "id": 90,
+    "text": "Ability of carbon to form chains is",
+    "options": ["alkylation", "acylation", "catenation", "carbonation"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Carbon bonds with itself to form chains."
+  },
+  {
+    "id": 91,
+    "text": "Compound that polymerizes is",
+    "options": ["C2H4", "C2H5COOH", "C2H6", "C2H5OH"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Ethene undergoes addition polymerization."
+  },
+  {
+    "id": 92,
+    "text": "Compound exhibits",
+    "options": ["geometric isomerism", "optical isomerism", "structural isomerism", "positional isomerism"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Structure indicates chiral center, so optical isomerism."
+  },
+  {
+    "id": 93,
+    "text": "Empirical CH2O with vapour density 45 has molecular formula",
+    "options": ["C3H7OH", "C2H5OH", "C3H6O3", "C2H4O2"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Molar mass = 90. Empirical mass = 30. Factor = 3."
+  },
+  {
+    "id": 94,
+    "text": "C6H12O6 → ethanol reaction produces",
+    "options": ["propanol", "butanol", "methanol", "ethanol"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: This is fermentation producing ethanol."
+  },
+  {
+    "id": 95,
+    "text": "Number of isomers of C4H10 is",
+    "options": ["3", "4", "1", "2"],
+    "answer": 3,
+    "explanation": "Sabi Explanation: Butane has two isomers: n-butane and isobutane."
+  },
+  {
+    "id": 96,
+    "text": "Functional groups present are",
+    "options": ["alkene and halo", "hydroxyl and chloro", "alkene and chloro", "hydroxyl and halo"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Structure shows OH and Cl groups."
+  },
+  {
+    "id": 97,
+    "text": "Primary amine is",
+    "options": ["A", "B", "C", "D"],
+    "answer": 1,
+    "explanation": "Sabi Explanation: Primary amine has -NH2 attached to one alkyl group."
+  },
+  {
+    "id": 98,
+    "text": "Compound forming brick red precipitate is",
+    "options": ["alkanol", "alkane", "alkanol", "alkanone"],
+    "answer": 2,
+    "explanation": "Sabi Explanation: Aldehydes reduce Fehling’s solution."
+  },
+  {
+    "id": 99,
+    "text": "2-methylpropane and butane",
+    "options": ["same series", "same boiling point", "different carbons", "same properties"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Both are alkanes (same homologous series)."
+  },
+  {
+    "id": 100,
+    "text": "CH3COOH + C2H5OH → CH3COOC2H5 + H2O is",
+    "options": ["esterification", "condensation", "saponification", "neutralization"],
+    "answer": 0,
+    "explanation": "Sabi Explanation: Acid + alcohol forms ester."
+  }
+]
