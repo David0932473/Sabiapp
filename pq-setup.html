@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabi OS - ICAN Vault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --card-bg: #0A0A0A;
+            --icon-bg: #161616;
+            --border: #1A1A1A;
+            --text-main: #FFFFFF;
+            --text-muted: #8E8E93;
+            --sabi-blue: #3B82F6;
+            
+            /* Sabi Badges */
+            --badge-ats: rgba(16, 185, 129, 0.15);
+            --text-ats: #10B981;
+            --badge-skills: rgba(6, 182, 212, 0.15);
+            --text-skills: #06B6D4;
+            --badge-adv: rgba(245, 158, 11, 0.15);
+            --text-adv: #F59E0B;
+        }
+
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
+        body {
+            margin: 0; background: var(--bg); color: var(--text-main);
+            font-family: 'Inter', sans-serif; display: flex; justify-content: center;
+        }
+        
+        .app-container {
+            width: 100%; max-width: 500px; min-height: 100vh; padding: 20px;
+            display: flex; flex-direction: column; position: relative;
+        }
+        
+        /* HEADER */
+        .header { margin-bottom: 20px; margin-top: 10px; }
+        .header h1 { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+        .header h1 span { color: var(--sabi-blue); }
+        .header p { color: var(--text-muted); font-size: 13px; font-weight: 500; margin: 4px 0 0 0; }
+
+        /* SEARCH BAR */
+        .search-box {
+            background: #0A0A0A; border: 1px solid var(--sabi-blue); border-radius: 14px;
+            padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 25px;
+        }
+        .search-box input {
+            background: transparent; border: none; color: #fff; font-size: 15px; width: 100%;
+            outline: none; font-family: 'Inter', sans-serif; font-weight: 500;
+        }
+        .search-box input::placeholder { color: #555; }
+
+        /* LIST SECTIONS */
+        .section-title { 
+            font-size: 11px; color: var(--text-muted); font-weight: 800; 
+            letter-spacing: 1px; margin: 25px 0 15px 0; text-transform: uppercase;
+        }
+
+        /* SUBJECT CARDS */
+        .card {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px;
+            padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
+            cursor: pointer; transition: 0.1s;
+        }
+        .card:active { transform: scale(0.98); background: #111; }
+        
+        .card-icon {
+            width: 46px; height: 46px; background: var(--icon-bg); border-radius: 12px;
+            display: flex; justify-content: center; align-items: center; font-size: 22px; 
+        }
+        
+        .card-info { flex: 1; }
+        
+        .badge {
+            display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 800;
+            font-family: 'Poppins', sans-serif; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge.ats { background: var(--badge-ats); color: var(--text-ats); }
+        .badge.skills { background: var(--badge-skills); color: var(--text-skills); }
+        .badge.adv { background: var(--badge-adv); color: var(--text-adv); }
+
+        .card-title { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; margin: 0 0 3px 0; color: #fff; }
+        .card-subtitle { font-size: 12px; color: var(--text-muted); margin: 0; font-weight: 500;}
+
+        /* BOTTOM SHEET MODAL (TEST CONFIG) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85);
+            display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(3px);
+        }
+        .bottom-sheet {
+            background: #0A0A0A; width: 100%; max-width: 500px; border-radius: 28px 28px 0 0;
+            padding: 30px 25px; border-top: 1px solid #1F1F1F; animation: slideUp 0.25s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .sheet-title { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; margin: 0; }
+        .sheet-subtitle { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+        .close-btn { background: #161616; border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-weight: bold; cursor: pointer; display:flex; justify-content:center; align-items:center;}
+
+        /* PREMIUM TOUCH SELECTORS (Replaces Radio/Toggles) */
+        .part-selector {
+            background: #161616; border: 1px solid var(--border); border-radius: 16px;
+            padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between;
+            align-items: center; cursor: pointer; transition: 0.2s;
+        }
+        .part-selector.active {
+            background: rgba(59, 130, 246, 0.1); border-color: var(--sabi-blue);
+        }
+        .part-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 600; color: #fff; }
+        .part-info p { margin: 0; font-size: 12px; color: var(--text-muted); }
+        
+        .check-circle {
+            width: 22px; height: 22px; border-radius: 50%; border: 2px solid #333;
+            display: flex; justify-content: center; align-items: center; transition: 0.2s;
+        }
+        .part-selector.active .check-circle {
+            background: var(--sabi-blue); border-color: var(--sabi-blue);
+        }
+        .part-selector.active .check-circle::after {
+            content: "✓"; color: #fff; font-size: 12px; font-weight: 900;
+        }
+
+        .launch-btn {
+            width: 100%; padding: 18px; background: #fff; color: #000; border: none;
+            border-radius: 16px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 15px;
+        }
+        .launch-btn:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1>ICAN <span>Vault</span></h1>
+            <p>Official ATSWA & Professional Study Questionss</p>
+        </div>
+
+        <div class="search-box">
+            <span style="font-size: 18px;">🔍</span>
+            <input type="text" placeholder="Search subjects...">
+        </div>
+
+        <div class="card" onclick="openConfig('ATS 1', 'Basic Accounting')">
+            <div class="card-icon">💸</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 1</span>
+                <h3 class="card-title">Basic Accounting</h3>
+                <p class="card-subtitle">Pratice Ican Questions
+                </p>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('ATS 1', 'Economics')">
+            <div class="card-icon">📊</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 1</span>
+                <h3 class="card-title">Economics</h3>
+                <p class="card-subtitle">Pratice Ican Questions</p>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('ATS 1', 'Business Law')">
+            <div class="card-icon">📘</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 1</span>
+                <h3 class="card-title">Business Law</h3>
+                <p class="card-subtitle">Pratice Ican Questions</p>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('ATS 1', 'Communication Skills')">
+            <div class="card-icon">🗣️</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 1</span>
+                <h3 class="card-title">Communication Skills</h3>
+                <p class="card-subtitle">Pratice Ican Questions</p>
+            </div>
+        </div>
+
+        <div class="section-title">ATSWA - PART II</div>
+        
+        <div class="card" onclick="openConfig('ATS 2', 'Public Sector Accounting')">
+            <div class="card-icon">🏛️</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 2</span>
+                <h3 class="card-title">Public Sector Accounting</h3>
+                <p class="card-subtitle">Pratice Ican Questions</p>
+            </div>
+        </div>
+                <div class="card" onclick="openConfig('ATS 1', 'Basic Accounting')">
+            <div class="card-icon">💸</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 2</span>
+                <h3 class="card-title">Basic Accounting</h3>
+                <p class="card-subtitle">Pratice Ican Questions
+                </p>
+            </div>
+        </div>
+
+
+        <div class="section-title">PROFESSIONAL - SKILLS LEVEL</div>
+
+        <div class="card" onclick="openConfig('SKILLS', 'Financial Reporting')">
+            <div class="card-icon">💰</div>
+            <div class="card-info">
+                <span class="badge skills">SKILLS</span>
+                <h3 class="card-title">Financial Reporting</h3>
+                <p class="card-subtitle">Official ICAN Questions</p>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('SKILLS', 'Taxation')">
+            <div class="card-icon">📝</div>
+            <div class="card-info">
+                <span class="badge skills">SKILLS</span>
+                <h3 class="card-title">Taxation</h3>
+                <p class="card-subtitle">Official ICAN Questions</p>
+            </div>
+        </div>
+
+        <div class="section-title">PROFESSIONAL - ADVANCED LEVEL</div>
+
+        <div class="card" onclick="openConfig('ADVANCED', 'Strategic Financial Mgt')">
+            <div class="card-icon">💼</div>
+            <div class="card-info">
+                <span class="badge adv">ADVANCED</span>
+                <h3 class="card-title">Strategic Financial Managemsnft.</h3>
+                <p class="card-subtitle">Pratice Ican Questions
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="config-modal" class="modal-overlay" onclick="closeOnOutsideClick(event)">
+        <div class="bottom-sheet">
+            <div class="sheet-header">
+                <div>
+                    <h3 class="sheet-title" id="modal-subject-title">Subject</h3>
+                    <p class="sheet-subtitle">Configure your exam engine</p>
+                </div>
+                <button class="close-btn" onclick="closeConfig()">✕</button>
+            </div>
+            
+            <div class="part-selector active" id="sel-mcq" onclick="togglePart('sel-mcq')">
+                <div class="part-info">
+                    <h4>Part I (MCQ)</h4>
+                    <p>Multiple Choice Questions</p>
+                </div>
+                <div class="check-circle"></div>
+            </div>
+
+            <div class="part-selector active" id="sel-saq" onclick="togglePart('sel-saq')">
+                <div class="part-info">
+                    <h4>Part II (SAQ)</h4>
+                    <p>Short Answer Questions</p>
+                </div>
+                <div class="check-circle"></div>
+            </div>
+
+            <div class="part-selector active" id="sel-essay" onclick="togglePart('sel-essay')">
+                <div class="part-info">
+                    <h4>Section B (Theory)</h4>
+                    <p>Essay and Calculation Scenarios</p>
+                </div>
+                <div class="check-circle"></div>
+            </div>
+
+            <button class="launch-btn" onclick="launchArena()">Enter Test Room</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedLevel = '';
+        let selectedSubject = '';
+
+        function openConfig(level, subject) {
+            selectedLevel = level;
+            selectedSubject = subject;
+            document.getElementById('modal-subject-title').innerText = subject;
+            document.getElementById('config-modal').style.display = 'flex';
+        }
+
+        function closeConfig() {
+            document.getElementById('config-modal').style.display = 'none';
+        }
+
+        function closeOnOutsideClick(event) {
+            if(event.target.id === 'config-modal') closeConfig();
+        }
+
+        // Handles the large tappable blocks
+        function togglePart(id) {
+            document.getElementById(id).classList.toggle('active');
+        }
+
+        function launchArena() {
+            const mcq = document.getElementById('sel-mcq').classList.contains('active');
+            const saq = document.getElementById('sel-saq').classList.contains('active');
+            const essay = document.getElementById('sel-essay').classList.contains('active');
+
+            if(!mcq && !saq && !essay) {
+                alert("Boss, you must select at least one section to proceed.");
+                return;
+            }
+
+            // Sends data to the Arena Room
+            const url = `ican-pq.html?level=${encodeURIComponent(selectedLevel)}&subject=${encodeURIComponent(selectedSubject)}&mcq=${mcq}&saq=${saq}&essay=${essay}`;
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,631 @@
+{
+  "MCQ": [
+    { "_year_header": "--- MARCH 2023 EXAMINATIONS ---" },
+    {
+      "text": "Which of the following is NOT a component of microeconomic theories?",
+      "options": ["A. The theory of consumer behaviour", "B. Production and cost theory", "C. National income accounting", "D. Theory of demand and supply", "E. Market structure"],
+      "answer": 2,
+      "insight": "National income accounting is a core component of Macroeconomics, which studies the economy as a whole, rather than individual units or markets[cite: 4157, 4163, 4557]."
+    },
+    {
+      "text": "Which of the following describes economic concept of 'what ought to be'?",
+      "options": ["A. Normative economics", "B. Behavioural economics", "C. Positive economics", "D. Conceptual economics", "E. Theoretical economics"],
+      "answer": 0,
+      "insight": "Normative economics involves value judgments and opinions about what the economy should be like, whereas positive economics deals with objective facts[cite: 4168, 4170, 4559]."
+    },
+    {
+      "text": "If the value of income elasticity of demand for a good is negative, then the good is a/an",
+      "options": ["A. Substitute good", "B. Inferior good", "C. Normal good", "D. Consumer good", "E. Complementary good"],
+      "answer": 1,
+      "insight": "Inferior goods have negative income elasticity because as consumers' income rises, they buy less of these goods in favor of higher-quality alternatives[cite: 4179, 4183, 4561]."
+    },
+    {
+      "text": "If quantity demanded of a product decreases from 1,000 to 900 units due to a rise in its price from 15.00 to 20.00, then the coefficient of price elasticity of demand is",
+      "options": ["A. 3.00", "B. 2.71", "C. 0.37", "D. 0.33", "E. 0.30"],
+      "answer": 4,
+      "insight": "Calculation: % Change in Q = (100/1000) = 10%. % Change in P = (5/15) = 33.33%. Elasticity = 10% / 33.33% = 0.30[cite: 4191, 4198, 4563]."
+    },
+    {
+      "text": "A vertical demand curve illustrating the demand condition of a commodity means that demand is",
+      "options": ["A. Price elastic", "B. Price inelastic", "C. Unit price elastic", "D. Perfectly price elastic", "E. Perfectly price inelastic"],
+      "answer": 4,
+      "insight": "A vertical demand curve signifies that the quantity demanded remains exactly the same regardless of changes in price, which is perfectly price inelastic[cite: 4201, 4209, 4565]."
+    },
+    {
+      "text": "Increase in the price of a Giffen good causes its demand to",
+      "options": ["A. Increase", "B. Decrease", "C. Remains constant", "D. Become unstable", "E. Shrink"],
+      "answer": 0,
+      "insight": "Giffen goods are rare exceptions to the law of demand where a price increase leads to an increase in demand because the income effect outweighs the substitution effect[cite: 4211, 4213, 4567]."
+    },
+    {
+      "text": "The payments of interest on borrowed capital and charges on plant and machinery are examples of",
+      "options": ["A. Variable", "B. Sunk", "C. Fixed", "D. Implicit", "E. Real"],
+      "answer": 2,
+      "insight": "Fixed costs are those that do not change with the level of output, such as interest on loans and equipment charges[cite: 4221, 4228, 4569]."
+    },
+    {
+      "text": "At the output levels when the total product is rising, the",
+      "options": ["A. Average product is zero", "B. Marginal product is rising but greater than average product", "C. Average product is rising but greater than marginal product", "D. Marginal product is negative", "E. Average product is falling but greater than marginal product"],
+      "answer": 1,
+      "insight": "When total product is rising at an increasing rate, marginal product is also rising and stays above the average product curve[cite: 4237, 4238, 4571]."
+    },
+    {
+      "text": "Which of the following is NOT an advantage of division of labour?",
+      "options": ["A. Skills development by workers", "B. Increase in productivity", "C. Saving of time", "D. Monotony of work", "E. Increase use of machines and equipment"],
+      "answer": 3,
+      "insight": "Monotony (boredom from repetitive tasks) is a major *disadvantage* of division of labour, as it can lead to worker dissatisfaction[cite: 4242, 4249, 4573]."
+    },
+    {
+      "text": "Which of the following is NOT true about short-run cost curves?",
+      "options": ["A. Total fixed cost curve is horizontal and parallel to the output axis", "B. The average cost curve is U-shaped", "C. At minimum point of average cost curve, it is equal to marginal cost curve", "D. When average variable cost is rising, it is less than the marginal cost curve", "E. When marginal cost curve is falling, it is greater than average variable cost curve"],
+      "answer": 4,
+      "insight": "When marginal cost is falling, it is actually *below* (less than) the average variable cost curve until they intersect at the AVC's minimum point[cite: 4251, 4258, 4575]."
+    },
+    {
+      "text": "The demand curve of monopolist is downward sloping because",
+      "options": ["A. At higher price, consumer demand higher quantity", "B. Quantity and price are equal", "C. At lower price, consumer demand lower quantity", "D. At higher price, consumer demand is infinity", "E. At lower price, consumer demand higher quantity"],
+      "answer": 4,
+      "insight": "A monopolist face the entire market demand curve, which follows the law of demand: as price falls, quantity demanded increases[cite: 4260, 4268, 4577]."
+    },
+    {
+      "text": "Which of the following best describe the condition for shutting down firm's operation?",
+      "options": ["A. Average cost greater than price", "B. Marginal cost greater than price", "C. Average variable cost greater than price", "D. Total cost greater than price", "E. Average fixed cost greater than price"],
+      "answer": 2,
+      "insight": "A firm will shut down in the short run if the price it receives does not even cover its Average Variable Cost (AVC)[cite: 4269, 4274, 4580]."
+    },
+    {
+      "text": "The West African banking industry is characterised by market structure",
+      "options": ["A. Oligopoly", "B. Monopoly", "C. Monopolistic competitive", "D. Perfect competitive", "E. Duopoly"],
+      "answer": 0,
+      "insight": "The banking sector in West Africa is dominated by a few large firms, which is the defining characteristic of an oligopoly[cite: 4279, 4280, 4582]."
+    },
+    {
+      "text": "Based on provided data (GDP=L$100k, Payments to foreigners=L$20k, Receipts from abroad=L$25k), the Gross National Product is equal to",
+      "options": ["A. L$40,000", "B. L$50,000", "C. L$105,000", "D. L$125,000", "E. L$150,000"],
+      "answer": 2,
+      "insight": "GNP = GDP + Net Factor Income from Abroad. Calculation: 100,000 + (25,000 - 20,000) = L$105,000[cite: 4291, 4298, 4584]."
+    },
+    {
+      "text": "Using the previous data (GNP=L$105k) and Depreciation of L$40k, the value of Net National product is",
+      "options": ["A. L$45,000", "B. L$60,000", "C. L$65,000", "D. L$75,000", "E. L$195,000"],
+      "answer": 2,
+      "insight": "NNP = GNP - Depreciation. Calculation: 105,000 - 40,000 = L$65,000[cite: 4291, 4303, 4309, 4586]."
+    },
+    {
+      "text": "The multiplier equation is given as K = 1 / (1-m). If MPS = 0.25, what is the value of K?",
+      "options": ["A. 1", "B. 2", "C. 2.5", "D. 4", "E. 25"],
+      "answer": 3,
+      "insight": "The multiplier K is the reciprocal of the Marginal Propensity to Save (MPS). Calculation: 1 / 0.25 = 4[cite: 4315, 4322, 4588]."
+    },
+    {
+      "text": "Financial institutions which intermediate funds between the Central Bank, licensed banks and other financial institutions is known as",
+      "options": ["A. Finance companies", "B. Discount houses", "C. Insurance companies", "D. Money market", "E. Development banks"],
+      "answer": 1,
+      "insight": "Discount houses act as intermediaries in the money market, dealing in short-term instruments and managing liquidity between the central bank and commercial banks[cite: 4326, 4329, 4590]."
+    },
+    {
+      "text": "One of the primary roles of a development bank is the provision of loans to",
+      "options": ["A. Estate agents", "B. Manufacturing sectors", "C. Transporters", "D. Educationist sector", "E. Petty traders"],
+      "answer": 1,
+      "insight": "Development banks are established to provide long-term financing to key economic sectors like manufacturing and agriculture[cite: 4336, 4340, 4592]."
+    },
+    {
+      "text": "Long term loans can be secured from",
+      "options": ["A. Commercial banks", "B. Discount houses", "C. Development banks", "D. Acceptance houses", "E. Cooperative societies"],
+      "answer": 2,
+      "insight": "Unlike commercial banks which focus on short and medium-term loans, development banks specialize in long-term capital projects[cite: 4347, 4353, 4594]."
+    },
+    {
+      "text": "The following are classified as Direct Taxes, EXCEPT",
+      "options": ["A. Capital gain tax", "B. Value-Added-Tax", "C. Company tax", "D. Capital transfer tax", "E. Petroleum profit tax"],
+      "answer": 1,
+      "insight": "VAT is an indirect tax because it is levied on goods and services, and the burden is shifted to the final consumer[cite: 4357, 4360, 4596]."
+    },
+    {
+      "text": "A document containing statements of intended expenditure and expected revenue of the government for a particular year is",
+      "options": ["A. Expenditure", "B. Public debt", "C. Fiscal policy", "D. White paper", "E. Budget"],
+      "answer": 4,
+      "insight": "The national budget is the formal annual financial statement of the government's estimated income and spending[cite: 4367, 4376, 4598]."
+    },
+    {
+      "text": "The following are reasons for rising public expenditure, EXCEPT",
+      "options": ["A. Increasing population", "B. Public debt servicing", "C. Development projects", "D. Insecurity", "E. Redistribution of wealth"],
+      "answer": 4,
+      "insight": "Redistribution of wealth is a *goal* or function of government spending (often through taxes and transfers), not a reason for the persistent rise in the total volume of expenditure like population growth or debt[cite: 4378, 4383, 4600]."
+    },
+    {
+      "text": "Which of the following suggests inverse relationship between inflation and unemployment?",
+      "options": ["A. The Keynes curve", "B. The Engel curve", "C. The Philips curve", "D. The demand curve", "E. The supply curve"],
+      "answer": 2,
+      "insight": "The Phillips Curve illustrates the historical inverse trade-off between the rate of inflation and the rate of unemployment in an economy[cite: 4389, 4393, 4602]."
+    },
+    {
+      "text": "Which of the following best describes unemployment?",
+      "options": ["A. Individuals who are willing and able to work but not engaged in any productive activity at the existing wage rate", "B. Individuals who are not productively engaged", "C. Graduates who are willing and able to work but not engaged in white collar job", "D. Total population seeking job but not engaged in any productive activities at the existing wage rate", "E. Individuals who are willing but unable to work"],
+      "answer": 0,
+      "insight": "Standard economic definition of unemployment requires the person to be part of the labour force, capable of working, and actively seeking a job[cite: 4396, 4402, 4604]."
+    },
+    {
+      "text": "Under the flexible exchange rate system, an increase in the value of a country's currency relative to foreign currencies is called currency",
+      "options": ["A. Depreciation", "B. Appreciation", "C. Revaluation", "D. Devaluation", "E. Hedging"],
+      "answer": 1,
+      "insight": "Appreciation occurs when market forces increase the value of a currency; revaluation is a deliberate government action in a fixed rate system[cite: 4407, 4410, 4606]."
+    },
+    {
+      "text": "Free international trade maximises world output through",
+      "options": ["A. Countries reducing various taxes imposed", "B. Countries specialising in production of goods they are best suited for", "C. Perfect competition between countries and other special regions", "D. The diluting of the international business laws & conditions between countries", "E. Combination of factors of production"],
+      "answer": 1,
+      "insight": "According to the theory of comparative advantage, total global production increases when countries specialize in goods where they have the lowest opportunity cost[cite: 4417, 4422, 4607]."
+    },
+    {
+      "text": "The World Trade Organisation (WTO) was formed on 1st January",
+      "options": ["A. 1994", "B. 1995", "C. 1996", "D. 1997", "E. 1998"],
+      "answer": 1,
+      "insight": "The WTO replaced the General Agreement on Tariffs and Trade (GATT) on January 1, 1995[cite: 4426, 4429, 4608]."
+    },
+    {
+      "text": "A member of the World Bank Group whose core functions include provision of insurance services to member countries is",
+      "options": ["A. International Monetary Fund (IMF)", "B. International Bank for Reconstruction and Development (IBRD)", "C. International Finance Corporation (IFC)", "D. Multilateral Investment Guarantee Agency (MIGA)", "E. International Development Association (IDA)"],
+      "answer": 3,
+      "insight": "MIGA provides political risk insurance (guarantees) to investors and lenders to encourage foreign direct investment in developing countries[cite: 4434, 4442, 4609]."
+    },
+    {
+      "text": "The Bretton Woods Agreement led to the creation of which of the following institutions?",
+      "options": ["A. United Nations", "B. UNESCO", "C. IMF", "D. UNICEF", "E. AU"],
+      "answer": 2,
+      "insight": "The 1944 Bretton Woods Conference established the International Monetary Fund (IMF) and the World Bank[cite: 4444, 4449, 4611]."
+    },
+    {
+      "text": "Economic development refers to",
+      "options": ["A. Improvement in the well-being of the urban population", "B. Economic growth", "C. Improvement in the general well-being of only the rural population", "D. Sustainable increase in real Gross Domestic Product with improved citizens' general welfare", "E. Increase in per capita income"],
+      "answer": 3,
+      "insight": "Unlike economic growth (purely numerical), development is a qualitative concept involving better living standards, health, and education alongside growth[cite: 4453, 4459, 4612]."
+    },
+    { "_year_header": "--- MARCH 2024 EXAMINATIONS ---" },
+    {
+      "text": "The choice of labour intensive and capital intensive is embedded in the economic problem of",
+      "options": ["A. What to produce", "B. How to produce", "C. For whom to produce", "D. When to produce", "E. Diminishing returns"],
+      "answer": 1,
+      "insight": "The 'How to produce' problem deals with the technical combinations of resources (labour vs. machinery) used to create goods[cite: 4202, 4205]."
+    },
+    {
+      "text": "Which of the following is NOT a characteristic of an economic good?",
+      "options": ["A. Relatively scarce", "B. Commands price", "C. Transferability", "D. Provides utility", "E. Naturally in abundant supply"],
+      "answer": 4,
+      "insight": "Economic goods are scarce and command a price; goods in abundant supply (like air) are 'free goods,' not economic goods[cite: 4213, 4220]."
+    },
+    {
+      "text": "A good for which demand increases as consumer's income rises is described as",
+      "options": ["A. Normal good", "B. Inferior good", "C. Substitute good", "D. Competitive good", "E. Economic good"],
+      "answer": 0,
+      "insight": "Normal goods have a positive income elasticity; as people get richer, they demand more of them[cite: 4222, 4223]."
+    },
+    {
+      "text": "The linear equation that expresses the relationship between the quantity demanded of a good and its price is",
+      "options": ["A. Demand schedule", "B. Demand curve", "C. Abnormal demand curve", "D. Engel curve", "E. Demand function"],
+      "answer": 4,
+      "insight": "A demand function is the mathematical expression showing how quantity demanded reacts to price changes[cite: 4232, 4241]."
+    },
+    {
+      "text": "Which of the following is NOT a cause of increase in supply of a commodity?",
+      "options": ["A. A fall in the price of input", "B. A fall in the price of substitute products", "C. Improvement in technology", "D. Supplier's expectation of future fall in price", "E. Increase in commodity's own price"],
+      "answer": 4,
+      "insight": "An increase in the commodity's own price causes an increase in 'quantity supplied' (movement along the curve), not an increase in 'supply' (shift of the curve)[cite: 4243, 4249, 4748]."
+    },
+    {
+      "text": "Which of the following is TRUE about the slope of a normal demand curve?",
+      "options": ["A. Slopes upward from left to right", "B. It is downward sloping from left to right", "C. The demand curve is parallel to the X-axis", "D. It is parallel to the Y-axis", "E. It is backward bending"],
+      "answer": 1,
+      "insight": "The law of demand states that price and quantity have an inverse relationship, resulting in a downward-sloping curve[cite: 4253, 4256]."
+    },
+    {
+      "text": "At the level of consumption when total utility is decreasing, marginal utility is",
+      "options": ["A. Increasing", "B. Negative", "C. Zero", "D. Decreasing but positive", "E. Equals total utility"],
+      "answer": 1,
+      "insight": "Marginal utility is the change in total utility. If total utility is falling, the marginal addition must be less than zero (negative)[cite: 4264, 4268]."
+    },
+    {
+      "text": "Making of shoes and baking of bread are examples of ________ production",
+      "options": ["A. Primary", "B. Secondary", "C. Tertiary", "D. Complementary", "E. Substitution"],
+      "answer": 1,
+      "insight": "Secondary production involves manufacturing and processing raw materials into finished goods[cite: 4275, 4280]."
+    },
+    {
+      "text": "Man-made resources used in the production of goods and services are called",
+      "options": ["A. Skilled labour", "B. Unskilled Labour", "C. Entrepreneur", "D. Capital", "E. Land"],
+      "answer": 3,
+      "insight": "Capital refers to manufactured assets like machinery, tools, and buildings used to produce other goods[cite: 4286, 4293]."
+    },
+    {
+      "text": "At a given time period, a technical relationship between a maximum quantity of a product produced and various sets of input is known as",
+      "options": ["A. Production possibilities curve", "B. Production function", "C. Utility function", "D. Total output", "E. Marginal rate of technical substitution"],
+      "answer": 1,
+      "insight": "The production function represents the maximum output achievable from any given set of inputs[cite: 4296, 4303]."
+    },
+    {
+      "text": "Which of the following is NOT true about factors of production?",
+      "options": ["A. Entrepreneur organises other factors", "B. Land implies natural resources", "C. The reward to capital is interest", "D. Labour refers to only the mental effort", "E. They are inputs in production process"],
+      "answer": 3,
+      "insight": "Labour includes both physical and mental human effort used in production[cite: 4308, 4317]."
+    },
+    {
+      "text": "Which of the following best describe a market?",
+      "options": ["A. A place for buying and selling", "B. A location for buying and selling", "C. An Organisational framework that links buyers and sellers", "D. A geographical location", "E. A geographical area"],
+      "answer": 2,
+      "insight": "In economics, a market is not just a physical place, but any mechanism that brings buyers and sellers together[cite: 4318, 4323]."
+    },
+    {
+      "text": "In a product market, which of the following is NOT an example of market structure?",
+      "options": ["A. Foreign exchange market", "B. Oligopoly", "C. Monopolistic competitive market", "D. Perfect competitive market", "E. Duopoly"],
+      "answer": 0,
+      "insight": "The foreign exchange market is a financial/factor market, not a product market structure like monopoly or oligopoly[cite: 4328, 4329]."
+    },
+    {
+      "text": "Which of the following is NOT an assumption of perfect competitive market?",
+      "options": ["A. Large number of buyers and sellers", "B. Restriction to entry and exit", "C. Perfect knowledge about market conditions", "D. Free mobility of factors of production", "E. Buyers and sellers are price takers"],
+      "answer": 1,
+      "insight": "Perfect competition assumes 'freedom' of entry and exit, not restrictions[cite: 4338, 4342]."
+    },
+    {
+      "text": "Which of the following is NOT a form of money?",
+      "options": ["A. Coins", "B. Demand deposit", "C. Currency", "D. Bank tellers", "E. Bank notes"],
+      "answer": 3,
+      "insight": "Bank tellers are people who work in the bank; they are not a medium of exchange (money)[cite: 4348, 4355]."
+    },
+    {
+      "text": "Which of the following functions of money makes it possible to provide for old age?",
+      "options": ["A. Standard of deferred payments", "B. Medium of exchange", "C. Measure of value", "D. Unit of account", "E. Store of value"],
+      "answer": 4,
+      "insight": "The 'Store of Value' function allows people to save their wealth for future use, such as retirement[cite: 4357, 4365]."
+    },
+    {
+      "text": "Which of the following is the most liquid asset?",
+      "options": ["A. Gold", "B. Silver", "C. Cheques", "D. Bank notes", "E. Bank deposit"],
+      "answer": 3,
+      "insight": "Bank notes (cash) are 100% liquid because they can be spent immediately without conversion[cite: 4367, 4656]."
+    },
+    {
+      "text": "The compulsory levy imposed by the government on individuals and businesses is",
+      "options": ["A. Income", "B. Tax", "C. Budget", "D. Expenditure", "E. Debt"],
+      "answer": 1,
+      "insight": "Taxes are mandatory contributions to state revenue, levied on workers' income and business profits[cite: 4376, 4380]."
+    },
+    {
+      "text": "The use of taxation and government expenditure to influence economic activity is",
+      "options": ["A. Budget policy", "B. Tax policy", "C. Fiscal policy", "D. Monetary policy", "E. Public policy"],
+      "answer": 2,
+      "insight": "Fiscal policy is the government's use of its spending and taxing powers to affect the economy[cite: 4387, 4393]."
+    },
+    {
+      "text": "Which of the following is NOT an economic function of government?",
+      "options": ["A. Providing legal framework for business", "B. Creation of social infrastructure", "C. Redistribution of income", "D. Prosecution of criminals", "E. Reallocation of resources"],
+      "answer": 3,
+      "insight": "Prosecution of criminals is a 'social/judicial' function, not specifically an 'economic' one[cite: 4397, 4404]."
+    },
+    {
+      "text": "Which of the following expresses persistent increase in the general price level?",
+      "options": ["A. Taxation", "B. Inflation", "C. Unemployment", "D. Interest rate", "E. Exchange rate"],
+      "answer": 1,
+      "insight": "Inflation is defined as a sustained rise in the average price of all goods and services in an economy[cite: 4406, 4409]."
+    },
+    {
+      "text": "Which of the following is NOT a type of unemployment?",
+      "options": ["A. Frictional", "B. Structural", "C. Regional", "D. Seasonal", "E. Cyclical"],
+      "answer": 2,
+      "insight": "While unemployment can happen in a region, 'Regional' is not a standard economic classification like Frictional or Structural[cite: 4414, 4662]."
+    },
+    {
+      "text": "The loans from the World Bank to developing countries are mainly to support",
+      "options": ["A. Low consumption levels", "B. Political restructuring", "C. Infrastructure development", "D. Exchange rate management", "E. Human rights initiatives"],
+      "answer": 2,
+      "insight": "The World Bank focuses on long-term development projects like roads, power, and water systems[cite: 4423, 4429]."
+    },
+    {
+      "text": "Government policy about exports and imports is called",
+      "options": ["A. Commercial policy", "B. Fiscal policy", "C. Monetary policy", "D. Finance policy", "E. Income policy"],
+      "answer": 0,
+      "insight": "Commercial policy (also called trade policy) covers regulations, tariffs, and agreements regarding international trade[cite: 4433, 4435]."
+    },
+    {
+      "text": "Market in which currencies are bought and sold at agreed prices is called the",
+      "options": ["A. International bond market", "B. International capital market", "C. Foreign exchange market", "D. Euro currency market", "E. Stock Exchange Market"],
+      "answer": 2,
+      "insight": "The Forex (FX) market is where one country's currency is traded for another[cite: 4442, 4448]."
+    },
+    {
+      "text": "Personal income equal disposable income plus",
+      "options": ["A. Personal income tax", "B. Personal savings", "C. Dividend payments", "D. Payroll taxes", "E. Transfer payments"],
+      "answer": 0,
+      "insight": "Disposable income is what remains after personal taxes are deducted from personal income[cite: 4452, 4454, 4842]."
+    },
+    {
+      "text": "Which of the following is NOT included in transfer payments?",
+      "options": ["A. Social security payments", "B. Farmer subsidies", "C. Aid to the handicapped", "D. Student grants", "E. Government expenditure on education"],
+      "answer": 4,
+      "insight": "Transfer payments are direct payments to individuals (no service rendered); spending on education is a purchase of a public service[cite: 4462, 4470]."
+    },
+    {
+      "text": "Problems of computing national income figures, EXCLUDE",
+      "options": ["A. Problem of double counting", "B. Inadequate and unreliable data", "C. Stock of resources", "D. Unrecorded services", "E. Depreciation"],
+      "answer": 2,
+      "insight": "Econimists measure the 'flow' of income; the existing 'stock' of resources is not a calculation problem for annual income[cite: 4471, 4669]."
+    },
+    {
+      "text": "The objective of the Economic Community of West African States (ECOWAS) is to",
+      "options": ["A. Promote economic development among members", "B. Achieve African Unity", "C. Establish political unification", "D. Eradicate racism", "E. Establish educational institutions"],
+      "answer": 0,
+      "insight": "ECOWAS was formed primarily to promote regional economic integration and development[cite: 4481, 4484]."
+    },
+    {
+      "text": "Which of the following features explain the term economic development? I. Per capita income increase. II. Sustained real output increase. III. Structural changes.",
+      "options": ["A. III only", "B. I and II", "C. II and III", "D. I and III", "E. I, II and III"],
+      "answer": 4,
+      "insight": "Economic development is a broad concept involving quantitative growth and qualitative structural improvements[cite: 4490, 4504]."
+    }
+  ],
+  "SAQ": [
+    { "_year_header": "--- MARCH 2023 EXAMINATIONS (ECONOMICS) ---" },
+    {
+      "text": "Government 'ought to solve' persistent exchange rate crises is typical example of...",
+      "answer": "Normative statement",
+      "insight": "Normative statements involve value judgments or opinions about what 'ought' to be, rather than objective facts[cite: 1511]."
+    },
+    {
+      "text": "The downward movement along a normal demand curve illustrates...",
+      "answer": "Increase in quantity demanded / Change in quantity demanded",
+      "insight": "A movement 'along' the curve occurs only when the price of the good itself changes, leading to a change in the quantity demanded[cite: 1513]."
+    },
+    {
+      "text": "The maximum legal price above which a particular good or service cannot be sold is called...",
+      "answer": "Price ceiling",
+      "insight": "Price ceilings are government-imposed limits designed to keep essential goods affordable by preventing prices from rising to the equilibrium level[cite: 1515]."
+    },
+    {
+      "text": "Indifference curves are best described as __________ to the origin.",
+      "answer": "Convex",
+      "insight": "Indifference curves are convex to the origin because of the law of diminishing marginal rate of substitution[cite: 1517]."
+    },
+    {
+      "text": "At the level of labour employment where a firm's total product (TP) is at maximum, the marginal product (MP) is...",
+      "answer": "Zero",
+      "insight": "Marginal product measures the addition to total output; when total output is at its peak, the next worker adds exactly nothing (zero)[cite: 1519]."
+    },
+    {
+      "text": "The cost saving advantages derived by a firm resulting from its location are called...",
+      "answer": "External economies of scale",
+      "insight": "These are benefits that arise outside of the individual firm but within the entire industry or region, such as shared infrastructure or a skilled local labor pool[cite: 1520]."
+    },
+    {
+      "text": "The change in total production divided by change in the units of variable factor employed is known as...",
+      "answer": "Marginal product of the factor",
+      "insight": "This formula measures how much output increases when one more unit of input (like labor) is added[cite: 1522]."
+    },
+    {
+      "text": "Zero market power is a common feature of...",
+      "answer": "Perfect competitive firm",
+      "insight": "In perfect competition, firms are 'price takers' because they are too small to influence the market price individually[cite: 1524]."
+    },
+    {
+      "text": "Assume a monopolist faces a demand function P = 100 - 5q, the total revenue at q = 5 is...",
+      "answer": "375",
+      "insight": "Calculation: At q = 5, Price (P) = 100 - 5(5) = 75. Total Revenue = P × q = 75 × 5 = 375[cite: 1526]."
+    },
+    {
+      "text": "The sum of government expenditure multiplier and tax multiplier equals...",
+      "answer": "One (1)",
+      "insight": "This refers to the Balanced Budget Multiplier, which states that an equal increase in government spending and taxes will increase national income by the exact amount of the spending increase[cite: 1529]."
+    },
+    {
+      "text": "The taxes that are fixed by the government and do not vary with real gross domestic product are called...",
+      "answer": "Autonomous taxes",
+      "insight": "Autonomous taxes remain constant regardless of the level of national income (GDP)[cite: 1531]."
+    },
+    {
+      "text": "A coin or currency whose physical value in terms of metal or paper is below the nominal value in terms of what it will purchase is known as...",
+      "answer": "Token Money",
+      "insight": "Token money's face value is significantly higher than its intrinsic material value[cite: 1533]."
+    },
+    {
+      "text": "The policy of the government that regulates money supply and credit availability in the economy is called...",
+      "answer": "Monetary Policy",
+      "insight": "Monetary policy is typically managed by the Central Bank to control inflation and influence interest rates[cite: 1535]."
+    },
+    {
+      "text": "The total outstanding debt obligation or accumulated borrowing of the government is...",
+      "answer": "Public debt",
+      "insight": "Public debt represents the sum of all past government deficits that have not yet been repaid[cite: 1537]."
+    },
+    {
+      "text": "The type of government borrowing which involves raising loans from banks and non-bank public within the country is called...",
+      "answer": "Internal debt / Domestic public debt",
+      "insight": "This is debt owed by a government to its own citizens and domestic institutions[cite: 1539]."
+    },
+    {
+      "text": "Assume that the number of individuals in labour force is 20 million while those not in labour force is 30 million. The labour force participation rate is...",
+      "answer": "40%",
+      "insight": "Calculation: Total Population = 20m + 30m = 50m. Participation Rate = (Labour Force / Total Population) × 100 = (20/50) × 100 = 40%[cite: 1541]."
+    },
+    {
+      "text": "Short and long term movements in capital are recorded in the __________ component of the Balance of Payment (BOP).",
+      "answer": "Capital account",
+      "insight": "The capital account tracks the flow of investment money (like FDI and portfolio investments) across borders[cite: 1543]."
+    },
+    {
+      "text": "Surplus on the Balance of payment (BOP) occurs when...",
+      "answer": "Total receipts exceed total payments",
+      "insight": "A surplus means more money is flowing into the country from international transactions than is flowing out[cite: 1544]."
+    },
+    {
+      "text": "The acronym UNCTAD means...",
+      "answer": "United Nations Conference on Trade And Development",
+      "insight": "UNCTAD is the principal organ of the UN General Assembly dealing with trade, investment, and development issues[cite: 1545]."
+    },
+    {
+      "text": "High level of literacy, low dependency ratio and sustainable increase in real per capita income are features of...",
+      "answer": "Developed countries / Advanced countries",
+      "insight": "These are key qualitative and quantitative indicators of high economic development[cite: 1546]."
+    }
+    ,{ "_year_header": "--- MARCH 2024 EXAMINATIONS ---" },
+    { "text": "The economic concept that describes how economic agents rank wants in order of importance is called...", "answer": "Scale of preference", "insight": "This helps agents make rational choices by listing satisfied needs from most to least urgent[cite: 4510, 4679]." },
+    { "text": "The price that equates both quantity demanded and quantity supplied of a commodity is called...", "answer": "Equilibrium Price / Market price", "insight": "At this point, the market is cleared, and there is no surplus or shortage[cite: 4512, 4681]." },
+    { "text": "If the value of cross price elasticity of demand between two goods is positive, the goods are described as...", "answer": "Substitutes", "insight": "A rise in the price of one good leads to an increase in demand for the other (e.g., Coke and Pepsi)[cite: 4513, 4683]." },
+    { "text": "When marginal utility is negative, total utility is...", "answer": "Falling / Decreasing", "insight": "Once marginal utility drops below zero, every extra unit consumed actually reduces the consumer's total satisfaction[cite: 4515, 4685]." },
+    { "text": "The curve derived from the least cost points of the various Short-run average cost curves is known as...", "answer": "Longrun average cost curve (LRAC)", "insight": "The LRAC acts as an 'envelope' containing all possible short-run production scales[cite: 4517, 4687]." },
+    { "text": "The concept that defines re-organisation of public enterprise for profitable performance is...", "answer": "Commercialisation", "insight": "Unlike privatization, the government keeps ownership but requires the firm to run like a private business for profit[cite: 4518, 4689]." },
+    { "text": "The transfer of ownership and control in a public enterprise to private shareholders is called...", "answer": "Privatisation", "insight": "This involves the sale of government assets or shares to the private sector[cite: 4520, 4691]." },
+    { "text": "A market structure in which there are two sellers of a commodity is...", "answer": "Duopoly", "insight": "A specific form of oligopoly where exactly two firms dominate the market[cite: 4522, 4693]." },
+    { "text": "The ratio of additional revenue to additional output is described as...", "answer": "Marginal revenue", "insight": "Formula: MR = Change in Total Revenue / Change in Output[cite: 4524, 4695]." },
+    { "text": "The potential purchasing power of any household is measured by the...", "answer": "Consumer Price Index (CPI)", "insight": "The CPI tracks how much a standard 'basket' of goods costs, showing how inflation erodes purchasing power[cite: 4525, 4696]." },
+    { "text": "Expenditure on capital goods which is expected to yield future returns is known as...", "answer": "Investment", "insight": "In economics, investment is the addition to the physical stock of capital[cite: 4526, 4698]." },
+    { "text": "The currency issued by the government and backed by the authority of that government is referred to as...", "answer": "Legal tender", "insight": "Legal tender must be accepted by law for the payment of all debts, public and private[cite: 4527, 4699]." },
+    { "text": "If the cash reserve ratio is 12.5%, the value of the money multiplier would be...", "answer": "8", "insight": "Multiplier = 1 / Reserve Ratio. 1 / 0.125 = 8[cite: 4528, 4710, 4711]." },
+    { "text": "The tax levied on the net profits of companies is called...", "answer": "Company Income Tax", "insight": "This is a direct tax on the earnings of corporate entities[cite: 4529, 4701]." },
+    { "text": "The interest paid continuously by the government on its borrowing and the principal to the creditors is called...", "answer": "Debt Servicing", "insight": "Debt servicing is the cash required to pay back the interest and principal of a loan over a set period[cite: 4530, 4702]." },
+    { "text": "Inflation induced by high production cost is called...", "answer": "Cost-Push Inflation", "insight": "This happens when raw material or wage costs rise, forcing producers to raise prices to maintain margins[cite: 4531, 4703]." },
+    { "text": "The theories of absolute and comparative cost advantage were pioneered by ________ and ________ respectively.", "answer": "Adam Smith and David Ricardo", "insight": "Smith argued for absolute advantage in 1776; Ricardo developed comparative advantage in 1817[cite: 4532, 4704]." },
+    { "text": "The rate at which a country's export exchanges for its import at a given period in time is the country's...", "answer": "Terms of Trade (TOT)", "insight": "TOT = (Index of Export Prices / Index of Import Prices) x 100[cite: 4535, 4705]." },
+    { "text": "The headquarters of the African Development Bank is in...", "answer": "Abidjan, Cote d'Ivore", "insight": "The AfDB is headquartered in Abidjan, though it temporarily moved to Tunis during the Ivorian Civil War[cite: 4536, 4706]." },
+    { "text": "A document which provides policy framework and programmes aimed at achieving stated goals over time is called...", "answer": "Development Plan", "insight": "Governments use these plans to set long-term economic and social targets[cite: 4537, 4707]." }
+    
+  ],
+  "ESSAY": [
+    {
+      "_year_header": "--- MARCH 2023 EXAMINATIONS (ECONOMICS) ---"
+    },
+    {
+      "text": "Distinguish between price elasticity of demand and income elasticity of demand.",
+      "officialAnswer": "Price elasticity of demand measures the responsiveness of quantity demanded to a change in the price of the good. Income elasticity of demand measures the responsiveness of quantity demanded to a change in the consumer's income, ceteris paribus.",
+      "keywords": [
+        ["responsiveness", "quantity", "demanded"],
+        ["change", "price"],
+        ["change", "income"]
+      ],
+      "insight": "While both measure 'responsiveness,' one focuses on how sensitive buyers are to price tags, and the other on how they react when their bank balance changes [cite: 1554-1563]."
+    },
+    {
+      "text": "Explain THREE uses of 'own price elasticity of demand' and TWO uses of 'income elasticity of demand'.",
+      "officialAnswer": "Uses of price elasticity: 1. Pricing of goods (elasticity determines if price cuts increase revenue). 2. Government taxation policy (taxing inelastic goods for revenue). 3. Minimum wage policy. 4. Demand forecasting. Uses of income elasticity: 1. Determining consumption patterns (normal vs. inferior goods). 2. Investment planning for businessmen.",
+      "keywords": [
+        ["pricing", "revenue"],
+        ["taxation", "indirect", "inelastic"],
+        ["minimum", "wage"],
+        ["forecasting"],
+        ["patterns", "consumption"],
+        ["investment", "planning"]
+      ],
+      "insight": "Governments prefer taxing inelastic goods like cigarettes because people will keep buying them even if the price rises, ensuring steady tax revenue [cite: 1567-1589]."
+    },
+    {
+      "text": "Define a Sole proprietorship and state FOUR advantages and THREE disadvantages.",
+      "officialAnswer": "A sole proprietorship is a business owned and controlled by one person. Advantages: 1. Easy to form. 2. Personal interest/motivation. 3. Quick decision-making. 4. Secrecy. 5. Intimate relationship with workers/customers. Disadvantages: 1. Unlimited liability. 2. Limited capital. 3. Risk of business liquidation upon death. 4. Difficulty accessing credit.",
+      "keywords": [
+        ["one", "person", "owned", "controlled"],
+        ["easy", "form"],
+        ["decision", "fast", "quick"],
+        ["secrecy"],
+        ["unlimited", "liability"],
+        ["limited", "capital"],
+        ["liquidation", "death"]
+      ],
+      "insight": "The greatest risk is 'Unlimited Liability,' meaning if the business fails, the owner's personal house or car can be seized to pay business debts [cite: 1594-1617]."
+    },
+    {
+      "text": "Explain 'Market Structure' and state THREE differences and TWO similarities between a 'perfect competitive market' and 'monopolistic competitive market'.",
+      "officialAnswer": "Market structure refers to arrangements of buyers and sellers. Differences: 1. Perfect has homogeneous products; Monopolistic has differentiated products (branding). 2. Perfect has horizontal demand curves; Monopolistic has downward sloping. 3. In Perfect, P=AR=MR; In Monopolistic, P=AR but not MR. Similarities: 1. Both maximize profit where MC=MR. 2. Both have a large number of sellers and buyers.",
+      "keywords": [
+        ["arrangements", "buyers", "sellers"],
+        ["homogeneous", "differentiated", "branding"],
+        ["horizontal", "downward", "sloping"],
+        ["MC=MR", "maximize", "profit"],
+        ["large", "number", "sellers"]
+      ],
+      "insight": "Both markets have many competitors, but monopolistic competition allows firms to charge different prices based on brand loyalty (like Coke vs. Pepsi) [cite: 1623-1636]."
+    },
+    {
+      "text": "State and explain FOUR factors that influence the aggregate level of consumption.",
+      "officialAnswer": "1. Level of income (basic determinant). 2. Stock of durable goods (previous purchases reduce current need). 3. Wealth (accumulated purchasing power). 4. Expectations (future prices/shortages). 5. Aggregate household indebtedness. 6. Availability of credit. 7. Government policy (taxes).",
+      "keywords": [
+        ["income"],
+        ["durable", "goods"],
+        ["wealth"],
+        ["expectations"],
+        ["indebtedness", "debt"],
+        ["credit"],
+        ["government", "policy", "tax"]
+      ],
+      "insight": "If people expect prices to rise in the future, they tend to spend more now and save less, shifting the consumption function upward [cite: 1643-1661]."
+    },
+    {
+      "text": "In the consumption function C = a + bYd, explain the meaning of 'a', 'b', and 'Yd'.",
+      "officialAnswer": "'a' is autonomous consumption (spending that doesn't depend on income). 'b' is the marginal propensity to consume (MPC), measuring the change in spending relative to income. 'Yd' is personal disposable income (income after tax).",
+      "keywords": [
+        ["autonomous", "consumption"],
+        ["marginal", "propensity", "consume", "MPC"],
+        ["disposable", "income", "after", "tax"]
+      ],
+      "insight": "Even if your income is zero, you still need to eat; 'a' represents that survival spending, often funded by past savings or borrowing [cite: 1662-1668]."
+    },
+    {
+      "text": "Distinguish between economic growth and economic development and explain FIVE features of less developing nations.",
+      "officialAnswer": "Growth is a numerical increase in real aggregate output (GDP). Development is a sustainable increase in GDP plus qualitative improvements in welfare, education, and health. Features of developing nations: 1. Low standards of living. 2. Poor health and low life expectancy. 3. Low productivity. 4. Dependence on primary exports (agriculture). 5. Low per capita real income. 6. High population growth. 7. High unemployment. 8. Low capital formation.",
+      "keywords": [
+        ["numerical", "output", "increase", "GDP"],
+        ["welfare", "education", "health", "qualitative"],
+        ["standard", "living", "low"],
+        ["life", "expectancy"],
+        ["productivity"],
+        ["primary", "product", "export", "agriculture"],
+        ["per", "capita", "income"]
+      ],
+      "insight": "A country can have 'Growth' (more money) without 'Development' if that money isn't used to improve schools, hospitals, and the lives of poor citizens [cite: 1675-1706]."
+    },
+    {
+      "text": "Define Balance of Payments (BOP) and explain the accounts that comprise it.",
+      "officialAnswer": "BOP is a summary of a country's total international payments and receipts over a period. Components: 1. Current Account (Visible trade/merchandise and Invisible trade/services/transfers). 2. Capital Account (Long and short-term capital movements/investments). 3. Official Reserves Account (Accommodating transactions to balance the deficit or surplus).",
+      "keywords": [
+        ["summary", "payments", "receipts", "international"],
+        ["current", "account", "merchandise", "services"],
+        ["capital", "account", "investment"],
+        ["official", "reserves", "accommodating"]
+      ],
+      "insight": "The 'Current Account' tracks what we buy and sell today (like oil or tourism), while the 'Capital Account' tracks where we are investing for tomorrow [cite: 1711-1734]."
+    },
+    { "_year_header": "--- MARCH 2024 EXAMINATIONS ---" },
+    {
+      "text": "Define the concept of capitalism and explain four features of a capitalist economy.",
+      "officialAnswer": "Capitalism is an economic system based on private ownership and freedom of economic activity without govt interference. Features: 1. Private ownership of means of production. 2. Freedom of choice for consumers (Consumer Sovereignty). 3. Competition between firms. 4. Price mechanism as the resource allocator.",
+      "keywords": [["private", "ownership"], ["freedom", "choice", "sovereignty"], ["competition"], ["price", "mechanism"]],
+      "insight": "In capitalism, 'the consumer is king' because their spending choices dictate what firms produce[cite: 4720, 4724, 4727, 4733]."
+    },
+    {
+      "text": "Explain, using the concept of shifts, how an increase in Value-Added Tax (VAT) affects the supply curve.",
+      "officialAnswer": "An increase in VAT increases the cost of production. This causes a decrease in supply, which is illustrated by a leftward shift of the supply curve from S1 to S2.",
+      "keywords": [["cost", "production"], ["decrease", "supply"], ["leftward", "shift"]],
+      "insight": "Because the tax makes production more expensive at every price level, the entire curve moves left[cite: 4748, 4749]."
+    },
+    {
+      "text": "Distinguish between an 'increase in demand' and an 'increase in quantity demanded.'",
+      "officialAnswer": "Increase in quantity demanded is a downward movement along the curve caused only by a fall in the price of the good. Increase in demand is a rightward shift of the entire curve caused by other factors like rising income or tastes.",
+      "keywords": [["movement", "along", "price"], ["shift", "income", "tastes", "other"]],
+      "insight": "Remember: Price change = Movement; Other factors = Shift[cite: 4786, 4787]."
+    },
+    {
+      "text": "A consumer has an income of 5. The price of chicken (C) is 2 and fish (F) is 1. Marginal Utility of C: (1st: 24, 2nd: 18). MU of F: (1st: 9, 2nd: 8). Determine the utility-maximizing combination.",
+      "officialAnswer": "The consumer maximizes utility when MUc/Pc = MUf/Pf. For 2 Chicken: 18/2 = 9. For 1 Fish: 9/1 = 9. Combination: 2 Chicken and 1 Fish. Total Cost: (2x2) + (1x1) = 5.",
+      "keywords": [["2", "chicken"], ["1", "fish"], ["MUc/Pc", "MUf/Pf"]],
+      "insight": "The equi-marginal principle ensures the last dollar spent on each good provides the same satisfaction[cite: 4817, 4820]."
+    },
+    {
+      "text": "Define and explain the relationship between Net National Product (NNP), National Income (NI), and Personal Disposable Income (PDI).",
+      "officialAnswer": "NNP = GNP minus Depreciation. NI = NNP minus Net Indirect Taxes. PDI = Personal Income minus Personal Taxes.",
+      "keywords": [["depreciation"], ["indirect", "taxes"], ["personal", "taxes"]],
+      "insight": "These measures narrow down from total national production to the actual spending money in a household's pocket[cite: 4832, 4836, 4842]."
+    },
+    {
+      "text": "Identify and explain three instruments used as trade barriers.",
+      "officialAnswer": "1. Tariffs: Taxes on imports to make them expensive. 2. Quotas: Physical limits on the quantity of imports. 3. Embargoes: Total bans on trade with specific countries or goods.",
+      "keywords": [["tariff", "tax"], ["quota", "limit", "quantity"], ["embargo", "ban"]],
+      "insight": "Governments use these to protect 'infant industries' from foreign competition[cite: 4858, 4861, 4870, 4873]."
+    }
+  ]
+}

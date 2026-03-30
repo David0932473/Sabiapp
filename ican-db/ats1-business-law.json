@@ -1,0 +1,446 @@
+{
+  "MCQ": [
+    { "_year_header": "--- MARCH 2024 EXAMINATIONS ---" },
+    {
+      "text": "A contract CANNOT be discharged by",
+      "options": ["A. Performance", "B. Frustration", "C. Damages", "D. Breach", "E. Agreement"],
+      "answer": 2,
+      "insight": "Damages are a 'remedy' for a breach of contract, not a method of discharging (ending) the contract itself."
+    },
+    {
+      "text": "The Lowest court in hierarchy in the southern Nigeria is the",
+      "options": ["A. Akali", "B. High Court", "C. Federal High Court", "D. Magistrate Court", "E. Customary Court"],
+      "answer": 4,
+      "insight": "Customary courts are the lowest level in the southern hierarchy, handling matters of native law and custom."
+    },
+    {
+      "text": "The parties to a civil matter in the Court are",
+      "options": ["A. Plaintiff and Claimant", "B. Applicant and Respondent", "C. Claimant and Defendant", "D. Respondent and claimant", "E. Complainant and Accused"],
+      "answer": 2,
+      "insight": "In modern civil procedure, the person suing is the 'Claimant' and the person being sued is the 'Defendant'."
+    },
+    {
+      "text": "Which of the following is NOT a source of Nigerian Law?",
+      "options": ["A. Constitution", "B. Case Law", "C. International Treaties", "D. Customary Law", "E. Ethics"],
+      "answer": 4,
+      "insight": "Ethics refers to moral principles, which guide behavior but are not legally enforceable sources of law like the Constitution or Statutes."
+    },
+    {
+      "text": "Which of the following is NOT a right of a seller of goods?",
+      "options": ["A. Lien", "B. Resale", "C. Right of preliminary objection", "D. Withholding delivery", "E. Stoppage in transit"],
+      "answer": 2,
+      "insight": "Preliminary objection is a procedural legal move in court; it is not a statutory right of an unpaid seller under the Sale of Goods Act."
+    },
+    {
+      "text": "Which of the following is NOT a classification of goods?",
+      "options": ["A. Specific", "B. Ascertained", "C. Unascertained", "D. Existing goods", "E. Emblements"],
+      "answer": 4,
+      "insight": "Emblements refers to growing crops; while they are related to land, they are not one of the primary legal classifications of goods in a contract of sale."
+    },
+    {
+      "text": "A person that proposes to insure a property must have",
+      "options": ["A. Assignment", "B. Indemnity", "C. Insurable interest", "D. Permanent interest", "E. Life interest"],
+      "answer": 2,
+      "insight": "Insurable interest means the person must stand to suffer a financial loss if the property is damaged; without it, the policy is a mere wager (gamble)."
+    },
+    {
+      "text": "In a criminal case, the person being sued is known as",
+      "options": ["A. Accused/Defendant", "B. Petitioner", "C. Cross petitioner", "D. Appellant", "E. Prosecution"],
+      "answer": 0,
+      "insight": "In criminal trials, the party charged with the offense is referred to as the Accused or the Defendant."
+    },
+    {
+      "text": "In hire purchase the property (legal ownership) in the goods is with the",
+      "options": ["A. Hirer", "B. Owner", "C. Financier", "D. Agent", "E. Buyer"],
+      "answer": 1,
+      "insight": "In a hire purchase agreement, ownership stays with the owner until the very last installment and the 'option to purchase' fee are paid."
+    },
+    {
+      "text": "The document that regulates a company's internal affairs (governance) is the",
+      "options": ["A. Shareholders directory", "B. Directors directory", "C. Memorandum of Association", "D. Company Secretary", "E. Articles of Association"],
+      "answer": 4,
+      "insight": "The Articles of Association serve as the internal rulebook for the company's management and operations."
+    },
+    {
+      "text": "Which of the following is a right of the owner in a hire purchase agreement?",
+      "options": ["A. Vary instalment payments", "B. Select maintenance workshop", "C. Regulate usage of the goods", "D. Insure the goods for the hirer", "E. Repossess the goods where the hirer terminates the agreement"],
+      "answer": 4,
+      "insight": "If the hirer ends the agreement prematurely, the owner has the legal right to take back the physical goods."
+    },
+    {
+      "text": "Which body has the power to appoint a company secretary?",
+      "options": ["A. Audit Committee", "B. Annual General Meeting", "C. Extraordinary General Meeting", "D. The Board of Directors", "E. The Chairman"],
+      "answer": 3,
+      "insight": "Under CAMA, the Board of Directors is responsible for the appointment and removal of the Company Secretary."
+    },
+    {
+      "text": "Which of the following is NOT a tort?",
+      "options": ["A. Passing off", "B. Detinue", "C. Deceit", "D. Conversion", "E. Stealing"],
+      "answer": 4,
+      "insight": "Stealing is a crime (Criminal Law). Torts are civil wrongs like Conversion or Deceit that result in lawsuits for damages."
+    },
+    {
+      "text": "An offer CANNOT be terminated by",
+      "options": ["A. Revocation", "B. Death of either party", "C. Cross offer", "D. Request for information", "E. Rejection"],
+      "answer": 3,
+      "insight": "A simple request for more information is not a counter-offer or a rejection; it keeps the original offer alive."
+    },
+    {
+      "text": "Which of the following is NOT a bill of exchange?",
+      "options": ["A. Inland bills", "B. Foreign bills", "C. Bearer bills", "D. Utility bills", "E. Inchoate bills"],
+      "answer": 3,
+      "insight": "Utility bills (like electricity or water bills) are invoices for services, not negotiable financial instruments like a Bill of Exchange."
+    },
+    {
+      "text": "A chartered accountant wrongly dismissed from employment should approach which court for redress?",
+      "options": ["A. National Industrial Court", "B. Industrial and Labour Matters Court", "C. High Court", "D. Federal High Court", "E. Magistrate Court"],
+      "answer": 0,
+      "insight": "The National Industrial Court (NIC) has exclusive jurisdiction over all labor and employment-related disputes in Nigeria."
+    },
+    {
+      "text": "Noting and protesting (legal proof of dishonour) are applicable only to",
+      "options": ["A. Municipal", "B. Domestic bill", "C. Real bill", "D. Direct bill", "E. Foreign bills of exchange"],
+      "answer": 4,
+      "insight": "Under the Bills of Exchange Act, only foreign bills must be formally 'protested' to preserve rights against drawers and endorsers."
+    },
+    {
+      "text": "A company is said to be insolvent when",
+      "options": ["A. It is in financial distress and unable to pay debts", "B. Directors refuse to act", "C. Managing Director dies", "D. Articles are altered", "E. It solves a crisis"],
+      "answer": 0,
+      "insight": "Insolvency is the state of being unable to meet financial obligations as they fall due."
+    },
+    {
+      "text": "Which of the following is a type of charitable trust?",
+      "options": ["A. Precatory trust", "B. Government trust", "C. Trust for advancement of religion", "D. Financial trust", "E. Custodian trust"],
+      "answer": 2,
+      "insight": "Charitable trusts are usually categorized into four: relief of poverty, advancement of education, advancement of religion, and other public benefits."
+    },
+    {
+      "text": "A domestic agreement between members of a nuclear family lacks",
+      "options": ["A. Offer and acceptance", "B. Intention to create legal relations", "C. Tenure", "D. Acceptance", "E. Offer"],
+      "answer": 1,
+      "insight": "The law presumes that family/social arrangements are not intended to be legally binding unless proven otherwise."
+    },
+    {
+      "text": "An offer is terminated and can no longer be accepted, by the following, EXCEPT",
+      "options": ["A. lapse of time", "B. Revocation", "C. Rejection", "D. Death", "E. Compounding"],
+      "answer": 4,
+      "insight": "Compounding (settling a debt for a lesser amount) is a method of discharging a debt, not a method of terminating an offer."
+    },
+    {
+      "text": "Which law regulates mergers in Nigeria?",
+      "options": ["A. Finance Act, 2021", "B. CAMA, 2020", "C. FCCP Act, 2018", "D. ISA, 2021", "E. Partnership Act"],
+      "answer": 2,
+      "insight": "The Federal Competition and Consumer Protection Act (2018) is the primary law governing mergers and acquisitions."
+    },
+    {
+      "text": "The fundamental ground upon which a partnership is distinct from a sole proprietorship is",
+      "options": ["A. Authorised share capital", "B. Financial accounts", "C. Asset turnout", "D. Debt recovery", "E. Legal minimum membership"],
+      "answer": 4,
+      "insight": "A sole proprietorship has exactly one member, while a partnership requires a minimum of two persons."
+    },
+    {
+      "text": "Which principle applies where the agent acts without authority but the principal later accepts to be bound?",
+      "options": ["A. Estoppel", "B. Ratification", "C. Presumption", "D. Acceptance", "E. Approval"],
+      "answer": 1,
+      "insight": "Ratification is the retrospective grant of authority to an agent for an act already performed."
+    },
+    {
+      "text": "Consideration is given by a party to a contract by the",
+      "options": ["A. Promisor", "B. Promisee", "C. Offeror", "D. Guarantor", "E. Surety"],
+      "answer": 1,
+      "insight": "The general rule is that 'consideration must move from the promisee,' meaning the person receiving the promise must provide something of value in return."
+    },
+    {
+      "text": "The type of contract enforced in the case of Carlill v. Carbolic Smoke Ball is",
+      "options": ["A. Unilateral contract", "B. Bilateral contract", "C. Tripatite contract", "D. Enforceable contract", "E. Unenforceable contract"],
+      "answer": 0,
+      "insight": "A unilateral contract is a 'promise for an act,' where an offer is made to the whole world and accepted by performing the required action."
+    },
+    {
+      "text": "Mr. Smart helps Chief pull his car out of mud and then asks for N20,000. Chief is right to refuse because",
+      "options": ["A. Executory consideration", "B. Executed consideration", "C. Past consideration", "D. Present consideration", "E. Unenforceable"],
+      "answer": 2,
+      "insight": "Past consideration (an act done before the promise to pay was made) is generally not valid consideration in law."
+    },
+    {
+      "text": "The law covering financial institutions, conduct of business, and customer relationships is",
+      "options": ["A. Allied Law", "B. Finance Law", "C. Banking Law", "D. Corporate Law", "E. Insolvency Law"],
+      "answer": 2,
+      "insight": "Banking law regulates the activities of banks and their legal relationship with customers."
+    },
+    {
+      "text": "A lease in which the lessor is responsible for servicing and maintaining the equipment is an",
+      "options": ["A. Service lease", "B. Operating lease", "C. Finance lease", "D. Partial lease", "E. Complete lease"],
+      "answer": 1,
+      "insight": "In an operating lease, the lessor handles maintenance and insurance; in a finance lease, these risks/costs transfer to the lessee."
+    },
+    {
+      "text": "The principal Act governing employer-employee relationships in Nigeria is the",
+      "options": ["A. Employment Act", "B. Labour Act", "C. Compensation Act", "D. The Workman Act", "E. The Industry Act"],
+      "answer": 1,
+      "insight": "The Labour Act (Cap L1 LFN 2004) is the primary statute regulating contracts of employment in Nigeria."
+    }
+  ],
+  "SAQ": [
+    { "_year_header": "--- MARCH 2024 EXAMINATIONS ---" },
+    {
+      "text": "The branch of English Law that developed from conscience is...",
+      "answer": "Equity",
+      "insight": "Equity was developed by the Court of Chancery to provide fairer remedies where the strict rules of Common Law were too harsh or inadequate."
+    },
+    {
+      "text": "The minimum number of persons that could apply for incorporation as trustees is...",
+      "answer": "Two (2)",
+      "insight": "Under Part F of CAMA 2020, at least two individuals are required to apply for the incorporation of a board of trustees for an association."
+    },
+    {
+      "text": "The principle of law of contract that bars a third party from being sued or suing for the benefit of a contract is...",
+      "answer": "Privity of contract",
+      "insight": "This rule states that only parties to a contract can acquire rights or incur liabilities under it, though there are modern statutory exceptions."
+    },
+    {
+      "text": "The type of authority that an agent will have where he relies on the custom existing in his trade is...",
+      "answer": "Customary / Apparent authority",
+      "insight": "Customary authority is a form of implied authority where the agent is presumed to have the power to do what is standard in that particular trade or business."
+    },
+    {
+      "text": "An involuntary and permanent loss of employment due to excess of manpower in a company is...",
+      "answer": "Redundancy",
+      "insight": "Redundancy occurs when an employer reduces their workforce because certain jobs are no longer needed, rather than due to the employee's performance."
+    },
+    {
+      "text": "The monetary consideration paid by the insured for an insurance cover is called...",
+      "answer": "Premium",
+      "insight": "The premium is the price the policyholder pays to the insurance company in exchange for the guarantee of compensation for a covered loss."
+    },
+    {
+      "text": "An order of Court enjoining a party to do or refrain from doing an act is...",
+      "answer": "An Injunction",
+      "insight": "An injunction is an equitable remedy. It can be 'prohibitory' (stopping an act) or 'mandatory' (forcing an act to be done)."
+    },
+    {
+      "text": "An agreement in a domestic setting is usually unenforceable because it lacks...",
+      "answer": "Intention to create legal relations",
+      "insight": "The law presumes that social or family arrangements are based on mutual trust rather than a desire to go to court if the promise is broken."
+    },
+    {
+      "text": "The principle of insurance that prevents an Insured from making profit by multiple insurance of the same subject matter is...",
+      "answer": "Subrogation",
+      "insight": "Subrogation allows the insurer to 'step into the shoes' of the insured to recover costs from a third party, ensuring the insured doesn't get paid twice for the same loss."
+    },
+    {
+      "text": "The type of meeting a public company must hold within six months of incorporation is...",
+      "answer": "Statutory meeting",
+      "insight": "This is a one-time mandatory meeting for public companies to report to shareholders on the progress of the company's formation and capital."
+    },
+    {
+      "text": "The type of resolution that will prompt the court to order the winding up of a company is...",
+      "answer": "Special resolution",
+      "insight": "A special resolution requires a 75% majority vote. If a company passes one stating it should be wound up by the court, the court may act on it."
+    },
+    {
+      "text": "A holder of a bill who has taken the bill that is complete and regular on the face of it is called...",
+      "answer": "Holder in due course",
+      "insight": "A holder in due course has superior rights and takes the instrument free from many defenses that could be raised against the previous owner."
+    },
+    {
+      "text": "A limited partnership must have at least one...",
+      "answer": "General Partner",
+      "insight": "While limited partners have restricted liability, there must be at least one general partner with unlimited liability to manage the business."
+    },
+    {
+      "text": "Transfer of shares becomes effective when...",
+      "answer": "When the transferee's name is entered in the members' register",
+      "insight": "The legal title to shares does not fully pass until the company secretary records the change in the official Register of Members."
+    },
+    {
+      "text": "Goods that are owned and possessed by the seller at the time of contract are called...",
+      "answer": "Existing goods",
+      "insight": "Existing goods are those already in the seller's possession, as opposed to 'future goods' which are yet to be manufactured or acquired."
+    },
+    {
+      "text": "The body that hears a person alleged to have violated a provision of the Companies and Allied Matters Act is...",
+      "answer": "Administrative Proceedings Committee",
+      "insight": "The APC is an internal quasi-judicial body of the SEC (or CAC) designed to resolve disputes and violations without initial full-scale court litigation."
+    },
+    {
+      "text": "The duty of a bank customer to his banker regarding fraud on his account is...",
+      "answer": "To inform his banker",
+      "insight": "A customer has a legal duty to promptly notify the bank of any known or suspected unauthorized transactions or forgeries on their account."
+    },
+    {
+      "text": "An agreement for buying goods, under which a person makes an initial down payment and pays the balance plus interest in instalments is known as...",
+      "answer": "Credit sale",
+      "insight": "In a credit sale, ownership of the goods usually passes to the buyer immediately, unlike hire purchase where it passes only after the final payment."
+    },
+    {
+      "text": "The type of trust that is imposed on the parties notwithstanding their intentions is...",
+      "answer": "Constructive or Judicial trust",
+      "insight": "A constructive trust is an 'operation of law' remedy used by courts to satisfy the demands of justice regardless of what the parties originally planned."
+    },
+    {
+      "text": "The type of Alternative Dispute Resolution mechanism that is highly similar to litigation in court is...",
+      "answer": "Arbitration",
+      "insight": "Arbitration is formal and results in a binding 'award,' making it the ADR method that most closely resembles a traditional court trial."
+    }
+  ],
+"ESSAY": [
+    {
+      "_year_header": "--- MARCH 2024 EXAMINATIONS ---"
+    },
+    {
+      "text": "State the validity tests that a custom must pass before it can be accepted as valid by a Court of law in Nigeria.",
+      "officialAnswer": "1. It must not be repugnant to natural justice, equity, and good conscience. 2. It must not be contrary to or incompatible with any law in force. 3. It must be proved or judicially noticed. 4. It must not be contrary to public policy.",
+      "keywords": [
+        ["natural", "justice", "equity", "good", "conscience"],
+        ["law", "force", "compatible"],
+        ["proved", "judicially", "noticed"],
+        ["public", "policy"]
+      ],
+      "insight": "Customary law is unwritten, so the court uses these 'repugnancy tests' to ensure local traditions don't violate fundamental human rights or established national statutes[cite: 5396, 5398, 5400, 5402]."
+    },
+    {
+      "text": "State FIVE major distinctions between criminal law and civil law.",
+      "officialAnswer": "1. Aim: Criminal law punishes; civil law compensates. 2. Parties: State vs Accused (criminal); Claimant vs Defendant (civil). 3. Penalty: Fine/prison (criminal); Damages (civil). 4. Verdict: Guilty/Not Guilty (criminal); Liable/Not Liable (civil). 5. Standard of Proof: Beyond reasonable doubt (criminal); Balance of probabilities (civil).",
+      "keywords": [
+        ["punish", "compensate"],
+        ["state", "accused", "claimant", "plaintiff", "defendant"],
+        ["fine", "imprisonment", "damages"],
+        ["guilty", "liable"],
+        ["reasonable", "doubt", "probabilities", "evidence"]
+      ],
+      "insight": "The most critical difference is the 'Standard of Proof'; it is much harder to convict someone of a crime (must be nearly certain) than it is to win a civil lawsuit (just needs to be more likely than not)[cite: 5408, 5409, 5410, 5411, 5412, 5413, 5418]."
+    },
+    {
+      "text": "Explain why the Constitution of the Federal Republic of Nigeria is supreme and state THREE of its characteristics.",
+      "officialAnswer": "The Constitution is supreme because any other law that contradicts it is void to the extent of its inconsistency. Characteristics: Supremacy, Written and rigid form, Separation of powers, Rule of law, Federalism, and Fundamental rights.",
+      "keywords": [
+        ["supreme", "supremacy", "void", "contradict"],
+        ["written", "rigid"],
+        ["separation", "powers"],
+        ["rule", "law"],
+        ["federalism"],
+        ["fundamental", "rights"]
+      ],
+      "insight": "The Constitution acts as the 'ground norm' or the mother of all laws. If a state law or a federal act clashes with the Constitution, that law effectively 'dies'[cite: 5420, 5422, 5424, 5426, 5427]."
+    },
+    {
+      "text": "Define a Partnership and state the FOUR essential elements required to form one.",
+      "officialAnswer": "A partnership is a relationship where two or more persons agree to carry on a business with the aim of making and sharing profits. Elements: 1. A business must exist. 2. Carried on by or on behalf of partners. 3. Motive of profit-making. 4. Profit-sharing agreement.",
+      "keywords": [
+        ["two", "more", "persons", "people"],
+        ["carrying", "on", "business"],
+        ["profit", "making", "sharing"]
+      ],
+      "insight": "You cannot have a 'partnership' of one person, nor is it a partnership if the goal is purely charitable; there must be a commercial business motive and a share of the spoils[cite: 5437, 5439, 5440, 5441, 5442]."
+    },
+    {
+      "text": "Explain the main distinction between the Memorandum and Articles of Association of a company.",
+      "officialAnswer": "The Memorandum of Association regulates the external relations of the company and defines the limits of its authority (what it can do). The Articles of Association regulate the internal affairs, governance, and management rules of the company.",
+      "keywords": [
+        ["external", "relations", "limits", "authority"],
+        ["internal", "affairs", "governance", "management"]
+      ],
+      "insight": "Think of the Memorandum as the company's 'Passport' (external identity/powers) and the Articles as the 'House Rules' (internal meetings, director powers, etc.)[cite: 5443, 5445]."
+    },
+    {
+      "text": "State the circumstances under which a company may wind up (liquidate) voluntarily.",
+      "officialAnswer": "1. When a fixed period or event stated in the Articles occurs and an ordinary resolution is passed. 2. When the company resolves by special resolution (75% majority) that it be wound up voluntarily.",
+      "keywords": [
+        ["articles", "period", "event", "ordinary", "resolution"],
+        ["special", "resolution"]
+      ],
+      "insight": "Voluntary winding up doesn't require a court order; it is a decision made by the shareholders themselves when they feel the company's purpose has been served or they no longer wish to continue[cite: 5448, 5449]."
+    },
+    {
+      "text": "State FIVE advantages a business derives from registering as a Limited Liability Company (e.g., Musa Limited).",
+      "officialAnswer": "1. Separate legal personality. 2. Limited liability of members. 3. Perpetual succession. 4. Capacity to own property in its name. 5. Capacity to sue and be sued. 6. Ability to borrow in the company's name. 7. Membership through shareholding.",
+      "keywords": [
+        ["separate", "legal", "personality"],
+        ["limited", "liability"],
+        ["perpetual", "succession"],
+        ["own", "property"],
+        ["sue", "be", "sued"],
+        ["borrowing", "shares"]
+      ],
+      "insight": "Registration creates a 'corporate veil.' If the business goes into debt, the owner's personal house and car are usually safe because the company is a distinct person in the eyes of the law[cite: 5459, 5460, 5462, 5464, 5467, 5468]."
+    },
+    {
+      "text": "State FOUR duties a customer owes to their banker.",
+      "officialAnswer": "1. To draw cheques with care and diligence to prevent fraud. 2. To give written instructions for withdrawals. 3. To notify the bank promptly of any suspicious dealings or known fraud. 4. To pay appropriate bank charges and interest on loans.",
+      "keywords": [
+        ["cheques", "care", "fraud"],
+        ["written", "instructions"],
+        ["notify", "suspicious"],
+        ["charges", "interest"]
+      ],
+      "insight": "The customer's duty of care (e.g., not leaving wide gaps on a cheque) is vital; if your negligence allows a fraudster to easily change a figure, you might not be able to blame the bank[cite: 5473, 5475, 5477, 5479]."
+    },
+    {
+      "text": "State the FOUR essential elements of a valid contract and distinguish between an offer and an invitation to treat.",
+      "officialAnswer": "Elements: Offer, Acceptance, Consideration, Intention to create legal relations, and Capacity. Distinction: An offer is a definite intention to be legally bound by certain terms. An invitation to treat is merely an invitation to others to make an offer or begin negotiations.",
+      "keywords": [
+        ["offer", "acceptance", "consideration", "intention", "capacity"],
+        ["definite", "intention", "bound"],
+        ["negotiate", "invitation", "negotiation"]
+      ],
+      "insight": "Goods displayed on a supermarket shelf are an 'invitation to treat,' not an offer. The customer makes the 'offer' at the till, and the shop 'accepts' it by taking the money[cite: 5496, 5497, 5498, 5499, 5501, 5502]."
+    },
+    {
+      "text": "State FOUR ways in which an Agency relationship may be created.",
+      "officialAnswer": "1. Express agreement. 2. Implication of law. 3. Ratification (approving an act after it was done). 4. Estoppel or Holding out. 5. Necessity (emergency situations).",
+      "keywords": [
+        ["express", "agreement"],
+        ["implication", "law"],
+        ["ratification"],
+        ["estoppel", "holding", "out"],
+        ["necessity"]
+      ],
+      "insight": "Ratification is a legal 'time machine'; if someone acts as your agent without permission, but you like the deal and sign off on it later, the law treats it as if they had permission from the start[cite: 5507, 5508, 5509, 5511, 5513]."
+    },
+    {
+      "text": "What are the legal remedies for a public officer whose employment (with 'statutory flavor') is terminated without following due process?",
+      "officialAnswer": "The court can order that the employee be reinstated to their position. Additionally, the employer is liable to pay all outstanding salaries and allowances for the entire period during which the employment was unlawfully terminated.",
+      "keywords": [
+        ["statutory", "flavor"],
+        ["reinstated", "reinstatement"],
+        ["outstanding", "salaries", "allowances", "pay"]
+      ],
+      "insight": "Employment with 'statutory flavor' (government jobs) is protected by law. Unlike private jobs where you usually just get damages for a sack, here you can actually force the government to give you your desk back[cite: 5524, 5525, 5526]."
+    },
+    {
+      "text": "State FOUR principles of Insurance law.",
+      "officialAnswer": "1. Utmost good faith (Uberrimae Fidei). 2. Insurable interest. 3. Proximate cause. 4. Indemnity. 5. Subrogation. 6. Contribution.",
+      "keywords": [
+        ["utmost", "good", "faith"],
+        ["insurable", "interest"],
+        ["proximate", "cause"],
+        ["indemnity"],
+        ["subrogation"],
+        ["contribution"]
+      ],
+      "insight": "Subrogation is the 'step-in-shoes' rule. If an insurer pays you for a car crash, they take over your right to sue the driver who hit you to get their money back[cite: 5533, 5535, 5536, 5538, 5540, 5541]."
+    },
+    {
+      "text": "State FOUR uses of a Trust in law.",
+      "officialAnswer": "1. Protects property from undue interference. 2. Allows beneficiaries who lack capacity (minors) to have property held for them. 3. Makes multiple-person land ownership possible. 4. Facilitates charitable purposes. 5. Enables property to be used for succession. 6. Minimizes property tax liability.",
+      "keywords": [
+        ["protects", "property"],
+        ["beneficiaries", "capacity", "minors"],
+        ["land", "ownership"],
+        ["charitable", "succession", "tax"]
+      ],
+      "insight": "Trusts are great for children (minors). Since a child cannot legally manage a bank account or a house, a Trustee holds it 'in trust' until they are old enough[cite: 5565, 5567, 5569, 5571, 5573, 5574]."
+    },
+    {
+      "text": "Explain the difference between a 'Common Mistake' and a 'Mutual Mistake' in contract law.",
+      "officialAnswer": "Common Mistake: Both parties are mistaken about the same thing (e.g., the subject matter doesn't exist). This voids the contract completely. Mutual Mistake: Both parties are mistaken about different things; they have misunderstood each other's intentions. This makes the contract voidable.",
+      "keywords": [
+        ["common", "same", "non-existent", "void"],
+        ["mutual", "different", "intentions", "voidable"]
+      ],
+      "insight": "In a Common Mistake, there is 'no agreement' because the item is gone. In a Mutual Mistake, there is an agreement, but the parties are at 'cross-purposes,' so the court may allow one party to back out[cite: 5588, 5589, 5590, 5591, 5592, 5593]."
+    }
+  ]
+}

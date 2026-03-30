@@ -1,0 +1,1587 @@
+{
+  "MCQ": [
+    {
+  "MCQ": [
+    {
+      "_year_header": "--- MARCH 2023 EXAMINATIONS ---"
+    },
+    {
+      "text": "Which of the following is NOT a necessary standard and regulation to be followed in the preparation of Financial Statements?",
+      "options": [
+        "A. International Financial Reporting Standards",
+        "B. Companies Act",
+        "C. Security, Stock and Exchange Act",
+        "D. Banks and other Financial Matters Act",
+        "E. Financial Reporting Council regulations"
+      ],
+      "answer": 2,
+      "insight": "While the SEC provides regulations, there is no specific act called 'Security, Stock and Exchange Act' directly dictating general financial statement preparation in the same foundational way as IFRS, CAMA, BOFIA, and FRCN regulations."
+    },
+    {
+      "text": "The steps and procedure followed in the process of bookkeeping are all these, EXCEPT",
+      "options": [
+        "A. Preparation and presentation of Financial Statements",
+        "B. Classifications of business transactions using source documents",
+        "C. Recording of transactions in books of original entries",
+        "D. Postings of entries into the appropriate ledgers",
+        "E. Extraction of Trial Balance"
+      ],
+      "answer": 0,
+      "insight": "Bookkeeping covers the recording of data up to the extraction of the Trial Balance. The preparation and presentation of Financial Statements is the core function of Accounting, not bookkeeping."
+    },
+    {
+      "text": "Which of the following is NOT a specialised purpose of Accounting?",
+      "options": [
+        "A. Cost accounting",
+        "B. Performance Management",
+        "C. Auditing",
+        "D. Inventory Accounting",
+        "E. Taxation"
+      ],
+      "answer": 3,
+      "insight": "Inventory accounting is simply a subset of financial and cost accounting. It is not considered a distinct, major specialized branch of the accounting profession like Auditing, Taxation, or Cost Accounting."
+    },
+    {
+      "text": "A rebate given to a customer for prompt payment for goods purchased is ________ discount",
+      "options": [
+        "A. Quantity",
+        "B. Trade",
+        "C. Cash",
+        "D. Debit",
+        "E. Credit"
+      ],
+      "answer": 2,
+      "insight": "A cash discount is offered as an incentive to encourage customers to pay their invoices quickly, before the due date."
+    },
+    {
+      "text": "Additional charges incurred on the delivery of goods purchased is referred to as",
+      "options": [
+        "A. Carriage outwards",
+        "B. Wages incurred",
+        "C. Charges incurred",
+        "D. Purchase cost",
+        "E. Carriage inwards"
+      ],
+      "answer": 4,
+      "insight": "Carriage inwards is the transportation cost associated with bringing purchased goods into the business. It is added to the cost of purchases in the trading account."
+    },
+    {
+      "text": "The following are enhancing qualitative characteristics of useful financial information that is relevant and faithfully presented, EXCEPT",
+      "options": [
+        "A. Comparability",
+        "B. Verifiability",
+        "C. Completeness",
+        "D. Timeliness",
+        "E. Understandability"
+      ],
+      "answer": 2,
+      "insight": "Completeness is a component of 'Faithful Representation' (a fundamental qualitative characteristic), whereas comparability, verifiability, timeliness, and understandability are the four 'enhancing' characteristics."
+    },
+    {
+      "text": "What is the cost of goods sold at N152,000, if the selling price is made up of cost price plus 25%.",
+      "options": [
+        "A. 190,000",
+        "B. 121,600",
+        "C. 114,000",
+        "D. 38,000",
+        "E. 30,400"
+      ],
+      "answer": 1,
+      "insight": "Mark-up is 25% (or 1/4) on cost. This translates to a Margin of 1/5 (20%) on sales. Margin = 20% of 152,000 = 30,400. Cost of Goods Sold = Selling Price (152,000) - Margin (30,400) = N121,600."
+    },
+    {
+      "text": "International Federation of Accountants (IFAC)'s code of ethics includes all of the following, EXCEPT",
+      "options": [
+        "A. Professional Competence",
+        "B. Relevance",
+        "C. Integrity",
+        "D. Objectivity",
+        "E. Confidentiality"
+      ],
+      "answer": 1,
+      "insight": "Relevance is a qualitative characteristic of financial information, not an ethical code. The IFAC fundamental principles are Integrity, Objectivity, Professional Competence and Due Care, Confidentiality, and Professional Behavior."
+    },
+    {
+      "text": "ABC Ventures has paid for rent of N240,000. The payment has been debited into bank as N240,000 and credited in the rent account as N240,000. Which type of error is this?",
+      "options": [
+        "A. Complete reversal",
+        "B. Compensating",
+        "C. Commission",
+        "D. Principle",
+        "E. Original entry"
+      ],
+      "answer": 0,
+      "insight": "A payment of rent should be Debited to Rent (to increase the expense) and Credited to Bank (to decrease the asset). Reversing these entries completely is an error of complete reversal."
+    },
+    {
+      "text": "A list of the assets and liabilities of a business entity prepared at a particular date is referred to as",
+      "options": [
+        "A. Trial Balance",
+        "B. Statement of Assets and Liabilities",
+        "C. Statement of Property, plant and equipment",
+        "D. Statement of financial position",
+        "E. Statement of business entity"
+      ],
+      "answer": 3,
+      "insight": "The Statement of Financial Position (formerly the Balance Sheet) presents a snapshot of a business's assets, liabilities, and equity at a specific point in time."
+    },
+    {
+      "text": "A trader bought 50 pairs of shoes for N50,000 and sold 35 pairs for N70,000 at the end of a period. The cost of goods sold would be measured on the 35 pairs sold (35/50 x N50,000 = N35,000). The N15,000 balance would be deferred to the next period. Which concept is applied in this scenario?",
+      "options": [
+        "A. Going Concern",
+        "B. Objectivity/Fairness",
+        "C. Prudency/Conservatism",
+        "D. Accrual/matching",
+        "E. Entity"
+      ],
+      "answer": 3,
+      "insight": "The matching concept requires that the costs incurred to generate revenue must be recognized in the same accounting period as the related revenue. Unsold goods are deferred as inventory."
+    },
+    {
+      "text": "Which of the following is NOT a characteristic of a business?",
+      "options": [
+        "A. It exists to make profits",
+        "B. Risk is the reward for making profits",
+        "C. It supplies goods and services to make profits",
+        "D. Goods supplies are either make or buy from other parties",
+        "E. The profits earned belongs to its owner"
+      ],
+      "answer": 1,
+      "insight": "The statement is backwards. Profit is the reward for accepting business risk, risk is not the reward for making profits."
+    },
+    {
+      "text": "Inventory bought for Le25,000; is sold for Le40,000. What is the figure of profit for the business?",
+      "options": [
+        "A. Le28,000",
+        "B. Le19,000",
+        "C. Le18,000",
+        "D. Le15,000",
+        "E. Le12,000"
+      ],
+      "answer": 3,
+      "insight": "Profit = Revenue - Cost. Profit = 40,000 - 25,000 = Le15,000."
+    },
+    {
+      "text": "Inventory bought for Le15,000; Loss on sale Le3,000. What is the revenue of the business?",
+      "options": [
+        "A. Le28,000",
+        "B. Le19,000",
+        "C. Le18,000",
+        "D. Le15,000",
+        "E. Le12,000"
+      ],
+      "answer": 4,
+      "insight": "Revenue = Cost - Loss. Revenue = 15,000 - 3,000 = Le12,000."
+    },
+    {
+      "text": "Goods sold for Le23,500 and profit on sale is Le4,500. What is the expense of the business?",
+      "options": [
+        "A. Le28,000",
+        "B. Le19,000",
+        "C. Le18,000",
+        "D. Le15,000",
+        "E. Le12,000"
+      ],
+      "answer": 1,
+      "insight": "Expense (Cost) = Revenue - Profit. Expense = 23,500 - 4,500 = Le19,000."
+    },
+    {
+      "text": "All of the following are usefulness of a trial balance, EXCEPT",
+      "options": [
+        "A. Check arithmetic of postings into the ledgers",
+        "B. Detect all errors of postings in the books of accounts",
+        "C. Facilitate preparation of final accounts",
+        "D. Indicate balances in various ledgers and general ledger accounts",
+        "E. Used by auditors to trace items with significant balances to schedule and source documents"
+      ],
+      "answer": 1,
+      "insight": "A Trial Balance cannot detect ALL errors. Errors of omission, commission, principle, original entry, and compensation will not cause the trial balance totals to disagree."
+    },
+    {
+      "text": "GEBU (Ghana) Ltd orders a machine at an invoice price of GHC100,000,000. Other relevant costs include: Value added tax 12,500,000; Freight charges 10,250,000; Installation costs 4,000,000; Trade discount given 1,000,000. How much is the total cost of the machine?",
+      "options": [
+        "A. GHC126,750,000",
+        "B. GHC125,750,000",
+        "C. GHC114,250,000",
+        "D. GHC113,250,000",
+        "E. GHC110,250,000"
+      ],
+      "answer": 1,
+      "insight": "Total Cost = Invoice Price (100m) - Trade Discount (1m) + VAT (12.5m) + Freight (10.25m) + Installation (4m) = GHC125,750,000."
+    },
+    {
+      "text": "Payment for the machine will be made in 48 monthly instalments including GHC20,000,000 interest charges. What is the accounting treatment of the interest charges?",
+      "options": [
+        "A. Recognise as interest and added to the total cost of purchase",
+        "B. Recognise as interest and reduced from the total cost of purchase",
+        "C. Recognise as interest expense and written off in the statement of profit or loss",
+        "D. Recognise as deferred interest in the statement of financial position",
+        "E. Recognise as deferred interest in the statement of profit or loss"
+      ],
+      "answer": 2,
+      "insight": "Interest charges (finance costs) are a revenue expenditure incurred for acquiring credit, and they are written off in the Statement of Profit or Loss over the period of the loan."
+    },
+    {
+      "text": "Which of the following is NOT an example of revenue expenditure",
+      "options": [
+        "A. Cost incurred to acquire trading inventories for sale",
+        "B. Legal fees of acquiring land or building",
+        "C. Cost of repairing any non-current assets",
+        "D. Staff salaries and emoluments",
+        "E. Discount allowed on credit sales"
+      ],
+      "answer": 1,
+      "insight": "Legal fees incurred during the acquisition of land or a building are capitalized as part of the asset's cost (capital expenditure), not expensed immediately."
+    },
+    {
+      "text": "A machine was purchased on July 1, 2020 for L$10,000,000 and sold on June 30, 2022 for L$8,200,000. Depreciation is 10% per annum on cost. Full year depreciation is charged in the year of purchase but none in the year of sale. What is the profit or loss on disposal?",
+      "options": [
+        "A. L$100,000 (loss)",
+        "B. L$200,000 (loss)",
+        "C. L$200,000 (profit)",
+        "D. L$1,200,000 (loss)",
+        "E. L$1,200,000 (profit)"
+      ],
+      "answer": 2,
+      "insight": "Depreciation in Yr 1 (2020) = 1m. Yr 2 (2021) = 1m. Yr 3 (2022) = 0. Total Acc. Depr = 2m. Carrying amount = 10m - 2m = 8m. Disposal Proceeds = 8.2m. Profit = 8.2m - 8m = L$200,000."
+    },
+    {
+      "text": "Based on the previous machine data, what is the accumulated depreciation on the machine as at June 30, 2021?",
+      "options": [
+        "A. L$500,000",
+        "B. L$1,000,000",
+        "C. L$1,500,000",
+        "D. L$2,000,000",
+        "E. L$3,000,000"
+      ],
+      "answer": 2,
+      "insight": "Depreciation in Year 1 (up to Dec 31, 2020, full year policy applied) = 1,000,000. Depreciation for half of Year 2 (Jan 1, 2021 to June 30, 2021) = 500,000. Total accumulated at June 30, 2021 = L$1,500,000."
+    },
+    {
+      "text": "Oshey Ventures Trial Balance shows: Trade receivables 500, Allowances for doubtful debts 50. If the rate of allowances for discount allowed is 5% of trade receivables, what is the amount of trade receivables to be shown in the statement of financial position?",
+      "options": [
+        "A. GMD477,500",
+        "B. GMD450,000",
+        "C. GMD427,500",
+        "D. GMD425,000",
+        "E. GMD422,500"
+      ],
+      "answer": 2,
+      "insight": "1. Good Trade Receivables = 500 - 50 = 450. \n2. Allowance for discount = 5% of 450 = 22.5. \n3. Net Receivables in SOFP = 450 - 22.5 = 427.5 (or GMD427,500)."
+    },
+    {
+      "text": "Using Oshey Ventures data: Gross profit 150, Allowances for doubtful debts 50, Allowance for discount allowed (calculated as 22.5). What is the amount that will be shown as net profit in the statement of profit or loss?",
+      "options": [
+        "A. GMD150,000",
+        "B. GMD77,500",
+        "C. GMD72,500",
+        "D. GMD50,000",
+        "E. GMD22,500"
+      ],
+      "answer": 1,
+      "insight": "Net Profit = Gross Profit (150) - Allowance for Doubtful Debts (50) - Allowance for Discount Allowed (22.5) = 77.5 (or GMD77,500)."
+    },
+    {
+      "text": "What is the correct accounting entry when previous provision for doubtful receivables in the trial balance is no longer required?",
+      "options": [
+        "A. Debit trade receivables account: Credit statement of profit or loss",
+        "B. Debit statement of profit or loss account: Credit trade receivables account",
+        "C. Debit provision for doubtful receivables account: Credit statement Profit or Loss account",
+        "D. Debit statement of Profit or Loss account: Credit provision for doubtful receivables account",
+        "E. Debit bad debts account: Credit statement of Profit or Loss account"
+      ],
+      "answer": 2,
+      "insight": "Reducing a provision increases your profit. You must Debit the Provision account (to reduce its credit balance) and Credit the Statement of Profit or Loss (as a gain)."
+    },
+    {
+      "text": "Electricity paid for January 2021 to October 2021 amounted to N600,000. Electricity accrued evenly throughout year 2021. How much is the electricity amount to be taken to the statement of profit or loss for the year ended December 31, 2021?",
+      "options": [
+        "A. 60,000",
+        "B. 120,000",
+        "C. 180,000",
+        "D. 600,000",
+        "E. 720,000"
+      ],
+      "answer": 4,
+      "insight": "N600,000 covers 10 months, meaning the monthly charge is N60,000. The total 12-month expense for the Statement of Profit or Loss is 12 * 60,000 = N720,000."
+    },
+    {
+      "text": "Based on the previous electricity data, the amount of electricity owed to be taken to the statement of financial position as at December 31, 2021 is",
+      "options": [
+        "A. 60,000",
+        "B. 120,000",
+        "C. 180,000",
+        "D. 600,000",
+        "E. 720,000"
+      ],
+      "answer": 1,
+      "insight": "Since 10 months were paid, 2 months remain unpaid (accrued). 2 months * N60,000 = N120,000. This is recognized as a current liability."
+    },
+    {
+      "text": "In banking transactions another name for current account, because of its nature of withdrawals is known as",
+      "options": [
+        "A. Demand deposits",
+        "B. Fixed deposit",
+        "C. Cheque deposit",
+        "D. Money deposit",
+        "E. Service deposit"
+      ],
+      "answer": 0,
+      "insight": "Current accounts are also referred to as 'demand deposits' because the funds can be withdrawn at any time on demand without prior notice."
+    },
+    {
+      "text": "In bank reconciliation statement, which of the following reconciliation items will affect the cash book balance? I. Bank error overstating the bank balance. II. Cash book error, overstating the bank balance. III. Income received through the bank. IV. Imprest cheques.",
+      "options": [
+        "A. I and II",
+        "B. I and III",
+        "C. I and IV",
+        "D. II and III",
+        "E. III and IV"
+      ],
+      "answer": 3,
+      "insight": "Items affecting the adjusted cash book include Cash book errors (II) and direct bank receipts/income (III). Bank errors (I) are adjusted on the Bank Reconciliation Statement itself."
+    },
+    {
+      "text": "Benson Ventures operates Hasley bonus scheme system. Standard time = 2500 hours; Wages rate per hour = GMD150; Actual time taken = 2200 hours. What is the amount of bonus due?",
+      "options": [
+        "A. GMD87,500",
+        "B. GMD65,000",
+        "C. GMD45,000",
+        "D. GMD22,500",
+        "E. GMD22,000"
+      ],
+      "answer": 3,
+      "insight": "Time Saved = Standard (2500) - Actual (2200) = 300 hours. Under the Halsey Premium plan, the bonus is 50% of the time saved. Bonus = 0.5 * 300 hrs * 150 = GMD22,500."
+    },
+    {
+      "text": "What is the amount of total earnings due under the Hasley scheme? (Actual time = 2200 hrs; Rate = GMD150; Bonus = GMD22,500).",
+      "options": [
+        "A. GMD500,000",
+        "B. GMD440,000",
+        "C. GMD375,000",
+        "D. GMD352,500",
+        "E. GMD330,000"
+      ],
+      "answer": 3,
+      "insight": "Basic Pay = Actual Hours * Rate = 2200 * 150 = 330,000. Total Earnings = Basic Pay (330,000) + Bonus (22,500) = GMD352,500."
+    }
+  ]
+},
+    { "_year_header": "--- SEPTEMBER 2023 EXAMINATIONS ---" },
+    {
+      "text": "Which of the following is NOT a direct user of financial statements?",
+      "options": ["A. Trade Union", "B. Employee", "C. Financial Analysts", "D. Lenders", "E. Management"],
+      "answer": 2,
+      "insight": "Financial analysts are indirect users who use the statements to render advisory services to their clients, unlike management, employees, or lenders who have a direct financial stake."
+    },
+    {
+      "text": "A new branch of accounting which mainly focuses on the disclosure of non-financial or qualitative information about an entity is called",
+      "options": ["A. Sustainability Accounting", "B. Social and Environmental Accounting", "C. Project Accounting", "D. Cost Accounting", "E. Government Accounting"],
+      "answer": 0,
+      "insight": "Sustainability accounting focuses on ESG (Environmental, Social, and Governance) factors and qualitative disclosures beyond traditional financial metrics."
+    },
+    {
+      "text": "Which of the following is a fundamental characteristic of financial statement?",
+      "options": ["A. Verifiability", "B. Comparability", "C. Understandability", "D. Relevance", "E. Timeliness"],
+      "answer": 3,
+      "insight": "According to the IASB Conceptual Framework, Relevance and Faithful Representation are the two 'fundamental' qualitative characteristics. The others are 'enhancing' characteristics."
+    },
+    {
+      "text": "A financial statement that is capable of making difference in the decision made by users of such information is said to be",
+      "options": ["A. Comparable", "B. Relevant", "C. Timely", "D. Verifiable", "E. Complete"],
+      "answer": 1,
+      "insight": "Information is considered relevant if it is capable of making a difference to the decisions made by users (i.e., it has predictive or confirmatory value)."
+    },
+    {
+      "text": "A financial statement presented in a way to show an account entrusted to a person who is responsible or in custody to manage a property is called ........accounting",
+      "options": ["A. Project", "B. Social", "C. Fiduciary", "D. Sustainability", "E. Government"],
+      "answer": 2,
+      "insight": "Fiduciary accounting involves managing and reporting on assets handled by a trustee, executor, or administrator on behalf of another party."
+    },
+    {
+      "text": "Which of the following account can be found in a nominal legder?",
+      "options": ["A. Building Account", "B. Machinery Account", "C. Patents Account", "D. Salaries and Wages Account", "E. Capital Account"],
+      "answer": 3,
+      "insight": "The nominal ledger contains accounts related to income and expenses (such as Salaries and Wages). Building, Machinery, and Patents are found in the real/impersonal ledger."
+    },
+    {
+      "text": "Given the following information: Equipment 500,000; Stationery expense 50,000; Furniture 40,000; Trade Receivables 120,000; Bank Account 80,000. Calculate the amount to be recognised in the Real Ledger accounts.",
+      "options": ["A. GH¢ 790,000", "B. GH¢ 700,000", "C. GH¢ 540,000", "D. GH¢ 200,000", "E. GH¢ 50,000"],
+      "answer": 2,
+      "insight": "The Real Ledger records tangible assets (Property, Plant, and Equipment). Equipment (500,000) + Furniture (40,000) = GH¢540,000."
+    },
+    {
+      "text": "Which of the following is NOT recorded in the Statement of Profit or Loss?",
+      "options": ["A. Revenue", "B. Depreciation Reserve", "C. Bad Debt", "D. Return Inward", "E. Return Outward"],
+      "answer": 1,
+      "insight": "Depreciation Reserve (Accumulated Depreciation) is a contra-asset account and is recorded in the Statement of Financial Position, not the Profit or Loss statement."
+    },
+    {
+      "text": "In a private company, the minimum number of owners is",
+      "options": ["A. 100", "B. 50", "C. 7", "D. 5", "E. 1"],
+      "answer": 4,
+      "insight": "Under the updated Companies and Allied Matters Act (CAMA 2020), a private company can now be formed and owned by a minimum of 1 person."
+    },
+    {
+      "text": "A financial statement is said to be ________ when it enables users to correct past evaluations and assessments.",
+      "options": ["A. Predictive", "B. Confirmatory", "C. Faithfully represented", "D. Complete", "E. Comparable"],
+      "answer": 1,
+      "insight": "Confirmatory value is a component of 'Relevance'. It helps users confirm or correct their past expectations and assessments."
+    },
+    {
+      "text": "Which of the following is NOT a current liability?",
+      "options": ["A. Trade Payables", "B. Bills Payable", "C. Subscription outstanding", "D. Subscription in advance", "E. Electricity bills owed"],
+      "answer": 2,
+      "insight": "Subscription outstanding (subscriptions owed to a club by its members) is treated as a Current Asset (Receivable), not a liability."
+    },
+    {
+      "text": "An item of PPE with economic useful life of 10 years was bought on March 31, 2022 at a cost of GH¢1,500,000, Salvage value GH¢100,000 and annual depreciation accrues evenly. Calculate depreciation charge for the year ended December 31, 2022.",
+      "options": ["A. GH¢180,000", "B. GH¢160,000", "C. GH¢150,000", "D. GH¢140,000", "E. GH¢105,000"],
+      "answer": 4,
+      "insight": "Annual Depr = (Cost - Salvage) / Life = (1,500,000 - 100,000) / 10 = 140,000. \nSince it was bought on March 31, it was used for exactly 9 months in 2022 (April - December). \nDepr for 2022 = 140,000 x (9/12) = GH¢105,000."
+    },
+    {
+      "text": "Determine the carrying amount of the item of Property, Plant and Equipment (PPE) to be recognised in the Statement of Financial Position as at December 31, 2022. (Cost GH¢1,500,000, 2022 Depreciation GH¢105,000).",
+      "options": ["A. GH¢1,395,000", "B. GH¢1,360,000", "C. GH¢1,350,000", "D. GH¢1,320,000", "E. GH¢1,220,000"],
+      "answer": 0,
+      "insight": "Carrying Amount = Original Cost - Accumulated Depreciation. \n1,500,000 - 105,000 = GH¢1,395,000."
+    },
+    {
+      "text": "Which of the following is NOT a characteristic of business?",
+      "options": ["A. It is a social service to the public", "B. It exists to make profits", "C. It supplies goods that it either makes or buys from other parties", "D. Its reward for accepting risk is profit", "E. The profit earned by it belongs to its owners"],
+      "answer": 0,
+      "insight": "A business is a commercial enterprise driven by profit. Providing pure social services to the public is the characteristic of a Not-for-Profit entity or government."
+    },
+    {
+      "text": "Which of the following shows a list of balances in the books of accounts?",
+      "options": ["A. Statement of Financial Position", "B. Income Statement", "C. Cash Book", "D. Nominal Ledger", "E. Trial Balance"],
+      "answer": 4,
+      "insight": "A Trial Balance is a statement that lists all the debit and credit balances extracted from the ledgers at a specific date to test arithmetical accuracy."
+    },
+    {
+      "text": "Which of the following books of original entries record goods bought on credit?",
+      "options": ["A. Sales Journal", "B. Purchases Journal", "C. Sales Return", "D. Purchases Return", "E. Journal"],
+      "answer": 1,
+      "insight": "The Purchases Journal (or Purchases Day Book) is the book of prime entry used exclusively to record the credit purchases of goods intended for resale."
+    },
+    {
+      "text": "An item of Property, Plant and Equipment bought in cash was credited into Cash Account and debited into Purchases Account, the error committed is called error of",
+      "options": ["A. Principle", "B. Omission", "C. Complete Reversal", "D. Original Entry", "E. Commission"],
+      "answer": 0,
+      "insight": "An error of principle occurs when a transaction is posted to the wrong class of account. Here, a Capital Asset (PPE) was wrongly classified as a Revenue Expense (Purchases)."
+    },
+    {
+      "text": "Which of the following is NOT posted to credit side of Trade Receivables Control Account?",
+      "options": ["A. Bad Debt", "B. Allowance for doubtful Trade Receivables", "C. Bill Receivable", "D. Sales Return", "E. Discount Allowed"],
+      "answer": 1,
+      "insight": "An 'Allowance for doubtful receivables' is an estimate and is kept in a separate provision account. It is not posted directly to the Receivables Control Account, unlike confirmed bad debts which are written off."
+    },
+    {
+      "text": "Which of the following has a debit entry in the Trade Payables Control Account?",
+      "options": ["A. Discount Allowed", "B. Return Inward", "C. Credit Notes", "D. Payment to Supplier", "E. Dishonoured Cheque"],
+      "answer": 3,
+      "insight": "The Trade Payables Control Account is a liability account. To reduce a liability, you must debit it. Making a payment to a supplier reduces what you owe them, hence a debit entry."
+    },
+    {
+      "text": "Which of the following source document is issued for goods sold in cash?",
+      "options": ["A. Invoice", "B. Voucher", "C. Slip", "D. Receipt", "E. Bin Card"],
+      "answer": 3,
+      "insight": "A receipt is the primary source document issued immediately to acknowledge that cash has been received for a transaction."
+    },
+    {
+      "text": "Which of the following is NOT recorded in Trade Payable Control Account?",
+      "options": ["A. Amount paid to supply", "B. Return Outward", "C. Cash Purchases", "D. Discount Received", "E. Credit Purchases"],
+      "answer": 2,
+      "insight": "Cash purchases are settled immediately and do not create a creditor relationship. Therefore, they bypass the Trade Payables Control Account entirely."
+    },
+    {
+      "text": "In Bank Reconciliation Statement, where will dishonoured cheque be recorded?",
+      "options": ["A. Credit Side of Bank Statement", "B. Debit Side of Cash Book", "C. Credit Note", "D. Debit Note", "E. Credit Side of Cash Book"],
+      "answer": 1,
+      "insight": "Note: According to the official examiner's key, the answer is 'Debit Side of Cash Book'. This specifically applies if a cheque the business *issued* to a supplier was dishonoured (so you must Debit the cash book to add the funds back)."
+    },
+    {
+      "text": "Given: Cash Book Balance (Credit) L$400,000; Unpresented Cheque L$1,800,000; Uncredited Cheque L$300,000. Calculate balance in the bank statement.",
+      "options": ["A. L$2,500,000", "B. L$2,100,000", "C. L$1,900,000", "D. L$1,800,000", "E. L$1,100,000"],
+      "answer": 4,
+      "insight": "A Credit Cash Book balance is an overdraft (-400,000). \nTo find the Bank Statement balance: Overdraft (-400,000) + Unpresented Cheques (1,800,000) - Uncredited Cheques (300,000) = L$1,100,000 (Positive/Favorable balance in bank)."
+    },
+    {
+      "text": "Which of the following has a debit entry in the adjusted Cash Book?",
+      "options": ["A. Bank Charges", "B. Stale Cheque", "C. Standing Order", "D. Electronic Dividend", "E. Value Added Tax on Bank Charges"],
+      "answer": 3,
+      "insight": "A debit entry in the cash book represents money coming in. An Electronic Dividend is a direct deposit of income into the bank account, requiring a debit adjustment to the cash book."
+    },
+    {
+      "text": "The body that is responsible for setting International Financial Reporting Standards (IFRS) is",
+      "options": ["A. International Accounting Standards Committee (IASC)", "B. International Accounting Standards Board (IASB)", "C. Financial Reporting Council of Nigeria (FRCN)", "D. Institute of Chartered Accountants of Nigeria (ICAN)", "E. American Institute of Public Certified Accountants (AICPA)"],
+      "answer": 1,
+      "insight": "The IASB is the independent, global standard-setting body responsible for issuing and maintaining IFRS."
+    },
+    {
+      "text": "When Allowance for doubtful trade receivables is no longer required, the accounting entry is",
+      "options": ["A. DR Allowance for doubtful trade receivables, CR Statement of Profit or Loss", "B. DR Gross Profit, CR Allowance for doubtful trade receivable", "C. DR Statement of Profit or Loss, CR Allowance for doubtful trade receivables", "D. DR Allowance for doubtful trade receivables, CR Turnover", "E. DR Trade receivables, CR Statement of Profit or Loss"],
+      "answer": 0,
+      "insight": "A reduction or removal of a provision acts as an increase in profit. You debit the Allowance account (to reduce its credit balance) and credit the Statement of Profit or Loss (as a gain/income)."
+    },
+    {
+      "text": "Trade Receivables Balance is Le800,000. Existing Allowance for doubtful receivables is Le80,000. The allowance is to be increased to 15% for the year ended June 30, 2022. Calculate allowance to be charged in the Statement of Profit or Loss.",
+      "options": ["A. Le880,000", "B. Le800,000", "C. Le200,000", "D. Le120,000", "E. Le40,000"],
+      "answer": 4,
+      "insight": "New required provision = 15% of 800,000 = 120,000. \nSince there is already a provision of 80,000, only the *increase* is charged as an expense to P&L. \n120,000 - 80,000 = Le40,000."
+    },
+    {
+      "text": "Calculate net trade receivables to be recognised in the Statement of Financial Position as at June 30, 2022. (Gross Receivables Le800,000, New Allowance 15%).",
+      "options": ["A. Le680,000", "B. Le720,000", "C. Le760,000", "D. Le800,000", "E. Le880,000"],
+      "answer": 0,
+      "insight": "Net Trade Receivables = Gross Receivables - New Allowance. \n800,000 - 120,000 (which is 15% of 800k) = Le680,000."
+    },
+    {
+      "text": "Given: Revenue 1,500,000; Opening Inv 200,000; Purchases 600,000; Return Inward 100,000; Closing Inv 300,000; Salaries 400,000. Calculate Gross Profit.",
+      "options": ["A. 1,300,000", "B. 1,000,000", "C. 900,000", "D. 800,000", "E. 600,000"],
+      "answer": 2,
+      "insight": "1. Net Sales = Revenue (1,500,000) - Return Inward (100,000) = 1,400,000. \n2. Cost of Sales = Opening Inv (200,000) + Purchases (600,000) - Closing Inv (300,000) = 500,000. \n3. Gross Profit = Net Sales (1,400,000) - Cost of Sales (500,000) = 900,000."
+    },
+    {
+      "text": "Based on the previous data (Gross Profit = 900,000, Salaries and Wages = 400,000). Calculate the Net Profit.",
+      "options": ["A. 200,000", "B. 400,000", "C. 600,000", "D. 500,000", "E. 900,000"],
+      "answer": 3,
+      "insight": "Net Profit = Gross Profit - Operating Expenses. \n900,000 - 400,000 (Salaries) = 500,000."
+    },
+    
+    
+    { "_year_header": "--- MARCH 2024 EXAMINATIONS ---" },
+    { "text": "The basic form of accounting started with", "options": ["A. Financial Statements", "B. Finance keeping", "C. Book-keeping", "D. Record keeping", "E. Financial Analysis"], "answer": 2, "insight": "Book-keeping is the earliest and most basic form of accounting, serving as the foundation for recording financial transactions." },
+    { "text": "The components of financial statements according to IAS 1 on Presentation of Financial Statements include the following, EXCEPT", "options": ["A. Statement of Financial Position", "B. Statement of Changes in Equity", "C. Statement of Financial Reconciliation", "D. Statement of Cash flow", "E. Statement of Profit or Loss"], "answer": 2, "insight": "IAS 1 outlines the core components of financial statements; a 'Statement of Financial Reconciliation' is not a recognised standard component." },
+    { "text": "Which of the following is NOT an enhancing qualitative characteristics of accounting information?", "options": ["A. Acceptability", "B. Comparability", "C. Verifiability", "D. Timeliness", "E. Understandability"], "answer": 0, "insight": "The four enhancing qualitative characteristics are comparability, verifiability, timeliness, and understandability. Acceptability is not one of them." },
+    { "text": "Which of the following is NOT a characteristic of Business?", "options": ["A. It exists to make profits", "B. Its main objective is to provide social benefits", "C. It makes profit by supplying goods or services to others", "D. Its reward for accepting risk is profit", "E. It supplies goods that it either makes or buys from other parties"], "answer": 1, "insight": "The primary objective of a commercial business is profit maximisation. Providing social benefits is typically the objective of Not-For-Profit or governmental entities." },
+    { "text": "Mr. Koffi, in partnership with Mr. Nana, withdrew GH¢100,000 from the partnership account for his personal use. The amount should be:", "options": ["A. Credited into his capital account", "B. Debited into his current account", "C. Credited into his current account", "D. Debited into his capital account", "E. Debited into his personal account"], "answer": 1, "insight": "Drawings for personal use reduce the partner's equity, so it is debited to the partner's current account in a fixed capital partnership structure." },
+    { "text": "Which of the following is NOT a characteristic of a Public Sector entity?", "options": ["A. They have multiple objectives", "B. Budget is very important", "C. Profit maximisation is not a major objective", "D. There is Equity ownership", "E. Operating and financial framework are set by legislation"], "answer": 3, "insight": "Public sector entities are owned by the state or government on behalf of citizens, so there is no private 'Equity ownership' in the form of share capital." },
+    { "text": "Which of the following is a TRUE characteristic of Prudence Concept?", "options": ["A. Accountant should not recognise income until it is earned", "B. Accountant should recognise profit before it is earned", "C. Accountant should recognise only cash income", "D. Accountant needs not recognise net realisable value of Inventories", "E. Accountant does not need to write foreseeable loss off"], "answer": 0, "insight": "Prudence dictates that income and profits are not anticipated or recognised until earned, whereas all known losses are provided for immediately." },
+    { "text": "Objectivity/Fairness Concept is useful in accounting in the following ways, EXCEPT", "options": ["A. Accounting data are standardised", "B. Auditing is made possible", "C. Data is available for an independent party to cross-check", "D. A change in value of an asset is not recognised", "E. Fraud and falsification are minimised"], "answer": 3, "insight": "The objectivity concept ensures financial data is based on factual evidence, but it does not prevent the recognition of legitimate changes in asset values (like depreciation or revaluation)." },
+    { "text": "Which of the following is NOT true of Realisation Concept?", "options": ["A. It is easy to apply in Lease transactions", "B. Revenue is capable of objective measurement", "C. Value of asset received or receivable is reasonably certain", "D. It is difficult to apply in Hire Purchase transactions", "E. Revenue should be recognized when goods and services are rendered"], "answer": 4, "insight": "The realisation concept normally dictates that revenue is recognized when goods/services pass to the customer, but specific complex exceptions (like long-term contracts) exist." },
+    { "text": "Identify the wrong item from the underlisted books of original entry.", "options": ["A. Purchases Day Book", "B. Journal proper", "C. Returns Outward Book", "D. Returns Inward Book", "E. Sales Account"], "answer": 4, "insight": "The Sales Account is a ledger account, not a book of prime (original) entry like day books or journals." },
+    { "text": "Which of the following is NOT a reason for issuing Credit Note?", "options": ["A. Damage to the goods before delivery", "B. Wrongful specification from the one ordered by the customer", "C. To inform the buyer that his indebtedness has been reduced", "D. To increase the amount due from a debtor", "E. It represents returns on purchases"], "answer": 3, "insight": "A credit note decreases the amount owed by a debtor (e.g., for returned or damaged goods). A debit note is used to increase the amount due." },
+    { "text": "The following transactions relate to Timilehin Enterprises. Sold goods on credit to Adeola amounting to 500,000 on March 1, 2022 and return goods worth 50,000 due to damages. Which of the following is the correct ledger entry for the sales?", "options": ["A. DR Adeola's Account, CR Sales Account", "B. DR Sales Account, CR Adeola's Account", "C. DR Timilehin's Account, CR Sales Account", "D. DR Sales Account, CR Timilehin's Account", "E. DR Sales Returns Account, CR Sales Account"], "answer": 0, "insight": "For a credit sale, you debit the Receiver (the debtor, Adeola) to increase the asset, and credit Sales to increase revenue." },
+    { "text": "Which of the following is the correct ledger entry for the goods returned (worth 50,000 due to damages)?", "options": ["A. DR Sales Account, CR Returns Inward Account", "B. DR Returns Inward Account, CR Sales Account", "C. DR Sales Account, CR Returns Outward Account", "D. DR Returns Inward Account, CR Adeola's Account", "E. DR Adeola's Account, CR Returns Inward Account"], "answer": 3, "insight": "Goods returned by a customer are Returns Inward. You debit Returns Inward (increasing the expense/reducing revenue) and credit the Debtor (Adeola) to reduce their balance." },
+    { "text": "What is the accounting equation formula where Revenue is not known?", "options": ["A. R = Revenue + Expenses", "B. R = Assets + Expenses", "C. R = Assets - Losses", "D. R = Profits + Expenses", "E. R = Profits + Losses"], "answer": 3, "insight": "Since Profit = Revenue - Expenses, we can rearrange the formula to find Revenue: Revenue = Profit + Expenses." },
+    { "text": "Which of the following is NOT an account used in movement of inventories?", "options": ["A. Sales Account", "B. Purchases Account", "C. Returns Inward Account", "D. Returns Outward Account", "E. Inventories Returns Account"], "answer": 4, "insight": "There is no standard account called 'Inventories Returns Account'; returns are handled via Returns Inward (Sales Returns) or Returns Outward (Purchases Returns)." },
+    { "text": "Which of the following is NOT an item recorded on the debit side of the Trade Receivables Ledger Control Accounts?", "options": ["A. Cash paid to the Customers from the cash book", "B. Debit notes issued", "C. Credit Sales from sales day book", "D. Transfers and other items (contra)", "E. Interest charged on customer balance"], "answer": 0, "insight": "Cash paid to customers (like refunds) increases their debt if sent in error, but standard collections from customers are credited. Thus, cash paid *to* a customer is not a standard debit side item for initial debt recording." },
+    { "text": "Which of the following functions of Automated Teller Machine is FALSE?", "options": ["A. It is a cash dispenser", "B. It is user-friendly", "C. It issues receipt", "D. It does not allow payment of bills", "E. It display promotional messages"], "answer": 3, "insight": "Modern ATMs are versatile kiosks that absolutely allow for the payment of bills and fund transfers, making option D false." },
+    { "text": "Which of the following will be added to Adjusted balance as per cashbook when Bank reconciliation statement is being prepared?", "options": ["A. Uncredited Cheques", "B. Unpresented Cheques", "C. Bank Charges", "D. Interest on Loan", "E. Interest on Investment"], "answer": 1, "insight": "When reconciling from the Cash Book balance to the Bank Statement balance, Unpresented Cheques (cheques written but not yet cashed by the bank) are added back to the cash book balance." },
+    { "text": "Electronic bank reconciliation statement can be prepared using Software Packages. Which of the following is NOT usable?", "options": ["A. Microsoft Excel", "B. Sage", "C. Tally", "D. Quick Books", "E. Microsoft Word"], "answer": 4, "insight": "Microsoft Word is a word processor, not an accounting or spreadsheet package capable of handling automated financial reconciliations." },
+    { "text": "Payroll is used to record employee's pay for the following reasons, EXCEPT", "options": ["A. Cost control purpose", "B. Basis for processing Tax clearance certificate", "C. Salaries or wages for work done", "D. To know the Deductions", "E. Not used for incentive payment"], "answer": 4, "insight": "Payroll absolutely incorporates incentive payments, bonuses, and overtime; therefore, stating it is 'not used for incentive payment' is false." },
+    { "text": "Mensa enterprises uses Halsey Premium Plan for bonus scheme. Standard time is 250 hours. Wage Rate per hour is GH¢15. Actual time taken is 220 hours. Which of the following is the Bonus pay?", "options": ["A. GH¢ 225", "B. GH¢ 230", "C. GH¢ 337", "D. GH¢ 450", "E. GH¢ 500"], "answer": 0, "insight": "Time saved = Standard Time (250) - Actual Time (220) = 30 hours. Under the Halsey Premium Plan, bonus is 50% of the time saved: (1/2 of 30 hours) x GH¢15 = 15 x 15 = GH¢225." },
+    { "text": "Mensa enterprises uses Halsey Premium Plan. Standard time is 250 hours. Wage Rate per hour is GH¢15. Actual time taken is 220 hours. The Total earnings for this worker is:", "options": ["A. GH¢ 3,125", "B. GH¢ 3,375", "C. GH¢ 3,525", "D. GH¢ 3,750", "E. GH¢ 4,250"], "answer": 2, "insight": "Total earning = Basic Pay (Actual hours x rate) + Bonus. Basic = 220 hrs x GH¢15 = GH¢3,300. Bonus = GH¢225. Total = 3,300 + 225 = GH¢3,525." },
+    { "text": "What is the accounting entries for an increase in provision for bad debt with an amount of 250,000?", "options": ["A. DR Statement of Profit or Loss, CR Provision for Bad Debt Account", "B. DR Provision for Bad Debt Account, CR Statement of Profit or Loss", "C. DR Trade Receivables Account, CR Provision for Bad Debt Account", "D. DR Provision for Bad Debt Account, CR Trade Receivables account", "E. DR Statement of Financial Position, CR Provision for Bad Debt Account"], "answer": 0, "insight": "An increase in provision is an expense. Therefore, you debit the Statement of Profit or Loss and credit the Provision for Bad Debt Account." },
+    { "text": "A customer with outstanding of GH¢ 80,000 was declared bankrupt. The debt was declared as Bad Debt out of provision for Bad Debt balance. What is the ledger entries to record this event?", "options": ["A. DR Trade Receivables, CR Provision for Bad Debt Account", "B. DR Provision for Bad Debt Account, CR Trade Receivables Account", "C. DR Statement of Profit or Loss, CR Provision for Bad Debt Account", "D. DR Provision for Bad Debt Account, CR Statement of Profit or Loss Account", "E. DR Bad Debt, CR Statement of Profit or Loss Account"], "answer": 1, "insight": "When writing off a specific bad debt against an existing provision, you reduce the provision (Debit) and reduce the customer's balance in Trade Receivables (Credit)." },
+    { "text": "Which of the following is NOT an element of prime cost?", "options": ["A. Raw Material Cost", "B. Manufacturing Wages", "C. Royalties paid", "D. Carriage Inward", "E. Factory overhead cost"], "answer": 4, "insight": "Prime cost is the sum of all direct costs (Direct Materials + Direct Labour + Direct Expenses). Factory overhead consists of indirect costs." },
+    { "text": "Kumadie Ltd: Cost of raw materials 4,500,000; Manufacturing overheads 2,300,000; Productive wages 2,600,000; Work in progress Dec 1 800,000; Work in progress Dec 31 300,000; Payment of royalties 800,000; Closing finished goods 450,000. Prime cost is:", "options": ["A. 2,675,500", "B. 6,650,000", "C. 7,600,000", "D. 7,900,000", "E. 9,750,000"], "answer": 3, "insight": "Prime Cost = Direct Materials (4,500,000) + Direct Labour/Productive Wages (2,600,000) + Direct Expenses/Royalties (800,000) = 7,900,000." },
+    { "text": "Based on Kumadie Ltd data: Prime cost is 7,900,000. Overheads = 2,300,000. WIP opening = 800,000. WIP closing = 300,000. Manufactured goods transferred to Sales Department at cost plus 25%. The manufacturing profit is:", "options": ["A. 1,862,500", "B. 2,000,000", "C. 2,050,000", "D. 2,562,500", "E. 2,675,000"], "answer": 4, "insight": "Production Cost = Prime Cost (7,900,000) + Overheads (2,300,000) + WIP Opening (800,000) - WIP Closing (300,000) = 10,700,000. Manufacturing Profit = 25% of Cost = 0.25 * 10,700,000 = 2,675,000." },
+    { "text": "Based on Kumadie Ltd data: Production/Manufacturing Cost is 10,700,000 and Manufacturing Profit is 2,675,000. Total Cost transferred to Sales Department is:", "options": ["A. 7,900,000", "B. 10,200,000", "C. 10,700,000", "D. 13,375,000", "E. 15,225,000"], "answer": 3, "insight": "Total Transfer Value = Manufacturing Cost + Manufacturing Profit. 10,700,000 + 2,675,000 = 13,375,000." },
+    { "text": "Which of the following is NOT a module/form in a computerised system?", "options": ["A. Sales ledger sub-system", "B. Inventory sub-system", "C. Purchases ledger sub-system", "D. Bank reconciliation sub-system", "E. Balance Sheet sub-system"], "answer": 4, "insight": "The Balance Sheet is an output/report generated from the general ledger, not an input sub-system or operational module like Sales or Inventory." },
+    { "text": "Input data into Non-current Assets sub-system in a computerised system include the following, EXCEPT", "options": ["A. Capitalisation policy", "B. Inventory policy", "C. Depreciation policy", "D. Purchase invoices", "E. Cash payments"], "answer": 1, "insight": "Inventory policy relates to current assets (stock) and belongs in the Inventory sub-system, not the Non-current Assets (fixed assets) sub-system." },
+        { "_year": "--- MARCH 2025 EXAMINATIONS ---" },
+    { "text": "Accounting is a means of social communication and involves the under-listed flow of information, EXCEPT", "options": ["A. Data collection", "B. Data disposition", "C. Recording and classifying", "D. Reporting", "E. Feedback"], "answer": 1, "insight": "Accounting involves data collection, recording, classifying, summarizing, and reporting; 'data disposition' is not a standard stage." },
+    { "text": "Which of the following is NOT an example of enhancing qualitative characteristics of accounting information?", "options": ["A. Relevance", "B. Comparability", "C. Understandability", "D. Timeliness", "E. Verifiability"], "answer": 0, "insight": "Relevance is a fundamental qualitative characteristic, not an enhancing one." },
+    { "text": "The introduction of International Financial Reporting Standards (IFRS) has brought about some changes; which of the under-listed is the new description of the erstwhile balance sheet?", "options": ["A. Statement of performance", "B. Statement of financial performance", "C. Statement of financial reporting", "D. Statement of financial position", "E. Statement of financial recording"], "answer": 3, "insight": "Under IFRS, the traditional 'Balance Sheet' is now officially referred to as the 'Statement of Financial Position'." },
+    { "text": "The major distinguishing element between the final accounts of a sole trader and a partnership business is the", "options": ["A. Drawing Account", "B. Appropriation Account", "C. Capital Account", "D. Payable Account", "E. Receivable Account"], "answer": 1, "insight": "An Appropriation Account is unique to partnerships and is used to show how net profit is distributed among partners." },
+    { "text": "Which of the following accounting records are source documents?", "options": ["A. Journal and ledger", "B. Cash book and debit note", "C. Sales invoice and cash book", "D. Sales invoice and debit notes", "E. Ledger and sales invoice"], "answer": 3, "insight": "Source documents are original records of transactions; sales invoices and debit notes are primary evidence." },
+    { "text": "The body that is responsible for setting International Financial Reporting Standards (IFRS) is", "options": ["A. IASC", "B. IASB", "C. FRC", "D. ICAN", "E. AICPA"], "answer": 1, "insight": "The International Accounting Standards Board (IASB) is the independent body that develops and approves IFRS." },
+    { "text": "The fundamental accounting concept that assumes that the entity will continue to be in operational existence for a foreseeable future period is", "options": ["A. Accrual", "B. Consistency", "C. Periodicity", "D. Going concern", "E. Entity"], "answer": 3, "insight": "The going concern concept assumes that an entity has neither the intention nor the necessity of liquidation." },
+    { "text": "The accounting concept that gave birth to the modern accounting principle as enunciated by Luca Pacioli in 1494 is", "options": ["A. Accrual", "B. Historical cost", "C. Duality", "D. Materiality", "E. Conservatism"], "answer": 2, "insight": "The duality concept (every debit has a corresponding credit) is the foundation of the double-entry system." },
+    { "text": "Accounting concept that requires the use of accounting figures that has a definite factual basis is", "options": ["A. Prudence", "B. Objectivity", "C. Duality", "D. Entity", "E. Conservatism"], "answer": 1, "insight": "The objectivity concept requires that financial statements be based on factual evidence." },
+    { "text": "Which of the following is an example of non-current assets?", "options": ["A. Cash in hand", "B. Receivable", "C. Inventory", "D. Prepayment", "E. Investment in property"], "answer": 4, "insight": "Investment in property is a non-current asset as it is held for long-term capital appreciation or rental income." },
+    { "text": "Identify the INCORRECT entry for these Jan 2022 transactions: Jan 1 starts with 50,000 cash. Jan 5 bought goods on credit Lalude 20,000. Jan 7 sold goods credit Kofi 15,000. Jan 10 sold goods cash 20,000. Jan 15 received cash Kofi 10,000.", "options": ["A. Jan 1: Dr cash, Cr capital", "B. Jan 5: Dr purchases, Cr cash", "C. Jan 7: Dr Kofi, Cr sales", "D. Jan 10: Dr cash, Cr sales", "E. Jan 15: Dr cash, Cr Kofi"], "answer": 1, "insight": "Option B is incorrect because a credit purchase should be recorded as Dr Purchases and Cr Lalude (the creditor), not Cr Cash." },
+    { "text": "What effect would cash received from a customer, directly lodged into the business bank overdraft account, have on Assets, Liabilities and Equity respectively?", "options": ["A. Decrease Assets, Decrease Liability, No effect Equity", "B. Increase Assets, No effect Liability, Increase Equity", "C. Decrease Assets, Increase Liability, No effect Equity", "D. No effect Assets, Decrease Liability, Decrease Equity", "E. Decrease Assets, No effect Liability, Decrease Equity"], "answer": 0, "insight": "Lodging cash reduces the asset (Receivables) and reduces the liability (Bank Overdraft)." },
+    { "text": "The use of the folio in the ledger is for", "options": ["A. Account title", "B. Particulars", "C. Credit items", "D. Debit/Credit items", "E. Referencing purposes"], "answer": 4, "insight": "Folios serve as a reference system to track the source and destination of transactions." },
+    { "text": "Which document is NOT required while preparing the bank reconciliation statement?", "options": ["A. Cash book", "B. Bank statement", "C. Purchase note", "D. Pay-in-slips", "E. Cheque stub"], "answer": 2, "insight": "Bank reconciliation focuses on comparing internal cash records with bank records; a purchase note is a trade document." },
+    { "text": "The error that arises where an error in an account is cancelled out by error of other account is regarded as", "options": ["A. Omission", "B. Principle", "C. Original entry", "D. Commission", "E. Compensation"], "answer": 4, "insight": "An error of compensation occurs when two or more separate errors mathematically cancel each other out." },
+    { "text": "An allowance given to a company by a supplier for prompt payment of dues is", "options": ["A. Discount allowed", "B. Discount received", "C. Cash discount", "D. Sales discount", "E. Trade discount"], "answer": 2, "insight": "A cash discount is an incentive offered by a creditor to encourage a debtor to pay their bill before the due date." },
+    { "text": "Achimbong Cole Ltd: Receivables 20,000. Proposed provision for doubtful debts of 4,000. This is reflected as:", "options": ["A. Dr P/L 4,000; Cr Provision 4,000", "B. Dr Provision 4,000; Cr P/L 4,000", "C. Dr Provision 4,000; Cr Payables 4,000", "D. Dr Payables 4,000; Cr Provision 4,000", "E. Dr Receivables 4,000; Cr Provision 4,000"], "answer": 0, "insight": "Increasing a provision requires an expense charge (Debit) to the Profit or Loss account and a credit to the Provision account." },
+    { "text": "A club member paid L$4,000 subscription for 2024 and L$4,500 for 2025. Financial year ends Dec 31, 2024. The L$4,500 is treated as", "options": ["A. Current asset", "B. Current liability", "C. Capital", "D. Profit", "E. Loss"], "answer": 1, "insight": "Subscription received in advance for a future period is treated as a current liability." },
+    { "text": "Kofi Mensah Payslip (April 2024): Basic 150,000; Income Tax 10.0% of basic; Pension Employee 7.5% of basic; Other deductions 30,000; Medical bill 12,500. Calculate total deductions.", "options": ["A. 38,750", "B. 50,000", "C. 56,250", "D. 68,750", "E. 91,250"], "answer": 3, "insight": "Tax (15,000) + Pension (11,250) + Other (30,000) + Medical (12,500) = 68,750." },
+    { "text": "Total pension/social security contributions to the credit of Kofi Mensah for April 2024 (Employer pays 15%, Employee pays 7.5% of basic salary of 150,000)?", "options": ["A. 33,750", "B. 46,250", "C. 56,250", "D. 61,250", "E. 76,250"], "answer": 0, "insight": "Employer contribution (22,500) + Employee contribution (11,250) = 33,750." },
+    { "text": "Net salary paid to Kofi Mensah for April 2024 (Basic 150,000, Prof. allowance 25,000, Total deductions 68,750)?", "options": ["A. 102,500", "B. 106,250", "C. 137,500", "D. 148,750", "E. 160,000"], "answer": 1, "insight": "Gross Pay (150,000 + 25,000) - Total Deductions (68,750) = 106,250." },
+    { "text": "A cheque recorded as a credit in the original cash book but not yet recorded as a debit in the bank statement is", "options": ["A. Crossed", "B. Dishonoured", "C. Uncredited", "D. Unpresented", "E. Standing order"], "answer": 3, "insight": "An unpresented cheque has been issued to a payee but has not yet been processed by the bank." },
+    { "text": "Which of the following expenses is an example of capital expenditure?", "options": ["A. Repairing assets", "B. Acquiring inventory", "C. Rent and insurance", "D. Legal charges on acquired land", "E. Directors remuneration"], "answer": 3, "insight": "Legal fees incurred to acquire non-current assets like land are capitalized as part of the asset's cost." },
+    { "text": "The depreciation method that calculates annual charge using a fixed percentage on net book value of the previous period is", "options": ["A. Reducing balance", "B. Straight line", "C. Sum of digits", "D. Sinking fund", "E. Production unit"], "answer": 0, "insight": "The reducing balance method applies a fixed rate to the carrying amount." },
+    { "text": "Balances: Payable at start 46,750; Payable at end 76,500; Payments 470,000; Discount received 28,000. Calculate credit purchases.", "options": ["A. 412,250", "B. 468,250", "C. 471,250", "D. 527,750", "E. 574,500"], "answer": 3, "insight": "Closing Payables (76,500) + Payments (470,000) + Discount (28,000) - Opening Payables (46,750) = 527,750." },
+    { "text": "The relevant accounting standard for inventories is", "options": ["A. IAS 1", "B. IAS 2", "C. IAS 16", "D. IFRS 1", "E. IFRS 2"], "answer": 1, "insight": "IAS 2 provides guidance on the accounting treatment for inventories." },
+    { "text": "Agbeloba Ltd: Factory salary 62,000; Factory lighting 2,650; Plant depr. 2,230; Factory insurance 2,150. Calculate overhead cost.", "options": ["A. 55,420", "B. 69,030", "C. 126,780", "D. 257,000", "E. 264,030"], "answer": 1, "insight": "Overhead cost = Factory salary + lighting + depreciation + insurance = 69,030." },
+    { "text": "Agbeloba Ltd: Raw material start 2,650; Purchases 57,750; Raw material end 4,980; Direct wages 195,000. Calculate Prime Cost.", "options": ["A. 55,420", "B. 60,080", "C. 250,420", "D. 255,080", "E. 317,080"], "answer": 2, "insight": "Prime Cost = Direct Materials Used (2,650 + 57,750 - 4,980) + Direct Wages (195,000) = 250,420." },
+    { "text": "Receipt and payment accounts of a club is the summary of its", "options": ["A. Income and expenditure", "B. Statement of affairs", "C. Profit or loss", "D. Cash book", "E. Cash flow"], "answer": 3, "insight": "The Receipts and Payments account is a summarized record of cash and bank transactions." },
+    { "text": "The following are accounting application packages, EXCEPT", "options": ["A. Power point", "B. Peachtree", "C. Quick book", "D. Oracle", "E. Sage"], "answer": 0, "insight": "PowerPoint is a presentation software, not a dedicated accounting application." },
+
+    { "_year": "--- SEPTEMBER 2025 EXAMINATIONS ---" },
+    { "text": "The periodic report of activities of a business enterprise through the presentation of the financial reports to the owners of the business by management is referred to as", "options": ["A. social", "B. government", "C. stewardship", "D. sustainability", "E. project"], "answer": 2, "insight": "Stewardship is the accountability of management to the owners." },
+    { "text": "Which of the following is NOT a revenue expenditure?", "options": ["A. Cost of repairing plant", "B. Inventory acquisition", "C. Staff salaries", "D. Discount allowed", "E. Purchase of new equipment"], "answer": 4, "insight": "Equipment is a capital asset, providing long-term value." },
+    { "text": "What primary roles do Accountants play in an economy?", "options": ["A. Legal advice", "B. HR management", "C. Market research", "D. Preparing financial statements and audits", "E. Designing models"], "answer": 3, "insight": "Financial reporting and auditing are the core pillars of the profession." },
+    { "text": "Which of the following is regarded as a FINTECH company?", "options": ["A. Oracle", "B. DBMS", "C. Deposit Banks", "D. Crypto systems", "E. Interswitch"], "answer": 4, "insight": "Interswitch is a leading financial technology provider." },
+    { "text": "The core purpose of forming a partnership business is", "options": ["A. Pooling resources", "B. Making profit", "C. Admitting members", "D. Joint ventures", "E. Sharing profit"], "answer": 1, "insight": "Per the Partnership Act, the main objective is profit generation." },
+    { "text": "Which is NOT a characteristic of a business organisation?", "options": ["A. Exists for profit", "B. Pays reasonable salary", "C. Meets society needs", "D. Reward for risk is profit", "E. Profit belongs to owners"], "answer": 1, "insight": "Salary payment is an expense, not a defining business trait." },
+    { "text": "Effect of owner allowing his Building (25m) to be used for business:\n\n| Assets | Liabilities | Equity |\n|---|---|---|\n| Increase | No effect | Increase |", "options": ["A", "B", "C", "D", "E"], "answer": 0, "insight": "This introduces capital, increasing Assets and Equity simultaneously." },
+    { "text": "A ledger which summarises all transactions to prepare a trial balance is called", "options": ["A. Rent Ledger", "B. Control Account", "C. Personal Ledger", "D. Impersonal Ledger", "E. Extended Trial Balance"], "answer": 1, "insight": "Control accounts summarize transactions for accuracy checks." },
+    { "text": "Password Ent. Equipment cost: 15m. 15% Reducing balance. Cumulative depreciation at end of Year 4?", "options": ["A. 6,655,582", "B. 7,169,906", "C. 7,830,094", "D. 8,344,420", "E. 9,211,875"], "answer": 1, "insight": "Sum of annual depreciation: Yr1 (2.25m), Yr2 (1.91m), Yr3 (1.63m), Yr4 (1.38m)." },
+    { "text": "Carrying amount of the Password Ent. equipment at end of Year 5?", "options": ["A. 6,655,581", "B. 7,169,906", "C. 7,830,094", "D. 8,344,420", "E. 9,211,875"], "answer": 0, "insight": "Cost minus total 5-year accumulated depreciation." },
+    { "text": "The excess of total assets over total liability is called", "options": ["A. reserves", "B. loan notes", "C. working capital", "D. net profit", "E. equity"], "answer": 4, "insight": "Equity is the residual interest of the owners." },
+    { "text": "Which is NOT an element of inventory cost?", "options": ["A. Acquisition", "B. Financing", "C. Handling", "D. Risk", "E. Weighted average cost"], "answer": 4, "insight": "WAC is a valuation method, not a cost component." },
+    { "text": "COGS if Sales = 10m and Mark-up = 25%?", "options": ["A. 7,000,000", "B. 7,500,000", "C. 7,968,127", "D. 8,000,000", "E. 8,500,000"], "answer": 3, "insight": "10,000,000 / 1.25 = 8,000,000." },
+    { "text": "Equity as at 31/12/2023:\nNC Assets: 480k | Current Assets: 1.125m | Current Liab: 225k | Acc. Depr: 105k", "options": ["A. 1,260,000", "B. 1,275,000", "C. 1,290,000", "D. 1,380,000", "E. 4,815,000"], "answer": 1, "insight": "Total Assets (1.605m) - Liab (225k + 105k) = 1,275,000." },
+    { "text": "Depreciation charged for 2024 if Acc. Depr moved from 105k to 111k?", "options": ["A. 6,000", "B. 15,000", "C. 30,000", "D. 51,000", "E. 111,000"], "answer": 0, "insight": "The charge is the difference between opening and closing balances." },
+    { "text": "Business operating for the foreseeable future is the...", "options": ["A. Perpetuity", "B. Going concern", "C. Forecasting", "D. Consistency", "E. Periodicity"], "answer": 1, "insight": "Going concern is a fundamental accounting assumption." },
+    { "text": "Which is NOT found in a manufacturing account?", "options": ["A. Carriage Inwards", "B. Returns Inwards", "C. Plant Depreciation", "D. Wages", "E. Royalties"], "answer": 1, "insight": "Returns inwards relate to finished goods sales." },
+    { "text": "Account created to achieve Trial Balance agreement?", "options": ["A. Control", "B. Payable", "C. Reconciliation", "D. Suspense", "E. Journal"], "answer": 3, "insight": "Suspense accounts hold temporary imbalances." },
+    { "text": "Which serves as a book of Prime entry and a Ledger?", "options": ["A. Manufacturing a/c", "B. Control a/c", "C. Sales book", "D. Ledger a/c", "E. Cash book"], "answer": 4, "insight": "The Cash Book unique for performing both roles." },
+    { "text": "Which error will NOT affect the Trial Balance agreement?", "options": ["A. Double entry", "B. Transposition", "C. Computation", "D. Wrong column", "E. Error of principle"], "answer": 4, "insight": "Principle errors maintain mathematical balance." },
+    { "text": "The IAS on Property, Plant and Equipment (PPE) is", "options": ["A. 1", "B. 2", "C. 5", "D. 8", "E. 16"], "answer": 4, "insight": "IAS 16 governs long-term tangible assets." },
+    { "text": "Which is NOT regarded as an accounting package?", "options": ["A. Sage", "B. ACCPAC", "C. QuickBooks", "D. Microsoft Excel", "E. Zoho"], "answer": 3, "insight": "Excel is a spreadsheet, not a dedicated package." },
+    { "text": "Traditional name for demand deposit?", "options": ["A. Money", "B. Cheque account", "C. Savings", "D. Fixed", "E. Current account"], "answer": 4, "insight": "Current accounts allow withdrawals on demand." },
+    { "text": "Backock Club: Received 960k (includes 240k for 2025). 100k was owing 1/1. I&E transfer?", "options": ["A. 600,000", "B. 620,000", "C. 760,000", "D. 820,000", "E. 1,100,000"], "answer": 1, "insight": "960k - 100k - 240k = 620,000." },
+    { "text": "Output document in computer payroll?", "options": ["A. Bonus sheet", "B. Letter", "C. Payslip", "D. Overtime", "E. Clock card"], "answer": 2, "insight": "The payslip is the final processed output." },
+    { "text": "Revenue = 5m. Mark-up = 33.33%. Gross Profit?", "options": ["A. 1,250,000", "B. 1,501,679", "C. 1,666,500", "D. 1,875,047", "E. 1,924,250"], "answer": 0, "insight": "1/3 mark-up is a 25% margin. 25% of 5m = 1.25m." },
+    { "text": "Using data above, what is the Cost of Goods Sold?", "options": ["A. 3,333,500", "B. 3,470,093", "C. 3,715,194", "D. 3,750,000", "E. 3,750,094"], "answer": 3, "insight": "5m - 1.25m = 3,750,000." },
+    { "text": "AC: 2.5m | Install: 250k | Duty: 80k | Loan Int: 50k. Cost to recognize?", "options": ["A. 2,500,000", "B. 2,750,000", "C. 2,800,000", "D. 2,830,000", "E. 2,880,000"], "answer": 3, "insight": "Interest is expensed, not capitalized in PPE cost." },
+    { "text": "Unearned commission received treatment?", "options": ["A. Current liability", "B. Current asset", "C. Fictitious asset", "D. NC Liability", "E. Equity"], "answer": 0, "insight": "Income in advance is a current liability." },
+    { "text": "Endorsed order cheque becomes a", "options": ["A. Bearer cheque", "B. Crossed", "C. Order", "D. Special", "E. General"], "answer": 0, "insight": "Signing the back makes it a bearer instrument." }
+  ],
+  "SAQ": [
+    { "_year_header": "--- MARCH 2023 EXAMINATIONS ---" },
+    {
+      "text": "The accounting concept that gives rise to Accounting Equation is referred to as...",
+      "answer": "Entity Concept / Dual Concept",
+      "insight": "The dual aspect concept (duality) states that every transaction has two equal and opposite effects, which forms the basis of the fundamental accounting equation: Assets = Liabilities + Capital."
+    },
+    {
+      "text": "A book of account which records day to day transactions and activities using the concept of double entry is known as...",
+      "answer": "General ledger / Ledger",
+      "insight": "The ledger is the principal book of accounts where the double-entry records of all transactions are permanently kept."
+    },
+    {
+      "text": "The type of impersonal ledger account used to record transactions relating to tangible properties or possession of individuals, firms or companies is called...",
+      "answer": "Real accounts / Real Ledger",
+      "insight": "Real accounts deal with tangible assets like machinery, buildings, cash, and inventory. Nominal accounts deal with expenses and income."
+    },
+    {
+      "text": "Not-for-profit entities can be subdivided into __________ entities and __________ entities.",
+      "answer": "Governmental and Non-Governmental",
+      "insight": "Not-for-profits are broadly classified into public sector (government agencies and ministries) and private sector NGOs (charities, clubs, associations)."
+    },
+    {
+      "text": "The concept that requires the preparer of the books of account not to anticipate profit but recognise all known losses is referred to as...",
+      "answer": "Prudence / Conservatism",
+      "insight": "The prudence concept ensures that assets and income are not overstated, and liabilities and expenses are not understated."
+    },
+    {
+      "text": "In accounting, __________ refers to accounting entries necessary to reduce or negate the balance of another account that it is paired with.",
+      "answer": "Offsetting / Contra-entry / Set-off",
+      "insight": "A contra-entry cancels out corresponding balances, such as when a business sets off a trade receivable balance against a trade payable balance for the same entity."
+    },
+    {
+      "text": "The Accounting Standard that specifies the accounting treatment of items of Property, Plant and Equipments is...",
+      "answer": "IAS 16",
+      "insight": "International Accounting Standard (IAS) 16 outlines how to recognize, measure, and depreciate Property, Plant, and Equipment."
+    },
+    {
+      "text": "Adjusted trial balance after all identified errors have been located, corrected and updated in a newly prepared trial balance is known as...",
+      "answer": "Extended Trial Balance / Final Trial Balance",
+      "insight": "An extended trial balance is a working paper used to prepare final accounts by incorporating end-of-year adjustments (accruals, prepayments, depreciation) into the initial trial balance."
+    },
+    {
+      "text": "Calculate the company's non-current liability from the following data: Carrying amount of PPE 1,000,000; Current assets 520,000; Current liabilities 320,000; Total equity 800,000.",
+      "answer": "GH¢400,000",
+      "insight": "1. Total Assets = PPE (1,000,000) + Current Assets (520,000) = 1,520,000. \n2. Accounting Equation: Assets = Equity + Liabilities. \n3. Total Liabilities = Total Assets (1,520,000) - Equity (800,000) = 720,000. \n4. Non-Current Liabilities = Total Liabilities (720,000) - Current Liabilities (320,000) = GH¢400,000."
+    },
+    {
+      "text": "The two principles relied upon by an accountant at the year end in adjusting for expenses and income is...",
+      "answer": "Matching and Accrual Principles",
+      "insight": "The matching concept dictates that revenues and their associated expenses must be recognized in the same accounting period, leading to accrual accounting."
+    },
+    {
+      "text": "A memorandum total account used to record the various balances on ledgers and provides cross check on them is referred to as...",
+      "answer": "Control accounts / Self balancing ledger",
+      "insight": "Control accounts (like the Receivables Control Account) aggregate all individual subsidiary ledger balances to quickly check for arithmetical errors."
+    },
+    {
+      "text": "The two main type of payroll systems in use are __________ and __________.",
+      "answer": "Manual Payroll system and Computerised payroll system",
+      "insight": "Payroll can be processed by hand using wages books and tax tables (manual) or automated using specialized software packages (computerized)."
+    },
+    {
+      "text": "A manufacturing entity had the following at June 30, 2022: Prime cost 900,000; Factory overhead 360,000; Opening WIP 50,000; Closing WIP 80,000. What was the prime cost for the financial year?",
+      "answer": "L$900,000",
+      "insight": "This is a direct extraction from the data provided. The Prime Cost (the sum of all direct materials, direct labor, and direct expenses) is explicitly given as 900,000."
+    },
+    {
+      "text": "Using the same manufacturing data (Prime cost 900,000; Factory overhead 360,000; Opening WIP 50,000; Closing WIP 80,000). What was the production cost for the period?",
+      "answer": "L$1,230,000",
+      "insight": "Production Cost = Prime Cost (900,000) + Factory Overhead (360,000) + Opening Work-in-Progress (50,000) - Closing Work-in-Progress (80,000) = L$1,230,000."
+    },
+    {
+      "text": "The documents that regulate the internal workings of a limited liability company is referred to as...",
+      "answer": "Articles of Association",
+      "insight": "While the Memorandum of Association governs external relations, the Articles of Association dictate the internal rules, such as directors' powers and voting rights."
+    },
+    {
+      "text": "A cash book that has columns for discounts, Cash and Bank is known as __________ Cash book.",
+      "answer": "Three Columns",
+      "insight": "A three-column cash book tracks physical cash, bank transactions, and memo columns for discount allowed and discount received."
+    },
+    {
+      "text": "A business made a profit of Le93,500 but its returns inward has been overstated by Le7,500. How much is the correct profit?",
+      "answer": "Le101,000",
+      "insight": "Returns inward (sales returns) reduce revenue and therefore reduce gross profit. If returns inward were *overstated* (recorded too high), the profit was artificially pulled down. To correct it, add the error back: 93,500 + 7,500 = Le101,000."
+    },
+    {
+      "text": "What was the capital of the business as at December 31, 2020? (Non-current assets cost 320,000; Current assets 750,000; Current liabilities 150,000; Provisions for depreciation 70,000).",
+      "answer": "N850,000",
+      "insight": "1. Net Non-Current Assets = 320,000 - 70,000 = 250,000. \n2. Total Assets = 250,000 + 750,000 = 1,000,000. \n3. Capital = Total Assets (1,000,000) - Current Liabilities (150,000) = N850,000."
+    },
+    {
+      "text": "Using the 2021 data for the same business (Non-current assets cost 286,000; Current assets 920,000; Current liabilities 130,000; Prov for depreciation 74,000). What was the value of the net profit or loss for 2021?",
+      "answer": "N152,000 Profit",
+      "insight": "1. 2021 Net Non-Current Assets = 286,000 - 74,000 = 212,000. \n2. 2021 Total Assets = 212,000 + 920,000 = 1,132,000. \n3. 2021 Closing Capital = 1,132,000 - 130,000 = 1,002,000. \n4. Profit = Closing Capital (1,002,000) - Opening Capital (850,000) = N152,000."
+    },
+    {
+      "text": "The process of locating and eliminating errors from a computer program is known as...",
+      "answer": "Debugging",
+      "insight": "In computerized accounting systems, debugging is the technical process of fixing software code issues or glitches that cause the system to behave unexpectedly."
+    },
+    { "_year_header": "--- SEPTEMBER 2023 EXAMINATIONS ---" },
+    {
+      "text": "The 'true and fair view' of the financial statement of an entity is to be reported by the...",
+      "answer": "Auditor / External auditor / Statutory auditor",
+      "insight": "The external auditor provides an independent professional opinion on whether the financial statements accurately and fairly reflect the entity's financial reality."
+    },
+    {
+      "text": "A specialised branch of accounting where managers and employees internally monitor and review the effective usage of resources to achieve overall entity's objective is called...",
+      "answer": "Performance Management / Management Accounting",
+      "insight": "Unlike financial accounting, which is for external users, management accounting is purely for internal decision-making and operational control."
+    },
+    {
+      "text": "A specialised branch of accounting, which deals with investigative skills and ability to probe frauds and deliberate misrepresentation is known as...",
+      "answer": "Forensic Accounting",
+      "insight": "Forensic accountants utilize accounting, auditing, and investigative skills to conduct examinations into a company's financial statements to uncover illegal activities."
+    },
+    {
+      "text": "In a computerised accounting system, a set of alphanumeric and numeric symbols, which are engaged to represent accounting transactions is referred to as...",
+      "answer": "Coding",
+      "insight": "Account codes form the 'Chart of Accounts', allowing the software to automatically classify, store, and retrieve financial data."
+    },
+    {
+      "text": "A financial statement is said to be ________ when it represents or depicts the economic phenomena in words and numbers.",
+      "answer": "Faithful Representation",
+      "insight": "To be a faithful representation, the information must be complete, neutral (free from bias), and free from material error."
+    },
+    {
+      "text": "A ledger which summarises all transactions to prepare a trial balance is called...",
+      "answer": "Control account",
+      "insight": "Control accounts (like the Receivables or Payables control accounts) contain the grand totals of all individual subsidiary ledger entries to ensure arithmetical accuracy."
+    },
+    {
+      "text": "A ledger which does not record account of individuals, firms, sole proprietor, partnership and company is referred to as...",
+      "answer": "Impersonal ledger",
+      "insight": "Impersonal ledgers are divided into 'Real Accounts' (tangible assets) and 'Nominal Accounts' (income, expenses, and capital)."
+    },
+    {
+      "text": "Given the following information: Sales 600,000; Trade Receivables 300,000; Discount Received 150,000; Trade Payables 100,000. Calculate the amount to be recognised in the nominal ledger.",
+      "answer": "GMD 750,000",
+      "insight": "The Nominal Ledger records income and expenses. Sales (Income) 600,000 + Discount Received (Income) 150,000 = 750,000. Trade Receivables and Payables are personal accounts."
+    },
+    {
+      "text": "In an entity, the totality of the procedures of accumulating cost is known as...",
+      "answer": "Cost Accounting",
+      "insight": "Cost accounting involves recording, classifying, analyzing, and allocating costs associated with a process or product."
+    },
+    {
+      "text": "In which country was Financial Accounting developed?",
+      "answer": "Italy",
+      "insight": "Modern double-entry bookkeeping was first documented by Luca Pacioli, an Italian mathematician and Franciscan friar, in 1494."
+    },
+    {
+      "text": "The body responsible for developing International Financial Reporting Standards is called...",
+      "answer": "International Accounting Standard Board (IASB)",
+      "insight": "The IASB is an independent, private-sector body that develops and approves IFRS to bring consistency to global accounting."
+    },
+    {
+      "text": "The process of recording basic financial transactions from various source documents is known as...",
+      "answer": "Book-keeping",
+      "insight": "Bookkeeping is the methodical, day-to-day recording phase of the wider accounting process."
+    },
+    {
+      "text": "The body responsible for the registration of companies in your country is called...",
+      "answer": "Corporate Affairs Commission (CAC)",
+      "insight": "In Nigeria, the Corporate Affairs Commission oversees the incorporation, regulation, and winding up of corporate bodies."
+    },
+    {
+      "text": "An accounting concept which assumes that an entity has a perpetual succession is called...",
+      "answer": "Going Concern",
+      "insight": "This concept assumes the business will remain in operation for the foreseeable future and has no intention of liquidating."
+    },
+    {
+      "text": "In an entity's book-keeping, a process of setting off or reducing opposite accounting balances is known as...",
+      "answer": "Contra / Setting-off",
+      "insight": "A contra entry occurs when a business owes money to, and is owed money by, the same entity, allowing the balances to be cancelled against each other."
+    },
+    {
+      "text": "An accounting concept, which justifies the charging of item with small amount to the Statement of Profit or Loss is referred to as ________ concept.",
+      "answer": "Materiality",
+      "insight": "Materiality allows trivial items (like a stapler) to be expensed immediately rather than capitalized as an asset, because tracking its depreciation would not influence investor decisions."
+    },
+    {
+      "text": "A Cheque credited into the Cash Book but not yet debited in the bank statement is known as...",
+      "answer": "Unpresented Cheque",
+      "insight": "This is a cheque you have written and given to a supplier (so you credited your cash book to show the money leaving), but the supplier has not yet cashed it at the bank."
+    },
+    {
+      "text": "The journal entries to record the transactions of goods bought and sold for cash is ________ and ________.",
+      "answer": "Dr Purchases, Cr Cash AND Dr Cash, Cr Sales",
+      "insight": "Buying for cash: Increase expense (Dr Purchases), Decrease asset (Cr Cash). Selling for cash: Increase asset (Dr Cash), Increase revenue (Cr Sales)."
+    },
+    {
+      "text": "A discount deducted from selling price to inspire bulk purchase is referred to as...",
+      "answer": "Trade / Quantity Discount",
+      "insight": "Unlike cash discounts (which encourage early payment), trade discounts encourage customers to buy items in larger quantities."
+    },
+    {
+      "text": "In Bank Reconciliation Statements, a cheque presented after six months is known as...",
+      "answer": "Stale Cheque",
+      "insight": "Banks generally refuse to honor cheques that are older than six months from the date written on them. They must be added back to the cash book balance."
+    },
+    { "_year_header": "--- SEPTEMBER 2024 EXAMINATIONS ---" },
+    {
+      "text": "An accounting reporting system that analyses the environmental impact of an entity's activities upon the stakeholders, is referred to as...",
+      "answer": "Social and Environment Accounting / Reporting",
+      "insight": "This branch of accounting focuses on corporate social responsibility (CSR) and how a company's operations affect the environment and local communities."
+    },
+    {
+      "text": "A symbolic representation of transactions in the process of preparing financial accounting is...",
+      "answer": "Accounting Code",
+      "insight": "Accounting codes (or chart of accounts codes) use numbers or letters to systematically classify and categorize transactions for easy posting."
+    },
+    {
+      "text": "Indebtedness of a business that are repayable beyond one accounting period is termed...",
+      "answer": "Non-current liability",
+      "insight": "Any debt or obligation that falls due for repayment more than 12 months after the reporting date is classified as non-current (long-term)."
+    },
+    {
+      "text": "Determine the profit or loss for the year ended March 31, 2022: Equity 1/4/2021 N250,200; Equity 31/3/2022 N430,500; Drawings N45,000.",
+      "answer": "N225,300",
+      "insight": "Using the accounting equation: Profit = Closing Equity (430,500) - Opening Equity (250,200) + Drawings (45,000) = N225,300."
+    },
+    {
+      "text": "Two groups that make up Not-for-Profit entities are ________ and ________.",
+      "answer": "Government entities and Non-government entities",
+      "insight": "Not-for-profits are broadly categorized into public sector (government agencies/ministries) and private sector NGOs (charities, clubs, associations)."
+    },
+    {
+      "text": "The main purpose of forming a partnership business is...",
+      "answer": "Profit / Pooling of Resources",
+      "insight": "Partnerships are formed to combine capital, skills, and resources to carry on a business with a view to making a profit."
+    },
+    {
+      "text": "The qualitative characteristics of accounting information which enhance the ability to influence economic decisions of users is known as...",
+      "answer": "Relevance",
+      "insight": "Information is relevant if it can make a difference in the decisions made by users by helping them evaluate past, present, or future events."
+    },
+    {
+      "text": "The General Ledger basically contains ________ and ________ accounts.",
+      "answer": "Real and Nominal",
+      "insight": "Real accounts deal with tangible assets and liabilities, while nominal accounts deal with income, expenses, and capital."
+    },
+    {
+      "text": "Amebo Enterprises: 1/1/21 Cash sales GH¢1.8m; 10/1/21 Cash for stationery GH¢80k; 18/1/21 Cash for rent GH¢500k; 25/1/21 Credit purchases GH¢400k. The cash balance in the cash account on 1/2/2021 is...",
+      "answer": "GH¢1,220,000",
+      "insight": "Total Cash In = 1,800,000. Total Cash Out = 80,000 (stationery) + 500,000 (rent) = 580,000. Balance = 1,800,000 - 580,000 = GH¢1,220,000. (Credit purchases do not affect cash)."
+    },
+    {
+      "text": "Based on Amebo Enterprises data, the value of transactions posted to the debit side of the cash account as at 31/01/2021 is...",
+      "answer": "GH¢1,800,000",
+      "insight": "The debit side of the cash account records receipts. The only cash receipt during the month was the cash sales of GH¢1,800,000."
+    },
+    {
+      "text": "An account in which errors arising from change given to a cash customer is known as...",
+      "answer": "Cash over or Short or cash surplus account",
+      "insight": "This temporary account is used to record minor, unexplained discrepancies between the physical cash in the till and the cash book balance."
+    },
+    {
+      "text": "TWO elements of financial statement that are reported in the statement of financial position are ________ and ________.",
+      "answer": "Assets, Liabilities (or Equity)",
+      "insight": "The Statement of Financial Position (Balance Sheet) exclusively reports Assets, Liabilities, and Equity at a specific point in time."
+    },
+    {
+      "text": "TWO most popular Electronic card products (Debit card) used in e-banking are ________ and ________.",
+      "answer": "Master Card, Visa (or Verve / Pass Card)",
+      "insight": "These are the dominant global and local payment gateways integrated into bank debit cards for ATM and online transactions."
+    },
+    {
+      "text": "An error which reverses errors in another book of account is known as...",
+      "answer": "Compensating error",
+      "insight": "This happens when two or more independent errors mathematically cancel each other out, leaving the Trial Balance totals mistakenly equal."
+    },
+    {
+      "text": "A trial balance that is re-prepared after errors are located and adjustments made for accruals and pre-payments is referred to as...",
+      "answer": "Extended Trial Balance",
+      "insight": "An extended trial balance acts as a working paper that incorporates adjusting journals before the final financial statements are extracted."
+    },
+    {
+      "text": "Using the Halsey Premium plan, what is the total earnings of an employee, given: Standard Time 250 hours; Wage rate L$15; Actual time 220 hours.",
+      "answer": "L$3,525",
+      "insight": "Basic Pay = 220 hrs x 15 = 3,300. Time Saved = 250 - 220 = 30 hrs. Halsey Bonus is 50% of time saved: 0.5 x 30 x 15 = 225. Total = 3,300 + 225 = L$3,525."
+    },
+    {
+      "text": "Takoradi started business with Capital of 200,000 on 1/7/2020. The balance at year end has risen to 265,000. The Net worth of the business as at June 30, 2021 is...",
+      "answer": "65,000",
+      "insight": "Note: The examiner defines the 'Net worth' in this specific context as the *Increase* in Capital over the period. Closing Capital (265,000) - Opening Capital (200,000) = 65,000."
+    },
+    {
+      "text": "Based on Takoradi's data (Opening 200k, Closing 265k, Additional Capital 50k, Drawings 45k). The Profit or loss for the period is...",
+      "answer": "60,000",
+      "insight": "Profit = Closing Capital (265,000) - Opening Capital (200,000) + Drawings (45,000) - Additional Capital (50,000) = 60,000."
+    },
+    {
+      "text": "________ is a network connecting computers to computers sharing information globally.",
+      "answer": "Internet",
+      "insight": "The internet is the global system of interconnected computer networks that revolutionized computerized accounting and e-commerce."
+    },
+    {
+      "text": "An equivalent of the Articles and Memorandum of association of a company in a not-for-profit entities is referred to as...",
+      "answer": "Constitution / By-law",
+      "insight": "While companies use a Memart to govern their rules, clubs, societies, and NGOs use a formal Constitution or set of By-laws."
+    },
+    { "_year_header": "--- MARCH 2024 EXAMINATIONS ---" },
+    {
+      "text": "Accounting has been described as the language of...",
+      "answer": "Business",
+      "insight": "Accounting communicates the financial health and activities of an organization, making it the universal language of business."
+    },
+    {
+      "text": "The recording stage of accounting process is known as...",
+      "answer": "Book-keeping",
+      "insight": "Bookkeeping is the systematic recording of daily financial transactions, which forms the basis for the rest of the accounting process."
+    },
+    {
+      "text": "Two major fundamental qualitative characteristics of financial statement are...",
+      "answer": "Relevance and Faithful Representation",
+      "insight": "These are the two primary qualitative characteristics mandated by the IASB Conceptual Framework to make financial information useful."
+    },
+    {
+      "text": "Two major documents required for the registration of limited liability companies in your country are...",
+      "answer": "Memorandum of Association and Articles of Association",
+      "insight": "The Memorandum governs the external relationship of the company, while the Articles govern its internal management."
+    },
+    {
+      "text": "Public Sector entities are also called...",
+      "answer": "Governmental entities or Public Corporations",
+      "insight": "These are organizations owned and operated by the government to provide public services rather than maximize profit."
+    },
+    {
+      "text": "The IASBs conceptual framework prescribes that financial statements required by entities are ____________ Financial Statements.",
+      "answer": "General Purpose",
+      "insight": "General purpose financial statements are designed to meet the common information needs of a wide range of external users (like investors and creditors)."
+    },
+    {
+      "text": "Financial statements are presented using financial substance and realities of a business transaction and not by their legal form. This is known as...",
+      "answer": "Substance over form",
+      "insight": "This principle ensures that the economic reality of a transaction is recorded, even if the strict legal technicality suggests something else (e.g., finance leases)."
+    },
+    {
+      "text": "The relationship between existing elements of basic financial statements are calculated using...",
+      "answer": "Accounting Equation",
+      "insight": "The fundamental accounting equation is Assets = Liabilities + Equity. All financial statements balance based on this formula."
+    },
+    {
+      "text": "An estimated invoice sent by a vendor to a purchaser ahead of shipment is called...",
+      "answer": "Pro-forma Invoice",
+      "insight": "A pro-forma invoice is a preliminary bill of sale sent to buyers in advance of a shipment or delivery of goods, stating the value and description."
+    },
+    {
+      "text": "An authorising document for payment of a particular expense or service is known as...",
+      "answer": "Payment Voucher",
+      "insight": "A payment voucher is an internal accounting document used to authorize the disbursement of cash or a cheque to a vendor."
+    },
+    {
+      "text": "The net differences in Trial balance totals is recorded pending the location and correction of the errors causing the difference in...",
+      "answer": "Suspense account",
+      "insight": "A suspense account is a temporary holding account used to force the Trial Balance to agree until the bookkeeping error is found and corrected."
+    },
+    {
+      "text": "A cost in which its earning potential is exhausted within one accounting period is called...",
+      "answer": "Revenue expenditure",
+      "insight": "Revenue expenditures are short-term expenses used in the current period or used to maintain normal business operations (e.g., rent, salaries)."
+    },
+    {
+      "text": "Adaramaja enterprises has a credit sales of 4,500,000. What is the journal entry for the credit sales?",
+      "answer": "DR Trade Receivables Account; CR Sales Account",
+      "insight": "Debit increases the asset (Trade Receivables), and Credit increases the income (Sales)."
+    },
+    {
+      "text": "Adaramaja enterprises has an irrecoverable debt of 1,200,000. What is the Journal entry for the irrecoverable debt?",
+      "answer": "DR Bad Debt Account; CR Trade Receivables Account",
+      "insight": "Debit increases the expense (Bad Debt), and Credit decreases the asset (Trade Receivables) since the customer will not pay."
+    },
+    {
+      "text": "A depreciation method in which the book value of non-current asset at the beginning of the year is multiplied by a fixed percentage to determine the depreciation for the year is known as...",
+      "answer": "Reducing Balance Method or Diminishing Balance Method",
+      "insight": "Because the percentage is applied to the net book value (which drops every year), the depreciation charge reduces each year."
+    },
+    {
+      "text": "From a list of July transactions (Cash paid to suppliers, Purchases, Purchases returns, Cash Discount, Sundry charges), list the transactions that will be recorded in the Debit side of the Purchases Ledger Control Account.",
+      "answer": "Cash paid to suppliers, Purchase returns, Cash discount received",
+      "insight": "The Purchases Ledger Control Account tracks what you owe suppliers (a liability). Debiting it reduces the liability. Payments, returns, and discounts all reduce what you owe."
+    },
+    {
+      "text": "From a list of July transactions (Cash paid to suppliers, Purchases, Purchases returns, Cash Discount, Sundry charges), list the items that will be recorded in the Credit side of the Purchases Ledger Control Account.",
+      "answer": "Purchases and Sundry charges",
+      "insight": "Crediting the Purchases Ledger Control Account increases your liability. Buying more goods on credit or being hit with extra supplier charges increases what you owe."
+    },
+    {
+      "text": "Access to Automated Teller Machine (ATM) by bank customer is through the use of a ________ and a ________.",
+      "answer": "Personal Identification Number (PIN) and a plastic card that contains magnetic strips",
+      "insight": "The card provides the physical account identifier, and the PIN provides the security authorization."
+    },
+    {
+      "text": "The title of International Accounting Standard (IAS) 16 is...",
+      "answer": "Property, Plant and Equipment",
+      "insight": "IAS 16 outlines the accounting treatment for most types of property, plant, and equipment (often called fixed assets)."
+    },
+    {
+      "text": "A debit card whose micro-chips contain additional information on the bio-data and financial position of the holder is known as...",
+      "answer": "Smart card",
+      "insight": "Unlike older magnetic stripe cards, smart cards contain an embedded microprocessor chip that can store significantly more data and provide higher security."
+    },
+        { "_year_header": "--- MARCH 2025 EXAMINATIONS ---" },
+    { "text": "The fundamental characteristics of financial information are classified into relevance and...", "answer": "Faithful representation", "insight": "Information must be relevant and faithfully represent the economic phenomena it purports to represent." },
+    { "text": "When a partnership business maintains a fixed capital account, all variations are passed through a...", "answer": "Current account", "insight": "This separates original capital from temporary items like profit shares and drawings." },
+    { "text": "The concept of not recognizing income until earned and allowing for all known losses is...", "answer": "Prudence concept or Conservatism concept", "insight": "This ensures assets and income are not overstated." },
+    { "text": "Formal statement of intention by potential supplier to supply goods at specified prices is a...", "answer": "Quotation", "insight": "A quotation specifies terms of supply before a formal order." },
+    { "text": "When a transaction is posted to the wrong class of account, the error is an...", "answer": "Error of principle", "insight": "Posting to a different category (e.g., asset vs expense) violates accounting principles." },
+    { "text": "Credit sales are to be ____________ to Sales Ledger Control Account.", "answer": "Debited", "insight": "To increase the asset (receivables), the control account must be debited." },
+    { "text": "Reduction in invoiced price for bulk purchase is a...", "answer": "Trade discount", "insight": "This is deducted at the point of sale before recording the invoice." },
+    { "text": "Instruction to bank to pay regular amounts at given dates to third parties is a...", "answer": "Standing order", "insight": "An automated fixed payment setup by the customer." },
+    { "text": "Record showing employee names, pay rates, hours, gross earnings, and deductions is a...", "answer": "Payroll", "insight": "A mandatory record for managing labor costs and statutory requirements." },
+    { "text": "Resource controlled by entity due to past events with expected future economic benefit is...", "answer": "An asset", "insight": "The formal definition of an asset in financial reporting." },
+    { "text": "Any cost whose earning potential is exhausted within one accounting period is a...", "answer": "Revenue expenditure", "insight": "Recurrent costs expensed in the period they occur." },
+    { "text": "The cost of a non-current asset less its residual value is the...", "answer": "Depreciable amount or Depreciation value", "insight": "The total value expected to be consumed over the asset's life." },
+    { "text": "Benefit received during period but not yet paid for by end of period is an...", "answer": "Accrued expenses or Accrual", "insight": "Reflects the matching principle for costs incurred." },
+    { "text": "Obligations maturing for settlement more than one year after the period end are...", "answer": "Non-current liabilities", "insight": "Long-term debts like loans or mortgages." },
+    { "text": "Direct material cost plus direct wages plus direct expenses is...", "answer": "Prime cost", "insight": "The total of all direct production costs." },
+    { "text": "A statement of affairs is similar to a...", "answer": "Statement of financial position", "insight": "Often used for incomplete records or non-profit entities." },
+    { "text": "The capital of a club is known as the...", "answer": "Accumulated fund", "insight": "The surplus of assets over liabilities in a non-profit entity." },
+    { "text": "A computer that connects incompatible networks is called a...", "answer": "A gateway", "insight": "Essential for cross-network communication." },
+    { "text": "Non-current assets accounts are normally classified as a...", "answer": "Real account", "insight": "Relates to tangible property and possessions." },
+    { "text": "Receivables start 350k, close 500k, Credit sales 510k. Cash received is...", "answer": "360,000", "insight": "Opening (350k) + Sales (510k) - Closing (500k) = 360,000." },
+
+    { "_year": "--- SEPTEMBER 2025 EXAMINATIONS ---" },
+    { "text": "Principles of double entry date back to...", "answer": "1494", "insight": "First documented by Luca Pacioli." },
+    { "text": "Rowan plan bonus formula?", "answer": "(Time saved / Time Allowed) x Time taken x Time rate", "insight": "Efficiency-based incentive." },
+    { "text": "Standard for inventories?", "answer": "IAS 2", "insight": "Valuation at lower of cost and NRV." },
+    { "text": "Two Cash Flow methods?", "answer": "Direct and Indirect", "insight": "Indirect is common for financial reporting." },
+    { "text": "IT tool for no-human interference processing?", "answer": "Automated Accounting System / AI / RPA", "insight": "Robotic Process Automation is standard tech." },
+    { "text": "Value based on existing market value?", "answer": "Fair Value / Market Value", "insight": "Reflects current exit price." },
+    { "text": "Detailed breakdown of control account balance?", "answer": "Subsidiary ledger", "insight": "Used for individual debtor records." },
+    { "text": "Computerized data stored in any format?", "answer": "Database", "insight": "Allows for dynamic reporting." },
+    { "text": "Cash Sales: 124k | Credit Sales: 302k. Balance in Sales A/c?", "answer": "426,000", "insight": "Total sales = Cash + Credit." },
+    { "text": "Fixed amount given to cashier periodically?", "answer": "Petty cash imprest system", "insight": "Maintains a fixed float." },
+    { "text": "Van: 15k | Furn: 8k | Cash: 5.5k | Payables: 18k. Loan = 30% of Assets. Equity?", "answer": "1,950,000", "insight": "Assets (28.5m) - Payables (18m) - Loan (8.55m) = 1.95m." },
+    { "text": "Source document for Returns Inwards book?", "answer": "Debit note", "insight": "Per official September 2025 solution." },
+    { "text": "Card for payment transmission and credit?", "answer": "Credit card", "insight": "Allows deferred payments." },
+    { "text": "Cheque after six months?", "answer": "Stale Cheque", "insight": "Banks generally reject these." },
+    { "text": "Organisation restricting share transfer?", "answer": "Private company", "insight": "Private limited entity." },
+    { "text": "Resource outflow from past events?", "answer": "Liability", "insight": "Present obligation definition." },
+    { "text": "Start: 400k | End Assets: 1m | Drawings: 140k | Capital: 300k. Profit?", "answer": "440,000", "insight": "Closing + Drawings - Opening - New Capital." },
+    { "text": "Allowance against doubtful debts concept?", "answer": "Prudence / Conservatism", "insight": "Anticipates losses, not gains." },
+    { "text": "Salary: 200k | Tax: 10% | Social: 5%. Total deduction?", "answer": "30,000", "insight": "Sum of all statutory deductions." },
+    { "text": "Basic: 200k | Clothing Allowance: 50k. Total?", "answer": "250,000", "insight": "Consolidated salary sum." }
+  ],
+"ESSAY": [
+  
+  { "_year_header": "--- MARCH 2023 EXAMINATIONS ---" },
+    {
+      "text": "The accounting concept that gives rise to Accounting Equation is referred to as...",
+      "answer": "Entity Concept / Dual Concept",
+      "insight": "The dual aspect concept (duality) states that every transaction has two equal and opposite effects, which forms the basis of the fundamental accounting equation: Assets = Liabilities + Capital."
+    },
+    {
+      "text": "A book of account which records day to day transactions and activities using the concept of double entry is known as...",
+      "answer": "General ledger / Ledger",
+      "insight": "The ledger is the principal book of accounts where the double-entry records of all transactions are permanently kept."
+    },
+    {
+      "text": "The type of impersonal ledger account used to record transactions relating to tangible properties or possession of individuals, firms or companies is called...",
+      "answer": "Real accounts / Real Ledger",
+      "insight": "Real accounts deal with tangible assets like machinery, buildings, cash, and inventory. Nominal accounts deal with expenses and income."
+    },
+    {
+      "text": "Not-for-profit entities can be subdivided into __________ entities and __________ entities.",
+      "answer": "Governmental and Non-Governmental",
+      "insight": "Not-for-profits are broadly classified into public sector (government agencies and ministries) and private sector NGOs (charities, clubs, associations)."
+    },
+    {
+      "text": "The concept that requires the preparer of the books of account not to anticipate profit but recognise all known losses is referred to as...",
+      "answer": "Prudence / Conservatism",
+      "insight": "The prudence concept ensures that assets and income are not overstated, and liabilities and expenses are not understated."
+    },
+    {
+      "text": "In accounting, __________ refers to accounting entries necessary to reduce or negate the balance of another account that it is paired with.",
+      "answer": "Offsetting / Contra-entry / Set-off",
+      "insight": "A contra-entry cancels out corresponding balances, such as when a business sets off a trade receivable balance against a trade payable balance for the same entity."
+    },
+    {
+      "text": "The Accounting Standard that specifies the accounting treatment of items of Property, Plant and Equipments is...",
+      "answer": "IAS 16",
+      "insight": "International Accounting Standard (IAS) 16 outlines how to recognize, measure, and depreciate Property, Plant, and Equipment."
+    },
+    {
+      "text": "Adjusted trial balance after all identified errors have been located, corrected and updated in a newly prepared trial balance is known as...",
+      "answer": "Extended Trial Balance / Final Trial Balance",
+      "insight": "An extended trial balance is a working paper used to prepare final accounts by incorporating end-of-year adjustments (accruals, prepayments, depreciation) into the initial trial balance."
+    },
+    {
+      "text": "Calculate the company's non-current liability from the following data: Carrying amount of PPE 1,000,000; Current assets 520,000; Current liabilities 320,000; Total equity 800,000.",
+      "answer": "GH¢400,000",
+      "insight": "1. Total Assets = PPE (1,000,000) + Current Assets (520,000) = 1,520,000. \n2. Accounting Equation: Assets = Equity + Liabilities. \n3. Total Liabilities = Total Assets (1,520,000) - Equity (800,000) = 720,000. \n4. Non-Current Liabilities = Total Liabilities (720,000) - Current Liabilities (320,000) = GH¢400,000."
+    },
+    {
+      "text": "The two principles relied upon by an accountant at the year end in adjusting for expenses and income is...",
+      "answer": "Matching and Accrual Principles",
+      "insight": "The matching concept dictates that revenues and their associated expenses must be recognized in the same accounting period, leading to accrual accounting."
+    },
+    {
+      "text": "A memorandum total account used to record the various balances on ledgers and provides cross check on them is referred to as...",
+      "answer": "Control accounts / Self balancing ledger",
+      "insight": "Control accounts (like the Receivables Control Account) aggregate all individual subsidiary ledger balances to quickly check for arithmetical errors."
+    },
+    {
+      "text": "The two main type of payroll systems in use are __________ and __________.",
+      "answer": "Manual Payroll system and Computerised payroll system",
+      "insight": "Payroll can be processed by hand using wages books and tax tables (manual) or automated using specialized software packages (computerized)."
+    },
+    {
+      "text": "A manufacturing entity had the following at June 30, 2022: Prime cost 900,000; Factory overhead 360,000; Opening WIP 50,000; Closing WIP 80,000. What was the prime cost for the financial year?",
+      "answer": "L$900,000",
+      "insight": "This is a direct extraction from the data provided. The Prime Cost (the sum of all direct materials, direct labor, and direct expenses) is explicitly given as 900,000."
+    },
+    {
+      "text": "Using the same manufacturing data (Prime cost 900,000; Factory overhead 360,000; Opening WIP 50,000; Closing WIP 80,000). What was the production cost for the period?",
+      "answer": "L$1,230,000",
+      "insight": "Production Cost = Prime Cost (900,000) + Factory Overhead (360,000) + Opening Work-in-Progress (50,000) - Closing Work-in-Progress (80,000) = L$1,230,000."
+    },
+    {
+      "text": "The documents that regulate the internal workings of a limited liability company is referred to as...",
+      "answer": "Articles of Association",
+      "insight": "While the Memorandum of Association governs external relations, the Articles of Association dictate the internal rules, such as directors' powers and voting rights."
+    },
+    {
+      "text": "A cash book that has columns for discounts, Cash and Bank is known as __________ Cash book.",
+      "answer": "Three Columns",
+      "insight": "A three-column cash book tracks physical cash, bank transactions, and memo columns for discount allowed and discount received."
+    },
+    {
+      "text": "A business made a profit of Le93,500 but its returns inward has been overstated by Le7,500. How much is the correct profit?",
+      "answer": "Le101,000",
+      "insight": "Returns inward (sales returns) reduce revenue and therefore reduce gross profit. If returns inward were *overstated* (recorded too high), the profit was artificially pulled down. To correct it, add the error back: 93,500 + 7,500 = Le101,000."
+    },
+    {
+      "text": "What was the capital of the business as at December 31, 2020? (Non-current assets cost 320,000; Current assets 750,000; Current liabilities 150,000; Provisions for depreciation 70,000).",
+      "answer": "N850,000",
+      "insight": "1. Net Non-Current Assets = 320,000 - 70,000 = 250,000. \n2. Total Assets = 250,000 + 750,000 = 1,000,000. \n3. Capital = Total Assets (1,000,000) - Current Liabilities (150,000) = N850,000."
+    },
+    {
+      "text": "Using the 2021 data for the same business (Non-current assets cost 286,000; Current assets 920,000; Current liabilities 130,000; Prov for depreciation 74,000). What was the value of the net profit or loss for 2021?",
+      "answer": "N152,000 Profit",
+      "insight": "1. 2021 Net Non-Current Assets = 286,000 - 74,000 = 212,000. \n2. 2021 Total Assets = 212,000 + 920,000 = 1,132,000. \n3. 2021 Closing Capital = 1,132,000 - 130,000 = 1,002,000. \n4. Profit = Closing Capital (1,002,000) - Opening Capital (850,000) = N152,000."
+    },
+    {
+      "text": "The process of locating and eliminating errors from a computer program is known as...",
+      "answer": "Debugging",
+      "insight": "In computerized accounting systems, debugging is the technical process of fixing software code issues or glitches that cause the system to behave unexpectedly."
+    },
+  {
+      "_year_header": "--- SEPTEMBER 2023 EXAMINATIONS ---"
+    },
+    {
+      "text": "Identify THREE direct users and TWO indirect users of Financial Statements.",
+      "officialAnswer": "Direct Users: Owners, Management, Lenders, Employees. Indirect Users: Tax authority, Customers, Financial analysts, Government.",
+      "keywords": [
+        ["owner", "management", "lender", "investor", "employee"],
+        ["tax", "government", "customer", "analyst", "public"]
+      ],
+      "insight": "Direct users have a financial stake or risk in the business. Indirect users need the information for regulatory, advisory, or commercial purposes without bearing the direct risk of loss."
+    },
+    {
+      "text": "Outline THREE features of a Private Limited Liability Company according to CAMA.",
+      "officialAnswer": "1. Minimum of 1 member. 2. Restricts the transfer of its shares. 3. Cannot invite the public to subscribe for its shares. 4. Perpetual succession.",
+      "keywords": [
+        ["transfer", "restrict", "limit"],
+        ["public", "subscription", "invite"],
+        ["perpetual", "succession"]
+      ],
+      "insight": "Unlike public companies (Plc), private companies (Ltd) are closed to the general public for fundraising and closely guard who can become a shareholder."
+    },
+    {
+      "text": "State FIVE statutory books that every limited liability company is required to keep under the Companies and Allied Matters Act (CAMA).",
+      "officialAnswer": "1. Register of members. 2. Index of members. 3. Register of charges. 4. Minutes Book. 5. Register of directors and secretaries. 6. Accounting Records.",
+      "keywords": [
+        ["register", "member"],
+        ["minute", "book"],
+        ["director", "secretary"],
+        ["charge", "interest"],
+        ["accounting", "record"]
+      ],
+      "insight": "Statutory books are official, legally mandated registers that must be kept at the company's registered office for inspection to ensure corporate transparency."
+    },
+    {
+      "text": "Kwame Enterprises' unadjusted Cash Book balance is N100,000,000. \n\nAfter adjusting for a Standing Order (N2,000,000), Direct Salaries (N20,000,000), VAT (N100,000), COT (N186,000) and Withholding Tax (N100,000), what is the Adjusted Cash Book Balance for June 2022?",
+      "officialAnswer": "The Adjusted Cash Book Balance is N97,614,000.",
+      "keywords": [
+        ["97,614,000", "97614000", "97,614"]
+      ],
+      "insight": "All of these adjustments are direct bank deductions that were not yet in the cash book. You must credit (subtract) them from the unadjusted debit balance: 100,000,000 - 22,386,000 = N97,614,000."
+    },
+    {
+      "text": "Following an Adjusted Cash Book balance of N97,614,000, Kwame Enterprises had Unpresented Cheques totaling N20,000,000 and Uncredited Cheques of N70,000,000. \n\nWhat is the Balance as per Bank Statement?",
+      "officialAnswer": "The Balance as per Bank Statement is N47,614,000.",
+      "keywords": [
+        ["47,614,000", "47614000", "47,614"]
+      ],
+      "insight": "Bank Statement Balance = Adjusted Cash Book Balance (97,614,000) + Unpresented Cheques (20,000,000) - Uncredited Cheques (70,000,000) = N47,614,000."
+    },
+    {
+      "text": "Provide TWO examples of Capital Expenditure and TWO examples of Revenue Expenditure.",
+      "officialAnswer": "Capital: Purchase of motor vehicles, Legal fees for acquiring land. Revenue: Cost of trading inventories, Staff salaries.",
+      "keywords": [
+        ["motor", "vehicle", "building", "machinery", "equipment", "land"],
+        ["salary", "rent", "inventory", "repair", "electricity"]
+      ],
+      "insight": "Capital expenditure adds long-term value and is recorded on the Statement of Financial Position. Revenue expenditure is for day-to-day maintenance and is expensed to Profit or Loss."
+    },
+    {
+      "text": "For Dokunnu Manufacturing, the Calculated Cost of Goods Manufactured is L$151,550,000. \n\nIf the factory transfers goods to the sales department at a Profit Margin of 20% on sales, calculate the Unrealised Manufacturing Profit.",
+      "officialAnswer": "The Manufacturing Profit is L$37,887,500.",
+      "keywords": [
+        ["37,887,500", "37887500", "37,887.5"]
+      ],
+      "insight": "To calculate profit based on cost, you must convert the Margin to a Mark-up. A Margin of 20% (1/5) on sales equals a Mark-up of 25% (1/4) on cost. 25% of L$151,550,000 = L$37,887,500."
+    },
+  {
+      "_year_header": "--- SEPTEMBER 2024 EXAMINATIONS ---"
+    },
+    {
+      "text": "Johnny Cole Enterprises discovered an error: The total in the Purchases Day Book was N421,500, but the figure used when posting to the purchases account was N221,500. \n\nWhat is the journal entry to correct this undercast?",
+      "officialAnswer": "Dr. Purchases account N200,000; Cr. Suspense account N200,000.",
+      "keywords": [
+        ["purchases"],
+        ["suspense"],
+        ["200,000", "200000"]
+      ],
+      "insight": "The purchases account was short by N200,000 (an undercast). To fix this, you must increase (Debit) Purchases. Since the other side of the double entry wasn't affected, you Credit the Suspense account to balance the ledger."
+    },
+    {
+      "text": "Define the term 'Business' and state THREE of its characteristics.",
+      "officialAnswer": "Business is a commercial activity that provides goods/services to make profit. Characteristics: exists to satisfy needs, makes profit, involves risk, profit belongs to owners.",
+      "keywords": [
+        ["activity", "commercial", "goods", "services"],
+        ["profit", "return"],
+        ["needs", "desires", "society"],
+        ["risk"]
+      ],
+      "insight": "A business is fundamentally driven by the motive to maximize profit by fulfilling societal needs, while accepting the corresponding risks of operating in the market."
+    },
+    {
+      "text": "State FOUR users of accounting information and explain their information needs.",
+      "officialAnswer": "1. Owners/Investors (profitability/dividends). 2. Management (planning/efficiency). 3. Trade Payables (liquidity/ability to pay). 4. Tax authority (tax computation).",
+      "keywords": [
+        ["owners", "investors", "shareholders"],
+        ["management", "directors", "managers"],
+        ["payables", "creditors", "suppliers", "lenders", "banks"],
+        ["tax", "government", "authorities"]
+      ],
+      "insight": "Different stakeholders use financial statements for different reasons: investors look for returns, creditors look for short-term liquidity, and management looks for operational efficiency."
+    },
+    {
+      "text": "Elozino Trading Company maintains a petty cash float of L$42,000. During December 2021, payments from Petty Cash were: Stationery L$16,000, Trade expenses L$4,000, and Sundry purchases L$18,400. \n\nWhat is the Balance carried down (Bal c/d) at the end of the month?",
+      "officialAnswer": "The Balance carried down is L$3,600.",
+      "keywords": [
+        ["3,600", "3600"]
+      ],
+      "insight": "Total Float (42,000) minus Total Payments (16,000 + 4,000 + 18,400 = 38,400) leaves a remaining cash balance of L$3,600."
+    },
+    {
+      "text": "Bature Trading Enterprises Trial Balance shows Sales of GH¢95,400,000 and Returns Inwards of GH¢5,100,000. \n\nCalculate the Net Revenue for the financial year.",
+      "officialAnswer": "The Net Revenue is GH¢90,300,000.",
+      "keywords": [
+        ["90,300,000", "90300000", "90,300", "90300"]
+      ],
+      "insight": "Net Revenue is calculated by subtracting Sales Returns (Returns Inwards) from Gross Sales. (95,400 - 5,100 = 90,300)."
+    },
+    {
+      "text": "Calculate the Cost of Sales for Bature Trading Enterprises given the following data (in GH¢'000): \nOpening Inventory: 8,000 \nPurchases: 76,000 \nCarriage inwards: 3,600 \nReturns outwards: 3,500 \nGoods withdrawn by owner: 17,000 \nClosing Inventory: 13,000",
+      "officialAnswer": "The Cost of Sales is GH¢54,100,000.",
+      "keywords": [
+        ["54,100,000", "54100000", "54,100", "54100"]
+      ],
+      "insight": "Cost of Sales = Opening Inventory (8,000) + Net Purchases (76,000 + 3,600 - 3,500) - Drawings of goods (17,000) - Closing Inventory (13,000) = 54,100."
+    },
+    {
+      "text": "State THREE reasons why the reconciliation of the payables control account and the payables ledger is important.",
+      "officialAnswer": "1. Acts as a check on subsidiary ledgers. 2. Reveals errors early. 3. Makes fraud difficult. 4. Enhances early completion of final accounts.",
+      "keywords": [
+        ["check", "subsidiary", "arithmetic", "accuracy"],
+        ["errors", "mistakes", "discrepancies"],
+        ["fraud", "theft"],
+        ["final", "accounts", "completion", "audit"]
+      ],
+      "insight": "Reconciliation ensures that the total of individual supplier balances matches the master control account in the general ledger, acting as a strong internal control mechanism."
+    },
+    {
+      "text": "List FIVE Accounting packages commonly used in a computerised accounting system.",
+      "officialAnswer": "QuickBooks, Sage, Tally, Oracle, PeachTree, Zoho Books, Accpac, FreshBooks.",
+      "keywords": [
+        ["quickbook", "quickbooks"],
+        ["sage"],
+        ["tally"],
+        ["oracle"],
+        ["peachtree", "peach tree"],
+        ["zoho"],
+        ["accpac"]
+      ],
+      "insight": "These software packages automate the recording and processing of accounting transactions within functional modules (like payroll, inventory, and payables)."
+    },
+    {
+      "text": "State FIVE advantages of using Accounting packages in a computerised accounting system.",
+      "officialAnswer": "Quicker implementation, highly accurate, fast processing speed, automated report generation, cost-effective, and easy to backup.",
+      "keywords": [
+        ["quick", "fast", "speed"],
+        ["accurate", "accuracy", "error"],
+        ["automated", "print", "generate", "report"],
+        ["cost", "cheap", "save"],
+        ["backup", "storage", "cloud"]
+      ],
+      "insight": "Computerized systems handle large volumes of data instantly and eliminate the arithmetic errors that are common in manual paper ledgers."
+    },
+  { "_year_header": "--- MARCH 2024 EXAMINATIONS ---" },
+    {
+      "text": "Jamme Keremin Enterprises started a retail business. After posting the opening capital balances (Motor van 960k, Cash 660k, Loan 132k) and all April 2022 transactions to the ledger, what is the grand total of the Trial Balance as at 30 April 2022?",
+      "officialAnswer": "The Trial Balance total is Le 2,373,264.",
+      "keywords": [
+        ["2,373,264", "2373264"]
+      ],
+      "insight": "The trial balance ensures arithmetical accuracy. After posting all Double Entries, both the total debit and total credit columns amount exactly to Le 2,373,264."
+    },
+    {
+      "text": "Explain FIVE advantages of operating a business as a Limited Liability Company compared to a sole proprietorship or partnership.",
+      "officialAnswer": "Limited liability, perpetual succession, separate legal entity, ease of raising capital, and transferability of shares.",
+      "keywords": [
+        ["limited", "liability"],
+        ["perpetual", "succession"],
+        ["separate", "legal", "entity", "corporate", "personality"],
+        ["capital", "finance", "shares"],
+        ["sue"]
+      ],
+      "insight": "A company is a separate legal person from its owners. This protects the personal assets of shareholders from business debts (limited liability) and ensures the business survives the death of its founders (perpetual succession)."
+    },
+    {
+      "text": "Explain briefly the accounting concept of 'substance over form' with an example.",
+      "officialAnswer": "Transactions must be accounted for and presented in accordance with their economic substance and reality, not merely their legal form.",
+      "keywords": [
+        ["economic", "financial", "reality", "substance"],
+        ["legal", "form", "law"]
+      ],
+      "insight": "This ensures financial statements faithfully represent underlying commercial realities. A classic example is a finance lease, where the lessee uses the asset as their own, even though the legal title remains with the lessor."
+    },
+    {
+      "text": "Explain the FIVE elements of Financial Statements in accordance with the IASB's conceptual framework.",
+      "officialAnswer": "The five elements are Assets, Liabilities, Equity, Income, and Expenses.",
+      "keywords": [
+        ["asset"],
+        ["liabilit"],
+        ["equity", "capital"],
+        ["income", "revenue"],
+        ["expense", "cost", "loss"]
+      ],
+      "insight": "Assets, liabilities, and equity are the building blocks of the Statement of Financial Position. Income and expenses are the building blocks of the Statement of Profit or Loss."
+    },
+    {
+      "text": "What is a Bin Card in the context of inventory management?",
+      "officialAnswer": "A record keeping tool which tracks the quantity of a specific item of inventory in a specific storage location.",
+      "keywords": [
+        ["record", "tool", "document", "card"],
+        ["quantity", "movement", "track"],
+        ["inventory", "stock", "store", "warehouse"]
+      ],
+      "insight": "It acts as a physical tracking card kept with the goods in the warehouse to record receipts, issues, and the running balance of stock."
+    },
+    {
+      "text": "Joe Mensa Commercial Enterprises trades in Ankara and Adire. After preparing the analytical sales day book for October 2021, what is the total amount transferred to the Sales Account in the General Ledger?",
+      "officialAnswer": "The total amount transferred is GH¢ 573,500.",
+      "keywords": [
+        ["573,500", "573500"]
+      ],
+      "insight": "The total is derived by summing the gross invoice values of all credit sales made to customers (Kente, Masaba, Adulam, Touray, Nana, Kofi, and Akatampo) during the month."
+    },
+    {
+      "text": "Margai's cash book showed a debit balance of Le 358,000. After adjusting for bank charges (Le 102k), internet charges (Le 328k), ATM charges (Le 200k), and interest received (Le 478k), what is the Adjusted Cash Book Balance?",
+      "officialAnswer": "The Adjusted Cash Book balance is Le 206,000.",
+      "keywords": [
+        ["206,000", "206000"]
+      ],
+      "insight": "Adjusted Balance = Unadjusted Balance (358,000) + Interest Received (478,000) - Bank Charges (102,000) - Internet (328,000) - ATM (200,000) = Le 206,000."
+    },
+    {
+      "text": "Following an Adjusted Cash Book balance of Le 206,000, there were unpresented cheques of Le 344,900 and a specific cheque issued to Mrs. Milton for Le 302,400 that had not been paid by the bank. What is the Balance as per Bank Statement?",
+      "officialAnswer": "The Balance as per Bank Statement is Le 248,500.",
+      "keywords": [
+        ["248,500", "248500"]
+      ],
+      "insight": "Bank Balance = Adjusted Cash Book (206,000) + Unpresented Cheques (344,900) - Deducted Cheque (302,400) = Le 248,500."
+    },
+    {
+      "text": "Itemise FIVE objectives that a good internal control system over cash will help management to achieve.",
+      "officialAnswer": "Maintain adequate cash, ensure accurate accounting, invest idle cash, prevent fraud/theft, and avoid temptation to embezzle.",
+      "keywords": [
+        ["adequate", "liquidity", "amount"],
+        ["accurate", "record", "account"],
+        ["invest", "idle", "profit"],
+        ["prevent", "loss", "fraud", "theft"],
+        ["embezzle", "temptation"]
+      ],
+      "insight": "Internal controls safeguard the most liquid asset (cash) from misappropriation, ensure accurate financial reporting, and optimize the use of excess funds."
+    },
+    {
+      "text": "Explain FIVE features of a Computerised Accounting System.",
+      "officialAnswer": "Unique codes for identification, real-time processing, automated report generation, error detection, large volume data handling, and backup opportunities.",
+      "keywords": [
+        ["code", "identification"],
+        ["real-time", "online", "speed", "fast"],
+        ["report", "print", "generate", "automated"],
+        ["error", "detect", "accuracy"],
+        ["backup", "storage", "cloud", "volume"]
+      ],
+      "insight": "Computerised systems automate the posting process, allowing for faster, more accurate, and highly integrated financial reporting compared to manual ledgers."
+    },
+    {
+      "_year": "--- SEPTEMBER 2025 EXAMINATIONS ---"
+    },
+    {
+      "text": "Explain Books of Prime Entry and prepare a Purchases Day Book (Total 2.04m).",
+      "officialAnswer": "Chronological records of original entry. Total: 2,046,500.",
+      "keywords": [
+        ["chronological", "first", "subsidiary"],
+        ["purchases", "day", "book"],
+        ["2,046,500"]
+      ],
+      "insight": "Recorded before ledger posting."
+    },
+    {
+      "text": "Define Not-for-profit Entities and state six features.",
+      "officialAnswer": "Entities for welfare, not profit. Features: stewardship, re-invested surplus, accumulated fund.",
+      "keywords": [
+        ["not", "profit"],
+        ["stewardship", "accountability"],
+        ["accumulated", "fund"]
+      ],
+      "insight": "Uses Income/Expenditure accounts."
+    },
+    {
+      "text": "Trial Balance and Profit/Loss for Okpolo Ent. (Revenue 49.1m).",
+      "officialAnswer": "TB: 65,042,400. GP: 10,254,000. Net Loss: 2,115,150.",
+      "keywords": [
+        ["65,042,400"],
+        ["10,254,000"],
+        ["2,115,150", "loss"]
+      ],
+      "insight": "Provision adjustments must be expensed."
+    },
+    {
+      "text": "Bank reconciliation subsystem features and Bonju's Adjusted Cash Book.",
+      "officialAnswer": "Auto-matching and stale cheque lists. Balance: 1,980,000.",
+      "keywords": [
+        ["automated", "matching"],
+        ["adjusted", "cash", "book"],
+        ["1,980,000"]
+      ],
+      "insight": "Reconciles internal records with bank statements."
+    },
+    {
+      "text": "Newton Business Hub: Post Trade Receivables and Bad Debts.",
+      "officialAnswer": "Receivables: 7,200,000. Bad Debts: 850,000. Allowance: 360,000.",
+      "keywords": [
+        ["7,200,000"],
+        ["850,000", "bad"],
+        ["360,000"]
+      ],
+      "insight": "Write off bad debts before calculating allowance."
+    },
+    {
+      "text": "Characteristics of Assets, Liabilities, and Equity (IASB).",
+      "officialAnswer": "Asset: Controlled, past event, benefit. Liability: Obligation, outflow. Equity: Residual.",
+      "keywords": [
+        ["controlled", "resource"],
+        ["present", "obligation"],
+        ["residual", "interest"]
+      ],
+      "insight": "The framework focuses on control over ownership."
+    },
+    {
+      "_year_header": "--- MARCH 2025 EXAMINATIONS ---"
+    },
+    {
+      "text": "Define the following terms:\n(i) Accounting\n(ii) Bookkeeping\n(iii) Auditing",
+      "officialAnswer": "Accounting: process of provision of info. Bookkeeping: recording phase. Auditing: independent examination.",
+      "keywords": [
+        ["recording", "classifying", "summarizing", "provision"],
+        ["recording", "phase", "methodical"],
+        ["independent", "examination", "true", "fair"]
+      ],
+      "insight": "Bookkeeping is just the entry of data; accounting interprets it, and auditing verifies it."
+    },
+    {
+      "text": "Accra Enterprises issued Invoices 2119 - 2124 for cards and bags. Trade discounts of 2%, 7.5%, and 9% were applied to different customers.\n\nState the final Net Total of the Analytical Sales Day Book for January 2022.",
+      "officialAnswer": "The Net Total transferred to the Sales Account is GH¢368,178.",
+      "keywords": [
+        ["368,178", "368178"]
+      ],
+      "insight": "Calculations involve subtracting the trade discounts from the gross amounts for each customer before adding them up. Gross Sales - Trade Discount = Net Sales."
+    },
+    {
+      "text": "Define with examples the following terms:\n(i) Capital expenditure\n(ii) Revenue expenditure\n(iii) Deferred revenue expenditure",
+      "officialAnswer": "Capital: increases earning capacity (e.g., Building). Revenue: recurrent/running costs (e.g., Salaries). Deferred: revenue nature with long-term benefit (e.g., Heavy R&D).",
+      "keywords": [
+        ["earning", "capacity", "permanent", "asset"],
+        ["recurrent", "running", "expense"],
+        ["deferred", "long-term", "benefit"]
+      ],
+      "insight": "Capital expenditure creates long-term assets on the balance sheet; revenue expenditure maintains current operations in the P/L."
+    },
+    {
+      "text": "State THREE reasons it is necessary to distinguish between capital and revenue expenditures.",
+      "officialAnswer": "1. To avoid overstating/understating profit. 2. To avoid distortion in financial statements. 3. To maintain the concept of consistency.",
+      "keywords": [
+        ["profit"],
+        ["distortion", "accurate", "report"],
+        ["consistency", "tax", "cash flow"]
+      ],
+      "insight": "If you treat a Capital expense (like buying a car) as a Revenue expense, your profit for that year will look massively, artificially low."
+    },
+    {
+      "text": "Classify the following into capital or revenue expenditure:\n1. Repair of roof\n2. Installing extra toilet",
+      "officialAnswer": "1. Repair of roof: Revenue Expenditure\n2. Installing extra toilet: Capital Expenditure",
+      "keywords": [
+        ["repair", "revenue"],
+        ["toilet", "capital"]
+      ],
+      "insight": "Repairs to existing items maintain capacity (Revenue); new installations expand the building's capacity (Capital)."
+    },
+    {
+      "text": "Define 'Suspense Account' and explain TWO of its uses.",
+      "officialAnswer": "Suspense is a temporary account used to record differences preventing the agreement of the trial balance.",
+      "keywords": [
+        ["temporary", "holding"],
+        ["difference", "agree"],
+        ["unidentified"]
+      ],
+      "insight": "It acts as a 'holding pen' for transactions that do not fit neatly into a specific account until the error is found."
+    }
+  ]
+}
