@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SABI Arena | Live Exam</title>
+    <link rel="stylesheet" href="post-utme.css"> </head>
+<body>
+
+    <div class="sabi-app">
+        <header class="header-top">
+            <div class="logo">SABI</div>
+            <div id="timer" class="timer-pill">20:00</div>
+        </header>
+
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill" style="width: 0%;"></div>
+        </div>
+
+        <div class="question-container">
+            <span id="q-count" class="q-number">Question 1 of 20</span>
+            <h2 id="q-text" class="question-text">Loading question...</h2>
+            
+            <div id="options-list" class="options-list">
+                </div>
+        </div>
+
+        <button id="next-btn" class="next-btn" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <script src="arena.js"></script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+/* --- RAZOR SHARP TRUE BLACK THEME --- */
+:root {
+    --bg-outside: #000000;
+    --bg-app: #000000;         /* Pure Black */
+    --card-bg: #111111;        /* Deep Charcoal */
+    --accent-blue: #3b82f6;    /* Vibrant Blue */
+    --text-white: #ffffff;
+    --text-dim: #a1a1aa;
+    --border: #27272a;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* This makes text look "sharper" on mobile/mac */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: var(--bg-outside);
+    color: var(--text-white);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- MOBILE ONLY CONTAINER --- */
+.sabi-app {
+    width: 100%;
+    max-width: 420px;
+    height: 100vh;
+    background-color: var(--bg-app);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.sabi-app::-webkit-scrollbar { display: none; }
+
+/* Desktop View: Adds the "Phone" look */
+@media (min-width: 480px) {
+    .sabi-app {
+        height: 85vh;
+        border-radius: 40px;
+        border: 1px solid var(--border);
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.1);
+    }
+}
+
+/* --- LOGO & HEADERS --- */
+.logo {
+    color: var(--accent-blue);
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+}
+
+.sabi-header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.sabi-header p {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+}
+
+/* --- SEARCH --- */
+.search-container {
+    margin-bottom: 25px;
+}
+
+.search-container input {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-container input:focus {
+    border-color: var(--accent-blue);
+}
+
+/* --- GRID --- */
+.uni-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding-bottom: 120px;
+}
+
+.uni-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    transition: 0.2s ease;
+}
+
+.uni-card.active {
+    border-color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.uni-icon {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.uni-info h3 {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.uni-info p {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+/* --- STICKY FOOTER --- */
+.action-footer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 420px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Fix for desktop phone border-radius */
+@media (min-width: 480px) {
+    .action-footer {
+        bottom: 7.5vh;
+        border-bottom-left-radius: 40px;
+        border-bottom-right-radius: 40px;
+    }
+}
+
+.selection-details span {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.selection-details strong {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--text-white);
+}
+
+.btn-primary {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+/* --- ARENA SPECIFIC STYLES --- */
+.timer-pill {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1.5px solid var(--accent-blue);
+    color: var(--accent-blue);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    margin: 10px 0 20px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-blue);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.q-number {
+    color: var(--accent-blue);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.question-text {
+    margin: 15px 0 30px;
+    font-size: 1.2rem;
+    line-height: 1.4;
+}
+
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.option-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 18px;
+    border-radius: 15px;
+    text-align: left;
+    font-size: 1rem;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.option-btn.selected {
+    border-color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.next-btn {
+    margin-top: auto; /* Pushes to bottom */
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 15px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    width: 100%;
+}
+
+.next-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

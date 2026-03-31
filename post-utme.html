@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SABI Arena</title>
+    <link rel="stylesheet" href="post-utme.css">
+</head>
+<body>
+
+    <div class="sabi-app">
+        
+        <header class="sabi-header">
+            <div class="logo">SABI</div>
+            <h1>Post-UTME</h1>
+            <p>Select your university to begin</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="uni-search" placeholder="Search for a university..." oninput="filterUnis()">
+        </div>
+
+        <div id="university-grid" class="uni-grid">
+            
+            <div class="uni-card active" id="card-ALL" onclick="selectUni('ALL', this)">
+                <div class="uni-icon">🌍</div>
+                <div class="uni-info">
+                    <h3>Universal Mix</h3>
+                    <p>All Schools</p>
+                </div>
+                <div class="selection-indicator"></div>
+            </div>
+
+            </div>
+
+        <footer class="action-footer">
+            <div class="selection-details">
+                <span>Practice Mode</span>
+                <strong id="selected-display">Universal Mix</strong>
+            </div>
+            <button id="start-btn" class="btn-primary" onclick="launchArena()">
+                Start Exam
+            </button>
+        </footer>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="post-utme.js"></script>
+
+</body>
+</html>
