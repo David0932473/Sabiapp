@@ -1,3 +1,9 @@
+const supabaseUrl = 'https://axmnhhazrjluviedaity.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4bW5oaGF6cmpsdXZpZWRhaXR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MDc3MDUsImV4cCI6MjA5MDQ4MzcwNX0.qx1GdrgpEuqx37-ytGD2ZrG-NfpxXAvQIXPpnTwwqUg';
+
+// CHANGED: Renamed to 'supabaseClient' to prevent crashing with the CDN
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
 let currentLevel, currentSubject, currentSection, currentIndex = 0;
 let activeSections = [];
 let includeMCQ, includeSAQ, includeEssay;
@@ -13,7 +19,6 @@ window.onload = async () => {
     includeSAQ = params.get('saq') === 'true';
     includeEssay = params.get('essay') === 'true';
 
-    // Redirect to setup if opened directly
     if (!currentLevel) { window.location.href = 'pq-setup.html'; return; }
 
     document.getElementById('display-subject').innerText = currentSubject;
@@ -26,20 +31,42 @@ window.onload = async () => {
 };
 
 async function loadData() {
-    const lSlug = currentLevel.toLowerCase().replace(/\s+/g, '');
-    const sSlug = currentSubject.toLowerCase().replace(/\s+/g, '-');
-    const url = `ican-db/${lSlug}-${sSlug}.json`;
+    let data = { MCQ: [], SAQ: [], ESSAY: [] };
 
-    let data;
     try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Fetch failed");
-        data = await res.json();
+        // CHANGED: Using supabaseClient here
+        const { data: fetchedData, error } = await supabaseClient
+            .from('sabi')
+            .select('*');
+
+        if (error) throw new Error(error.message);
+
+        fetchedData.forEach(q => {
+            let formattedQ = {
+                text: q.question_text,
+                insight: q.insight
+            };
+
+            if (q.category === 'MCQ') {
+                formattedQ.options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+                formattedQ.answer = parseInt(q.answer, 10); 
+                data.MCQ.push(formattedQ);
+                
+            } else if (q.category === 'SAQ') {
+                formattedQ.answer = q.answer;
+                data.SAQ.push(formattedQ);
+                
+            } else if (q.category === 'ESSAY') {
+                formattedQ.keywords = typeof q.answer === 'string' ? JSON.parse(q.answer) : q.answer;
+                data.ESSAY.push(formattedQ);
+            }
+        });
+
     } catch (e) {
-        console.warn("Using Fallback Data. Run via Local Server to load actual JSON.");
+        console.warn("Supabase Fetch Failed. Using Fallback Data.", e);
         data = {
             "MCQ": [
-                { "text": "🚨 YOUR BROWSER BLOCKED THE JSON FILE 🚨\n\nTo fix this: Open VS Code -> Right Click pq-setup.html -> 'Open with Live Server'.\n\nFallback Question: What is 5 + 5?", "options": ["8", "9", "10", "11"], "answer": 2, "insight": "Use a local server to see your real ICAN questions!" },
+                { "text": "🚨 SUPABASE CONNECTION FAILED 🚨\n\nFallback Question: What is 5 + 5?", "options": ["8", "9", "10", "11"], "answer": 2, "insight": "Check your Supabase URL and Key!" },
                 { "text": "Which of these is a FINTECH company?", "options": ["Oracle", "Microsoft", "Interswitch", "Google"], "answer": 2, "insight": "Interswitch is a leading African fintech." }
             ],
             "SAQ": [
@@ -51,10 +78,8 @@ async function loadData() {
         };
     }
 
-    // Filter out year headers or empty data
     const clean = (arr) => (arr || []).filter(q => q && q.text && !q._year);
-
-    // Initial Randomization
+    
     if (includeMCQ) { sessionData.MCQ = shuffle(clean(data.MCQ)).slice(0, 30); if(sessionData.MCQ.length > 0) activeSections.push('MCQ'); }
     if (includeSAQ) { sessionData.SAQ = shuffle(clean(data.SAQ)).slice(0, 20); if(sessionData.SAQ.length > 0) activeSections.push('SAQ'); }
     if (includeEssay) { sessionData.ESSAY = shuffle(clean(data.ESSAY)).slice(0, 6); if(sessionData.ESSAY.length > 0) activeSections.push('ESSAY'); }
@@ -63,7 +88,8 @@ async function loadData() {
 }
 
 function switchSection(sec) {
-    currentSection = sec; currentIndex = 0;
+    currentSection = sec;
+    currentIndex = 0;
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById(`tab-${sec}`).classList.add('active');
     render();
@@ -97,7 +123,6 @@ function render() {
     
     updateControls();
     
-    // Update Progress Pill
     const totalDone = answeredQuestions.MCQ.size + answeredQuestions.SAQ.size + answeredQuestions.ESSAY.size;
     const totalQ = sessionData.MCQ.length + sessionData.SAQ.length + sessionData.ESSAY.length;
     document.getElementById('progress-text').innerText = Math.round((totalDone/totalQ)*100) + '%';
@@ -106,7 +131,6 @@ function render() {
 function updateControls() {
     const div = document.getElementById('arena-controls'); div.innerHTML = '';
     const secIdx = activeSections.indexOf(currentSection);
-
     const back = document.createElement('button'); back.className = 'nav-btn'; back.innerText = 'Back';
     back.onclick = () => { if(currentIndex > 0) { currentIndex--; render(); }};
     if (currentIndex === 0) back.style.opacity = '0.3';
@@ -117,12 +141,13 @@ function updateControls() {
         next.innerText = 'Next Question';
         next.onclick = () => { currentIndex++; render(); };
     } else if (secIdx < activeSections.length - 1) {
-        next.innerText = 'Next Section'; 
+        next.innerText = 'Next Section';
         next.style.color = '#000'; next.style.background = '#fff';
         next.onclick = () => switchSection(activeSections[secIdx+1]);
     } else {
         next.innerText = 'Finish Test'; 
-        next.style.background = 'var(--sabi-blue)'; next.style.color = '#fff'; next.style.borderColor = 'var(--sabi-blue)';
+        next.style.background = 'var(--sabi-blue)'; next.style.color = '#fff';
+        next.style.borderColor = 'var(--sabi-blue)';
         next.onclick = finish;
     }
     div.appendChild(next);
@@ -147,13 +172,15 @@ function gradeEssay() {
     answeredQuestions.ESSAY.add(currentIndex);
     const q = sessionData.ESSAY[currentIndex]; const txt = document.getElementById('ans').value.toLowerCase();
     document.getElementById('ans').disabled = true; document.querySelector('.action-btn').disabled = true;
-    let m = 0; q.keywords.forEach(g => { if(g.some(w => txt.includes(w.toLowerCase()))) m++; });
+    let m = 0;
+    q.keywords.forEach(g => { if(g.some(w => txt.includes(w.toLowerCase()))) m++; });
     const pts = (m / q.keywords.length) * 12.5; scores.ESSAY += pts;
     feedback('success', `GRADED: ${pts.toFixed(1)} / 12.5`, q.insight);
 }
 
 function feedback(type, title, msg) {
-    const p = document.getElementById('feedback-panel'); p.style.display = 'block'; p.className = `feedback ${type}`;
+    const p = document.getElementById('feedback-panel');
+    p.style.display = 'block'; p.className = `feedback ${type}`;
     document.getElementById('feedback-title').innerText = title; document.getElementById('insight-text').innerText = msg;
 }
 
@@ -162,10 +189,8 @@ function finish() {
     const max = (includeMCQ?30:0) + (includeSAQ?20:0) + (includeEssay?50:0);
     const p = max > 0 ? Math.round((total/max)*100) : 0;
     
-    // Hide feedback panel if it was open on the last question
     document.getElementById('feedback-panel').style.display = 'none';
     
-    // Dynamically build the breakdown block based on what was selected
     let breakdownHtml = '';
     if (includeMCQ) breakdownHtml += `<p style="margin:5px 0"><strong>MCQ:</strong> ${scores.MCQ} / 30</p>`;
     if (includeSAQ) breakdownHtml += `<p style="margin:5px 0"><strong>SAQ:</strong> ${scores.SAQ} / 20</p>`;
@@ -191,23 +216,17 @@ function finish() {
     document.getElementById('progress-text').innerText = '100%';
 }
 
-// 🔁 THE RETAKE LOGIC: Wipes scores, re-shuffles questions, and restarts the room
 function retakeExam() {
-    // 1. Reset Scores & Trackers
     scores = { MCQ: 0, SAQ: 0, ESSAY: 0 };
     answeredQuestions = { MCQ: new Set(), SAQ: new Set(), ESSAY: new Set() };
     
-    // 2. Re-shuffle the current session's questions for a new experience
     if (sessionData.MCQ.length > 0) sessionData.MCQ = shuffle(sessionData.MCQ);
     if (sessionData.SAQ.length > 0) sessionData.SAQ = shuffle(sessionData.SAQ);
     if (sessionData.ESSAY.length > 0) sessionData.ESSAY = shuffle(sessionData.ESSAY);
 
-    // 3. Make Question text visible again
     document.getElementById('q-text').style.display = 'block';
-
-    // 4. Jump back to the first active section
+    
     switchSection(activeSections[0]);
 }
 
-// Randomizer Utility
 function shuffle(a) { return a.sort(() => Math.random() - 0.5); }
