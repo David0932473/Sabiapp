@@ -7,6 +7,7 @@ const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 let currentLevel, currentSubject, currentSection, currentIndex = 0;
 let activeSections = [];
 let includeMCQ, includeSAQ, includeEssay;
+
 let sessionData = { MCQ: [], SAQ: [], ESSAY: [] };
 let scores = { MCQ: 0, SAQ: 0, ESSAY: 0 };
 let answeredQuestions = { MCQ: new Set(), SAQ: new Set(), ESSAY: new Set() };
@@ -34,47 +35,61 @@ async function loadData() {
     let data = { MCQ: [], SAQ: [], ESSAY: [] };
 
     try {
-        // CHANGED: Using supabaseClient here
-        const { data: fetchedData, error } = await supabaseClient
+        // 1. FETCH MCQ FROM THE ORIGINAL TABLE
+        const { data: mcqData, error: mcqError } = await supabaseClient
             .from('sabi')
             .select('*');
 
-        if (error) throw new Error(error.message);
+        if (mcqError) throw new Error("MCQ Error: " + mcqError.message);
 
-        fetchedData.forEach(q => {
-            let formattedQ = {
-                text: q.question_text,
-                insight: q.insight
-            };
+        // 2. FETCH SAQ FROM THE NEW TABLE
+        const { data: saqData, error: saqError } = await supabaseClient
+            .from('sabi_saq')
+            .select('*');
 
-            if (q.category === 'MCQ') {
-                formattedQ.options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
-                formattedQ.answer = parseInt(q.answer, 10); 
-                data.MCQ.push(formattedQ);
-                
-            } else if (q.category === 'SAQ') {
-                formattedQ.answer = q.answer;
-                data.SAQ.push(formattedQ);
-                
-            } else if (q.category === 'ESSAY') {
-                formattedQ.keywords = typeof q.answer === 'string' ? JSON.parse(q.answer) : q.answer;
-                data.ESSAY.push(formattedQ);
-            }
-        });
+        if (saqError) throw new Error("SAQ Error: " + saqError.message);
+
+        // 3. FORMAT MCQ DATA
+        if (mcqData) {
+            mcqData.forEach(q => {
+                if (q.category === 'MCQ') {
+                    let formattedQ = { text: q.question_text, insight: q.insight };
+                    formattedQ.options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+                    
+                    // Fix to handle A, B, C, D letter answers safely
+                    if (typeof q.answer === 'string' && isNaN(parseInt(q.answer, 10))) {
+                        const letterMap = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4 };
+                        formattedQ.answer = letterMap[q.answer.trim().toUpperCase()] || 0;
+                    } else {
+                        formattedQ.answer = parseInt(q.answer, 10);
+                    }
+                    data.MCQ.push(formattedQ);
+                }
+            });
+        }
+
+        // 4. FORMAT SAQ DATA
+        if (saqData) {
+            saqData.forEach(q => {
+                if (q.category === 'SAQ') {
+                    let formattedQ = {
+                        text: q.question_text,
+                        answer: q.answer,
+                        insight: q.insight
+                    };
+                    data.SAQ.push(formattedQ);
+                }
+            });
+        }
 
     } catch (e) {
-        console.warn("Supabase Fetch Failed. Using Fallback Data.", e);
+        alert("App Error: " + e.message);
+        console.warn("Supabase Fetch Failed.", e);
+        
         data = {
-            "MCQ": [
-                { "text": "🚨 SUPABASE CONNECTION FAILED 🚨\n\nFallback Question: What is 5 + 5?", "options": ["8", "9", "10", "11"], "answer": 2, "insight": "Check your Supabase URL and Key!" },
-                { "text": "Which of these is a FINTECH company?", "options": ["Oracle", "Microsoft", "Interswitch", "Google"], "answer": 2, "insight": "Interswitch is a leading African fintech." }
-            ],
-            "SAQ": [
-                { "text": "Type the word 'Sabi' to test the input box.", "answer": "Sabi", "insight": "Input validation is working perfectly in Sabi OS." }
-            ],
-            "ESSAY": [
-                { "text": "Write a short test sentence including the word 'Accounting'.", "keywords": [["accounting"]], "insight": "Theory grader is functioning normally." }
-            ]
+            "MCQ": [{ "text": "🚨 APP ERROR 🚨\n\nCheck connection.", "options": ["OK"], "answer": 0, "insight": "Check your table names!" }],
+            "SAQ": [],
+            "ESSAY": []
         };
     }
 
@@ -132,7 +147,8 @@ function updateControls() {
     const div = document.getElementById('arena-controls'); div.innerHTML = '';
     const secIdx = activeSections.indexOf(currentSection);
     const back = document.createElement('button'); back.className = 'nav-btn'; back.innerText = 'Back';
-    back.onclick = () => { if(currentIndex > 0) { currentIndex--; render(); }};
+    back.onclick = () => { if(currentIndex > 0) { currentIndex--;
+    render(); }};
     if (currentIndex === 0) back.style.opacity = '0.3';
     div.appendChild(back);
 
@@ -156,7 +172,8 @@ function updateControls() {
 function gradeMCQ(e, i, q) {
     answeredQuestions.MCQ.add(currentIndex);
     document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
-    if (i === q.answer) { scores.MCQ++; e.target.classList.add('correct'); feedback('success', 'CORRECT', q.insight); }
+    if (i === q.answer) { scores.MCQ++; e.target.classList.add('correct'); feedback('success', 'CORRECT', q.insight);
+    }
     else { e.target.classList.add('wrong'); document.querySelectorAll('.opt-btn')[q.answer].classList.add('correct'); feedback('error', 'INCORRECT', q.insight); }
 }
 
@@ -164,7 +181,8 @@ function gradeSAQ() {
     answeredQuestions.SAQ.add(currentIndex);
     const q = sessionData.SAQ[currentIndex]; const val = document.getElementById('ans').value.trim().toLowerCase();
     document.getElementById('ans').disabled = true; document.querySelector('.action-btn').disabled = true;
-    if (val === q.answer.toLowerCase() || (q.answer.toLowerCase().includes(val) && val.length > 3)) { scores.SAQ++; feedback('success', 'CORRECT', q.insight); }
+    if (val === q.answer.toLowerCase() || (q.answer.toLowerCase().includes(val) && val.length > 3)) { scores.SAQ++; feedback('success', 'CORRECT', q.insight);
+    }
     else feedback('error', 'INCORRECT', `Correct Answer: ${q.answer}\n\n${q.insight}`);
 }
 
@@ -188,25 +206,26 @@ function finish() {
     const ess = Math.min(scores.ESSAY, 50); const total = scores.MCQ + scores.SAQ + ess;
     const max = (includeMCQ?30:0) + (includeSAQ?20:0) + (includeEssay?50:0);
     const p = max > 0 ? Math.round((total/max)*100) : 0;
-    
     document.getElementById('feedback-panel').style.display = 'none';
     
     let breakdownHtml = '';
     if (includeMCQ) breakdownHtml += `<p style="margin:5px 0"><strong>MCQ:</strong> ${scores.MCQ} / 30</p>`;
     if (includeSAQ) breakdownHtml += `<p style="margin:5px 0"><strong>SAQ:</strong> ${scores.SAQ} / 20</p>`;
     if (includeEssay) breakdownHtml += `<p style="margin:5px 0"><strong>Theory:</strong> ${ess.toFixed(1)} / 50</p>`;
-    
     document.getElementById('interaction-area').innerHTML = `<div style="text-align:center">
         <h1 style="color:var(--sabi-blue); font-size:64px; margin:0">${p}%</h1>
-        <p style="font-family:'Poppins'; font-weight:700;">${p >= 50 ? 'EXAM PASSED' : 'EXAM FAILED'}</p>
+        <p style="font-family:'Poppins'; font-weight:700;">${p >= 50 ?
+        'EXAM PASSED' : 'EXAM FAILED'}</p>
         
         <div style="background:var(--input-bg); border-radius:16px; padding:20px; margin:25px 0; text-align:left; border:1px solid var(--border);">
             ${breakdownHtml}
         </div>
         
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button class="action-btn" style="flex:2;" onclick="retakeExam()">Retake Exam</button>
-            <button class="nav-btn" style="flex:1; margin:0; padding:18px;" onclick="window.location.href='pq-setup.html'">Exit</button>
+            <button class="action-btn" style="flex:2;"
+            onclick="retakeExam()">Retake Exam</button>
+            <button class="nav-btn" style="flex:1; margin:0; padding:18px;"
+            onclick="window.location.href='pq-setup.html'">Exit</button>
         </div>
     </div>`;
     
