@@ -49,6 +49,7 @@ async function prepareQuestions(jumpToLast = false) {
             "Commerce": "commerce.json",
             "Economics": "economics.json",
             "Mathematics": "maths.json"
+            
         };
         
         let fileName = fileMap[activeSub] || `${activeSub.toLowerCase()}.json`;
