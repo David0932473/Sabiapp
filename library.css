@@ -87,3 +87,23 @@
 .tag-pro { background: rgba(245, 158, 11, 0.15); color: #FBBF24; } /* Gold for Advanced */
 
 .book-card.locked { opacity: 0.5; border-style: dashed; cursor: not-allowed; filter: grayscale(1); }
+/* Highlighting matched text */
+.sabi-match {
+    background: rgba(59, 130, 246, 0.3); /* Soft Blue Glow */
+    color: #fff;
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+/* Smooth results transition */
+#results-list {
+    transition: all 0.3s ease;
+}
+
+.book-card {
+    transition: transform 0.2s ease;
+}
+
+.book-card:active {
+    transform: scale(0.98);
+}

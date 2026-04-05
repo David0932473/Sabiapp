@@ -2,174 +2,429 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sabi OS - ICAN Vault</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sabi OS — ICAN Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg: #000000;
-            --card-bg: #0A0A0A;
+            --card-bg: #0d0d0d;
+            --card-border: #1a1a1a;
             --icon-bg: #161616;
-            --border: #1A1A1A;
             --text-main: #FFFFFF;
             --text-muted: #8E8E93;
-            --sabi-blue: #3B82F6;
-            
-            /* Sabi Badges */
             --badge-ats: rgba(16, 185, 129, 0.15);
             --text-ats: #10B981;
-            --badge-skills: rgba(6, 182, 212, 0.15);
-            --text-skills: #06B6D4;
-            --badge-adv: rgba(245, 158, 11, 0.15);
-            --text-adv: #F59E0B;
+            --badge-foundation: rgba(59, 130, 246, 0.15);
+            --text-foundation: #3B82F6;
+            --badge-skills: rgba(245, 158, 11, 0.15);
+            --text-skills: #F59E0B;
+            --badge-pro: rgba(139, 92, 246, 0.15);
+            --text-pro: #8B5CF6;
+            --toggle-active: #1a1a1a;
+            --toggle-inactive: transparent;
+            --blue: #3B82F6;
         }
 
-        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        * { 
+            box-sizing: border-box; 
+            -webkit-font-smoothing: antialiased; 
+            margin: 0;
+            padding: 0;
+        }
         
         body {
-            margin: 0; background: var(--bg); color: var(--text-main);
-            font-family: 'Inter', sans-serif; display: flex; justify-content: center;
+            margin: 0; 
+            background: var(--bg); 
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif; 
+            display: flex; 
+            justify-content: center;
         }
         
         .app-container {
-            width: 100%; max-width: 500px; min-height: 100vh; padding: 20px;
-            display: flex; flex-direction: column; position: relative;
+            width: 100%; 
+            max-width: 500px; 
+            min-height: 100vh; 
+            padding: 16px 20px 40px 20px;
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
         }
         
+        /* TOP BAR */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            margin-top: 8px;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .back-btn:hover {
+            color: var(--text-main);
+        }
+        
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
         /* HEADER */
-        .header { margin-bottom: 20px; margin-top: 10px; }
-        .header h1 { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
-        .header h1 span { color: var(--sabi-blue); }
-        .header p { color: var(--text-muted); font-size: 13px; font-weight: 500; margin: 4px 0 0 0; }
-
-        /* SEARCH BAR */
-        .search-box {
-            background: #0A0A0A; border: 1px solid var(--sabi-blue); border-radius: 14px;
-            padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 25px;
+        .header { 
+            margin-bottom: 20px; 
+            margin-top: 4px; 
         }
-        .search-box input {
-            background: transparent; border: none; color: #fff; font-size: 15px; width: 100%;
-            outline: none; font-family: 'Inter', sans-serif; font-weight: 500;
+        .header h1 { 
+            font-family: 'Outfit', sans-serif; 
+            font-size: 22px; 
+            font-weight: 600; 
+            margin: 0; 
+            letter-spacing: -0.3px; 
+            color: var(--text-main);
         }
-        .search-box input::placeholder { color: #555; }
+        .header .subtitle { 
+            color: var(--text-muted); 
+            font-size: 14px; 
+            font-weight: 400; 
+            margin: 2px 0 0 0; 
+        }
 
-        /* LIST SECTIONS */
-        .section-title { 
-            font-size: 11px; color: var(--text-muted); font-weight: 800; 
-            letter-spacing: 1px; margin: 25px 0 15px 0; text-transform: uppercase;
+        /* TOGGLE NAVIGATION */
+        .toggle-nav {
+            display: flex;
+            background: #0a0a0a;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 28px;
+            border: 1px solid var(--card-border);
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-btn.active {
+            background: var(--toggle-active);
+            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        /* SECTION HEADERS */
+        .section-main-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+        
+        .section-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
         }
 
         /* SUBJECT CARDS */
         .card {
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px;
-            padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
-            cursor: pointer; transition: 0.1s;
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            border-radius: 16px;
+            padding: 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            margin-bottom: 12px;
+            cursor: pointer; 
+            transition: all 0.15s ease;
         }
-        .card:active { transform: scale(0.98); background: #111; }
+        
+        .card:active { 
+            transform: scale(0.98); 
+            background: #111; 
+        }
         
         .card-icon {
-            width: 46px; height: 46px; background: var(--icon-bg); border-radius: 12px;
-            display: flex; justify-content: center; align-items: center; font-size: 22px; 
+            width: 52px; 
+            height: 52px; 
+            background: var(--icon-bg); 
+            border-radius: 14px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 26px;
+            border: 1px solid #222;
+            flex-shrink: 0;
         }
         
-        .card-info { flex: 1; }
+        .card-info { 
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
         
         .badge {
-            display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 800;
-            font-family: 'Poppins', sans-serif; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+            display: inline-flex; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-size: 10px; 
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            width: fit-content;
         }
-        .badge.ats { background: var(--badge-ats); color: var(--text-ats); }
-        .badge.skills { background: var(--badge-skills); color: var(--text-skills); }
-        .badge.adv { background: var(--badge-adv); color: var(--text-adv); }
+        
+        .badge.ats { 
+            background: var(--badge-ats); 
+            color: var(--text-ats); 
+        }
+        
+        .badge.foundation { 
+            background: var(--badge-foundation); 
+            color: var(--text-foundation); 
+        }
+        
+        .badge.skills { 
+            background: var(--badge-skills); 
+            color: var(--text-skills); 
+        }
+        
+        .badge.pro { 
+            background: var(--badge-pro); 
+            color: var(--text-pro); 
+        }
 
-        .card-title { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; margin: 0 0 3px 0; color: #fff; }
-        .card-subtitle { font-size: 12px; color: var(--text-muted); margin: 0; font-weight: 500;}
+        .card-title { 
+            font-family: 'Outfit', sans-serif; 
+            font-size: 16px; 
+            font-weight: 700; 
+            margin: 0; 
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+
+        /* DIVIDER BETWEEN SECTIONS */
+        .section-divider {
+            height: 1px;
+            background: var(--card-border);
+            margin: 24px 0 20px 0;
+        }
 
         /* BOTTOM SHEET MODAL (TEST CONFIG) */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85);
-            display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(3px);
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: rgba(0,0,0,0.9);
+            display: none; 
+            justify-content: center; 
+            align-items: flex-end; 
+            z-index: 1000; 
+            backdrop-filter: blur(5px);
         }
-        .bottom-sheet {
-            background: #0A0A0A; width: 100%; max-width: 500px; border-radius: 28px 28px 0 0;
-            padding: 30px 25px; border-top: 1px solid #1F1F1F; animation: slideUp 0.25s ease-out;
-        }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .sheet-title { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; margin: 0; }
-        .sheet-subtitle { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
-        .close-btn { background: #161616; border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-weight: bold; cursor: pointer; display:flex; justify-content:center; align-items:center;}
+        .bottom-sheet {
+            background: #0d0d0d; 
+            width: 100%; 
+            max-width: 500px; 
+            border-radius: 24px 24px 0 0;
+            padding: 28px 24px 32px 24px; 
+            border-top: 1px solid #222;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        @keyframes slideUp { 
+            from { transform: translateY(100%); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+        
+        .sheet-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 24px; 
+        }
+        
+        .sheet-title { 
+            font-family: 'Outfit', sans-serif; 
+            font-size: 20px; 
+            font-weight: 700; 
+            margin: 0; 
+        }
+        
+        .sheet-subtitle { 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            font-weight: 500; 
+            margin-top: 4px; 
+        }
+        
+        .close-btn { 
+            background: #161616; 
+            border: 1px solid #333;
+            color: #fff; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            font-weight: bold; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            font-size: 16px;
+        }
 
-        /* PREMIUM TOUCH SELECTORS (Replaces Radio/Toggles) */
+        /* PREMIUM TOUCH SELECTORS */
         .part-selector {
-            background: #161616; border: 1px solid var(--border); border-radius: 16px;
-            padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; transition: 0.2s;
+            background: #161616; 
+            border: 1px solid #2a2a2a; 
+            border-radius: 14px;
+            padding: 18px; 
+            margin-bottom: 10px; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
         }
+        
         .part-selector.active {
-            background: rgba(59, 130, 246, 0.1); border-color: var(--sabi-blue);
+            background: rgba(59, 130, 246, 0.08); 
+            border-color: var(--blue);
         }
-        .part-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 600; color: #fff; }
-        .part-info p { margin: 0; font-size: 12px; color: var(--text-muted); }
+        
+        .part-info h4 { 
+            margin: 0 0 4px 0; 
+            font-size: 15px; 
+            font-weight: 600; 
+            color: #fff; 
+        }
+        
+        .part-info p { 
+            margin: 0; 
+            font-size: 12px; 
+            color: var(--text-muted); 
+        }
         
         .check-circle {
-            width: 22px; height: 22px; border-radius: 50%; border: 2px solid #333;
-            display: flex; justify-content: center; align-items: center; transition: 0.2s;
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            border: 2px solid #444;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            transition: all 0.2s ease;
         }
+        
         .part-selector.active .check-circle {
-            background: var(--sabi-blue); border-color: var(--sabi-blue);
+            background: var(--blue); 
+            border-color: var(--blue);
         }
+        
         .part-selector.active .check-circle::after {
-            content: "✓"; color: #fff; font-size: 12px; font-weight: 900;
+            content: "✓"; 
+            color: #fff; 
+            font-size: 13px; 
+            font-weight: 800;
         }
 
         .launch-btn {
-            width: 100%; padding: 18px; background: #fff; color: #000; border: none;
-            border-radius: 16px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 15px;
+            width: 100%; 
+            padding: 18px; 
+            background: #fff; 
+            color: #000; 
+            border: none;
+            border-radius: 14px; 
+            font-family: 'Outfit', sans-serif; 
+            font-weight: 700; 
+            font-size: 16px; 
+            cursor: pointer; 
+            margin-top: 20px;
+            transition: transform 0.1s ease;
         }
-        .launch-btn:active { transform: scale(0.98); }
+        
+        .launch-btn:active { 
+            transform: scale(0.98); 
+        }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <div class="header">
-            <h1>ICAN <span>Vault</span></h1>
-            <p>Official ATSWA & Professional Study Questionss</p>
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <a href="ican.html" class="back-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Library
+            </a>
         </div>
 
-        <div class="search-box">
-            <span style="font-size: 18px;">🔍</span>
-            <input type="text" placeholder="Search subjects...">
+        <!-- Header -->
+        <div class="header">
+            <h1>Sabi OS — ICAN Vault</h1>
+            <p class="subtitle">Preview</p>
         </div>
+
+        <!-- Toggle Navigation -->
+        <div class="toggle-nav">
+            <button class="toggle-btn" onclick="window.location.href='ican.html'">Library & Syllabus</button>
+            <button class="toggle-btn active">Practice PQ</button>
+        </div>
+
+        <!-- ATSWA SCHEME SECTION -->
+        <h2 class="section-main-title">ATSWA SCHEME</h2>
+        <p class="section-subtitle">ATS I</p>
 
         <div class="card" onclick="openConfig('ATS 1', 'Basic Accounting')">
-            <div class="card-icon">💸</div>
+            <div class="card-icon">📊</div>
             <div class="card-info">
                 <span class="badge ats">ATS 1</span>
                 <h3 class="card-title">Basic Accounting</h3>
-                <p class="card-subtitle">Pratice Ican Questions
-                </p>
             </div>
         </div>
 
         <div class="card" onclick="openConfig('ATS 1', 'Economics')">
-            <div class="card-icon">📊</div>
+            <div class="card-icon">📉</div>
             <div class="card-info">
                 <span class="badge ats">ATS 1</span>
                 <h3 class="card-title">Economics</h3>
-                <p class="card-subtitle">Pratice Ican Questions</p>
             </div>
         </div>
 
         <div class="card" onclick="openConfig('ATS 1', 'Business Law')">
-            <div class="card-icon">📘</div>
+            <div class="card-icon">⚖️</div>
             <div class="card-info">
                 <span class="badge ats">ATS 1</span>
                 <h3 class="card-title">Business Law</h3>
-                <p class="card-subtitle">Pratice Ican Questions</p>
             </div>
         </div>
 
@@ -178,39 +433,131 @@
             <div class="card-info">
                 <span class="badge ats">ATS 1</span>
                 <h3 class="card-title">Communication Skills</h3>
-                <p class="card-subtitle">Pratice Ican Questions</p>
             </div>
         </div>
 
-        <div class="section-title">ATSWA - PART II</div>
-        
+        <div class="section-divider"></div>
+        <p class="section-subtitle">ATS II</p>
+
+        <div class="card" onclick="openConfig('ATS 2', 'Financial Accounting')">
+            <div class="card-icon">📒</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 2</span>
+                <h3 class="card-title">Financial Accounting</h3>
+            </div>
+        </div>
+
         <div class="card" onclick="openConfig('ATS 2', 'Public Sector Accounting')">
             <div class="card-icon">🏛️</div>
             <div class="card-info">
                 <span class="badge ats">ATS 2</span>
                 <h3 class="card-title">Public Sector Accounting</h3>
-                <p class="card-subtitle">Pratice Ican Questions</p>
             </div>
         </div>
-                <div class="card" onclick="openConfig('ATS 1', 'Basic Accounting')">
-            <div class="card-icon">💸</div>
+
+        <div class="card" onclick="openConfig('ATS 2', 'Quantitative Analysis')">
+            <div class="card-icon">🧮</div>
             <div class="card-info">
                 <span class="badge ats">ATS 2</span>
-                <h3 class="card-title">Basic Accounting</h3>
-                <p class="card-subtitle">Pratice Ican Questions
-                </p>
+                <h3 class="card-title">Quantitative Analysis</h3>
             </div>
         </div>
 
+        <div class="card" onclick="openConfig('ATS 2', 'Information Technology')">
+            <div class="card-icon">💻</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 2</span>
+                <h3 class="card-title">Information Technology</h3>
+            </div>
+        </div>
 
-        <div class="section-title">PROFESSIONAL - SKILLS LEVEL</div>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">ATS III</p>
+
+        <div class="card" onclick="openConfig('ATS 3', 'Principles of Management')">
+            <div class="card-icon">👔</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 3</span>
+                <h3 class="card-title">Principles of Management</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('ATS 3', 'Cost Accounting')">
+            <div class="card-icon">🏭</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 3</span>
+                <h3 class="card-title">Cost Accounting</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('ATS 3', 'Taxation')">
+            <div class="card-icon">🧾</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 3</span>
+                <h3 class="card-title">Taxation</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('ATS 3', 'Principles of Auditing & Assurance')">
+            <div class="card-icon">🔎</div>
+            <div class="card-info">
+                <span class="badge ats">ATS 3</span>
+                <h3 class="card-title">Principles of Auditing & Assurance</h3>
+            </div>
+        </div>
+
+        <!-- PROFESSIONAL EXAMS SECTION -->
+        <h2 class="section-main-title" style="margin-top: 40px;">PROFESSIONAL EXAMS</h2>
+        <p class="section-subtitle">Foundation</p>
+
+        <div class="card" onclick="openConfig('FOUNDATION', 'Financial Accounting')">
+            <div class="card-icon">📑</div>
+            <div class="card-info">
+                <span class="badge foundation">FOUNDATION</span>
+                <h3 class="card-title">Financial Accounting</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('FOUNDATION', 'Business Environment')">
+            <div class="card-icon">📊</div>
+            <div class="card-info">
+                <span class="badge foundation">FOUNDATION</span>
+                <h3 class="card-title">Business Environment</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('FOUNDATION', 'Corporate & Business Law')">
+            <div class="card-icon">⚖️</div>
+            <div class="card-info">
+                <span class="badge foundation">FOUNDATION</span>
+                <h3 class="card-title">Corporate & Business Law</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('FOUNDATION', 'Economics')">
+            <div class="card-icon">📉</div>
+            <div class="card-info">
+                <span class="badge foundation">FOUNDATION</span>
+                <h3 class="card-title">Economics</h3>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+        <p class="section-subtitle">Skills</p>
 
         <div class="card" onclick="openConfig('SKILLS', 'Financial Reporting')">
             <div class="card-icon">💰</div>
             <div class="card-info">
                 <span class="badge skills">SKILLS</span>
                 <h3 class="card-title">Financial Reporting</h3>
-                <p class="card-subtitle">Official ICAN Questions</p>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('SKILLS', 'Auditing, Assurance & Forensic')">
+            <div class="card-icon">🔍</div>
+            <div class="card-info">
+                <span class="badge skills">SKILLS</span>
+                <h3 class="card-title">Auditing, Assurance & Forensic</h3>
             </div>
         </div>
 
@@ -219,23 +566,79 @@
             <div class="card-info">
                 <span class="badge skills">SKILLS</span>
                 <h3 class="card-title">Taxation</h3>
-                <p class="card-subtitle">Official ICAN Questions</p>
             </div>
         </div>
 
-        <div class="section-title">PROFESSIONAL - ADVANCED LEVEL</div>
+        <div class="card" onclick="openConfig('SKILLS', 'Performance Management')">
+            <div class="card-icon">📈</div>
+            <div class="card-info">
+                <span class="badge skills">SKILLS</span>
+                <h3 class="card-title">Performance Management</h3>
+            </div>
+        </div>
 
-        <div class="card" onclick="openConfig('ADVANCED', 'Strategic Financial Mgt')">
+        <div class="card" onclick="openConfig('SKILLS', 'Management Accounting')">
+            <div class="card-icon">🏗️</div>
+            <div class="card-info">
+                <span class="badge skills">SKILLS</span>
+                <h3 class="card-title">Management Accounting</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('SKILLS', 'Financial Management')">
+            <div class="card-icon">🏦</div>
+            <div class="card-info">
+                <span class="badge skills">SKILLS</span>
+                <h3 class="card-title">Financial Management</h3>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+        <p class="section-subtitle">Professional</p>
+
+        <div class="card" onclick="openConfig('PROFESSIONAL', 'Strategic Business Reporting')">
+            <div class="card-icon">📋</div>
+            <div class="card-info">
+                <span class="badge pro">PROFESSIONAL</span>
+                <h3 class="card-title">Strategic Business Reporting</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('PROFESSIONAL', 'Strategic Financial Management')">
             <div class="card-icon">💼</div>
             <div class="card-info">
-                <span class="badge adv">ADVANCED</span>
-                <h3 class="card-title">Strategic Financial Managemsnft.</h3>
-                <p class="card-subtitle">Pratice Ican Questions
-                </p>
+                <span class="badge pro">PROFESSIONAL</span>
+                <h3 class="card-title">Strategic Financial Management</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('PROFESSIONAL', 'Advanced Auditing & Assurance')">
+            <div class="card-icon">🔬</div>
+            <div class="card-info">
+                <span class="badge pro">PROFESSIONAL</span>
+                <h3 class="card-title">Advanced Auditing & Assurance</h3>
+            </div>
+        </div>
+
+        <div class="card" onclick="openConfig('PROFESSIONAL', 'Advanced Taxation')">
+            <div class="card-icon">📝</div>
+            <div class="card-info">
+                <span class="badge pro">PROFESSIONAL</span>
+                <h3 class="card-title">Advanced Taxation</h3>
+            </div>
+        </div>
+
+
+        <div class="card" onclick="openConfig('PROFESSIONAL', 'Case Study')">
+            <div class="card-icon">🧠</div>
+            <div class="card-info">
+                <span class="badge pro">PROFESSIONAL</span>
+                <h3 class="card-title">Case Study</h3>
             </div>
         </div>
     </div>
 
+    <!-- Bottom Sheet Modal -->
     <div id="config-modal" class="modal-overlay" onclick="closeOnOutsideClick(event)">
         <div class="bottom-sheet">
             <div class="sheet-header">
@@ -293,7 +696,6 @@
             if(event.target.id === 'config-modal') closeConfig();
         }
 
-        // Handles the large tappable blocks
         function togglePart(id) {
             document.getElementById(id).classList.toggle('active');
         }
@@ -304,11 +706,10 @@
             const essay = document.getElementById('sel-essay').classList.contains('active');
 
             if(!mcq && !saq && !essay) {
-                alert("Boss, you must select at least one section to proceed.");
+                alert("Please select at least one section to proceed.");
                 return;
             }
 
-            // Sends data to the Arena Room
             const url = `ican-pq.html?level=${encodeURIComponent(selectedLevel)}&subject=${encodeURIComponent(selectedSubject)}&mcq=${mcq}&saq=${saq}&essay=${essay}`;
             window.location.href = url;
         }
