@@ -82,6 +82,9 @@
         
         .pq-card { background: linear-gradient(to bottom right, #121212, #0A0A0A); }
         .pq-card .bento-icon { color: var(--accent); }
+
+        .vault-card, .library-card { background: linear-gradient(to bottom right, #121212, #0A0A0A); }
+        .vault-card .bento-icon, .library-card .bento-icon { color: #10B981; }
         
         .recent-card { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-color: rgba(16, 185, 129, 0.2); box-shadow: 0 12px 35px rgba(16, 185, 129, 0.05); }
         .recent-card .bento-title { font-size: 14px; margin-bottom: 4px; color: #10B981; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -114,22 +117,22 @@
 
         </div>
 
+        <div class="bento-card span-2 library-card" onclick="window.location.href='library.html'">
+            <span class="bento-icon">📚</span>
+            <h3 class="bento-title">Library</h3>
+            <p class="bento-desc">Official NOUN Library, textbooks & PDF materials.</p>
+        </div>
+
         <div class="bento-card span-2 pq-card" onclick="window.location.href='pq.html'">
             <span class="bento-icon">📝</span>
-            <h3 class="bento-title">Past Questions</h3>
+            <h3 class="bento-title">PQ Engine</h3>
             <p class="bento-desc">Access 2000+ JAMB & WAEC questions with Sabi Explanations.</p>
         </div>
 
-        <div class="bento-card" onclick="window.location.href='wiki.html'">
+        <div class="bento-card span-2" onclick="window.location.href='wiki.html'">
             <span class="bento-icon">🌐</span>
             <h3 class="bento-title">Wiki-Roulette</h3>
             <p class="bento-desc">Smart encyclopedias.</p>
-        </div>
-
-        <div class="bento-card" onclick="window.location.href='library.html'">
-            <span class="bento-icon">📚</span>
-            <h3 class="bento-title">Library</h3>
-            <p class="bento-desc">Saved notes & PDFs.</p>
         </div>
 
         <div id="recent-container" class="bento-card span-2 recent-card hidden">
@@ -154,6 +157,13 @@
         <span class="nav-label">Home</span>
     </a>
 
+    <a href="library.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        <span class="nav-label">Library</span>
+    </a>
+
     <a href="pq.html" class="nav-item"> 
         <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
@@ -166,13 +176,6 @@
             <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
         </svg>
         <span class="nav-label">Wiki</span>
-    </a>
-
-    <a href="library.html" class="nav-item">
-        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-        </svg>
-        <span class="nav-label">Library</span>
     </a>
 </nav>
 
