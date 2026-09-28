@@ -241,76 +241,53 @@ function updateMonthTitles() {
     if (mainTitle) mainTitle.textContent = monthName;
 }
 
-// --- MINI MONTH NAVIGATOR WITH EVENT COUNTS BESIDE DOTS ---
+// --- SLEEK 7-DAY WEEK STRIP NAVIGATOR ---
+let stripWeekOffset = 0;
+
+function changeStripWeek(offset) {
+    stripWeekOffset += offset;
+    renderMiniCalendar();
+}
+
 function renderMiniCalendar() {
     const container = document.getElementById('mini-cal-days');
+    const labelEl = document.getElementById('strip-month-label');
     if (!container) return;
     
     container.innerHTML = '';
     
-    const firstDay = new Date(currentYear, currentMonth, 1);
-    const lastDay = new Date(currentYear, currentMonth + 1, 0);
-    const totalDays = lastDay.getDate();
+    const baseMonday = getMondayOfWeek(new Date());
+    const targetMonday = addDaysToDate(baseMonday, stripWeekOffset * 7);
+    const monDateObj = new Date(targetMonday + 'T00:00:00');
     
-    // Day of week for 1st of month: Mon = 0 to Sun = 6
-    let startDayOfWeek = firstDay.getDay() - 1;
-    if (startDayOfWeek === -1) startDayOfWeek = 6;
-    
-    // Previous month filler days
-    const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
-    for (let i = startDayOfWeek - 1; i >= 0; i--) {
-        const dayNum = prevMonthLastDay - i;
-        const cell = document.createElement('div');
-        cell.className = 'mini-day-cell other-month';
-        cell.innerHTML = `<span class="mini-day-num">${dayNum}</span>`;
-        container.appendChild(cell);
+    if (labelEl) {
+        labelEl.textContent = monDateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     }
     
     const todayStr = getFutureDateString(0);
+    const dayLetters = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
     
-    // Current month days
-    for (let day = 1; day <= totalDays; day++) {
-        const monthStr = String(currentMonth + 1).padStart(2, '0');
-        const dayStr = String(day).padStart(2, '0');
-        const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
+    for (let i = 0; i < 7; i++) {
+        const dateStr = addDaysToDate(targetMonday, i);
+        const dObj = new Date(dateStr + 'T00:00:00');
+        const dayNum = dObj.getDate();
         
-        // Find matching events for this day
-        const dayEvents = calendarEvents.filter(ev => {
-            return ev.date === dateStr && activeCategories.has(ev.category);
-        });
-        
+        // Find events on this day
+        const dayEvents = calendarEvents.filter(ev => ev.date === dateStr);
         const isSelected = selectedDate === dateStr;
         const isToday = todayStr === dateStr;
         
-        const cell = document.createElement('div');
-        cell.className = `mini-day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${dayEvents.length > 0 ? 'has-events' : ''}`;
-        cell.onclick = () => onSelectDate(dateStr);
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = `strip-day-btn ${isSelected ? 'active' : ''} ${isToday ? 'today' : ''}`;
+        pill.onclick = () => onSelectDate(dateStr);
         
-        // No dot! Just the event count number, and when it's the day the number glows
-        let badgeHtml = '';
-        if (dayEvents.length > 0) {
-            badgeHtml = `
-                <div class="mini-day-badge">
-                    <span class="mini-event-count">${dayEvents.length}</span>
-                </div>
-            `;
-        }
-        
-        cell.innerHTML = `
-            <span class="mini-day-num">${day}</span>
-            ${badgeHtml}
+        pill.innerHTML = `
+            <span class="strip-day-letter">${dayLetters[i]}</span>
+            <span class="strip-day-num">${dayNum}</span>
+            <span class="strip-dot-slot">${dayEvents.length > 0 ? '<span class="strip-dot"></span>' : ''}</span>
         `;
-        container.appendChild(cell);
-    }
-    
-    // Next month filler days
-    const filledCells = startDayOfWeek + totalDays;
-    const remaining = (7 - (filledCells % 7)) % 7;
-    for (let day = 1; day <= remaining; day++) {
-        const cell = document.createElement('div');
-        cell.className = 'mini-day-cell other-month';
-        cell.innerHTML = `<span class="mini-day-num">${day}</span>`;
-        container.appendChild(cell);
+        container.appendChild(pill);
     }
 }
 
@@ -322,34 +299,14 @@ function onSelectDate(dateStr) {
     
     renderAllViews();
     
-    // Switch to agenda view and scroll to focused day
     if (currentViewMode !== 'agenda') {
         switchViewMode('agenda');
     }
-    
-    const el = document.getElementById('selected-day-focus-box');
-    if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-}
-
-function changeMiniMonth(offset) {
-    currentMonth += offset;
-    if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-    } else if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-    }
-    renderAllViews();
-}
-
-function changeMainMonth(offset) {
-    changeMiniMonth(offset);
 }
 
 function goToToday() {
+    stripWeekOffset = 0;
+    plannerWeekOffset = 0;
     const today = new Date();
     currentYear = today.getFullYear();
     currentMonth = today.getMonth();
@@ -494,165 +451,90 @@ function renderMainMonthGrid() {
     }
 }
 
-// --- VIEW 2: AGENDA / TIMELINE & FOCUSED DAY SCHEDULE ---
+// --- VIEW 1: MINIMALIST AGENDA SCHEDULE ---
 function renderAgendaTimeline() {
     const container = document.getElementById('agenda-timeline-list');
-    const focusedContainer = document.getElementById('selected-day-focus-box');
+    const titleEl = document.getElementById('agenda-section-title');
     if (!container) return;
     
-    // 1. Render Focused Day Section (Screen 1 & Screen 2)
-    if (focusedContainer) {
-        renderFocusedDay(focusedContainer);
-    }
-    
-    // 2. Render Upcoming Agenda Timeline (Screen 3)
-    let filtered = calendarEvents.filter(ev => {
-        const matchesCat = activeCategories.has(ev.category);
-        const matchesSearch = !searchQuery || 
-            ev.title.toLowerCase().includes(searchQuery) || 
-            (ev.notes && ev.notes.toLowerCase().includes(searchQuery));
-        return matchesCat && matchesSearch;
-    });
-    
-    // Sort chronologically
-    filtered.sort((a, b) => {
-        return new Date(`${a.date}T${a.time || '00:00'}:00`) - new Date(`${b.date}T${b.time || '00:00'}:00`);
-    });
-    
-    if (filtered.length === 0) {
-        container.innerHTML = `
-            <div class="empty-agenda-state">
-                <div class="empty-icon">📅</div>
-                <h3>No Events Scheduled</h3>
-                <p>No study sessions or exams match your current filters. Add a study session or reset category filters.</p>
-                <button type="button" class="btn-create-event" onclick="openAddSessionModal()" style="margin: 14px auto 0;">
-                    + Schedule Study Session
-                </button>
-            </div>
-        `;
-        return;
-    }
-    
-    // Group events by date
-    const groups = {};
-    filtered.forEach(ev => {
-        if (!groups[ev.date]) groups[ev.date] = [];
-        groups[ev.date].push(ev);
-    });
-    
-    container.innerHTML = Object.keys(groups).map(dateKey => {
-        const dateEvents = groups[dateKey];
-        const isSelected = selectedDate === dateKey;
-        const dateObj = new Date(dateKey + 'T00:00:00');
-        const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        const weekdayStr = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
-        
-        const eventsCardsHtml = dateEvents.map(ev => renderEventCardHtml(ev)).join('');
-        
-        return `
-            <div class="agenda-date-group" id="agenda-group-${dateKey}">
-                <div class="agenda-date-badge ${isSelected ? 'active-date' : ''}" onclick="onSelectDate('${dateKey}')">
-                    <span class="agenda-date-month">${monthShort}</span>
-                    <span class="agenda-date-weekday">${weekdayStr}</span>
-                </div>
-                
-                <div class="agenda-events-col">
-                    ${eventsCardsHtml}
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-// Render Focused Day (Screen 1 & Screen 2)
-function renderFocusedDay(container) {
     const dateObj = new Date(selectedDate + 'T00:00:00');
-    const dayHuman = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const isToday = selectedDate === getTodayStr();
+    const dayDisplay = isToday 
+        ? 'Today' 
+        : dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     
-    // Events for selected day
+    if (titleEl) {
+        titleEl.textContent = `${dayDisplay}'s Sessions`;
+    }
+    
+    // 1. Sessions for currently selected day
     const dayEvents = calendarEvents.filter(ev => {
         return ev.date === selectedDate && activeCategories.has(ev.category);
     });
     
+    // Sort chronologically
+    dayEvents.sort((a, b) => (a.time || '00:00').localeCompare(b.time || '00:00'));
+    
+    let html = '';
+    
     if (dayEvents.length === 0) {
-        // Screen 2 empty state
-        container.innerHTML = `
-            <div class="focus-day-card empty">
-                <div class="focus-day-header">
-                    <div class="focus-day-title-group">
-                        <span class="focus-badge-dot"></span>
-                        <h3 class="focus-day-title">Events for ${dayHuman}</h3>
-                    </div>
-                    <button type="button" class="btn-focus-add" onclick="openAddSessionModal()">+ Add Event</button>
-                </div>
-                <div class="focus-empty-body">
-                    <span class="focus-empty-icon">🗓️</span>
-                    <p class="focus-empty-text">No Events for ${dayHuman}</p>
-                    <button type="button" class="btn-create-event" onclick="openAddSessionModal()">
-                        + Schedule Session for this Day
-                    </button>
-                </div>
+        html += `
+            <div class="session-empty-card">
+                <span class="session-empty-icon">☕</span>
+                <p>No study sessions scheduled for ${dayDisplay}.</p>
+                <button type="button" class="btn-minimal-add" onclick="openAddSessionModal()">
+                    + Add Session
+                </button>
             </div>
         `;
     } else {
-        // Screen 1 events state
-        const cardsHtml = dayEvents.map(ev => renderEventCardHtml(ev)).join('');
-        container.innerHTML = `
-            <div class="focus-day-card">
-                <div class="focus-day-header">
-                    <div class="focus-day-title-group">
-                        <span class="focus-badge-dot active"></span>
-                        <h3 class="focus-day-title">Events for ${dayHuman}</h3>
-                        <span class="focus-count-pill">${dayEvents.length} session${dayEvents.length === 1 ? '' : 's'}</span>
-                    </div>
-                    <button type="button" class="btn-focus-add" onclick="openAddSessionModal()">+ Add Event</button>
-                </div>
-                <div class="focus-cards-list">
-                    ${cardsHtml}
-                </div>
+        html += dayEvents.map(ev => renderEventCardHtml(ev)).join('');
+    }
+    
+    // 2. Upcoming sessions later this week
+    const upcomingEvents = calendarEvents.filter(ev => {
+        return ev.date > selectedDate && activeCategories.has(ev.category);
+    }).sort((a, b) => {
+        return new Date(`${a.date}T${a.time || '00:00'}:00`) - new Date(`${b.date}T${b.time || '00:00'}:00`);
+    });
+    
+    if (upcomingEvents.length > 0) {
+        html += `
+            <div class="agenda-upcoming-header">
+                <h4>Upcoming Later</h4>
             </div>
         `;
+        
+        // Show up to 5 upcoming sessions
+        const upcomingSlice = upcomingEvents.slice(0, 5);
+        html += upcomingSlice.map(ev => {
+            const evDate = new Date(ev.date + 'T00:00:00');
+            const dateLabel = evDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            return renderEventCardHtml(ev, dateLabel);
+        }).join('');
     }
+    
+    container.innerHTML = html;
 }
 
-// Reusable Event Card HTML (Vertical color bar, tags, Notion avatars, Google Calendar sync)
-function renderEventCardHtml(ev) {
-    const accentClass = `card-accent-${ev.category}`;
-    const tagColorClass = `tag-color-${ev.category}`;
-    const gcalUrl = createGoogleCalendarUrl(ev);
-    const avatars = ev.avatars || ['avatars/notion-scholar.svg'];
-    
-    const avatarStackHtml = `
-        <div class="agenda-avatar-stack">
-            ${avatars.map(av => `<img src="${av}" alt="Scholar" class="avatar-stack-img" />`).join('')}
-        </div>
-    `;
+// Minimalist Session Card HTML matching library.html book-card aesthetics
+function renderEventCardHtml(ev, dateBadge = null) {
+    const categoryName = getCategoryBadgeText(ev.category);
+    const dateLabelHtml = dateBadge ? `<span class="session-date-pill">${dateBadge}</span>` : '';
     
     return `
-        <div class="agenda-event-card ${accentClass} ${ev.completed ? 'completed' : ''}" id="agenda-card-${ev.id}">
-            <div class="agenda-event-info" onclick="openEventDetailModal('${ev.id}')">
-                <span class="agenda-cat-tag ${tagColorClass}">
-                    ${getCategoryBadgeText(ev.category)}
-                </span>
-                <h4 class="agenda-event-title">${escapeHtml(ev.title)}</h4>
-                <div class="agenda-event-meta">
-                    <span>🕒 ${ev.time || 'All Day'} (${ev.duration || 1}h)</span>
-                    <span>📍 ${escapeHtml(ev.location || 'Sabi Prep Room')}</span>
+        <div class="session-card cat-${ev.category} ${ev.completed ? 'completed' : ''}" id="agenda-card-${ev.id}">
+            <div class="session-card-main" onclick="openEventDetailModal('${ev.id}')">
+                <div class="session-card-header">
+                    <span class="session-cat-pill cat-${ev.category}">${categoryName}</span>
+                    ${dateLabelHtml}
+                    <span class="session-time-text">🕒 ${ev.time || 'Flexible'} · ${ev.duration || 1}h</span>
                 </div>
-                ${avatarStackHtml}
+                <h4 class="session-title">${escapeHtml(ev.title)}</h4>
+                ${ev.notes ? `<p class="session-notes-snippet">${escapeHtml(ev.notes)}</p>` : (ev.location ? `<span class="session-location-snippet">📍 ${escapeHtml(ev.location)}</span>` : '')}
             </div>
-            
-            <div class="agenda-actions-right">
-                <a href="${gcalUrl}" target="_blank" rel="noopener noreferrer" class="btn-gcal-direct-link" title="Directly sync to Google Calendar">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                        <line x1="16" y1="2" x2="16" y2="6"/>
-                        <line x1="8" y1="2" x2="8" y2="6"/>
-                        <line x1="3" y1="10" x2="21" y2="10"/>
-                    </svg>
-                    Sync
-                </a>
-                <button type="button" class="btn-check-toggle ${ev.completed ? 'active' : ''}" onclick="toggleEventComplete('${ev.id}')" title="Mark Done">
+            <div class="session-card-actions">
+                <button type="button" class="session-check-pill ${ev.completed ? 'active' : ''}" onclick="toggleEventComplete('${ev.id}')" title="${ev.completed ? 'Mark incomplete' : 'Mark as done'}" aria-label="Mark done">
                     ${ev.completed ? '✓' : '○'}
                 </button>
             </div>
@@ -660,33 +542,27 @@ function renderEventCardHtml(ev) {
     `;
 }
 
-// View Switching: Month Mode hides sidebar so months are NOT side-by-side!
+// View Switching: Minimalist tab toggling (Schedule vs Week Grid)
 function switchViewMode(mode) {
     currentViewMode = mode;
     
-    document.querySelectorAll('.view-tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.calendar-view-pane').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.tab, .view-tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.calendar-view-pane').forEach(p => {
+        p.classList.add('hidden');
+        p.classList.remove('active');
+    });
     
     const activeBtn = document.getElementById(`btn-view-${mode}`);
     const activePane = document.getElementById(`view-${mode}-container`);
-    const workspace = document.querySelector('.calendar-workspace');
     
     if (activeBtn) activeBtn.classList.add('active');
-    if (activePane) activePane.classList.remove('hidden');
-    
-    // In Month Mode: hide sidebar so duplicate months are NEVER side-by-side!
-    if (workspace) {
-        if (mode === 'month') {
-            workspace.classList.add('month-mode');
-        } else {
-            workspace.classList.remove('month-mode');
-        }
+    if (activePane) {
+        activePane.classList.remove('hidden');
+        activePane.classList.add('active');
     }
     
     if (mode === 'agenda') {
         renderAgendaTimeline();
-    } else if (mode === 'month') {
-        renderMainMonthGrid();
     } else if (mode === 'week') {
         renderWeekTimetable();
     }

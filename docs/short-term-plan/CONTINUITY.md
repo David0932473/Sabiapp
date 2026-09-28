@@ -1,24 +1,22 @@
-- **Goal (incl. success criteria)**: Implement STAGE 5 (AI Plan Generator: tap-only onboarding, 1 AI call JSON planner, validation & retry logic, summary & notes card, Monday auto-regenerator, ⋯ menu) and STAGE 6 (Week view grid and @media print landscape one-page styles).
-- **Constraints/Assumptions**: Client-side single AI call (Gemini API with offline fallback), strict validation matching rules (no rule-based scheduler), drop invalid sessions if retry fails, tap-only onboarding screen, `@media print` landscape without server-side PDFs, zero promotional clutter.
+- **Goal (incl. success criteria)**: Make the calendar section minimalist like other sections (Library, Dashboard, PQ Engine)—remove visual bloat and sensory overload while preserving full functionality (1-tap AI planner, week grid timetable, and landscape printing).
+- **Constraints/Assumptions**:
+  - Unified 600px mobile-first container matching [library.html](file:///c:/Users/dave/.gemini/sabi/library.html) and [index.html](file:///c:/Users/dave/.gemini/sabi/index.html).
+  - Clean top bar with back button, `+ New`, and `⋯` options menu.
+  - Minimalist tabs: `Schedule` (agenda) and `Week Grid`.
+  - Sleek 7-day horizontal week navigator strip replacing the 35-cell monthly grid.
+  - Understated AI strategy card and elegant `.session-card` items styled identically to `.book-card` in [library.css](file:///c:/Users/dave/.gemini/sabi/library.css).
+  - Strict validation, retry/drop logic, and `@media print` single-page landscape printing fully preserved.
 - **Key decisions**:
-  - Build ONE tap-only onboarding modal covering: 1) Hard subjects chips, 2) Study hours (1-2 / 3-4 / 5+) & best time windows, 3) Exam dates ("I know them", "In about X weeks", "I don't know yet").
-  - Implement planner bundle sender with exact system prompt and response validation (7 days within week_start, no overlaps, 05:30-23:30, min 2 sessions spaced 2+ days, max 3 subjects/day).
-  - Validation retry once with violation list; if retry still fails, drop invalid sessions and save valid rest with a clear notification.
-  - Render a friendly AI Plan Summary & Notes card above the agenda timeline.
-  - Implement full 7-column Week tab timetable integrating classes and study sessions.
-  - Add `@media print` landscape rules: hide nav and toolbar, fit week grid on one page.
-  - Add `⋯` menu to calendar toolbar with "Regenerate plan", "Re-plan remaining days", "Planner preferences", and "Print timetable".
+  - Removed the overwhelming 1400px 2-column sidebar layout, duplicate mini-calendar grid, heavy promotional Google sync card, category pills card, pulsing timer pills, and duplicate focused-day + upcoming-day listings.
+  - Replaced card face clutter with clean typography: time pill, subject title + activity pill, completion checkmark. Tapping the card opens full detail modal with edit/delete/Google Calendar direct sync.
 - **State**:
   - Done:
-    - Reviewed user prompt, existing calendar architecture, and understood errors.
-    - Verified `calendar.html`, `calendar.css`, and `calendar.js` layout.
-    - Implemented strict validation engine checking 05:30-23:30 bounds, week boundaries, max 3 subjects per day, 2-day subject spacing, and no class/session overlaps.
-    - Implemented retry logic that on second failure drops invalid sessions, saves the valid rest, and displays a friendly short message to the student without building a rule-based scheduler.
-    - Rendered friendly AI Plan Summary & Notes card above the agenda timeline.
-    - Implemented Week tab with 7-day grid rendering university/school classes and study sessions from the same data source.
-    - Implemented `@media print` landscape styles: hides navigation, headers, sidebars, and buttons, and fits the week timetable onto a single page without server-side PDFs.
-  - Now: Ready for user review and testing.
-  - Next: Any further student customizations or sync options requested by the user.
+    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Cleaned DOM into 600px minimalist container.
+    - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css): Completely rebuilt with clean styling matching `library.css`, eliminating 2,500+ lines of clutter and sidebar styles.
+    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Streamlined `renderAgendaTimeline()` and `renderEventCardHtml()` to render clean `.session-card` items and dynamic day schedules.
+    - Preserved 7-day Week Grid timetable and `@media print` landscape single-page printing.
+  - Now: Ready for user review and commit.
+  - Next: User feedback and additional tweaks.
 - **Open questions**: Browser context creation encountered a known Playwright driver download error (404 from Azure CDN) during headless testing; manual browser verification or alternative can be used.
 - **Working set (files/ids/commands)**:
   - Calendar page: [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
