@@ -57,47 +57,8 @@ function getTodayStr() {
     return getFutureDateString(0);
 }
 
-// Academic Milestones (Nigerian Exams & Study Sessions)
+// Academic Milestones (Nigerian Official Exams - real calendar dates)
 const DEFAULT_EVENTS = [
-    {
-        id: 'ev-drill-today-1',
-        title: 'JAMB Physics Mechanics Speed Drill',
-        category: 'study',
-        date: getFutureDateString(0), // Today (Sept 28, 2026)
-        time: '17:30',
-        duration: 1.5,
-        location: 'Sabi App PQ Room',
-        notes: 'Intensive speed drill: 50 questions in 45 minutes on Kinematics, Dynamics & Optics.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-felix.svg', 'avatars/notion-sadie.svg']
-    },
-    {
-        id: 'ev-drill-today-2',
-        title: 'Chemistry Organic Reactions Mastery',
-        category: 'study',
-        date: getFutureDateString(0), // Today (Sept 28, 2026)
-        time: '19:30',
-        duration: 1,
-        location: 'Sabi Digital Library & Notes',
-        notes: 'Hydrocarbons, Alkanols & Reaction Mechanisms revision with Sabi PQ explanations.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-willow.svg', 'avatars/notion-scholar.svg']
-    },
-    {
-        id: 'ev-drill-tomorrow',
-        title: 'English Comprehension & Oral Speed Test',
-        category: 'study',
-        date: getFutureDateString(1), // Tomorrow
-        time: '16:00',
-        duration: 1,
-        location: 'Sabi App PQ Room',
-        notes: 'Timed comprehension passages, stress patterns, and vowel sound contrasts.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-alex.svg', 'avatars/notion-felix.svg']
-    },
     {
         id: 'ev-jamb-2026',
         title: 'JAMB UTME 2026 National Examination',
@@ -305,6 +266,14 @@ function initCalendarApp() {
     initPlannerOnboarding();
     checkMondayAutoRegeneration();
 
+    // If user hasn't completed AI setup questions, automatically ask questions
+    const isOnboarded = localStorage.getItem('sabi_planner_onboarded') === 'true';
+    if (!isOnboarded) {
+        setTimeout(() => {
+            openPlannerOnboardingModal();
+        }, 180);
+    }
+
     // Close planner dropdown on outside click
     document.addEventListener('click', (e) => {
         const menu = document.getElementById('planner-dropdown-menu');
@@ -324,15 +293,26 @@ if (document.readyState === 'loading') {
 // Load events from LocalStorage
 function loadEvents() {
     const stored = localStorage.getItem('sabi_calendar_events_v2');
+    const isOnboarded = localStorage.getItem('sabi_planner_onboarded') === 'true';
+
     if (stored) {
         try {
-            calendarEvents = JSON.parse(stored);
+            const parsed = JSON.parse(stored);
+            // Clean out legacy fake mock drills
+            calendarEvents = parsed.filter(ev => {
+                const id = ev.id || '';
+                return !id.startsWith('ev-drill-today') && id !== 'ev-drill-tomorrow';
+            });
+            // If user hasn't onboarded yet, start clean without pre-loaded data
+            if (!isOnboarded) {
+                calendarEvents = [];
+            }
         } catch (e) {
             console.error('Failed to parse calendar events', e);
-            calendarEvents = [...DEFAULT_EVENTS];
+            calendarEvents = [];
         }
     } else {
-        calendarEvents = [...DEFAULT_EVENTS];
+        calendarEvents = [];
         saveEvents();
     }
 }
@@ -618,15 +598,29 @@ function renderAgendaTimeline() {
     let html = '';
     
     if (dayEvents.length === 0) {
-        html += `
-            <div class="session-empty-card">
-                <span class="session-empty-icon">☕</span>
-                <p>No study sessions scheduled for ${dayDisplay}.</p>
-                <button type="button" class="btn-minimal-add" onclick="openAddSessionModal()">
-                    + Add Session
-                </button>
-            </div>
-        `;
+        const isOnboarded = localStorage.getItem('sabi_planner_onboarded') === 'true';
+        if (!isOnboarded) {
+            html += `
+                <div class="calendar-onboarding-prompt-card">
+                    <span class="onboarding-prompt-badge">⚡ AI Study Planner</span>
+                    <h3 class="onboarding-prompt-title">Personalize Your Study Schedule</h3>
+                    <p class="onboarding-prompt-desc">Answer 3 quick questions so Sabi AI can generate your custom timetable and revision plan.</p>
+                    <button type="button" class="btn-start-onboarding" onclick="openPlannerOnboardingModal()">
+                        <span>✨ Answer Questions & Generate Plan</span>
+                    </button>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="session-empty-card">
+                    <span class="session-empty-icon">☕</span>
+                    <p>No study sessions scheduled for ${dayDisplay}.</p>
+                    <button type="button" class="btn-minimal-add" onclick="openAddSessionModal()">
+                        + Add Session
+                    </button>
+                </div>
+            `;
+        }
     } else {
         html += dayEvents.map(ev => renderEventCardHtml(ev)).join('');
     }
@@ -841,6 +835,154 @@ function handleSaveSession(e) {
     titleInput.value = '';
     notesInput.value = '';
 }
+
+// --- QUICK ADD SCHEDULE PARSER & HANDLER ---
+function parseQuickScheduleText(raw) {
+    let text = raw.trim();
+    
+    // 1. Detect Category
+    let category = 'study';
+    if (/\bjamb\b/i.test(text)) category = 'jamb';
+    else if (/\bwaec\b/i.test(text)) category = 'waec';
+    else if (/\bneco\b/i.test(text)) category = 'neco';
+    else if (/\bnoun\b/i.test(text)) category = 'noun';
+    else if (/\bican\b/i.test(text)) category = 'ican';
+
+    // 2. Detect Date
+    let dateStr = selectedDate || getFutureDateString(0);
+    const today = new Date();
+    
+    if (/\btomorrow\b/i.test(text)) {
+        dateStr = getFutureDateString(1);
+        text = text.replace(/\btomorrow\b/gi, '').trim();
+    } else if (/\btoday\b/i.test(text)) {
+        dateStr = getFutureDateString(0);
+        text = text.replace(/\btoday\b/gi, '').trim();
+    } else {
+        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const dayRegex = /\b(?:on\s+)?(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\b/i;
+        const dayMatch = text.match(dayRegex);
+        if (dayMatch) {
+            const targetDayIndex = dayNames.indexOf(dayMatch[1].toLowerCase());
+            const currentDayIndex = today.getDay();
+            let diff = targetDayIndex - currentDayIndex;
+            if (diff <= 0) diff += 7; // Next occurrence
+            dateStr = getFutureDateString(diff);
+            text = text.replace(dayMatch[0], '').trim();
+        }
+    }
+
+    // 3. Detect Duration
+    let duration = 1.5;
+    const durMatch = text.match(/\bfor\s+(\d+(?:\.\d+)?)\s*(hours?|hrs?|h|mins?|m|minutes?)\b/i) || 
+                     text.match(/\b(\d+(?:\.\d+)?)\s*(?:hours?|hrs?|h)\b/i);
+    if (durMatch) {
+        const val = parseFloat(durMatch[1]);
+        const unit = (durMatch[2] || '').toLowerCase();
+        if (unit.startsWith('m')) {
+            duration = Math.round((val / 60) * 10) / 10;
+        } else {
+            duration = val;
+        }
+        text = text.replace(durMatch[0], '').trim();
+    }
+
+    // 4. Detect Time
+    let timeStr = '17:00';
+    // Match patterns like "at 5pm", "at 5:30pm", "5:30 pm", "17:00", "at 8am"
+    const timeMatch = text.match(/\b(?:at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i) ||
+                      text.match(/\b(?:at\s+)?(\d{1,2}):(\d{2})\b/i);
+    if (timeMatch) {
+        let hours = parseInt(timeMatch[1], 10);
+        const minutes = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0;
+        const ampm = timeMatch[3] ? timeMatch[3].toLowerCase() : null;
+
+        if (ampm === 'pm' && hours < 12) hours += 12;
+        if (ampm === 'am' && hours === 12) hours = 0;
+
+        timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        text = text.replace(timeMatch[0], '').trim();
+    } else if (/\bmorning\b/i.test(text)) {
+        timeStr = '09:00';
+        text = text.replace(/\b(?:in\s+the\s+)?morning\b/gi, '').trim();
+    } else if (/\bafternoon\b/i.test(text)) {
+        timeStr = '14:00';
+        text = text.replace(/\b(?:in\s+the\s+)?afternoon\b/gi, '').trim();
+    } else if (/\bevening\b/i.test(text)) {
+        timeStr = '18:00';
+        text = text.replace(/\b(?:in\s+the\s+)?evening\b/gi, '').trim();
+    } else if (/\bnight\b/i.test(text)) {
+        timeStr = '20:30';
+        text = text.replace(/\b(?:at\s+)?night\b/gi, '').trim();
+    }
+
+    // Clean up residual prepositions & punctuation from title
+    let title = text
+        .replace(/\b(at|on|for|in|by)\b\s*$/i, '')
+        .replace(/^\s*(at|on|for|in|by)\b/i, '')
+        .replace(/[,\-\:\.]\s*$/, '')
+        .trim();
+
+    if (!title || title.length < 2) {
+        title = raw.trim();
+    }
+
+    // Capitalize first letter
+    title = title.charAt(0).toUpperCase() + title.slice(1);
+
+    return {
+        title,
+        category,
+        date: dateStr,
+        time: timeStr,
+        duration,
+        location: 'Sabi Study Plan',
+        notes: `Quick added: "${raw.trim()}"`
+    };
+}
+
+function handleQuickScheduleAdd() {
+    const input = document.getElementById('quick-schedule-input');
+    if (!input) return;
+    const raw = input.value.trim();
+    if (!raw) return;
+
+    const parsed = parseQuickScheduleText(raw);
+
+    const newEvent = {
+        id: 'ev-quick-' + Date.now(),
+        title: parsed.title,
+        category: parsed.category,
+        date: parsed.date,
+        time: parsed.time,
+        duration: parsed.duration,
+        location: parsed.location || 'Sabi Study Plan',
+        notes: parsed.notes || `Quick added: "${raw}"`,
+        isDefault: false,
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg']
+    };
+
+    calendarEvents.push(newEvent);
+    saveEvents();
+
+    // Mark as onboarded if user adds sessions manually
+    localStorage.setItem('sabi_planner_onboarded', 'true');
+
+    // Select this event's date and refresh views
+    selectedDate = parsed.date;
+    renderAllViews();
+    updateTargetCountdown();
+
+    input.value = '';
+
+    const dateObj = new Date(parsed.date + 'T00:00:00');
+    const dayLabel = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    showToast(`Added: ${parsed.title} (${dayLabel} at ${parsed.time})`);
+}
+
+window.handleQuickScheduleAdd = handleQuickScheduleAdd;
+window.parseQuickScheduleText = parseQuickScheduleText;
 
 // Event Detail Modal
 function openEventDetailModal(eventId) {
@@ -1192,16 +1334,37 @@ function renderHardSubjectChips() {
         return;
     }
 
-    container.innerHTML = allSubjects.map(name => {
+    let html = allSubjects.map(name => {
         const isHard = hardSubjects.has(name);
         return `
             <button type="button" class="subject-chip-btn ${isHard ? 'hard' : ''}" onclick="toggleHardSubject('${escapeHtml(name)}')">
-                <span>${isHard ? '🔥' : '＋'}</span>
+                <span>${isHard ? '🔥 Hard' : '✓ Enrolled'}</span>
                 <span>${escapeHtml(name)}</span>
             </button>
         `;
     }).join('');
+
+    // Quick add suggestions from default catalog
+    const unselectedCatalog = DEFAULT_SUBJECT_CATALOG.filter(c => !selectedSubjects.has(c.name));
+    if (unselectedCatalog.length > 0) {
+        html += unselectedCatalog.slice(0, 4).map(c => `
+            <button type="button" class="subject-chip-btn" style="opacity: 0.8; border-style: dashed;" onclick="addSubjectByName('${escapeHtml(c.name)}')">
+                <span>＋</span>
+                <span>${escapeHtml(c.name)}</span>
+            </button>
+        `).join('');
+    }
+
+    container.innerHTML = html;
 }
+
+function addSubjectByName(name) {
+    if (name) {
+        selectedSubjects.add(name);
+        renderHardSubjectChips();
+    }
+}
+window.addSubjectByName = addSubjectByName;
 
 function toggleHardSubject(name) {
     if (hardSubjects.has(name)) {

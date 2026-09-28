@@ -14,12 +14,11 @@
 
     <!-- TOP BAR (Minimalist, matches Library and Dashboard) -->
     <div class="top-bar">
-        <a href="index.html" class="back-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <a href="index.html" class="back-btn back-btn-icon-only" aria-label="Dashboard" title="Dashboard">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            Dashboard
         </a>
         <div class="top-bar-actions">
             <button type="button" class="btn-action-pill" onclick="openAddSessionModal()">
@@ -60,11 +59,7 @@
         </div>
     </div>
 
-    <!-- HEADER TITLES (Matching Sabi Header) -->
-    <div class="header-titles">
-        <h1>Study <span class="blue-text">Calendar</span></h1>
-        <p>Personalized timetable & spaced revision plan</p>
-    </div>
+    <!-- Header space reserved for future addition -->
 
     <!-- VIEW TABS (Clean minimalist tabs like Library) -->
     <div class="filter-tabs">
@@ -90,15 +85,17 @@
             </div>
         </div>
 
-        <!-- MINIMAL FRIENDLY AI PLAN STRATEGY CARD -->
-        <div id="ai-plan-summary-card" class="minimal-ai-card">
-            <div class="ai-card-header">
-                <span class="ai-strategy-label">WEEK STRATEGY</span>
-                <span class="ai-card-week" id="ai-plan-week-badge">This Week</span>
-            </div>
-            <p class="ai-summary-text" id="ai-summary-text">Generating your personalized weekly study plan...</p>
-            <div class="ai-notes-box" id="ai-notes-box">
-                <ul class="ai-notes-list" id="ai-notes-list"></ul>
+        <!-- QUICK ADD SCHEDULE BAR -->
+        <div class="quick-add-schedule-card">
+            <div class="quick-add-input-wrapper">
+                <span class="quick-add-sparkle">✨</span>
+                <input type="text" id="quick-schedule-input" class="quick-schedule-input" placeholder="Quickly add to schedule (e.g. Physics drill tomorrow at 6pm)..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();handleQuickScheduleAdd();}" />
+                <button type="button" class="btn-quick-add-submit" onclick="handleQuickScheduleAdd()" aria-label="Add to schedule" title="Add to schedule">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
             </div>
         </div>
 

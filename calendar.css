@@ -95,6 +95,18 @@ body {
     border-color: rgba(61, 142, 255, 0.3);
 }
 
+.back-btn.back-btn-icon-only {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-shrink: 0;
+}
+
 .top-bar-actions {
     display: flex;
     align-items: center;
@@ -416,6 +428,136 @@ body {
 .strip-day-btn.today:not(.active) .strip-day-number,
 .strip-day-btn.today:not(.active) .strip-day-num {
     color: var(--accent);
+}
+
+/* =========================================================
+   QUICK ADD SCHEDULE BAR
+   ========================================================= */
+.quick-add-schedule-card {
+    margin-bottom: 20px;
+}
+
+.quick-add-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 5px 6px 5px 14px;
+    transition: all 0.2s ease;
+    gap: 10px;
+}
+
+.quick-add-input-wrapper:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(61, 142, 255, 0.12);
+    background: var(--surface);
+}
+
+.quick-add-sparkle {
+    font-size: 15px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.quick-schedule-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-main);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 0;
+}
+
+.quick-schedule-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+.btn-quick-add-submit {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s, background-color 0.15s;
+    flex-shrink: 0;
+}
+
+.btn-quick-add-submit:active {
+    transform: scale(0.9);
+}
+
+/* =========================================================
+   ONBOARDING SCHEDULE PROMPT CARD (Empty State)
+   ========================================================= */
+.calendar-onboarding-prompt-card {
+    background: var(--surface-light);
+    border: 1px dashed rgba(61, 142, 255, 0.35);
+    border-radius: 20px;
+    padding: 26px 20px;
+    text-align: center;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.onboarding-prompt-badge {
+    display: inline-block;
+    background: rgba(61, 142, 255, 0.12);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.onboarding-prompt-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.onboarding-prompt-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 6px 0;
+    max-width: 340px;
+    line-height: 1.45;
+}
+
+.btn-start-onboarding {
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 16px;
+    padding: 10px 22px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s, opacity 0.15s;
+}
+
+.btn-start-onboarding:active {
+    transform: scale(0.96);
 }
 
 /* =========================================================
