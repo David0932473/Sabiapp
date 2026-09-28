@@ -57,74 +57,41 @@ function getTodayStr() {
     return getFutureDateString(0);
 }
 
-// Academic Milestones (Nigerian Official Exams - real calendar dates)
-const DEFAULT_EVENTS = [
-    {
-        id: 'ev-jamb-2026',
-        title: 'JAMB UTME 2026 National Examination',
-        category: 'jamb',
-        date: '2026-10-15',
-        time: '08:00',
-        duration: 3,
-        location: 'Accredited CBT Exam Center',
-        notes: 'Unified Tertiary Matriculation Examination (UTME). 4 registered subjects & past questions.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-felix.svg']
-    },
-    {
-        id: 'ev-noun-tma',
-        title: 'NOUN TMA 1 & 2 Final Submission Window',
-        category: 'noun',
-        date: '2026-10-22',
-        time: '23:59',
-        duration: 1,
-        location: 'NOUN Student Portal',
-        notes: 'Final deadline for Tutor Marked Assignments 1 and 2 across all registered courses.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-scholar.svg']
-    },
-    {
-        id: 'ev-waec-2026',
-        title: 'WAEC WASSCE Examination Kickoff',
-        category: 'waec',
-        date: '2026-11-04',
-        time: '09:00',
-        duration: 4,
-        location: 'Secondary Examination Hall',
-        notes: 'West African Senior School Certificate Examination commencement.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-sadie.svg']
-    },
-    {
-        id: 'ev-ican-2026',
-        title: 'ICAN Skills & Professional Diet Exam',
-        category: 'ican',
-        date: '2026-11-12',
-        time: '09:00',
-        duration: 4,
-        location: 'ICAN Examination Center',
-        notes: 'Institute of Chartered Accountants of Nigeria diet examinations.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-felix.svg', 'avatars/notion-scholar.svg']
-    },
-    {
-        id: 'ev-neco-2026',
-        title: 'NECO SSCE Senior Secondary Exam',
-        category: 'neco',
-        date: '2026-11-20',
-        time: '09:00',
-        duration: 4,
-        location: 'Accredited Exam Hall',
-        notes: 'National Examinations Council (NECO) Senior School Certificate Examination.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-alex.svg', 'avatars/notion-willow.svg']
+// Clean migration: Wipe legacy mock sessions & test flags so user has zero preloaded data
+(function initCleanMigration() {
+    if (!localStorage.getItem('sabi_planner_v5_migrated')) {
+        const legacyKeys = [
+            'sabi_calendar_events',
+            'sabi_calendar_events_v2',
+            'sabi_calendar_events_v3',
+            'sabi_calendar_events_v4',
+            'sabi_planner_onboarded',
+            'sabi_planner_onboarded_v2',
+            'sabi_planner_onboarded_v3',
+            'sabi_planner_onboarded_v4',
+            'sabi_classes',
+            'sabi_classes_v4',
+            'sabi_weekly_plan_meta',
+            'claude_api_key',
+            'anthropic_api_key',
+            'gemini_api_key',
+            'sabi_gemini_api_key',
+            'openai_api_key',
+            'sabi_api_key'
+        ];
+        legacyKeys.forEach(k => {
+            try { localStorage.removeItem(k); } catch (e) {}
+        });
+        try {
+            localStorage.setItem('sabi_calendar_events_v5', JSON.stringify([]));
+            localStorage.removeItem('sabi_planner_onboarded_v5');
+            localStorage.setItem('sabi_planner_v5_migrated', 'true');
+        } catch (e) {}
     }
-];
+})();
+
+// Empty defaults - NO pre-loaded events
+const DEFAULT_EVENTS = [];
 
 // Helper to format YYYY-MM-DD
 function getFutureDateString(offsetDays = 0) {
@@ -147,26 +114,20 @@ const DEFAULT_SUBJECT_CATALOG = [
     { name: "Literature in English", topics: ["Dramatic Techniques", "Poetic Devices & Imagery", "African Prose & Themes", "Character Analysis"] }
 ];
 
-const DEFAULT_CLASSES = [
-    { day: 'Monday', start_time: '09:00', end_time: '11:00', subject: 'PHY 101: General Physics Lecture' },
-    { day: 'Tuesday', start_time: '10:00', end_time: '12:00', subject: 'MTH 101: Elementary Mathematics' },
-    { day: 'Wednesday', start_time: '08:30', end_time: '10:30', subject: 'CHM 101: General Chemistry' },
-    { day: 'Thursday', start_time: '11:00', end_time: '13:00', subject: 'GST 101: Use of English' },
-    { day: 'Friday', start_time: '09:00', end_time: '11:00', subject: 'BIO 101: General Biology' }
-];
+// Empty default classes - NO pre-loaded lectures
+const DEFAULT_CLASSES = [];
 
 function getStoredClasses() {
     try {
-        const stored = localStorage.getItem('sabi_classes');
+        const stored = localStorage.getItem('sabi_classes_v5');
         if (stored) {
             const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            if (Array.isArray(parsed)) return parsed;
         }
     } catch (e) {
-        console.error('Failed to parse sabi_classes', e);
+        console.error('Failed to parse sabi_classes_v5', e);
     }
-    localStorage.setItem('sabi_classes', JSON.stringify(DEFAULT_CLASSES));
-    return DEFAULT_CLASSES;
+    return [];
 }
 
 // Helper: Calculate Monday of the week for given date
@@ -267,11 +228,11 @@ function initCalendarApp() {
     checkMondayAutoRegeneration();
 
     // If user hasn't completed AI setup questions, automatically ask questions
-    const isOnboarded = localStorage.getItem('sabi_planner_onboarded') === 'true';
+    const isOnboarded = localStorage.getItem('sabi_planner_onboarded_v5') === 'true';
     if (!isOnboarded) {
         setTimeout(() => {
             openPlannerOnboardingModal();
-        }, 180);
+        }, 120);
     }
 
     // Close planner dropdown on outside click
@@ -292,21 +253,13 @@ if (document.readyState === 'loading') {
 
 // Load events from LocalStorage
 function loadEvents() {
-    const stored = localStorage.getItem('sabi_calendar_events_v2');
-    const isOnboarded = localStorage.getItem('sabi_planner_onboarded') === 'true';
+    const stored = localStorage.getItem('sabi_calendar_events_v5');
+    const isOnboarded = localStorage.getItem('sabi_planner_onboarded_v5') === 'true';
 
-    if (stored) {
+    if (stored && isOnboarded) {
         try {
             const parsed = JSON.parse(stored);
-            // Clean out legacy fake mock drills
-            calendarEvents = parsed.filter(ev => {
-                const id = ev.id || '';
-                return !id.startsWith('ev-drill-today') && id !== 'ev-drill-tomorrow';
-            });
-            // If user hasn't onboarded yet, start clean without pre-loaded data
-            if (!isOnboarded) {
-                calendarEvents = [];
-            }
+            calendarEvents = Array.isArray(parsed) ? parsed : [];
         } catch (e) {
             console.error('Failed to parse calendar events', e);
             calendarEvents = [];
@@ -318,7 +271,7 @@ function loadEvents() {
 }
 
 function saveEvents() {
-    localStorage.setItem('sabi_calendar_events_v2', JSON.stringify(calendarEvents));
+    localStorage.setItem('sabi_calendar_events_v5', JSON.stringify(calendarEvents));
 }
 
 function loadPlannerMetadata() {
@@ -598,7 +551,7 @@ function renderAgendaTimeline() {
     let html = '';
     
     if (dayEvents.length === 0) {
-        const isOnboarded = localStorage.getItem('sabi_planner_onboarded') === 'true';
+        const isOnboarded = localStorage.getItem('sabi_planner_onboarded_v5') === 'true';
         if (!isOnboarded) {
             html += `
                 <div class="calendar-onboarding-prompt-card">
@@ -967,7 +920,7 @@ function handleQuickScheduleAdd() {
     saveEvents();
 
     // Mark as onboarded if user adds sessions manually
-    localStorage.setItem('sabi_planner_onboarded', 'true');
+    localStorage.setItem('sabi_planner_onboarded_v5', 'true');
 
     // Select this event's date and refresh views
     selectedDate = parsed.date;
@@ -1464,7 +1417,7 @@ function renderSubjectDatePickers() {
 // Re-plan the remaining days when the student enters or changes an exam date
 let replanExamDateDebounceTimer = null;
 function triggerReplanOnExamDateChange() {
-    if (localStorage.getItem('sabi_planner_onboarded') !== 'true') return;
+    if (localStorage.getItem('sabi_planner_onboarded_v5') !== 'true') return;
     savePlannerProfile(onboardingTempProfile);
     clearTimeout(replanExamDateDebounceTimer);
     replanExamDateDebounceTimer = setTimeout(() => {
@@ -1492,7 +1445,7 @@ async function submitOnboardingAndGeneratePlan() {
     onboardingTempProfile.subjects = [...selectedSubjects];
     onboardingTempProfile.hard_subjects = [...hardSubjects];
     savePlannerProfile(onboardingTempProfile);
-    localStorage.setItem('sabi_planner_onboarded', 'true');
+    localStorage.setItem('sabi_planner_onboarded_v5', 'true');
 
     // Save subjects to enrolled subjects store
     const subjectObjects = [...selectedSubjects].map(name => {
@@ -1837,7 +1790,7 @@ function simpleTextTimetableParse(text) {
 
 // --- MONDAY AUTO-REGENERATION CHECK ---
 function checkMondayAutoRegeneration() {
-    if (!localStorage.getItem('sabi_planner_onboarded')) return;
+    if (!localStorage.getItem('sabi_planner_onboarded_v5')) return;
     const currentMonday = getMondayOfWeek(new Date());
     const lastPlannedMonday = localStorage.getItem('sabi_last_planned_monday');
     
@@ -2654,56 +2607,9 @@ function renderWeekTimetable() {
     });
 }
 
-// --- API KEY CONFIG MODAL ---
-function promptApiKey() {
-    const modal = document.getElementById('api-key-modal');
-    const input = document.getElementById('gemini-api-key-input');
-    const existing = getAnthropicKey() || getGeminiKey() || getOpenAiKey() || getActiveApiKey();
-    if (input && existing) input.value = existing;
-    if (modal) modal.classList.remove('hidden');
-}
-
-function closeApiKeyModal(e) {
-    if (e && e.target !== e.currentTarget && !e.target.classList.contains('sheet-close-btn')) return;
-    const modal = document.getElementById('api-key-modal');
-    if (modal) modal.classList.add('hidden');
-}
-
-function saveApiKey() {
-    const input = document.getElementById('gemini-api-key-input');
-    if (input) {
-        const val = input.value.trim();
-        if (val) {
-            if (val.startsWith('sk-ant-') || val.toLowerCase().includes('claude')) {
-                localStorage.setItem('claude_api_key', val);
-                localStorage.setItem('anthropic_api_key', val);
-                showToast('Claude API key saved! Live Claude 3.5 Sonnet planner active.');
-            } else if (val.startsWith('AIzaSy')) {
-                localStorage.setItem('gemini_api_key', val);
-                localStorage.setItem('sabi_gemini_api_key', val);
-                showToast('Gemini API key saved! Live AI generation active.');
-            } else {
-                localStorage.setItem('claude_api_key', val);
-                localStorage.setItem('anthropic_api_key', val);
-                localStorage.setItem('openai_api_key', val);
-                localStorage.setItem('sabi_api_key', val);
-                showToast('API key saved! AI study planner active.');
-            }
-        }
-    }
-    closeApiKeyModal();
-}
-
-function clearApiKey() {
-    localStorage.removeItem('claude_api_key');
-    localStorage.removeItem('anthropic_api_key');
-    localStorage.removeItem('gemini_api_key');
-    localStorage.removeItem('sabi_gemini_api_key');
-    localStorage.removeItem('openai_api_key');
-    localStorage.removeItem('sabi_api_key');
-    const input = document.getElementById('gemini-api-key-input');
-    if (input) input.value = '';
-    showToast('API key removed. Using built-in planner engine.');
-    closeApiKeyModal();
-}
+// API Key functions kept as safe no-ops (API keys managed via env.js or offline engine)
+function promptApiKey() {}
+function closeApiKeyModal() {}
+function saveApiKey() {}
+function clearApiKey() {}
 
