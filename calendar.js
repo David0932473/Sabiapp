@@ -1,9 +1,9 @@
 /**
- * SABI OS v3.0: STUDY & EXAM CALENDAR
- * Full Google Calendar Direct Integration & Study Scheduler
+ * SABI OS v3.0: GOOGLE CALENDAR LANDSCAPE SYSTEM
+ * Full Mini-Calendar, Filter Chips, Month Grid & Agenda Timeline
  */
 
-// Default Official Academic Milestones (Nigeria Examinations & University Deadlines)
+// Academic Milestones (Nigerian Exams & Study Sessions)
 const DEFAULT_EVENTS = [
     {
         id: 'ev-jamb-2026',
@@ -12,11 +12,11 @@ const DEFAULT_EVENTS = [
         date: '2026-04-18',
         time: '08:00',
         duration: 3,
-        allDay: false,
-        location: 'Designated CBT Exam Center',
-        notes: 'National Unified Tertiary Matriculation Examination (UTME). Review 4 registered subjects & past questions.',
+        location: 'Accredited CBT Exam Center',
+        notes: 'Unified Tertiary Matriculation Examination (UTME). 4 registered subjects & past questions.',
         isDefault: true,
-        completed: false
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-felix.svg']
     },
     {
         id: 'ev-waec-2026',
@@ -25,11 +25,11 @@ const DEFAULT_EVENTS = [
         date: '2026-05-04',
         time: '09:00',
         duration: 4,
-        allDay: false,
-        location: 'Official Secondary Examination Hall',
-        notes: 'West African Senior School Certificate Examination. Practical papers and core theory commence.',
+        location: 'Secondary Examination Hall',
+        notes: 'West African Senior School Certificate Examination commencement.',
         isDefault: true,
-        completed: false
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-sadie.svg']
     },
     {
         id: 'ev-neco-2026',
@@ -38,11 +38,11 @@ const DEFAULT_EVENTS = [
         date: '2026-06-15',
         time: '09:00',
         duration: 4,
-        allDay: false,
         location: 'Accredited Exam Hall',
-        notes: 'National Examinations Council (NECO) Senior School Certificate Examination commences.',
+        notes: 'National Examinations Council (NECO) Senior School Certificate Examination.',
         isDefault: true,
-        completed: false
+        completed: false,
+        avatars: ['avatars/notion-alex.svg', 'avatars/notion-willow.svg']
     },
     {
         id: 'ev-noun-tma',
@@ -51,11 +51,11 @@ const DEFAULT_EVENTS = [
         date: '2026-04-10',
         time: '23:59',
         duration: 1,
-        allDay: false,
         location: 'NOUN Student Portal',
-        notes: 'Final deadline for Tutor Marked Assignments 1 and 2 across all registered faculty courses.',
+        notes: 'Final deadline for Tutor Marked Assignments 1 and 2 across all registered courses.',
         isDefault: true,
-        completed: false
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg']
     },
     {
         id: 'ev-ican-2026',
@@ -64,41 +64,54 @@ const DEFAULT_EVENTS = [
         date: '2026-05-12',
         time: '09:00',
         duration: 4,
-        allDay: false,
         location: 'ICAN Examination Center',
-        notes: 'Institute of Chartered Accountants of Nigeria diet examinations. Review Corporate Reporting & Tax.',
+        notes: 'Institute of Chartered Accountants of Nigeria diet examinations.',
         isDefault: true,
-        completed: false
+        completed: false,
+        avatars: ['avatars/notion-felix.svg', 'avatars/notion-scholar.svg']
     },
     {
-        id: 'ev-drill-daily',
-        title: 'Sabi 50-Question Speed Drill',
+        id: 'ev-drill-today',
+        title: 'JAMB Physics Mechanics Past Questions Speed Drill',
         category: 'study',
         date: getFutureDateString(0), // Today
-        time: '18:00',
+        time: '17:30',
         duration: 1.5,
-        allDay: false,
         location: 'Sabi App PQ Room',
-        notes: 'Daily intensive speed test: 50 past questions in 45 minutes with in-depth Sabi explanations.',
+        notes: 'Intensive speed drill: 50 questions in 45 minutes on Kinematics, Dynamics & Optics.',
         isDefault: true,
-        completed: false
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-felix.svg', 'avatars/notion-sadie.svg']
     },
     {
         id: 'ev-drill-tomorrow',
-        title: 'Calculations & Science Formulas Mastery',
+        title: 'Chemistry Organic Reactions Mastery',
         category: 'study',
         date: getFutureDateString(1), // Tomorrow
         time: '16:00',
         duration: 2,
-        allDay: false,
         location: 'Sabi Digital Library & Notes',
-        notes: 'Deep revision on high-yield formulas for Physics and Chemistry exam components.',
+        notes: 'Hydrocarbons, Alkanols & Reaction Mechanisms revision with Sabi PQ explanations.',
         isDefault: true,
-        completed: false
+        completed: false,
+        avatars: ['avatars/notion-willow.svg', 'avatars/notion-scholar.svg']
+    },
+    {
+        id: 'ev-drill-upcoming',
+        title: 'English Comprehension & Oral Speed Test',
+        category: 'study',
+        date: getFutureDateString(3),
+        time: '18:00',
+        duration: 1,
+        location: 'Sabi App PQ Room',
+        notes: 'Timed comprehension passages, stress patterns, and vowel sound contrasts.',
+        isDefault: true,
+        completed: false,
+        avatars: ['avatars/notion-alex.svg', 'avatars/notion-felix.svg']
     }
 ];
 
-// Helper to get formatted YYYY-MM-DD
+// Helper to format YYYY-MM-DD
 function getFutureDateString(offsetDays = 0) {
     const d = new Date();
     d.setDate(d.getDate() + offsetDays);
@@ -110,34 +123,40 @@ function getFutureDateString(offsetDays = 0) {
 
 // State
 let calendarEvents = [];
-let activeCategory = 'all';
-let selectedDate = null; // null means all dates
-let activeView = 'planner'; // 'planner' or 'gcal'
+let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth(); // 0-indexed
+let selectedDate = getFutureDateString(0); // Today selected by default
+let currentViewMode = 'month'; // 'month', 'agenda', 'embed'
+let searchQuery = '';
+let selectedDetailEventId = null;
 
-// Initialize on DOM load
+// Available Categories
+const CATEGORIES = [
+    { key: 'jamb', label: '⚡ JAMB UTME', color: '#10B981', class: 'chip-jamb' },
+    { key: 'waec', label: '📘 WAEC SSCE', color: '#3D8EFF', class: 'chip-waec' },
+    { key: 'neco', label: '🟣 NECO', color: '#8B5CF6', class: 'chip-neco' },
+    { key: 'noun', label: '🎓 NOUN TMA', color: '#0EA5E9', class: 'chip-noun' },
+    { key: 'ican', label: '💼 ICAN Diet', color: '#F59E0B', class: 'chip-ican' },
+    { key: 'study', label: '⏱️ Study Drills', color: '#EC4899', class: 'chip-study' }
+];
+let activeCategories = new Set(['jamb', 'waec', 'neco', 'noun', 'ican', 'study']);
+
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadEvents();
-    renderDayStrip();
-    renderEvents();
-    updateNextCountdown();
+    renderFilterChips();
+    renderAllViews();
+    updateTargetCountdown();
     setupEmbedCalendar();
-    
-    // Set default date input in modal to today
+
+    // Default modal date to selectedDate or today
     const dateInput = document.getElementById('modal-session-date');
     if (dateInput) {
-        dateInput.value = getFutureDateString(0);
+        dateInput.value = selectedDate || getFutureDateString(0);
     }
-    
-    // Set today text in top bar
-    const todayEl = document.getElementById('today-display');
-    if (todayEl) {
-        const today = new Date();
-        const options = { weekday: 'short', month: 'short', day: 'numeric' };
-        todayEl.textContent = today.toLocaleDateString('en-US', options);
-    }
-    
-    // Interval for dynamic countdown
-    setInterval(updateNextCountdown, 60000);
+
+    // Dynamic countdown timer interval
+    setInterval(updateTargetCountdown, 60000);
 });
 
 // Load events from LocalStorage
@@ -156,259 +175,424 @@ function loadEvents() {
     }
 }
 
-// Save events to LocalStorage
 function saveEvents() {
     localStorage.setItem('sabi_calendar_events', JSON.stringify(calendarEvents));
 }
 
-// Render dynamic day selector strip (7 days starting from today - 1)
-function renderDayStrip() {
-    const strip = document.getElementById('day-strip');
-    if (!strip) return;
+// Master Render Function
+function renderAllViews() {
+    renderMiniCalendar();
+    renderMainMonthGrid();
+    renderAgendaTimeline();
+    updateMonthTitles();
+}
+
+function updateMonthTitles() {
+    const d = new Date(currentYear, currentMonth, 1);
+    const monthName = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     
-    strip.innerHTML = '';
+    const miniLabel = document.getElementById('mini-month-label');
+    const mainTitle = document.getElementById('main-month-title');
+    if (miniLabel) miniLabel.textContent = monthName;
+    if (mainTitle) mainTitle.textContent = monthName;
+}
+
+// --- MINI MONTH NAVIGATOR (From User Reference Mockup) ---
+function renderMiniCalendar() {
+    const container = document.getElementById('mini-cal-days');
+    if (!container) return;
     
-    // Add "All Days" pill
-    const allChip = document.createElement('div');
-    allChip.className = `day-chip ${selectedDate === null ? 'active' : ''}`;
-    allChip.onclick = () => selectDay(null);
-    allChip.innerHTML = `
-        <div class="day-name">ALL</div>
-        <div class="day-num">🗓️</div>
-        <div class="day-dot"></div>
-    `;
-    strip.appendChild(allChip);
+    container.innerHTML = '';
     
-    const today = new Date();
-    for (let i = 0; i < 14; i++) {
-        const d = new Date(today);
-        d.setDate(today.getDate() + i);
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const totalDays = lastDay.getDate();
+    
+    // Day of week for 1st of month: 0 (Sun) to 6 (Sat). We want Mon = 0 to Sun = 6
+    let startDayOfWeek = firstDay.getDay() - 1;
+    if (startDayOfWeek === -1) startDayOfWeek = 6;
+    
+    // Previous month filler days
+    const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+    for (let i = startDayOfWeek - 1; i >= 0; i--) {
+        const dayNum = prevMonthLastDay - i;
+        const cell = document.createElement('div');
+        cell.className = 'mini-day-cell other-month';
+        cell.innerHTML = `<span class="mini-day-num">${dayNum}</span>`;
+        container.appendChild(cell);
+    }
+    
+    const todayStr = getFutureDateString(0);
+    
+    // Current month days
+    for (let day = 1; day <= totalDays; day++) {
+        const monthStr = String(currentMonth + 1).padStart(2, '0');
+        const dayStr = String(day).padStart(2, '0');
+        const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
         
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const dateStr = `${year}-${month}-${day}`;
+        // Find matching events for this day
+        const dayEvents = calendarEvents.filter(ev => {
+            return ev.date === dateStr && activeCategories.has(ev.category);
+        });
         
-        const dayName = i === 0 ? 'TODAY' : d.toLocaleDateString('en-US', { weekday: 'short' });
-        const dayNum = d.getDate();
-        
-        const hasEvents = calendarEvents.some(ev => ev.date === dateStr);
         const isSelected = selectedDate === dateStr;
+        const isToday = todayStr === dateStr;
         
-        const chip = document.createElement('div');
-        chip.className = `day-chip ${isSelected ? 'active' : ''} ${hasEvents ? 'has-events' : ''}`;
-        chip.onclick = () => selectDay(dateStr);
-        chip.innerHTML = `
-            <div class="day-name">${dayName}</div>
-            <div class="day-num">${dayNum}</div>
-            <div class="day-dot"></div>
+        const cell = document.createElement('div');
+        cell.className = `mini-day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`;
+        cell.onclick = () => onSelectDate(dateStr);
+        
+        // Multi-colored dots underneath day number (From Reference Mockup!)
+        let dotsHtml = '';
+        if (dayEvents.length > 0) {
+            dotsHtml = `<div class="mini-day-dots">`;
+            // Max 4 dots to keep it clean
+            dayEvents.slice(0, 4).forEach(ev => {
+                const color = getCategoryColor(ev.category);
+                dotsHtml += `<span class="mini-event-dot" style="background-color: ${color}"></span>`;
+            });
+            dotsHtml += `</div>`;
+        }
+        
+        cell.innerHTML = `
+            <span class="mini-day-num">${day}</span>
+            ${dotsHtml}
         `;
-        strip.appendChild(chip);
+        container.appendChild(cell);
+    }
+    
+    // Next month filler days to complete grid (up to 35 or 42)
+    const filledCells = startDayOfWeek + totalDays;
+    const remaining = (7 - (filledCells % 7)) % 7;
+    for (let day = 1; day <= remaining; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'mini-day-cell other-month';
+        cell.innerHTML = `<span class="mini-day-num">${day}</span>`;
+        container.appendChild(cell);
     }
 }
 
-function selectDay(dateStr) {
+function onSelectDate(dateStr) {
     selectedDate = dateStr;
-    renderDayStrip();
-    renderEvents();
-}
-
-// Category filter
-function filterCategory(category, el) {
-    activeCategory = category;
+    const [y, m] = dateStr.split('-').map(Number);
+    currentYear = y;
+    currentMonth = m - 1;
     
-    document.querySelectorAll('.filter-chip').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    if (el) {
-        el.classList.add('active');
+    renderAllViews();
+    
+    // If in Agenda view, smoothly scroll to selected date group
+    if (currentViewMode === 'agenda') {
+        const el = document.getElementById(`agenda-group-${dateStr}`);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
-    
-    renderEvents();
 }
 
-// Switch between Sabi Planner and Live Google Calendar embed
-function switchCalendarView(view) {
-    activeView = view;
+function changeMiniMonth(offset) {
+    currentMonth += offset;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    renderAllViews();
+}
+
+function changeMainMonth(offset) {
+    changeMiniMonth(offset);
+}
+
+function goToToday() {
+    const today = new Date();
+    currentYear = today.getFullYear();
+    currentMonth = today.getMonth();
+    selectedDate = getFutureDateString(0);
+    renderAllViews();
+}
+
+// --- FILTER CHIPS (From Reference Mockup Screen 2) ---
+function renderFilterChips() {
+    const container = document.getElementById('filter-chips-container');
+    if (!container) return;
     
-    const tabPlanner = document.getElementById('tab-planner');
-    const tabGcal = document.getElementById('tab-gcal');
-    const plannerSection = document.getElementById('planner-section');
-    const gcalSection = document.getElementById('gcal-section');
-    
-    if (view === 'planner') {
-        tabPlanner?.classList.add('active');
-        tabGcal?.classList.remove('active');
-        plannerSection?.classList.remove('hidden');
-        gcalSection?.classList.add('hidden');
+    container.innerHTML = CATEGORIES.map(cat => {
+        const isActive = activeCategories.has(cat.key);
+        return `
+            <div class="removable-chip ${cat.class} ${isActive ? '' : 'inactive'}" onclick="toggleCategoryFilter('${cat.key}')">
+                <span>${cat.label}</span>
+                <span class="chip-x">${isActive ? '✕' : '+'}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function toggleCategoryFilter(key) {
+    if (activeCategories.has(key)) {
+        // Keep at least one active
+        if (activeCategories.size > 1) {
+            activeCategories.delete(key);
+        } else {
+            showToast('Keep at least one category visible');
+            return;
+        }
     } else {
-        tabPlanner?.classList.remove('active');
-        tabGcal?.classList.add('active');
-        plannerSection?.classList.add('hidden');
-        gcalSection?.classList.remove('hidden');
+        activeCategories.add(key);
+    }
+    renderFilterChips();
+    renderAllViews();
+}
+
+function resetCategoryFilters() {
+    CATEGORIES.forEach(c => activeCategories.add(c.key));
+    renderFilterChips();
+    renderAllViews();
+    showToast('All category filters restored');
+}
+
+// --- VIEW 1: FULL MONTH LANDSCAPE GRID (Google Calendar Style) ---
+function renderMainMonthGrid() {
+    const container = document.getElementById('main-month-grid');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const totalDays = lastDay.getDate();
+    
+    let startDayOfWeek = firstDay.getDay() - 1;
+    if (startDayOfWeek === -1) startDayOfWeek = 6;
+    
+    const todayStr = getFutureDateString(0);
+    
+    // Previous month filler cells
+    const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+    for (let i = startDayOfWeek - 1; i >= 0; i--) {
+        const dayNum = prevMonthLastDay - i;
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell other-month';
+        cell.innerHTML = `
+            <div class="grid-cell-top">
+                <span class="cell-day-num">${dayNum}</span>
+            </div>
+        `;
+        container.appendChild(cell);
+    }
+    
+    // Current month cells
+    for (let day = 1; day <= totalDays; day++) {
+        const monthStr = String(currentMonth + 1).padStart(2, '0');
+        const dayStr = String(day).padStart(2, '0');
+        const dateStr = `${currentYear}-${monthStr}-${dayStr}`;
+        
+        let dayEvents = calendarEvents.filter(ev => {
+            const matchesCat = activeCategories.has(ev.category);
+            const matchesSearch = !searchQuery || 
+                ev.title.toLowerCase().includes(searchQuery) || 
+                (ev.notes && ev.notes.toLowerCase().includes(searchQuery));
+            return ev.date === dateStr && matchesCat && matchesSearch;
+        });
+        
+        const isSelected = selectedDate === dateStr;
+        const isToday = todayStr === dateStr;
+        
+        const cell = document.createElement('div');
+        cell.className = `grid-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`;
+        cell.onclick = (e) => {
+            // If didn't click inside an event pill
+            if (!e.target.closest('.event-chip-pill')) {
+                onSelectDate(dateStr);
+            }
+        };
+        
+        // Stack of event pills
+        let eventsHtml = '';
+        if (dayEvents.length > 0) {
+            eventsHtml = '<div class="cell-events-stack">';
+            const visibleEvents = dayEvents.slice(0, 3);
+            visibleEvents.forEach(ev => {
+                const pillClass = `chip-pill-${ev.category}`;
+                eventsHtml += `
+                    <div class="event-chip-pill ${pillClass}" onclick="openEventDetailModal('${ev.id}')" title="${escapeHtml(ev.title)}">
+                        <span>${ev.time || 'All Day'}</span>
+                        <strong>${escapeHtml(ev.title)}</strong>
+                    </div>
+                `;
+            });
+            if (dayEvents.length > 3) {
+                eventsHtml += `<span class="more-events-indicator">+${dayEvents.length - 3} more</span>`;
+            }
+            eventsHtml += '</div>';
+        }
+        
+        cell.innerHTML = `
+            <div class="grid-cell-top">
+                <span class="cell-day-num">${day}</span>
+            </div>
+            ${eventsHtml}
+        `;
+        container.appendChild(cell);
+    }
+    
+    // Next month filler cells
+    const filledCells = startDayOfWeek + totalDays;
+    const remaining = (7 - (filledCells % 7)) % 7;
+    for (let day = 1; day <= remaining; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell other-month';
+        cell.innerHTML = `
+            <div class="grid-cell-top">
+                <span class="cell-day-num">${day}</span>
+            </div>
+        `;
+        container.appendChild(cell);
     }
 }
 
-// Render event cards list
-function renderEvents() {
-    const list = document.getElementById('events-list');
-    const countBadge = document.getElementById('event-count');
-    if (!list) return;
+// --- VIEW 2: AGENDA / TIMELINE VIEW (Reference Mockup Screen 3!) ---
+function renderAgendaTimeline() {
+    const container = document.getElementById('agenda-timeline-list');
+    if (!container) return;
     
-    // Filter by category and date
+    // Filter events based on active category and search
     let filtered = calendarEvents.filter(ev => {
-        const matchesCategory = activeCategory === 'all' || ev.category.toLowerCase() === activeCategory.toLowerCase();
-        const matchesDate = !selectedDate || ev.date === selectedDate;
-        return matchesCategory && matchesDate;
+        const matchesCat = activeCategories.has(ev.category);
+        const matchesSearch = !searchQuery || 
+            ev.title.toLowerCase().includes(searchQuery) || 
+            (ev.notes && ev.notes.toLowerCase().includes(searchQuery));
+        return matchesCat && matchesSearch;
     });
     
     // Sort chronologically
     filtered.sort((a, b) => {
-        const dateA = new Date(`${a.date}T${a.time || '00:00'}:00`);
-        const dateB = new Date(`${b.date}T${b.time || '00:00'}:00`);
-        return dateA - dateB;
+        return new Date(`${a.date}T${a.time || '00:00'}:00`) - new Date(`${b.date}T${b.time || '00:00'}:00`);
     });
     
-    if (countBadge) {
-        countBadge.textContent = `${filtered.length} item${filtered.length === 1 ? '' : 's'}`;
-    }
-    
     if (filtered.length === 0) {
-        list.innerHTML = `
-            <div class="empty-events">
-                <span class="empty-events-icon">📅</span>
-                <h3>No Sessions Scheduled</h3>
-                <p>No study sessions or exams found for this selection. Create one and sync it straight to Google Calendar!</p>
-                <button type="button" class="btn-gcal-action primary" onclick="openAddSessionModal()">
-                    ➕ Schedule Study Session
+        container.innerHTML = `
+            <div class="empty-agenda-state">
+                <div class="empty-icon">📅</div>
+                <h3>No Events Scheduled</h3>
+                <p>No study sessions or exams match your current filters. Add a study session or reset category filters.</p>
+                <button type="button" class="btn-create-event" onclick="openAddSessionModal()" style="margin: 14px auto 0;">
+                    + Schedule Study Session
                 </button>
             </div>
         `;
         return;
     }
     
-    list.innerHTML = filtered.map(ev => {
-        const gcalUrl = createGoogleCalendarUrl(ev);
-        const tagClass = `tag-${ev.category.toLowerCase()}`;
-        const categoryLabel = getCategoryLabel(ev.category);
-        const formattedDate = formatHumanDate(ev.date, ev.time);
+    // Group events by date
+    const groups = {};
+    filtered.forEach(ev => {
+        if (!groups[ev.date]) groups[ev.date] = [];
+        groups[ev.date].push(ev);
+    });
+    
+    container.innerHTML = Object.keys(groups).map(dateKey => {
+        const dateEvents = groups[dateKey];
+        const isSelected = selectedDate === dateKey;
+        const dateObj = new Date(dateKey + 'T00:00:00');
+        const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const weekdayStr = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
         
-        return `
-            <div class="event-card ${ev.completed ? 'completed' : ''}" id="card-${ev.id}">
-                <div class="event-header">
-                    <span class="event-tag ${tagClass}">
-                        ${categoryLabel}
-                    </span>
-                    <span class="event-time-badge">
-                        🕒 ${formattedDate}
-                    </span>
+        const eventsCardsHtml = dateEvents.map(ev => {
+            const accentClass = `card-accent-${ev.category}`;
+            const tagColorClass = `tag-color-${ev.category}`;
+            const gcalUrl = createGoogleCalendarUrl(ev);
+            
+            // Avatar Stack (from Reference Mockup!)
+            const avatars = ev.avatars || ['avatars/notion-scholar.svg'];
+            const avatarStackHtml = `
+                <div class="agenda-avatar-stack">
+                    ${avatars.map(av => `<img src="${av}" alt="Scholar" class="avatar-stack-img" />`).join('')}
                 </div>
-                
-                <h3 class="event-title">${escapeHtml(ev.title)}</h3>
-                ${ev.notes ? `<p class="event-notes">${escapeHtml(ev.notes)}</p>` : ''}
-                
-                <div class="event-actions">
-                    <a href="${gcalUrl}" target="_blank" rel="noopener noreferrer" class="btn-sync-gcal" title="Directly sync to Google Calendar">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                        </svg>
-                        Google Calendar
-                    </a>
+            `;
+            
+            return `
+                <div class="agenda-event-card ${accentClass} ${ev.completed ? 'completed' : ''}" id="agenda-card-${ev.id}">
+                    <div class="agenda-event-info" onclick="openEventDetailModal('${ev.id}')">
+                        <span class="agenda-cat-tag ${tagColorClass}">
+                            ${getCategoryBadgeText(ev.category)}
+                        </span>
+                        <h4 class="agenda-event-title">${escapeHtml(ev.title)}</h4>
+                        <div class="agenda-event-meta">
+                            <span>🕒 ${ev.time || 'All Day'} (${ev.duration || 1}h)</span>
+                            <span>📍 ${escapeHtml(ev.location || 'Sabi Prep Room')}</span>
+                        </div>
+                        ${avatarStackHtml}
+                    </div>
                     
-                    <div class="event-btn-group">
-                        <button type="button" class="btn-event-icon check ${ev.completed ? 'active' : ''}" onclick="toggleEventComplete('${ev.id}')" title="${ev.completed ? 'Mark pending' : 'Mark completed'}">
+                    <div class="agenda-actions-right">
+                        <a href="${gcalUrl}" target="_blank" rel="noopener noreferrer" class="btn-gcal-direct-link" title="Directly sync to Google Calendar">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                            Sync
+                        </a>
+                        <button type="button" class="btn-check-toggle ${ev.completed ? 'active' : ''}" onclick="toggleEventComplete('${ev.id}')" title="Mark Done">
                             ${ev.completed ? '✓' : '○'}
                         </button>
-                        ${!ev.isDefault ? `
-                            <button type="button" class="btn-event-icon delete" onclick="deleteEvent('${ev.id}')" title="Delete event">
-                                🗑️
-                            </button>
-                        ` : ''}
                     </div>
+                </div>
+            `;
+        }).join('');
+        
+        return `
+            <div class="agenda-date-group" id="agenda-group-${dateKey}">
+                <div class="agenda-date-badge ${isSelected ? 'active-date' : ''}" onclick="onSelectDate('${dateKey}')">
+                    <span class="agenda-date-month">${monthShort}</span>
+                    <span class="agenda-date-weekday">${weekdayStr}</span>
+                </div>
+                
+                <div class="agenda-events-col">
+                    ${eventsCardsHtml}
                 </div>
             </div>
         `;
     }).join('');
 }
 
-// Convert category to badge text
-function getCategoryLabel(cat) {
-    switch (cat.toLowerCase()) {
-        case 'jamb': return '⚡ JAMB UTME';
-        case 'waec': return '📘 WAEC SSCE';
-        case 'neco': return '🟣 NECO';
-        case 'noun': return '🎓 NOUN TMA';
-        case 'ican': return '💼 ICAN DIET';
-        case 'study': return '⏱️ STUDY DRILL';
-        default: return '📚 EXAM';
-    }
-}
-
-// Format human friendly date string
-function formatHumanDate(dateStr, timeStr) {
-    if (!dateStr) return '';
-    try {
-        const parts = dateStr.split('-');
-        const d = new Date(parts[0], parts[1] - 1, parts[2]);
-        const month = d.toLocaleDateString('en-US', { month: 'short' });
-        const day = d.getDate();
-        
-        if (!timeStr) return `${month} ${day}`;
-        
-        const [h, m] = timeStr.split(':');
-        const hour = parseInt(h, 10);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const formattedHour = hour % 12 || 12;
-        return `${month} ${day}, ${formattedHour}:${m} ${ampm}`;
-    } catch (e) {
-        return dateStr;
-    }
-}
-
-// Generate Direct Google Calendar Template URL
-function createGoogleCalendarUrl(event) {
-    const title = encodeURIComponent(event.title);
-    const details = encodeURIComponent(
-        (event.notes ? `${event.notes}\n\n` : '') +
-        `Category: ${event.category.toUpperCase()}\n` +
-        `Managed via Sabi Study & Exam Prep (Sabiapp)`
-    );
-    const location = encodeURIComponent(event.location || 'Sabi Prep Room');
+// View Switching
+function switchViewMode(mode) {
+    currentViewMode = mode;
     
-    let startStr, endStr;
-    if (event.allDay) {
-        startStr = event.date.replace(/-/g, '');
-        const endD = new Date(event.date);
-        endD.setDate(endD.getDate() + 1);
-        endStr = endD.toISOString().slice(0, 10).replace(/-/g, '');
-    } else {
-        const startD = new Date(`${event.date}T${event.time || '09:00'}:00`);
-        const durationHours = parseFloat(event.duration || 1);
-        const endD = new Date(startD.getTime() + durationHours * 60 * 60 * 1000);
-        
-        startStr = formatGoogleIso(startD);
-        endStr = formatGoogleIso(endD);
-    }
+    document.querySelectorAll('.view-tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.calendar-view-pane').forEach(p => p.classList.add('hidden'));
     
-    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}`;
+    const activeBtn = document.getElementById(`btn-view-${mode}`);
+    const activePane = document.getElementById(`view-${mode}-container`);
+    
+    if (activeBtn) activeBtn.classList.add('active');
+    if (activePane) activePane.classList.remove('hidden');
+    
+    if (mode === 'agenda') {
+        renderAgendaTimeline();
+    } else if (mode === 'month') {
+        renderMainMonthGrid();
+    }
 }
 
-function formatGoogleIso(d) {
-    return d.toISOString().replace(/-|:|\.\d\d\d/g, '');
+// Search Handler
+function handleSearch(val) {
+    searchQuery = val.trim().toLowerCase();
+    renderMainMonthGrid();
+    renderAgendaTimeline();
 }
 
-// Calculate dynamic countdown to nearest upcoming milestone
-function updateNextCountdown() {
-    const labelEl = document.getElementById('countdown-hero-title');
-    const timerEl = document.getElementById('countdown-timer-value');
-    if (!labelEl || !timerEl) return;
+// --- TOP TARGET COUNTDOWN ---
+function updateTargetCountdown() {
+    const titleEl = document.getElementById('top-target-title');
+    const timerEl = document.getElementById('top-target-timer');
+    if (!titleEl || !timerEl) return;
     
     const now = new Date();
-    
-    // Find upcoming events sorted by time
     const upcoming = calendarEvents
         .filter(ev => !ev.completed)
         .map(ev => ({
@@ -419,59 +603,52 @@ function updateNextCountdown() {
         .sort((a, b) => a.dateTime - b.dateTime);
         
     if (upcoming.length === 0) {
-        labelEl.textContent = 'All Milestones Completed';
-        timerEl.textContent = 'Ready!';
+        titleEl.textContent = 'All Milestones Cleared';
+        timerEl.textContent = 'Ready 🎯';
         return;
     }
     
     const next = upcoming[0];
-    labelEl.textContent = next.title;
+    titleEl.textContent = next.title;
     
     const diffMs = next.dateTime - now;
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
     
     if (days > 1) {
-        timerEl.textContent = `${days} Days Left`;
+        timerEl.textContent = `in ${days} days`;
     } else if (days === 1) {
-        timerEl.textContent = `1 Day, ${hours}h`;
-    } else if (hours > 0) {
-        timerEl.textContent = `${hours}h ${minutes}m`;
+        timerEl.textContent = `Tomorrow, ${hours}h`;
     } else {
-        timerEl.textContent = `${minutes} mins!`;
+        timerEl.textContent = `Today, in ${hours}h`;
     }
 }
 
-// Toggle Complete
-function toggleEventComplete(id) {
-    const ev = calendarEvents.find(e => e.id === id);
-    if (!ev) return;
+// --- DIRECT GOOGLE CALENDAR TEMPLATE GENERATOR ---
+function createGoogleCalendarUrl(event) {
+    const title = encodeURIComponent(event.title);
+    const details = encodeURIComponent(
+        (event.notes ? `${event.notes}\n\n` : '') +
+        `Category: ${event.category.toUpperCase()}\n` +
+        `Managed with Sabi Study App`
+    );
+    const location = encodeURIComponent(event.location || 'Sabi Prep Room');
     
-    ev.completed = !ev.completed;
-    saveEvents();
-    renderEvents();
-    renderDayStrip();
-    updateNextCountdown();
+    const startD = new Date(`${event.date}T${event.time || '09:00'}:00`);
+    const durationHours = parseFloat(event.duration || 1.5);
+    const endD = new Date(startD.getTime() + durationHours * 60 * 60 * 1000);
     
-    if (ev.completed) {
-        showToast('Study Milestone Completed! 🎯');
-    }
+    const startStr = formatGoogleIso(startD);
+    const endStr = formatGoogleIso(endD);
+    
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}`;
 }
 
-// Delete Custom Event
-function deleteEvent(id) {
-    if (confirm('Delete this study session from Sabi Calendar?')) {
-        calendarEvents = calendarEvents.filter(e => e.id !== id);
-        saveEvents();
-        renderEvents();
-        renderDayStrip();
-        updateNextCountdown();
-        showToast('Session removed from timetable.');
-    }
+function formatGoogleIso(d) {
+    return d.toISOString().replace(/-|:|\.\d\d\d/g, '');
 }
 
-// Modal Handlers
+// --- MODALS & DETAILS ---
 function openAddSessionModal() {
     const overlay = document.getElementById('add-session-modal');
     if (overlay) {
@@ -489,7 +666,6 @@ function closeAddSessionModal(e) {
     }
 }
 
-// Save New Session
 function handleSaveSession(e) {
     e.preventDefault();
     
@@ -501,11 +677,7 @@ function handleSaveSession(e) {
     const notesInput = document.getElementById('modal-session-notes');
     const syncGcalCheck = document.getElementById('modal-session-gcal-sync');
     
-    if (!titleInput.value.trim()) {
-        alert('Please enter a session title or subject.');
-        titleInput.focus();
-        return;
-    }
+    if (!titleInput.value.trim()) return;
     
     const newEvent = {
         id: 'ev-custom-' + Date.now(),
@@ -514,44 +686,120 @@ function handleSaveSession(e) {
         date: dateInput.value || getFutureDateString(0),
         time: timeInput.value || '17:00',
         duration: parseFloat(durationInput.value || 1.5),
-        allDay: false,
-        location: 'Sabi App / Online Study',
+        location: 'Sabi App Study Session',
         notes: notesInput.value.trim(),
         isDefault: false,
-        completed: false
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg']
     };
     
     calendarEvents.push(newEvent);
     saveEvents();
-    renderDayStrip();
-    renderEvents();
-    updateNextCountdown();
+    renderAllViews();
+    updateTargetCountdown();
     closeAddSessionModal();
     
     showToast('Study session scheduled!');
     
-    // Instantly launch Google Calendar if checked
     if (syncGcalCheck && syncGcalCheck.checked) {
-        const url = createGoogleCalendarUrl(newEvent);
-        window.open(url, '_blank');
+        window.open(createGoogleCalendarUrl(newEvent), '_blank');
     }
     
-    // Reset inputs
     titleInput.value = '';
     notesInput.value = '';
 }
 
-// Export All Events as standard iCalendar (.ics) file
+// Event Detail Modal
+function openEventDetailModal(eventId) {
+    const ev = calendarEvents.find(e => e.id === eventId);
+    if (!ev) return;
+    
+    selectedDetailEventId = eventId;
+    
+    const modal = document.getElementById('event-detail-modal');
+    const tag = document.getElementById('detail-event-tag');
+    const title = document.getElementById('detail-event-title');
+    const time = document.getElementById('detail-event-time');
+    const loc = document.getElementById('detail-event-location');
+    const notes = document.getElementById('detail-event-notes');
+    const gcalBtn = document.getElementById('detail-gcal-btn');
+    const compBtn = document.getElementById('detail-complete-btn');
+    const delBtn = document.getElementById('detail-delete-btn');
+    
+    if (tag) {
+        tag.textContent = getCategoryBadgeText(ev.category);
+        tag.style.color = getCategoryColor(ev.category);
+    }
+    if (title) title.textContent = ev.title;
+    if (time) time.textContent = `${ev.date} at ${ev.time || '09:00'} (${ev.duration || 1} hrs)`;
+    if (loc) loc.textContent = ev.location || 'Sabi Study Room';
+    if (notes) notes.textContent = ev.notes || 'No extra notes provided.';
+    if (gcalBtn) gcalBtn.href = createGoogleCalendarUrl(ev);
+    
+    if (compBtn) {
+        compBtn.textContent = ev.completed ? 'Mark Pending' : 'Mark Complete ✓';
+    }
+    if (delBtn) {
+        delBtn.style.display = ev.isDefault ? 'none' : 'block';
+    }
+    
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeEventDetailModal(e) {
+    if (e && e.target !== e.currentTarget && !e.target.classList.contains('sheet-close-btn')) return;
+    const modal = document.getElementById('event-detail-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    selectedDetailEventId = null;
+}
+
+function toggleCurrentDetailComplete() {
+    if (!selectedDetailEventId) return;
+    toggleEventComplete(selectedDetailEventId);
+    closeEventDetailModal();
+}
+
+function deleteCurrentDetailEvent() {
+    if (!selectedDetailEventId) return;
+    if (confirm('Delete this study session?')) {
+        calendarEvents = calendarEvents.filter(e => e.id !== selectedDetailEventId);
+        saveEvents();
+        renderAllViews();
+        updateTargetCountdown();
+        closeEventDetailModal();
+        showToast('Session deleted.');
+    }
+}
+
+function toggleEventComplete(id) {
+    const ev = calendarEvents.find(e => e.id === id);
+    if (!ev) return;
+    ev.completed = !ev.completed;
+    saveEvents();
+    renderAllViews();
+    updateTargetCountdown();
+    if (ev.completed) {
+        showToast('Study session completed! 🎯');
+    }
+}
+
+// Export All Events to RFC 5545 iCalendar (.ics)
 function exportToIcs() {
     if (calendarEvents.length === 0) {
         alert('No events to export.');
         return;
     }
     
-    let icsContent = [
+    let ics = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
-        'PRODID:-//Sabi App//Study and Exam Calendar//EN',
+        'PRODID:-//Sabi App//Study Calendar//EN',
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'X-WR-CALNAME:Sabi Study & Exam Schedule',
@@ -560,28 +808,28 @@ function exportToIcs() {
     
     calendarEvents.forEach(ev => {
         const startD = new Date(`${ev.date}T${ev.time || '09:00'}:00`);
-        const durationHours = parseFloat(ev.duration || 1);
+        const durationHours = parseFloat(ev.duration || 1.5);
         const endD = new Date(startD.getTime() + durationHours * 60 * 60 * 1000);
         
         const dtstamp = formatGoogleIso(new Date());
         const dtstart = formatGoogleIso(startD);
         const dtend = formatGoogleIso(endD);
         
-        icsContent.push('BEGIN:VEVENT');
-        icsContent.push(`UID:${ev.id}@sabiapp.ng`);
-        icsContent.push(`DTSTAMP:${dtstamp}`);
-        icsContent.push(`DTSTART:${dtstart}`);
-        icsContent.push(`DTEND:${dtend}`);
-        icsContent.push(`SUMMARY:${escapeIcs(ev.title)}`);
-        if (ev.notes) icsContent.push(`DESCRIPTION:${escapeIcs(ev.notes)}`);
-        icsContent.push(`LOCATION:${escapeIcs(ev.location || 'Sabi Study Room')}`);
-        icsContent.push('STATUS:CONFIRMED');
-        icsContent.push('END:VEVENT');
+        ics.push('BEGIN:VEVENT');
+        ics.push(`UID:${ev.id}@sabiapp.ng`);
+        ics.push(`DTSTAMP:${dtstamp}`);
+        ics.push(`DTSTART:${dtstart}`);
+        ics.push(`DTEND:${dtend}`);
+        ics.push(`SUMMARY:${escapeIcs(ev.title)}`);
+        if (ev.notes) ics.push(`DESCRIPTION:${escapeIcs(ev.notes)}`);
+        ics.push(`LOCATION:${escapeIcs(ev.location || 'Sabi Prep Room')}`);
+        ics.push('STATUS:CONFIRMED');
+        ics.push('END:VEVENT');
     });
     
-    icsContent.push('END:VCALENDAR');
+    ics.push('END:VCALENDAR');
     
-    const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const blob = new Blob([ics.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'sabi_study_calendar.ics';
@@ -597,7 +845,7 @@ function escapeIcs(str) {
     return str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
 }
 
-// Embed Calendar Setup
+// Google Calendar Live Embed Setup
 function setupEmbedCalendar() {
     const iframe = document.getElementById('gcal-live-iframe');
     const input = document.getElementById('custom-gcal-id');
@@ -618,7 +866,7 @@ function updateCustomGcalId() {
     
     const val = input.value.trim();
     if (!val) {
-        alert('Please enter your Google Calendar email/ID (e.g., student@gmail.com)');
+        alert('Please enter your Google Calendar email/ID');
         return;
     }
     
@@ -627,7 +875,31 @@ function updateCustomGcalId() {
     showToast('Google Calendar Linked! 📅');
 }
 
-// Toast helper
+// Helpers
+function getCategoryColor(cat) {
+    switch (cat.toLowerCase()) {
+        case 'jamb': return '#10B981';
+        case 'waec': return '#3D8EFF';
+        case 'neco': return '#8B5CF6';
+        case 'noun': return '#0EA5E9';
+        case 'ican': return '#F59E0B';
+        case 'study': return '#EC4899';
+        default: return '#3D8EFF';
+    }
+}
+
+function getCategoryBadgeText(cat) {
+    switch (cat.toLowerCase()) {
+        case 'jamb': return '⚡ JAMB UTME';
+        case 'waec': return '📘 WAEC SSCE';
+        case 'neco': return '🟣 NECO';
+        case 'noun': return '🎓 NOUN TMA';
+        case 'ican': return '💼 ICAN Diet';
+        case 'study': return '⏱️ Study Drill';
+        default: return '📚 Exam';
+    }
+}
+
 function showToast(message) {
     let toast = document.getElementById('calendar-toast');
     if (!toast) {
@@ -643,7 +915,6 @@ function showToast(message) {
     }, 2800);
 }
 
-// Utility: escape HTML
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

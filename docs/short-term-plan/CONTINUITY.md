@@ -1,22 +1,17 @@
-- **Goal (incl. success criteria)**: Create a Study & Exam Calendar section directly integrated with Google Calendar while preserving Sabi's native look and feel, positioned directly after the PQ (Past Questions) menu in the dashboard and bottom navigation dock.
-- **Constraints/Assumptions**: Client-side offline-first architecture, `localStorage` persistence, zero third-party OAuth server dependency for direct 1-click Google Calendar URL synchronization, seamless support for both OLED Midnight and Light themes.
+- **Goal (incl. success criteria)**: Transform the Study Calendar section into a landscape Google Calendar style layout based on the provided reference design (mini-month calendar with multi-colored event dots, active blue day circle, category filter pills with remove tags, full month grid, and Screen 3 agenda timeline with date badges, vertical colored line accents, and Notion avatar piles).
+- **Constraints/Assumptions**: Client-side storage via `localStorage`, 1-click Google Calendar direct sync, seamless responsiveness across both landscape desktop and mobile views, support for both OLED Midnight and clean light themes.
 - **Key decisions**:
-  - Created [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) with native Sabi aesthetics, dynamic countdown hero widget, dynamic day selector strip, exam category filters (JAMB, WAEC, NECO, NOUN, ICAN, Study Drills), interactive timetable, and embedded Google Calendar view mode.
-  - Implemented [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css) adhering strictly to Sabi design tokens (OLED Midnight `#000000`, `--accent: #3D8EFF`, glassmorphism bottom sheets, bento pop animations, and high-contrast light mode overrides).
-  - Implemented [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js) supporting:
-    - 1-click direct Google Calendar event creation URL generation (`https://calendar.google.com/calendar/render?action=TEMPLATE...`).
-    - Standard `.ics` RFC 5545 iCalendar file export for universal Google Calendar / Apple / Outlook import.
-    - Pre-loaded Nigerian academic milestones (JAMB UTME 2026, WAEC WASSCE 2026, NECO SSCE, NOUN TMA deadlines, ICAN Diet exams, daily power drills).
-    - Custom study session scheduler with slide-up glassmorphism bottom sheet modal.
-    - Dynamic countdown timer to nearest upcoming milestone.
-    - Completion tracking with celebratory toast notifications.
-  - Added the Study Calendar Bento Card to [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) positioned immediately after the PQ Engine card, complete with a live pulsing "Google Sync" badge.
-  - Updated the floating dock (`.app-bottom-nav`) across [index.html](file:///c:/Users/dave/.gemini/sabi/index.html), [library.html](file:///c:/Users/dave/.gemini/sabi/library.html), [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html), and [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) with the 4th navigation item (`Calendar`).
-  - Optimized `.app-bottom-nav` in [global.css](file:///c:/Users/dave/.gemini/sabi/global.css) with balanced max-width (440px) and item padding for all 4 dock items.
+  - Implement landscape Google Calendar 2-column layout: left sidebar (mini month navigator + filter chips + Google Calendar sync card) and right main panel (toolbar + month grid view + agenda timeline view + live embed).
+  - Adopt the exact design elements from the user's reference mockup:
+    - Mini calendar with multi-colored event dots underneath day numbers and vibrant circular selected day badge.
+    - Dismissible multi-colored filter pills (`✕`).
+    - Agenda timeline view with large date badges on the left and vertical colored accent borders on event cards.
+    - Notion student avatar piles (`avatars/notion-*.svg`) in event cards.
+  - Implement full Google Calendar-style month grid with event chips directly inside date cells.
 - **State**:
-  - Done: Study Calendar section, Google Calendar direct integration, bottom dock updates, Bento card on dashboard, and changes committed & pushed to GitHub (`David0932473/Sabiapp`).
-  - Now: Clean state on `main` branch.
-  - Next: User validation and feedback.
+  - Done: Transformed calendar into a landscape Google Calendar style architecture with mini-month navigator (multi-colored event dots, blue circle active date), dismissible filter chips, full month grid, and Screen 3 agenda timeline with date badges & Notion avatar stacks.
+  - Now: Committing and pushing changes to GitHub repository.
+  - Next: User review and validation.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - Calendar page: [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
