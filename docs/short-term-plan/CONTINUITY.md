@@ -7,9 +7,9 @@
   - Updated floating dock navigation across all pages (`index.html`, `pq.html`, `library.html`, `wiki.html`) to: Home -> Library -> PQ Engine -> Wiki.
   - Renamed "Vault" references to "Library" in `index.html`, `library.html`, `pq.html`, `wiki.html`, `ican.html`, and `pq-setup.html`.
 - **State**:
-  - Done: Reordered layout (Library second above PQ Engine) and updated all labels to "Library".
-  - Now: Ready to commit and push changes to GitHub (`David0932473/Sabiapp`).
-  - Next: Awaiting user confirmation to push to GitHub.
+  - Done: Reordered layout (Library second above PQ Engine), renamed user-facing "Vault" references to "Library", committed (`00942f5`), and pushed to GitHub `origin/main`.
+  - Now: Working tree is clean; GitHub repository is fully up to date.
+  - Next: Awaiting user instructions for subsequent features or adjustments.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - Dashboard: [index.html](file:///c:/Users/dave/.gemini/sabi/index.html)
