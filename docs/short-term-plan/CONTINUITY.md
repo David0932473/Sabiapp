@@ -1,17 +1,22 @@
-# Continuity Ledger
-
-- **Goal (incl. success criteria)**: Completely remove Wiki Roulette from the codebase and navigation.
-- **Constraints/Assumptions**: Pure client-side HTML/CSS/JS architecture; responsive grid layouts.
+- **Goal (incl. success criteria)**: Replace crown emoji with a PFP avatar button that opens a Settings modal to edit personal information (name, target exam, avatar picture/presets) and switch between Dark and Light themes.
+- **Constraints/Assumptions**: Client-side storage via `localStorage`, vanilla CSS variables for theme switching across all views, responsive mobile & desktop layout.
 - **Key decisions**:
-  - Deleted `wiki.html`, `wiki.js`, and `wiki.css`.
-  - Removed Wiki-Roulette card from the dashboard bento grid in `index.html`.
-  - Removed Wiki navigation item from the bottom dock in `index.html`, `library.html`, and `pq.html`.
+  - Replaced the `👑` emoji button in [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) with a circular styled avatar (`#header-avatar-btn` and `#header-avatar-img`).
+  - Added [avatar.jpg](file:///c:/Users/dave/.gemini/sabi/avatar.jpg) (3D student scholar asset) as default PFP, with support for preset selection and local image file uploads via `FileReader`.
+  - Built an accessible Settings modal bottom sheet with:
+    - Theme switcher: Dark theme (original cyberpunk-charcoal aesthetic) and Light theme (crisp glassmorphism with high contrast).
+    - Personal info editor: Scholar display name and target exam goal.
+    - Profile picture preview, preset selector, and custom image upload.
+    - Synchronized greeting: "Good Morning/Afternoon/Evening [Scholar Name]!".
+  - Integrated theme persistence in [global.js](file:///c:/Users/dave/.gemini/sabi/global.js) (`applySabiTheme()`) and global styles in [global.css](file:///c:/Users/dave/.gemini/sabi/global.css) so theme state seamlessly persists across all pages.
 - **State**:
-  - Done: Wiki Roulette files deleted, UI updated, committed (`224c3bc`), and pushed to GitHub `origin/main`.
-  - Now: Working tree clean; repository fully synchronized with GitHub.
-  - Next: Awaiting user instructions.
+  - Done: PFP avatar button, Settings modal, personal info editor, and Dark/Light theme switching implemented and tested.
+  - Now: Committing and pushing changes to GitHub (`David0932473/Sabiapp`).
+  - Next: User review and validation.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - Dashboard: [index.html](file:///c:/Users/dave/.gemini/sabi/index.html)
-  - PQ Engine: [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html)
-  - Library: [library.html](file:///c:/Users/dave/.gemini/sabi/library.html)
+  - Global styles: [global.css](file:///c:/Users/dave/.gemini/sabi/global.css)
+  - Global logic: [global.js](file:///c:/Users/dave/.gemini/sabi/global.js)
+  - App logic: [app.js](file:///c:/Users/dave/.gemini/sabi/app.js)
+  - Avatar asset: [avatar.jpg](file:///c:/Users/dave/.gemini/sabi/avatar.jpg)

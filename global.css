@@ -15,6 +15,40 @@
     --zinc-100: #FAFAFA;
 }
 
+[data-theme="light"] {
+    --sabi-blue: #2563EB;
+    --sabi-blue-glow: rgba(37, 99, 235, 0.18);
+    --zinc-900: #FFFFFF;
+    --zinc-800: #F1F5F9;
+    --zinc-700: #E2E8F0;
+    --zinc-400: #64748B;
+    --zinc-100: #0F172A;
+}
+
+[data-theme="light"] body {
+    background-color: #F8FAFC;
+    color: #0F172A;
+}
+
+[data-theme="light"] .app-bottom-nav {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(226, 232, 240, 0.9);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .nav-item {
+    color: #94A3B8;
+}
+
+[data-theme="light"] .nav-item.active {
+    color: var(--sabi-blue);
+}
+
+[data-theme="light"] .nav-indicator {
+    background: rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
+}
+
 * {
     margin: 0; padding: 0; box-sizing: border-box;
     font-family: 'Outfit', sans-serif;

@@ -20,7 +20,23 @@ function initSabiDock() {
 }
 
 // Run on page load
-document.addEventListener('DOMContentLoaded', initSabiDock);
+document.addEventListener('DOMContentLoaded', () => {
+    initSabiDock();
+    applySabiTheme();
+});
 
 // Run on window resize (to keep pill aligned)
 window.addEventListener('resize', initSabiDock);
+
+// Theme Initialization & Sync
+function applySabiTheme(themeName) {
+    const theme = themeName || localStorage.getItem('sabi_theme') || 'dark';
+    if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+}
+
+// Immediate execution to prevent flash of wrong theme
+applySabiTheme();
