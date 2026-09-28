@@ -152,33 +152,6 @@
 
         .calendar-card { background: linear-gradient(to bottom right, #121212, #0A0A0A); border-color: rgba(61, 142, 255, 0.2); }
         .calendar-card .bento-icon { color: #3D8EFF; }
-        .card-badge-sync {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: rgba(61, 142, 255, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(61, 142, 255, 0.25);
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .gcal-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #10B981;
-            box-shadow: 0 0 6px #10B981;
-            animation: pulseGcalDot 2s infinite ease-in-out;
-        }
-        @keyframes pulseGcalDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
-        }
 
         .vault-card, .library-card { background: linear-gradient(to bottom right, #121212, #0A0A0A); }
         .vault-card .bento-icon, .library-card .bento-icon { color: #10B981; }
@@ -563,12 +536,9 @@
         </div>
 
         <div class="bento-card span-2 calendar-card" onclick="window.location.href='calendar.html'">
-            <div class="card-badge-sync">
-                <span class="gcal-dot"></span> Google Sync
-            </div>
             <span class="bento-icon">📅</span>
             <h3 class="bento-title">Study Calendar</h3>
-            <p class="bento-desc">Exam countdowns, study timetable & 1-click Google Calendar sync.</p>
+            <p class="bento-desc">Exam countdowns, study timetable & revision planner.</p>
         </div>
 
 

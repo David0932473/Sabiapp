@@ -10,10 +10,10 @@
   - Implement full Google Calendar-style month grid with event chips directly inside date cells.
 - **State**:
   - Done:
-    - Removed the dots and kept only the clean event count number under each day in the mini calendar.
-    - Added vibrant neon glowing effects: when it is "today", the day number pulsates with a neon accent glow; when a day is selected, it renders a solid glowing circle with luminous text; and the event count number badge illuminates.
-    - Set the Schedule & Agenda Timeline View as default to prevent duplicate side-by-side months.
-  - Now: Committing and pushing updates to GitHub.
+    - Removed redundant "Google Sync" badges from [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) and [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) (documented in [understood-errors.md](file:///c:/Users/dave/.gemini/sabi/docs/error-solving/understood-errors.md) as a general design rule for all future features).
+    - Fixed the stretched calendar day circle on mobile devices by giving `.mini-day-num` an explicit 1:1 aspect ratio (`width: 32px; height: 32px; aspect-ratio: 1 / 1; border-radius: 50%`) so it is geometrically circular on all screens.
+    - Preserved glowing day animations and clean number-only event counts in the mini calendar.
+  - Now: Committing and pushing changes to GitHub.
   - Next: User validation in browser.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
