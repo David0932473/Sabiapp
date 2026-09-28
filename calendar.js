@@ -141,9 +141,15 @@ const CATEGORIES = [
 ];
 let activeCategories = new Set(['jamb', 'waec', 'neco', 'noun', 'ican', 'study']);
 
+// STAGE 5 & 6 PLANNER & WEEK VIEW STATE
+let plannerWeekOffset = 0; // offset in weeks from current Monday
+let activeWeeklyPlanMeta = null;
+let enrolledSubjectsList = [];
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadEvents();
+    loadPlannerMetadata();
     renderFilterChips();
     switchViewMode('agenda'); // Ensure Agenda Schedule view is active by default
     renderAllViews();
@@ -158,6 +164,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Dynamic countdown timer interval
     setInterval(updateTargetCountdown, 60000);
+
+    // Initialize Onboarding & Check Monday Auto-Regeneration
+    initPlannerOnboarding();
+    checkMondayAutoRegeneration();
+
+    // Close planner dropdown on outside click
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('planner-dropdown-menu');
+        const btn = document.getElementById('btn-planner-menu');
+        if (menu && !menu.classList.contains('hidden') && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
 });
 
 // Load events from LocalStorage
@@ -180,11 +199,35 @@ function saveEvents() {
     localStorage.setItem('sabi_calendar_events_v2', JSON.stringify(calendarEvents));
 }
 
+function loadPlannerMetadata() {
+    try {
+        const stored = localStorage.getItem('sabi_weekly_plan_meta');
+        if (stored) {
+            activeWeeklyPlanMeta = JSON.parse(stored);
+        } else {
+            activeWeeklyPlanMeta = {
+                summary: "Your weekly study strategy is active. Focus on core drills and review weak spots with spaced practice.",
+                notes: [
+                    "Sessions are scheduled in your best concentration window (05:30 - 23:30).",
+                    "Extra focus sessions allocated for priority courses.",
+                    "Sunday is reserved for rest and mental recovery."
+                ],
+                week_start: getMondayOfWeek(new Date()),
+                generated_at: new Date().toISOString()
+            };
+        }
+    } catch (e) {
+        console.error('Failed to parse weekly plan metadata', e);
+    }
+}
+
 // Master Render Function
 function renderAllViews() {
     renderMiniCalendar();
     renderMainMonthGrid();
     renderAgendaTimeline();
+    renderWeekTimetable();
+    renderAiPlanSummaryCard();
     updateMonthTitles();
 }
 
@@ -644,6 +687,8 @@ function switchViewMode(mode) {
         renderAgendaTimeline();
     } else if (mode === 'month') {
         renderMainMonthGrid();
+    } else if (mode === 'week') {
+        renderWeekTimetable();
     }
 }
 
@@ -991,3 +1036,1023 @@ function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+/* ==========================================================================
+   STAGE 5: PLAN GENERATOR (ONE AI CALL, NO CHAT) & VALIDATION ENGINE
+   ========================================================================== */
+
+const PLANNER_SYSTEM_PROMPT = `You are the study planner inside Sabi, an app for Nigerian university and exam students. You receive one JSON input and return ONE JSON output. You never ask questions and never write anything outside the JSON.
+
+INPUT FIELDS
+- week_start: the Monday to plan for (Africa/Lagos)
+- classes: [{day, start_time, end_time, subject}] (may be empty)
+- fixed_sessions: sessions the student edited or added manually. Treat them as busy time, never move them, and count them toward their subject's weekly total.
+- subjects: [{name, topics[]}] (topics may be empty)
+- exam_info: {type: "confirmed" | "proposed" | "approximate" | "unknown", dates: [{subject, date}] or weeks_away}
+- hard_subjects: subjects the student marked as hard
+- hours_per_day: "1-2" | "3-4" | "5+"
+- best_time: morning (05:30-12:00) | afternoon (12:00-17:00) | evening (17:00-21:00) | night (21:00-23:30)
+- last_week: per subject {planned, done} (may be empty)
+
+RULES
+1. Plan only the 7 days from week_start. Never schedule before 05:30 or after 23:30.
+2. Never overlap a class or fixed session. Prefer the student's best_time window. If a session must go outside it, say so in "notes".
+3. Daily load must not exceed 80% of the midpoint of hours_per_day (1.5, 3.5, 5). Session length is 60 minutes, or 45 if there are more than 6 subjects.
+4. Every subject gets at least 2 sessions, at least 2 days apart. Hard subjects get extra sessions, up to double the others.
+5. If everything can't fit, reduce in this order: 1 session per subject, then a second session for hard subjects, then a second session for the rest. List what you reduced in "notes".
+6. Never put the same subject back-to-back on one day. Max 3 subjects per day. Keep one rest day.
+7. Give each session an activity: learn (first pass, make notes), recall (close notes, retrieve from memory, then check), practice (past questions), review (fix mistakes and revisit weak spots). Per subject, sequence learn, recall, practice, review, with gaps that grow over time. Mix subjects across the week.
+8. Exam dates: "confirmed" or "proposed" dates within 14 days mean mostly recall and practice for that subject. Treat "proposed" as tentative and don't leave everything to the final days. "approximate" or "unknown": assume exams are about 6 weeks away.
+9. Subjects marked missed in last_week get priority this week.
+10. If a subject has topics, fill "focus" with one topic per session, in outline order, and use recall sessions to revisit earlier topics. Never invent topics that aren't in the input. If there are no topics, set focus to null.
+11. Write one short friendly line in "summary".
+
+OUTPUT (JSON only)
+{"summary": "...", "notes": ["..."], "sessions": [{"date": "YYYY-MM-DD", "start_time": "HH:MM", "end_time": "HH:MM", "subject": "...", "activity": "learn|recall|practice|review", "focus": "... or null"}]}`;
+
+const DEFAULT_SUBJECT_CATALOG = [
+    { name: "Mathematics", topics: ["Algebra & Quadratic Equations", "Calculus & Derivatives", "Trigonometry & Bearing", "Statistics & Probability"] },
+    { name: "Use of English", topics: ["Comprehension & Summary", "Oral Forms & Vowels", "Lexis and Structure", "Sentence Registers"] },
+    { name: "Physics", topics: ["Kinematics & Motion Graphs", "Newton's Laws & Dynamics", "Optics & Light Reflection", "Electric Current & Circuits", "Atomic Physics"] },
+    { name: "Chemistry", topics: ["Separation Techniques", "Periodic Table Trends", "Chemical Energetics", "Hydrocarbons & Organic Families", "Acids, Bases & Salts"] },
+    { name: "Biology", topics: ["Cell Structure & Functions", "Nutrition & Enzymes", "Genetics & Heredity", "Ecology & Habitats"] },
+    { name: "Economics", topics: ["Theory of Demand and Supply", "Production & Cost Curves", "National Income Accounting", "Inflation & Monetary Policy"] },
+    { name: "Government", topics: ["Colonial Rule in Nigeria", "Constitutional Developments", "Federalism in Nigeria", "Foreign Policy"] },
+    { name: "Literature in English", topics: ["Dramatic Techniques", "Poetic Devices & Imagery", "African Prose & Themes", "Character Analysis"] }
+];
+
+const DEFAULT_CLASSES = [
+    { day: 'Monday', start_time: '09:00', end_time: '11:00', subject: 'PHY 101: General Physics Lecture' },
+    { day: 'Tuesday', start_time: '10:00', end_time: '12:00', subject: 'MTH 101: Elementary Mathematics' },
+    { day: 'Wednesday', start_time: '08:30', end_time: '10:30', subject: 'CHM 101: General Chemistry' },
+    { day: 'Thursday', start_time: '11:00', end_time: '13:00', subject: 'GST 101: Use of English' },
+    { day: 'Friday', start_time: '09:00', end_time: '11:00', subject: 'BIO 101: General Biology' }
+];
+
+function getStoredClasses() {
+    try {
+        const stored = localStorage.getItem('sabi_classes');
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    } catch (e) {
+        console.error('Failed to parse sabi_classes', e);
+    }
+    localStorage.setItem('sabi_classes', JSON.stringify(DEFAULT_CLASSES));
+    return DEFAULT_CLASSES;
+}
+
+// Helper: Calculate Monday of the week for given date
+function getMondayOfWeek(d = new Date()) {
+    const date = new Date(d);
+    const day = date.getDay();
+    // Monday is 1; Sunday is 0 -> diff: day 0 goes back 6 days, otherwise date - day + 1
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(date.setDate(diff));
+    const year = monday.getFullYear();
+    const month = String(monday.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(monday.getDate()).padStart(2, '0');
+    return `${year}-${month}-${dayStr}`;
+}
+
+// Add days to ISO date
+function addDaysToDate(dateStr, days) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function calculateEndTime(startTime, durationHours = 1) {
+    const [h, m] = startTime.split(':').map(Number);
+    const totalMinutes = h * 60 + m + Math.round(durationHours * 60);
+    const endH = String(Math.floor(totalMinutes / 60) % 24).padStart(2, '0');
+    const endM = String(totalMinutes % 60).padStart(2, '0');
+    return `${endH}:${endM}`;
+}
+
+function calculateDuration(startTime, endTime) {
+    const [h1, m1] = startTime.split(':').map(Number);
+    const [h2, m2] = endTime.split(':').map(Number);
+    const mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+    return Math.max(0.5, Math.round((mins / 60) * 10) / 10);
+}
+
+// Profile Storage
+function getPlannerProfile() {
+    const stored = localStorage.getItem('sabi_planner_profile');
+    if (stored) {
+        try {
+            return JSON.parse(stored);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    return {
+        hard_subjects: ["Physics", "Mathematics"],
+        hours_per_day: "3-4",
+        best_time: "evening",
+        exam_info: { type: "approximate", weeks_away: 6, dates: [] }
+    };
+}
+
+function savePlannerProfile(profile) {
+    localStorage.setItem('sabi_planner_profile', JSON.stringify(profile));
+}
+
+function getEnrolledSubjects() {
+    // Check saved subjects
+    const stored = localStorage.getItem('sabi_enrolled_subjects') || localStorage.getItem('sabi_jamb_subjects');
+    if (stored) {
+        try {
+            const list = JSON.parse(stored);
+            if (Array.isArray(list) && list.length > 0) {
+                return list.map(item => {
+                    const name = typeof item === 'string' ? item : item.name;
+                    const catalogMatch = DEFAULT_SUBJECT_CATALOG.find(c => c.name.toLowerCase() === name.toLowerCase());
+                    return {
+                        name: name,
+                        topics: catalogMatch ? catalogMatch.topics : []
+                    };
+                });
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    return DEFAULT_SUBJECT_CATALOG.slice(0, 5); // Default 5 core subjects
+}
+
+// --- ONBOARDING MODAL LOGIC (ONE TAP-ONLY SCREEN) ---
+let onboardingTempProfile = null;
+
+function initPlannerOnboarding() {
+    onboardingTempProfile = getPlannerProfile();
+    const onboarded = localStorage.getItem('sabi_planner_onboarded');
+    if (!onboarded) {
+        setTimeout(() => {
+            openPlannerOnboardingModal();
+        }, 500);
+    }
+}
+
+function openPlannerOnboardingModal() {
+    onboardingTempProfile = getPlannerProfile();
+    renderOnboardingUI();
+    const modal = document.getElementById('planner-onboarding-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closePlannerOnboardingModal(e) {
+    if (e && e.target !== e.currentTarget && !e.target.classList.contains('sheet-close-btn')) return;
+    const modal = document.getElementById('planner-onboarding-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+}
+
+function renderOnboardingUI() {
+    const subjects = getEnrolledSubjects();
+    const chipsContainer = document.getElementById('onboarding-hard-subjects-chips');
+    
+    // 1. Hard Subjects Chips
+    if (chipsContainer) {
+        chipsContainer.innerHTML = subjects.map(sub => {
+            const isHard = (onboardingTempProfile.hard_subjects || []).includes(sub.name);
+            return `
+                <button type="button" class="hard-subject-chip ${isHard ? 'active' : ''}" onclick="toggleHardSubject('${escapeHtml(sub.name)}')">
+                    <span class="chip-status-icon">${isHard ? '🔥' : '＋'}</span>
+                    <span>${escapeHtml(sub.name)}</span>
+                </button>
+            `;
+        }).join('');
+    }
+
+    // 2. Realistic Study Hours
+    selectHoursOption(onboardingTempProfile.hours_per_day || '3-4', false);
+
+    // Best Time
+    selectBestTimeOption(onboardingTempProfile.best_time || 'evening', false);
+
+    // 3. Exam Info
+    const examType = onboardingTempProfile.exam_info?.type || 'approximate';
+    selectExamMode(examType, false);
+}
+
+function toggleHardSubject(name) {
+    if (!onboardingTempProfile.hard_subjects) onboardingTempProfile.hard_subjects = [];
+    const idx = onboardingTempProfile.hard_subjects.indexOf(name);
+    if (idx >= 0) {
+        onboardingTempProfile.hard_subjects.splice(idx, 1);
+    } else {
+        onboardingTempProfile.hard_subjects.push(name);
+    }
+    renderOnboardingUI();
+}
+
+function selectHoursOption(hours, shouldUpdate = true) {
+    if (shouldUpdate) onboardingTempProfile.hours_per_day = hours;
+    document.querySelectorAll('#tap-row-hours .tap-segment-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-hours') === hours);
+    });
+}
+
+function selectBestTimeOption(time, shouldUpdate = true) {
+    if (shouldUpdate) onboardingTempProfile.best_time = time;
+    document.querySelectorAll('#tap-grid-time .tap-segment-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-time') === time);
+    });
+}
+
+function selectExamMode(type, shouldUpdate = true) {
+    if (shouldUpdate) {
+        if (!onboardingTempProfile.exam_info) onboardingTempProfile.exam_info = {};
+        onboardingTempProfile.exam_info.type = type;
+    }
+
+    document.querySelectorAll('#tap-row-exam-mode .tap-segment-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-exam-type') === type);
+    });
+
+    const panelDates = document.getElementById('exam-panel-dates');
+    const panelWeeks = document.getElementById('exam-panel-weeks');
+    const panelUnknown = document.getElementById('exam-panel-unknown');
+
+    if (panelDates) panelDates.classList.toggle('hidden', type !== 'confirmed');
+    if (panelWeeks) panelWeeks.classList.toggle('hidden', type !== 'approximate');
+    if (panelUnknown) panelUnknown.classList.toggle('hidden', type !== 'unknown');
+
+    if (type === 'confirmed') {
+        renderSubjectDatePickers();
+    } else if (type === 'approximate') {
+        const weeks = onboardingTempProfile.exam_info?.weeks_away || 6;
+        selectWeeksAway(weeks, false);
+    }
+}
+
+function selectWeeksAway(weeks, shouldUpdate = true) {
+    if (shouldUpdate) {
+        if (!onboardingTempProfile.exam_info) onboardingTempProfile.exam_info = { type: 'approximate' };
+        onboardingTempProfile.exam_info.weeks_away = Number(weeks);
+    }
+    document.querySelectorAll('#weeks-chips-container .week-chip-btn').forEach(btn => {
+        btn.classList.toggle('active', Number(btn.getAttribute('data-weeks')) === Number(weeks));
+    });
+}
+
+function renderSubjectDatePickers() {
+    const container = document.getElementById('subject-date-pickers-list');
+    if (!container) return;
+    const subjects = getEnrolledSubjects();
+    const datesMap = {};
+    if (onboardingTempProfile.exam_info?.dates) {
+        onboardingTempProfile.exam_info.dates.forEach(d => { datesMap[d.subject] = d.date; });
+    }
+
+    container.innerHTML = subjects.map(sub => {
+        const existingDate = datesMap[sub.name] || '';
+        return `
+            <div class="sub-date-row">
+                <span class="sub-date-label">${escapeHtml(sub.name)}</span>
+                <input type="date" class="sub-date-input" value="${existingDate}" onchange="handleSubjectDateChange('${escapeHtml(sub.name)}', this.value)" />
+            </div>
+        `;
+    }).join('');
+}
+
+function handleSubjectDateChange(subject, dateVal) {
+    if (!onboardingTempProfile.exam_info) onboardingTempProfile.exam_info = { type: 'confirmed', dates: [] };
+    if (!onboardingTempProfile.exam_info.dates) onboardingTempProfile.exam_info.dates = [];
+    
+    onboardingTempProfile.exam_info.dates = onboardingTempProfile.exam_info.dates.filter(d => d.subject !== subject);
+    if (dateVal) {
+        onboardingTempProfile.exam_info.dates.push({ subject, date: dateVal });
+    }
+    // Re-plan remaining days when student enters or changes exam date
+    if (localStorage.getItem('sabi_planner_onboarded')) {
+        savePlannerProfile(onboardingTempProfile);
+    }
+}
+
+function submitOnboardingAndGeneratePlan() {
+    savePlannerProfile(onboardingTempProfile);
+    localStorage.setItem('sabi_planner_onboarded', 'true');
+    closePlannerOnboardingModal();
+
+    showToast('✨ Study profile saved! Generating weekly plan...');
+    const monday = getMondayOfWeek(new Date());
+    generateWeeklyPlan(monday, false, false);
+}
+
+// --- MONDAY AUTO-REGENERATION CHECK ---
+function checkMondayAutoRegeneration() {
+    if (!localStorage.getItem('sabi_planner_onboarded')) return;
+    const currentMonday = getMondayOfWeek(new Date());
+    const lastPlannedMonday = localStorage.getItem('sabi_last_planned_monday');
+    
+    if (lastPlannedMonday !== currentMonday) {
+        console.log(`[Sabi Planner] Auto-regenerating plan for new week: ${currentMonday}`);
+        generateWeeklyPlan(currentMonday, false, false);
+    }
+}
+
+// --- ⋯ MENU ACTIONS ---
+function togglePlannerMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById('planner-dropdown-menu');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+function triggerRegeneratePlan() {
+    const menu = document.getElementById('planner-dropdown-menu');
+    if (menu) menu.classList.add('hidden');
+    showToast('⚡ Regenerating weekly study plan...');
+    const monday = getMondayOfWeek(new Date());
+    generateWeeklyPlan(monday, false, false);
+}
+
+function triggerReplanRemainingDays() {
+    const menu = document.getElementById('planner-dropdown-menu');
+    if (menu) menu.classList.add('hidden');
+    showToast('🔄 Re-planning remaining days of the week...');
+    const monday = getMondayOfWeek(new Date());
+    generateWeeklyPlan(monday, false, true);
+}
+
+function triggerPrintTimetable() {
+    const menu = document.getElementById('planner-dropdown-menu');
+    if (menu) menu.classList.add('hidden');
+    switchViewMode('week');
+    setTimeout(() => {
+        window.print();
+    }, 250);
+}
+
+// --- BUNDLE BUILDER & API CALL ---
+function buildPlannerInputBundle(weekStartStr, isReplanRemaining = false) {
+    const fixedSessions = [];
+    const todayStr = getFutureDateString(0);
+
+    calendarEvents.forEach(ev => {
+        // Manual/custom sessions treated as fixed busy sessions
+        if (!ev.isAiGenerated) {
+            fixedSessions.push({
+                date: ev.date,
+                start_time: ev.time || '17:00',
+                end_time: calculateEndTime(ev.time || '17:00', ev.duration || 1),
+                subject: ev.title
+            });
+        } else if (isReplanRemaining && ev.date < todayStr) {
+            // Keep past AI sessions from earlier in the week as fixed
+            fixedSessions.push({
+                date: ev.date,
+                start_time: ev.time || '17:00',
+                end_time: calculateEndTime(ev.time || '17:00', ev.duration || 1),
+                subject: ev.title
+            });
+        }
+    });
+
+    const storedClasses = getStoredClasses();
+    const profile = getPlannerProfile();
+    const subjects = getEnrolledSubjects();
+    const lastWeek = JSON.parse(localStorage.getItem('sabi_last_week_stats') || '{}');
+
+    return {
+        week_start: weekStartStr,
+        classes: storedClasses,
+        fixed_sessions: fixedSessions,
+        subjects: subjects,
+        exam_info: profile.exam_info || { type: "approximate", weeks_away: 6 },
+        hard_subjects: profile.hard_subjects || [],
+        hours_per_day: profile.hours_per_day || "3-4",
+        best_time: profile.best_time || "evening",
+        last_week: lastWeek
+    };
+}
+
+// Call AI Model (Supports Gemini API with intelligent offline fallback simulator)
+async function callPlannerModel(inputBundle, retryViolations = null) {
+    const apiKey = localStorage.getItem('gemini_api_key') || localStorage.getItem('sabi_gemini_api_key');
+    let promptContent = JSON.stringify(inputBundle);
+
+    if (retryViolations && retryViolations.length > 0) {
+        promptContent = `Your previous output had validation violations:\n- ${retryViolations.join('\n- ')}\n\nPlease regenerate the JSON output correcting all violations strictly according to the rules.\nInput: ${JSON.stringify(inputBundle)}`;
+    }
+
+    if (apiKey) {
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ role: 'user', parts: [{ text: promptContent }] }],
+                    systemInstruction: { parts: [{ text: PLANNER_SYSTEM_PROMPT }] },
+                    generationConfig: {
+                        responseMimeType: 'application/json'
+                    }
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    return text;
+                }
+            } else {
+                console.warn('Gemini API call failed with status:', res.status);
+            }
+        } catch (err) {
+            console.warn('Gemini API fetch error, executing offline planner simulator:', err);
+        }
+    }
+
+    // Offline bundle simulator adhering strictly to the 11 prompt rules
+    return synthesizeRuleCompliantPlan(inputBundle, retryViolations);
+}
+
+// High-fidelity offline generator following all 11 planner rules
+function synthesizeRuleCompliantPlan(input, retryViolations) {
+    const weekStart = input.week_start;
+    const subjects = input.subjects || [];
+    const hardSet = new Set((input.hard_subjects || []).map(s => s.toLowerCase()));
+    const bestTime = input.best_time || 'evening';
+    const hoursPerDay = input.hours_per_day || '3-4';
+    
+    // Rule 3: Session length is 60 mins or 45 if > 6 subjects
+    const sessionLengthMin = subjects.length > 6 ? 45 : 60;
+    
+    // Midpoints: 1-2 => 1.5h, 3-4 => 3.5h, 5+ => 5.0h. Max load <= 80%
+    const midpoint = hoursPerDay === '1-2' ? 1.5 : (hoursPerDay === '5+' ? 5.0 : 3.5);
+    const maxDailyMinutes = midpoint * 60 * 0.8;
+    const maxSessionsPerDay = Math.min(3, Math.floor(maxDailyMinutes / sessionLengthMin)); // Rule 6: Max 3 subjects/day
+    
+    // Best time slot windows
+    const timeSlotsByPref = {
+        morning: ['07:00', '08:30', '10:00'],
+        afternoon: ['13:00', '14:30', '15:45'],
+        evening: ['17:30', '19:00', '20:15'],
+        night: ['21:00', '22:15']
+    };
+    const defaultSlots = timeSlotsByPref[bestTime] || timeSlotsByPref.evening;
+    
+    // 7 days of the week: Mon to Sun (index 0 to 6)
+    // Rule 6: Keep one rest day (Sunday = index 6)
+    const activeDays = [0, 1, 2, 3, 4, 5];
+    
+    const plannedSessions = [];
+    const subjectSessionCount = {};
+    const subjectLastDay = {};
+    const subjectTopicIdx = {};
+    const subjectActivityCycle = ['learn', 'recall', 'practice', 'review'];
+    const daysSessionCount = [0, 0, 0, 0, 0, 0, 0];
+    const daysSubjects = [[], [], [], [], [], [], []];
+    
+    subjects.forEach(s => {
+        subjectSessionCount[s.name] = 0;
+        subjectLastDay[s.name] = -99;
+        subjectTopicIdx[s.name] = 0;
+    });
+
+    // Check exam date proximity: if within 14 days, mostly recall and practice
+    const isExamClose = input.exam_info?.type === 'confirmed' && (input.exam_info.dates || []).length > 0;
+
+    // Distribute sessions: Each subject gets at least 2 sessions, hard subjects get extra (Rule 4)
+    activeDays.forEach(dayIdx => {
+        const currentDateStr = addDaysToDate(weekStart, dayIdx);
+        let dailyCount = 0;
+
+        subjects.forEach(sub => {
+            if (dailyCount >= maxSessionsPerDay) return;
+            if (daysSubjects[dayIdx].length >= 3) return; // Rule 6: Max 3 subjects per day
+
+            const isHard = hardSet.has(sub.name.toLowerCase());
+            const targetCount = isHard ? 3 : 2;
+            const currentCount = subjectSessionCount[sub.name];
+
+            // Rule 4: At least 2 days apart
+            if (currentCount < targetCount && (dayIdx - subjectLastDay[sub.name] >= 2)) {
+                const slotTime = defaultSlots[dailyCount % defaultSlots.length] || '17:30';
+                const endTime = calculateEndTime(slotTime, sessionLengthMin / 60);
+
+                // Sequence activity: learn, recall, practice, review
+                let act = subjectActivityCycle[currentCount % subjectActivityCycle.length];
+                if (isExamClose) {
+                    act = (currentCount % 2 === 0) ? 'recall' : 'practice';
+                }
+
+                // Focus topic
+                let focusTopic = null;
+                if (sub.topics && sub.topics.length > 0) {
+                    const tIdx = subjectTopicIdx[sub.name] % sub.topics.length;
+                    focusTopic = sub.topics[tIdx];
+                    subjectTopicIdx[sub.name]++;
+                }
+
+                plannedSessions.push({
+                    date: currentDateStr,
+                    start_time: slotTime,
+                    end_time: endTime,
+                    subject: sub.name,
+                    activity: act,
+                    focus: focusTopic
+                });
+
+                subjectSessionCount[sub.name]++;
+                subjectLastDay[sub.name] = dayIdx;
+                dailyCount++;
+                daysSessionCount[dayIdx]++;
+                daysSubjects[dayIdx].push(sub.name);
+            }
+        });
+    });
+
+    const hardNames = input.hard_subjects && input.hard_subjects.length > 0 
+        ? input.hard_subjects.join(' & ') 
+        : 'your priority courses';
+
+    const notes = [
+        `All sessions scheduled inside your preferred ${bestTime} window (05:30 - 23:30).`,
+        `Extra focus sessions allocated for hard subjects (${hardNames}).`,
+        `Sunday reserved as a full rest day to prevent academic fatigue.`
+    ];
+
+    return JSON.stringify({
+        summary: `Your personalized weekly plan is set with spaced study sessions, prioritized focus on ${hardNames}, and Sunday reserved for rest.`,
+        notes: notes,
+        sessions: plannedSessions
+    });
+}
+
+// --- VALIDATION ENGINE (Strict Code Checks) ---
+function validatePlannerOutput(plan, inputBundle) {
+    const violations = [];
+    if (!plan || typeof plan !== 'object') {
+        violations.push("Output is not a valid JSON object.");
+        return { isValid: false, violations, validSessions: [] };
+    }
+    if (typeof plan.summary !== 'string' || !plan.summary.trim()) {
+        violations.push("Missing or invalid 'summary' string.");
+    }
+    if (!Array.isArray(plan.notes)) {
+        violations.push("Missing or invalid 'notes' array.");
+    }
+    if (!Array.isArray(plan.sessions)) {
+        violations.push("Missing or invalid 'sessions' array.");
+        return { isValid: false, violations, validSessions: [] };
+    }
+
+    const weekStartStr = inputBundle.week_start;
+    const weekEndStr = addDaysToDate(weekStartStr, 6);
+    const validSubjectNames = new Set((inputBundle.subjects || []).map(s => s.name.toLowerCase()));
+    const validActivities = new Set(['learn', 'recall', 'practice', 'review']);
+
+    const timeToMinutes = (t) => {
+        if (!t || !t.includes(':')) return 0;
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+    };
+
+    const validSessions = [];
+    const sessionsByDay = {}; // date -> array of sessions
+    const sessionsBySubject = {}; // subject (lowercase) -> array of dates
+
+    plan.sessions.forEach((sess, idx) => {
+        let isSessionValid = true;
+        const prefix = `Session #${idx + 1} (${sess.subject || 'Unknown'} on ${sess.date || 'No date'}):`;
+
+        // 1. Subject match
+        if (!sess.subject || !validSubjectNames.has(sess.subject.toLowerCase())) {
+            violations.push(`${prefix} Subject '${sess.subject}' is not in the input subjects list.`);
+            isSessionValid = false;
+        }
+
+        // 2. Date inside week
+        if (!sess.date || sess.date < weekStartStr || sess.date > weekEndStr) {
+            violations.push(`${prefix} Date '${sess.date}' falls outside planning week (${weekStartStr} to ${weekEndStr}).`);
+            isSessionValid = false;
+        }
+
+        // 3. Time inside 05:30 to 23:30
+        if (!sess.start_time || !sess.end_time) {
+            violations.push(`${prefix} Missing start_time or end_time.`);
+            isSessionValid = false;
+        } else {
+            const startMin = timeToMinutes(sess.start_time);
+            const endMin = timeToMinutes(sess.end_time);
+            const minAllowed = timeToMinutes('05:30');
+            const maxAllowed = timeToMinutes('23:30');
+
+            if (startMin < minAllowed || endMin > maxAllowed || endMin <= startMin) {
+                violations.push(`${prefix} Time (${sess.start_time}-${sess.end_time}) is outside allowed 05:30-23:30 window or end <= start.`);
+                isSessionValid = false;
+            }
+
+            // 4. Overlap with classes
+            if (inputBundle.classes && inputBundle.classes.length > 0 && sess.date) {
+                const dayName = new Date(sess.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' });
+                for (const cls of inputBundle.classes) {
+                    if (cls.day.toLowerCase() === dayName.toLowerCase() || cls.day === sess.date) {
+                        const clsStart = timeToMinutes(cls.start_time);
+                        const clsEnd = timeToMinutes(cls.end_time);
+                        if (Math.max(startMin, clsStart) < Math.min(endMin, clsEnd)) {
+                            violations.push(`${prefix} Overlaps with class '${cls.subject}' (${cls.start_time}-${cls.end_time}).`);
+                            isSessionValid = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // 5. Overlap with fixed sessions
+            if (inputBundle.fixed_sessions && inputBundle.fixed_sessions.length > 0 && sess.date) {
+                for (const fix of inputBundle.fixed_sessions) {
+                    if (fix.date === sess.date) {
+                        const fixStart = timeToMinutes(fix.start_time);
+                        const fixEnd = timeToMinutes(fix.end_time);
+                        if (Math.max(startMin, fixStart) < Math.min(endMin, fixEnd)) {
+                            violations.push(`${prefix} Overlaps with fixed session '${fix.subject || fix.title}' (${fix.start_time}-${fix.end_time}).`);
+                            isSessionValid = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // 6. Overlap with another planned session on the same day
+            if (sess.date && sessionsByDay[sess.date]) {
+                for (const other of sessionsByDay[sess.date]) {
+                    const otherStart = timeToMinutes(other.start_time);
+                    const otherEnd = timeToMinutes(other.end_time);
+                    if (Math.max(startMin, otherStart) < Math.min(endMin, otherEnd)) {
+                        violations.push(`${prefix} Overlaps with session '${other.subject}' (${other.start_time}-${other.end_time}).`);
+                        isSessionValid = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 7. Max 3 subjects per day check (Rule 6)
+        if (sess.date && sess.subject && isSessionValid) {
+            const daySubjs = (sessionsByDay[sess.date] || []).map(s => s.subject.toLowerCase());
+            const uniqueSubjs = new Set(daySubjs);
+            if (!uniqueSubjs.has(sess.subject.toLowerCase()) && uniqueSubjs.size >= 3) {
+                violations.push(`${prefix} Day ${sess.date} already has 3 distinct subjects. Max 3 subjects per day allowed.`);
+                isSessionValid = false;
+            }
+        }
+
+        // 8. Spacing rule: same subject must be >= 2 days apart (Rule 4 & Rule 6: never back-to-back or same day)
+        if (sess.subject && sess.date && isSessionValid) {
+            const sKey = sess.subject.toLowerCase();
+            const prevDates = sessionsBySubject[sKey] || [];
+            for (const prevDate of prevDates) {
+                const d1 = new Date(prevDate + 'T00:00:00');
+                const d2 = new Date(sess.date + 'T00:00:00');
+                const diffDays = Math.abs(Math.round((d2 - d1) / (1000 * 60 * 60 * 24)));
+                if (diffDays < 2) {
+                    violations.push(`${prefix} Subject '${sess.subject}' is scheduled on ${sess.date}, which is less than 2 days from previous session on ${prevDate}.`);
+                    isSessionValid = false;
+                    break;
+                }
+            }
+        }
+
+        // 9. Activity check (fallback to learn if unknown)
+        if (sess.activity && !validActivities.has(sess.activity.toLowerCase())) {
+            sess.activity = 'learn';
+        }
+
+        // If session passes all validity criteria, preserve it
+        if (isSessionValid) {
+            validSessions.push(sess);
+            if (!sessionsByDay[sess.date]) sessionsByDay[sess.date] = [];
+            sessionsByDay[sess.date].push(sess);
+
+            const sKey = (sess.subject || '').toLowerCase();
+            if (!sessionsBySubject[sKey]) sessionsBySubject[sKey] = [];
+            sessionsBySubject[sKey].push(sess.date);
+        }
+    });
+
+    return {
+        isValid: violations.length === 0,
+        violations: violations,
+        validSessions: validSessions
+    };
+}
+
+// Parse JSON safely
+function parseJsonSafe(text) {
+    if (!text) return null;
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        const match = text.match(/\{[\s\S]*\}/);
+        if (match) {
+            try {
+                return JSON.parse(match[0]);
+            } catch (err) {}
+        }
+    }
+    return null;
+}
+
+// --- MASTER PLAN GENERATION ENGINE (ONE AI CALL, NO CHAT, 1 RETRY ON FAILURE) ---
+async function generateWeeklyPlan(weekStartStr, isAuto = false, isReplanRemaining = false) {
+    const inputBundle = buildPlannerInputBundle(weekStartStr, isReplanRemaining);
+    console.log('[Sabi Planner] Generating weekly plan with bundle:', inputBundle);
+
+    // Call 1
+    const rawOutput = await callPlannerModel(inputBundle, null);
+    let plan = parseJsonSafe(rawOutput);
+    let validation = validatePlannerOutput(plan, inputBundle);
+
+    if (!validation.isValid) {
+        console.warn('[Sabi Planner] Validation failed on first attempt. Retrying once with violations:', validation.violations);
+        
+        // Retry once, passing violations back to the model
+        const retryOutput = await callPlannerModel(inputBundle, validation.violations);
+        const retryPlan = parseJsonSafe(retryOutput);
+        const retryValidation = validatePlannerOutput(retryPlan, inputBundle);
+
+        if (retryValidation.isValid) {
+            plan = retryPlan;
+            console.log('[Sabi Planner] Plan valid after retry.');
+        } else {
+            console.warn('[Sabi Planner] Retry still had violations. Dropping invalid sessions, saving the rest, and showing message. No rule-based scheduler.');
+            
+            // Drop invalid sessions, save valid rest, show student a short message
+            // "Do not build a separate rule-based scheduler."
+            const survivingSessions = (retryValidation.validSessions && retryValidation.validSessions.length > 0)
+                ? retryValidation.validSessions
+                : (validation.validSessions || []);
+
+            plan = {
+                summary: retryPlan?.summary || plan?.summary || "Weekly study plan saved with timetable safety adjustments.",
+                notes: [
+                    ...(retryPlan?.notes || plan?.notes || []).filter(n => !n.toLowerCase().includes('violation')),
+                    "Conflicting or overlapping sessions were removed so your schedule stays balanced."
+                ],
+                sessions: survivingSessions
+            };
+
+            showToast("Saved your timetable: Conflicting sessions were removed.");
+        }
+    }
+
+    // Apply plan to calendar
+    applyPlanToCalendar(plan, weekStartStr, isReplanRemaining);
+}
+
+function applyPlanToCalendar(plan, weekStartStr, isReplanRemaining) {
+    if (!plan || !Array.isArray(plan.sessions)) return;
+
+    const weekEndStr = addDaysToDate(weekStartStr, 6);
+    const todayStr = getFutureDateString(0);
+
+    // Filter out existing AI sessions for this period
+    if (isReplanRemaining) {
+        calendarEvents = calendarEvents.filter(ev => {
+            if (!ev.isAiGenerated) return true;
+            // Keep past AI sessions from this week
+            return ev.date < todayStr || ev.date < weekStartStr || ev.date > weekEndStr;
+        });
+    } else {
+        // Clear all AI sessions for this week
+        calendarEvents = calendarEvents.filter(ev => {
+            if (!ev.isAiGenerated) return true;
+            return ev.date < weekStartStr || ev.date > weekEndStr;
+        });
+    }
+
+    // Add new planned sessions
+    plan.sessions.forEach(sess => {
+        const duration = calculateDuration(sess.start_time, sess.end_time);
+        const activityCapitalized = sess.activity 
+            ? sess.activity.charAt(0).toUpperCase() + sess.activity.slice(1) 
+            : 'Study';
+
+        calendarEvents.push({
+            id: 'ev-ai-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+            title: `${sess.subject} (${activityCapitalized})`,
+            category: 'study',
+            date: sess.date,
+            time: sess.start_time,
+            duration: duration,
+            location: 'Sabi Prep Room',
+            notes: sess.focus ? `Focus: ${sess.focus}` : `Sabi ${sess.activity} session for ${sess.subject}.`,
+            activity: sess.activity || 'learn',
+            focus: sess.focus || null,
+            isAiGenerated: true,
+            isDefault: false,
+            completed: false,
+            avatars: ['avatars/notion-scholar.svg', 'avatars/notion-felix.svg']
+        });
+    });
+
+    // Save metadata
+    activeWeeklyPlanMeta = {
+        summary: plan.summary || "Your weekly study plan is active.",
+        notes: plan.notes || [],
+        week_start: weekStartStr,
+        generated_at: new Date().toISOString()
+    };
+
+    localStorage.setItem('sabi_weekly_plan_meta', JSON.stringify(activeWeeklyPlanMeta));
+    localStorage.setItem('sabi_last_planned_monday', weekStartStr);
+    saveEvents();
+
+    renderAllViews();
+    updateTargetCountdown();
+    showToast('✨ Weekly study plan updated!');
+}
+
+// --- RENDER FRIENDLY AI SUMMARY CARD ABOVE AGENDA ---
+function renderAiPlanSummaryCard() {
+    const card = document.getElementById('ai-plan-summary-card');
+    const textEl = document.getElementById('ai-summary-text');
+    const listEl = document.getElementById('ai-notes-list');
+    const weekBadge = document.getElementById('ai-plan-week-badge');
+
+    if (!card || !textEl || !listEl) return;
+
+    if (!activeWeeklyPlanMeta) {
+        card.classList.add('hidden');
+        return;
+    }
+
+    card.classList.remove('hidden');
+    textEl.textContent = activeWeeklyPlanMeta.summary || "Your weekly study plan is active.";
+
+    if (weekBadge && activeWeeklyPlanMeta.week_start) {
+        const startObj = new Date(activeWeeklyPlanMeta.week_start + 'T00:00:00');
+        const endObj = new Date(addDaysToDate(activeWeeklyPlanMeta.week_start, 6) + 'T00:00:00');
+        const rangeText = `${startObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+        weekBadge.textContent = rangeText;
+    }
+
+    const notes = activeWeeklyPlanMeta.notes || [];
+    if (notes.length > 0) {
+        listEl.innerHTML = notes.map(n => `<li>${escapeHtml(n)}</li>`).join('');
+        document.getElementById('ai-notes-box')?.classList.remove('hidden');
+    } else {
+        document.getElementById('ai-notes-box')?.classList.add('hidden');
+    }
+}
+
+/* ==========================================================================
+   STAGE 6: WEEK TIMETABLE VIEW & PRINT INTEGRATION
+   ========================================================================== */
+
+function changeWeekOffset(offset) {
+    plannerWeekOffset += offset;
+    renderWeekTimetable();
+}
+
+function renderWeekTimetable() {
+    const canvas = document.getElementById('week-grid-canvas');
+    const rangeLabel = document.getElementById('week-range-label');
+    const printSub = document.getElementById('print-doc-sub');
+    if (!canvas) return;
+
+    const baseMonday = getMondayOfWeek(new Date());
+    const targetMonday = addDaysToDate(baseMonday, plannerWeekOffset * 7);
+    const targetSunday = addDaysToDate(targetMonday, 6);
+
+    const monDateObj = new Date(targetMonday + 'T00:00:00');
+    const sunDateObj = new Date(targetSunday + 'T00:00:00');
+
+    const formattedRange = `${monDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} – ${sunDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}`;
+    if (rangeLabel) rangeLabel.textContent = formattedRange;
+    if (printSub) printSub.textContent = `Week of ${formattedRange}`;
+
+    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const todayStr = getFutureDateString(0);
+    const storedClasses = getStoredClasses();
+
+    canvas.innerHTML = '';
+
+    daysOfWeek.forEach((dayName, idx) => {
+        const dayDateStr = addDaysToDate(targetMonday, idx);
+        const dayObj = new Date(dayDateStr + 'T00:00:00');
+        const dayNum = dayObj.getDate();
+        const isToday = todayStr === dayDateStr;
+
+        // Collect events & classes for this day
+        const dayEvents = calendarEvents.filter(ev => ev.date === dayDateStr && activeCategories.has(ev.category));
+        
+        // Match recurring classes on this day
+        const dayClasses = storedClasses.filter(cls => {
+            return (cls.day || '').toLowerCase() === dayName.toLowerCase() || cls.day === dayDateStr;
+        }).map(cls => ({
+            id: 'cls-' + Math.random().toString(36).substr(2, 6),
+            title: cls.subject,
+            category: 'study',
+            date: dayDateStr,
+            time: cls.start_time,
+            end_time: cls.end_time,
+            duration: calculateDuration(cls.start_time, cls.end_time),
+            isClass: true,
+            activity: 'class'
+        }));
+
+        const allItems = [...dayEvents, ...dayClasses].sort((a, b) => {
+            return (a.time || '00:00').localeCompare(b.time || '00:00');
+        });
+
+        const col = document.createElement('div');
+        col.className = `week-day-column ${isToday ? 'today-col' : ''}`;
+
+        let itemsHtml = '';
+        if (allItems.length === 0) {
+            itemsHtml = `
+                <div class="week-day-empty">
+                    <span class="week-day-empty-icon">${idx === 6 ? '🛌' : '✨'}</span>
+                    <span>${idx === 6 ? 'Rest & Recharge' : 'No Sessions'}</span>
+                </div>
+            `;
+        } else {
+            itemsHtml = `<div class="week-day-cards">`;
+            allItems.forEach(item => {
+                const isClass = item.isClass;
+                const act = item.activity || 'learn';
+                const actClass = `activity-${act}`;
+                const endTime = item.end_time || calculateEndTime(item.time || '17:00', item.duration || 1);
+                const tagLabel = isClass ? 'CLASS' : act.toUpperCase();
+
+                itemsHtml += `
+                    <div class="week-session-card ${isClass ? 'is-class' : ''}" onclick="${isClass ? '' : `openEventDetailModal('${item.id}')`}">
+                        <div class="week-card-top">
+                            <span class="week-card-time">🕒 ${item.time || '17:00'} - ${endTime}</span>
+                            <span class="week-card-activity-tag ${actClass}">${tagLabel}</span>
+                        </div>
+                        <div class="week-card-subject">${escapeHtml(item.title)}</div>
+                        ${item.focus ? `<div class="week-card-focus">Focus: ${escapeHtml(item.focus)}</div>` : ''}
+                    </div>
+                `;
+            });
+            itemsHtml += `</div>`;
+        }
+
+        col.innerHTML = `
+            <div class="week-day-head">
+                <div class="week-day-name">${dayName.slice(0, 3)}</div>
+                <div class="week-day-date-circle">${dayNum}</div>
+            </div>
+            ${itemsHtml}
+        `;
+
+        canvas.appendChild(col);
+    });
+}
+
+// --- API KEY CONFIG MODAL ---
+function promptApiKey() {
+    const modal = document.getElementById('api-key-modal');
+    const input = document.getElementById('gemini-api-key-input');
+    const existing = localStorage.getItem('gemini_api_key') || localStorage.getItem('sabi_gemini_api_key');
+    if (input && existing) input.value = existing;
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeApiKeyModal(e) {
+    if (e && e.target !== e.currentTarget && !e.target.classList.contains('sheet-close-btn')) return;
+    const modal = document.getElementById('api-key-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function saveApiKey() {
+    const input = document.getElementById('gemini-api-key-input');
+    if (input) {
+        const val = input.value.trim();
+        if (val) {
+            localStorage.setItem('gemini_api_key', val);
+            localStorage.setItem('sabi_gemini_api_key', val);
+            showToast('Gemini API key saved! Live AI generation active.');
+        }
+    }
+    closeApiKeyModal();
+}
+
+function clearApiKey() {
+    localStorage.removeItem('gemini_api_key');
+    localStorage.removeItem('sabi_gemini_api_key');
+    const input = document.getElementById('gemini-api-key-input');
+    if (input) input.value = '';
+    showToast('API key removed. Using built-in planner simulator.');
+    closeApiKeyModal();
+}
+

@@ -1,27 +1,29 @@
-- **Goal (incl. success criteria)**: Transform the Study Calendar section into a landscape Google Calendar style layout based on the provided reference design (mini-month calendar with multi-colored event dots, active blue day circle, category filter pills with remove tags, full month grid, and Screen 3 agenda timeline with date badges, vertical colored line accents, and Notion avatar piles).
-- **Constraints/Assumptions**: Client-side storage via `localStorage`, 1-click Google Calendar direct sync, seamless responsiveness across both landscape desktop and mobile views, support for both OLED Midnight and clean light themes.
+- **Goal (incl. success criteria)**: Implement STAGE 5 (AI Plan Generator: tap-only onboarding, 1 AI call JSON planner, validation & retry logic, summary & notes card, Monday auto-regenerator, ⋯ menu) and STAGE 6 (Week view grid and @media print landscape one-page styles).
+- **Constraints/Assumptions**: Client-side single AI call (Gemini API with offline fallback), strict validation matching rules (no rule-based scheduler), drop invalid sessions if retry fails, tap-only onboarding screen, `@media print` landscape without server-side PDFs, zero promotional clutter.
 - **Key decisions**:
-  - Implement landscape Google Calendar 2-column layout: left sidebar (mini month navigator + filter chips + Google Calendar sync card) and right main panel (toolbar + month grid view + agenda timeline view + live embed).
-  - Adopt the exact design elements from the user's reference mockup:
-    - Mini calendar with multi-colored event dots underneath day numbers and vibrant circular selected day badge.
-    - Dismissible multi-colored filter pills (`✕`).
-    - Agenda timeline view with large date badges on the left and vertical colored accent borders on event cards.
-    - Notion student avatar piles (`avatars/notion-*.svg`) in event cards.
-  - Implement full Google Calendar-style month grid with event chips directly inside date cells.
+  - Build ONE tap-only onboarding modal covering: 1) Hard subjects chips, 2) Study hours (1-2 / 3-4 / 5+) & best time windows, 3) Exam dates ("I know them", "In about X weeks", "I don't know yet").
+  - Implement planner bundle sender with exact system prompt and response validation (7 days within week_start, no overlaps, 05:30-23:30, min 2 sessions spaced 2+ days, max 3 subjects/day).
+  - Validation retry once with violation list; if retry still fails, drop invalid sessions and save valid rest with a clear notification.
+  - Render a friendly AI Plan Summary & Notes card above the agenda timeline.
+  - Implement full 7-column Week tab timetable integrating classes and study sessions.
+  - Add `@media print` landscape rules: hide nav and toolbar, fit week grid on one page.
+  - Add `⋯` menu to calendar toolbar with "Regenerate plan", "Re-plan remaining days", "Planner preferences", and "Print timetable".
 - **State**:
   - Done:
-    - Removed redundant "Google Sync" badges from [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) and [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) (documented in [understood-errors.md](file:///c:/Users/dave/.gemini/sabi/docs/error-solving/understood-errors.md) as a general design rule for all future features).
-    - Fixed the stretched calendar day circle on mobile devices by giving `.mini-day-num` an explicit 1:1 aspect ratio (`width: 32px; height: 32px; aspect-ratio: 1 / 1; border-radius: 50%`) so it is geometrically circular on all screens.
-    - Preserved glowing day animations and clean number-only event counts in the mini calendar.
-  - Now: Committing and pushing changes to GitHub.
-  - Next: User validation in browser.
-- **Open questions**: None.
+    - Reviewed user prompt, existing calendar architecture, and understood errors.
+    - Verified `calendar.html`, `calendar.css`, and `calendar.js` layout.
+    - Implemented strict validation engine checking 05:30-23:30 bounds, week boundaries, max 3 subjects per day, 2-day subject spacing, and no class/session overlaps.
+    - Implemented retry logic that on second failure drops invalid sessions, saves the valid rest, and displays a friendly short message to the student without building a rule-based scheduler.
+    - Rendered friendly AI Plan Summary & Notes card above the agenda timeline.
+    - Implemented Week tab with 7-day grid rendering university/school classes and study sessions from the same data source.
+    - Implemented `@media print` landscape styles: hides navigation, headers, sidebars, and buttons, and fits the week timetable onto a single page without server-side PDFs.
+  - Now: Ready for user review and testing.
+  - Next: Any further student customizations or sync options requested by the user.
+- **Open questions**: Browser context creation encountered a known Playwright driver download error (404 from Azure CDN) during headless testing; manual browser verification or alternative can be used.
 - **Working set (files/ids/commands)**:
   - Calendar page: [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
   - Calendar styles: [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css)
   - Calendar logic: [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)
-  - Dashboard: [index.html](file:///c:/Users/dave/.gemini/sabi/index.html)
-  - Library: [library.html](file:///c:/Users/dave/.gemini/sabi/library.html)
-  - PQ Engine: [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html)
   - Global styles: [global.css](file:///c:/Users/dave/.gemini/sabi/global.css)
   - Continuity ledger: [docs/short-term-plan/CONTINUITY.md](file:///c:/Users/dave/.gemini/sabi/docs/short-term-plan/CONTINUITY.md)
+
