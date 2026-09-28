@@ -7,9 +7,9 @@
   - Removed Wiki-Roulette card from the dashboard bento grid in `index.html`.
   - Removed Wiki navigation item from the bottom dock in `index.html`, `library.html`, and `pq.html`.
 - **State**:
-  - Done: Wiki Roulette completely purged from codebase.
-  - Now: Ready to commit and push changes to GitHub (`David0932473/Sabiapp`).
-  - Next: Awaiting user confirmation to push or further instructions.
+  - Done: Wiki Roulette files deleted, UI updated, committed (`224c3bc`), and pushed to GitHub `origin/main`.
+  - Now: Working tree clean; repository fully synchronized with GitHub.
+  - Next: Awaiting user instructions.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - Dashboard: [index.html](file:///c:/Users/dave/.gemini/sabi/index.html)
