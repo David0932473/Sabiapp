@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "continuity-ledger": false,
+    "product-documentation": false,
+    "implementation-tracking": false,
+    "task-management": false,
+    "architecture-documentation": false,
+    "decision-records": false,
+    "checkpoint-strategy": false,
+    "subagent-patterns": false,
+    "error-learning": false,
+    "error-prevention": false,
+    "small-atomic-commits": false,
+    "no-speculation": true,
+    "separation-of-concerns": true,
+    "security-sensitive-data": true,
+    "test-driven-validation": true,
+    "context-hygiene": true
+  },
+  "project": {
+    "name": "Sabi",
+    "type": "web",
+    "techStack": [
+      "HTML5",
+      "CSS3",
+      "JavaScript",
+      "Web APIs"
+    ]
+  }
+}
