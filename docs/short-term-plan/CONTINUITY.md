@@ -14,9 +14,9 @@
   - Updated the floating dock (`.app-bottom-nav`) across [index.html](file:///c:/Users/dave/.gemini/sabi/index.html), [library.html](file:///c:/Users/dave/.gemini/sabi/library.html), [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html), and [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) with the 4th navigation item (`Calendar`).
   - Optimized `.app-bottom-nav` in [global.css](file:///c:/Users/dave/.gemini/sabi/global.css) with balanced max-width (440px) and item padding for all 4 dock items.
 - **State**:
-  - Done: Study Calendar section, Google Calendar direct integration, bottom dock updates, Bento card on dashboard, and theme compatibility completed.
-  - Now: Ready for user testing and interaction.
-  - Next: User review and additional features if requested.
+  - Done: Study Calendar section, Google Calendar direct integration, bottom dock updates, Bento card on dashboard, and changes committed & pushed to GitHub (`David0932473/Sabiapp`).
+  - Now: Clean state on `main` branch.
+  - Next: User validation and feedback.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - Calendar page: [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
