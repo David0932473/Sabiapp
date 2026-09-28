@@ -1,18 +1,29 @@
-- **Goal (incl. success criteria)**: Update slogan to "if you wan sabi use sabi" and configure the app to exclusively use Notion-style avatars.
-- **Constraints/Assumptions**: Client-side storage via `localStorage`, offline-first vector SVG assets, transparent & high contrast rendering across both dark and light modes.
+- **Goal (incl. success criteria)**: Create a Study & Exam Calendar section directly integrated with Google Calendar while preserving Sabi's native look and feel, positioned directly after the PQ (Past Questions) menu in the dashboard and bottom navigation dock.
+- **Constraints/Assumptions**: Client-side offline-first architecture, `localStorage` persistence, zero third-party OAuth server dependency for direct 1-click Google Calendar URL synchronization, seamless support for both OLED Midnight and Light themes.
 - **Key decisions**:
-  - Updated the brand slogan in [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) to: `if you wan sabi use sabi` (with `.blue-s` accent on "sabi").
-  - Replaced raster 3D avatars with authentic vector Notion-style avatars in [avatars/](file:///c:/Users/dave/.gemini/sabi/avatars) (Scholar, Felix, Sadie, Alex, Willow).
-  - Configured circular white backdrop discs for `.profile-avatar-img` and `.settings-avatar-img` so hand-drawn line art maintains crisp contrast in both dark and light themes.
-  - Updated Settings & Profile modal presets to exclusively offer Notion-style avatars with live image thumbnails.
-  - Implemented `getValidNotionAvatar()` in [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) to auto-migrate legacy stored avatars in `localStorage` to Notion-style avatars.
-  - Purged obsolete `avatar.jpg` from repository.
+  - Created [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) with native Sabi aesthetics, dynamic countdown hero widget, dynamic day selector strip, exam category filters (JAMB, WAEC, NECO, NOUN, ICAN, Study Drills), interactive timetable, and embedded Google Calendar view mode.
+  - Implemented [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css) adhering strictly to Sabi design tokens (OLED Midnight `#000000`, `--accent: #3D8EFF`, glassmorphism bottom sheets, bento pop animations, and high-contrast light mode overrides).
+  - Implemented [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js) supporting:
+    - 1-click direct Google Calendar event creation URL generation (`https://calendar.google.com/calendar/render?action=TEMPLATE...`).
+    - Standard `.ics` RFC 5545 iCalendar file export for universal Google Calendar / Apple / Outlook import.
+    - Pre-loaded Nigerian academic milestones (JAMB UTME 2026, WAEC WASSCE 2026, NECO SSCE, NOUN TMA deadlines, ICAN Diet exams, daily power drills).
+    - Custom study session scheduler with slide-up glassmorphism bottom sheet modal.
+    - Dynamic countdown timer to nearest upcoming milestone.
+    - Completion tracking with celebratory toast notifications.
+  - Added the Study Calendar Bento Card to [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) positioned immediately after the PQ Engine card, complete with a live pulsing "Google Sync" badge.
+  - Updated the floating dock (`.app-bottom-nav`) across [index.html](file:///c:/Users/dave/.gemini/sabi/index.html), [library.html](file:///c:/Users/dave/.gemini/sabi/library.html), [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html), and [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) with the 4th navigation item (`Calendar`).
+  - Optimized `.app-bottom-nav` in [global.css](file:///c:/Users/dave/.gemini/sabi/global.css) with balanced max-width (440px) and item padding for all 4 dock items.
 - **State**:
-  - Done: Slogan updated and Notion-style avatars implemented, tested, and styled.
-  - Now: Committing and pushing to GitHub repository (`David0932473/Sabiapp`).
-  - Next: User validation and feedback.
+  - Done: Study Calendar section, Google Calendar direct integration, bottom dock updates, Bento card on dashboard, and theme compatibility completed.
+  - Now: Ready for user testing and interaction.
+  - Next: User review and additional features if requested.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
+  - Calendar page: [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
+  - Calendar styles: [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css)
+  - Calendar logic: [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)
   - Dashboard: [index.html](file:///c:/Users/dave/.gemini/sabi/index.html)
-  - Avatars directory: [avatars/](file:///c:/Users/dave/.gemini/sabi/avatars)
-  - Continuity ledger: [CONTINUITY.md](file:///c:/Users/dave/.gemini/sabi/docs/short-term-plan/CONTINUITY.md)
+  - Library: [library.html](file:///c:/Users/dave/.gemini/sabi/library.html)
+  - PQ Engine: [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html)
+  - Global styles: [global.css](file:///c:/Users/dave/.gemini/sabi/global.css)
+  - Continuity ledger: [docs/short-term-plan/CONTINUITY.md](file:///c:/Users/dave/.gemini/sabi/docs/short-term-plan/CONTINUITY.md)

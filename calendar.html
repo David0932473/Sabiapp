@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sabi - Study & Exam Calendar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="global.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="calendar.css" type="text/css" media="all" />
+</head>
+<body>
+
+<div id="calendar-app" class="page-transition-wrapper">
+
+    <!-- TOP NAVIGATION BAR -->
+    <div class="top-bar">
+        <a href="index.html" class="back-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Dashboard
+        </a>
+        <div class="today-badge">
+            <span class="today-dot"></span>
+            <span id="today-display">Today</span>
+        </div>
+    </div>
+
+    <!-- HEADER TITLES -->
+    <div class="header-titles">
+        <h1>Study <span class="blue-text">Calendar</span></h1>
+        <p>Exam countdowns, study drills & Google Calendar direct sync</p>
+    </div>
+
+    <!-- GOOGLE CALENDAR SYNC BANNER -->
+    <div class="gcal-banner">
+        <div class="gcal-banner-top">
+            <div class="gcal-badge">
+                <svg class="gcal-logo-svg" viewBox="0 0 24 24">
+                    <!-- Google Calendar 4-color icon -->
+                    <rect x="3" y="4" width="18" height="18" rx="3" fill="#4285F4"/>
+                    <rect x="3" y="4" width="18" height="6" fill="#EA4335"/>
+                    <rect x="3" y="10" width="6" height="12" fill="#34A853"/>
+                    <rect x="9" y="10" width="12" height="12" fill="#FBBC05"/>
+                    <rect x="6" y="7" width="12" height="11" rx="2" fill="#FFFFFF"/>
+                    <path d="M9 13l2 2 4-4" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Google Calendar Sync
+            </div>
+            <div class="gcal-status-pill">
+                <span class="pulse-circle"></span> Live Ready
+            </div>
+        </div>
+        <p class="gcal-banner-desc">Add study milestones to your Google Calendar in 1-click or schedule custom revision blocks that sync across all your devices.</p>
+        <div class="gcal-banner-actions">
+            <button type="button" class="btn-gcal-action primary" onclick="openAddSessionModal()">
+                ➕ New Study Block
+            </button>
+            <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer" class="btn-gcal-action secondary">
+                📅 Open Google Calendar
+            </a>
+            <button type="button" class="btn-gcal-action secondary" onclick="exportToIcs()">
+                📤 Export (.ics)
+            </button>
+        </div>
+    </div>
+
+    <!-- VIEW SWITCHER TABS -->
+    <div class="view-tabs">
+        <div class="view-tab active" id="tab-planner" onclick="switchCalendarView('planner')">
+            <span>🗓️ Sabi Timetable</span>
+        </div>
+        <div class="view-tab" id="tab-gcal" onclick="switchCalendarView('gcal')">
+            <span>🌐 Live Google Calendar</span>
+        </div>
+    </div>
+
+    <!-- SECTION 1: SABI TIMETABLE & PLANNER -->
+    <div id="planner-section">
+
+        <!-- COUNTDOWN HERO PILL -->
+        <div class="countdown-hero">
+            <div class="countdown-info">
+                <div class="countdown-label">
+                    <span>⚡ NEXT TARGET</span>
+                </div>
+                <div class="countdown-title" id="countdown-hero-title">Loading target...</div>
+            </div>
+            <div class="countdown-badge-timer" id="countdown-timer-value">
+                Calculating...
+            </div>
+        </div>
+
+        <!-- DAY STRIP SELECTOR -->
+        <div class="day-strip-wrapper">
+            <div class="day-strip" id="day-strip">
+                <!-- Dynamically populated by calendar.js -->
+            </div>
+        </div>
+
+        <!-- CATEGORY FILTER CHIPS -->
+        <div class="category-filters">
+            <button type="button" class="filter-chip active" onclick="filterCategory('all', this)">All Schedules</button>
+            <button type="button" class="filter-chip" onclick="filterCategory('jamb', this)">⚡ JAMB UTME</button>
+            <button type="button" class="filter-chip" onclick="filterCategory('waec', this)">📘 WAEC SSCE</button>
+            <button type="button" class="filter-chip" onclick="filterCategory('neco', this)">🟣 NECO</button>
+            <button type="button" class="filter-chip" onclick="filterCategory('noun', this)">🎓 NOUN TMA</button>
+            <button type="button" class="filter-chip" onclick="filterCategory('ican', this)">💼 ICAN Diet</button>
+            <button type="button" class="filter-chip" onclick="filterCategory('study', this)">⏱️ Study Drills</button>
+        </div>
+
+        <!-- EVENTS LIST SECTION -->
+        <div class="section-header">
+            <div class="section-label">Upcoming Schedule</div>
+            <div class="event-count" id="event-count">0 items</div>
+        </div>
+
+        <div class="events-list" id="events-list">
+            <!-- Dynamically populated by calendar.js -->
+        </div>
+
+    </div>
+
+    <!-- SECTION 2: LIVE GOOGLE CALENDAR EMBED VIEW -->
+    <div id="gcal-section" class="hidden">
+        <div class="gcal-embed-wrapper">
+            <div class="embed-header">
+                <div class="embed-title">Embedded Google Calendar</div>
+                <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer" class="btn-external-gcal">
+                    Full Window ↗
+                </a>
+            </div>
+
+            <div class="calendar-iframe-container">
+                <iframe id="gcal-live-iframe" src="https://calendar.google.com/calendar/embed?src=en.ng%23holiday%40group.v.calendar.google.com&ctz=Africa%2FLagos&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=0" loading="lazy"></iframe>
+            </div>
+
+            <div class="embed-settings-row">
+                <input type="text" id="custom-gcal-id" class="embed-input" placeholder="Link your Google Calendar (e.g. user@gmail.com)" />
+                <button type="button" class="btn-embed-save" onclick="updateCustomGcalId()">Link</button>
+            </div>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">Tip: You can paste your personal Google email or public Google Calendar ID to view your schedule right inside Sabi.</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- BOTTOM FLOATING DOCK -->
+<nav class="app-bottom-nav">
+    <div class="nav-indicator" id="nav-indicator"></div>
+
+    <a href="index.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="nav-label">Home</span>
+    </a>
+
+    <a href="library.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        <span class="nav-label">Library</span>
+    </a>
+
+    <a href="pq.html" class="nav-item"> 
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+        </svg>
+        <span class="nav-label">PQ Engine</span>
+    </a>
+
+    <a href="calendar.html" class="nav-item active">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="4" width="18" height="18" rx="3" ry="3"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span class="nav-label">Calendar</span>
+    </a>
+</nav>
+
+<!-- ADD SESSION MODAL BOTTOM SHEET -->
+<div id="add-session-modal" class="modal-overlay hidden" onclick="closeAddSessionModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <div class="sheet-top-bar">
+            <div class="sheet-title">Schedule Study Block</div>
+            <button type="button" class="sheet-close-btn" onclick="closeAddSessionModal()" aria-label="Close">✕</button>
+        </div>
+
+        <form id="add-session-form" onsubmit="handleSaveSession(event)">
+            <div class="form-group">
+                <label class="form-label" for="modal-session-title">Session Subject / Target</label>
+                <input type="text" id="modal-session-title" class="form-input" placeholder="e.g. Physics Mechanics Speed Drill" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="modal-session-category">Category / Target Exam</label>
+                <select id="modal-session-category" class="form-select">
+                    <option value="study">⏱️ Sabi Study Drill</option>
+                    <option value="jamb">⚡ JAMB UTME</option>
+                    <option value="waec">📘 WAEC WASSCE</option>
+                    <option value="neco">🟣 NECO SSCE</option>
+                    <option value="noun">🎓 NOUN TMA / Exam</option>
+                    <option value="ican">💼 ICAN Professional Diet</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="modal-session-date">Date</label>
+                    <input type="date" id="modal-session-date" class="form-input" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="modal-session-time">Start Time</label>
+                    <input type="time" id="modal-session-time" class="form-input" value="17:00" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="modal-session-duration">Duration</label>
+                <select id="modal-session-duration" class="form-select">
+                    <option value="0.75">45 Minutes (Sprint Drill)</option>
+                    <option value="1">1 Hour</option>
+                    <option value="1.5" selected>1.5 Hours (Standard Session)</option>
+                    <option value="2">2 Hours (Deep Focus)</option>
+                    <option value="3">3 Hours (Full Mock Simulation)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="modal-session-notes">Study Notes / Syllabus Focus</label>
+                <textarea id="modal-session-notes" class="form-textarea" rows="2" placeholder="e.g. Review 50 past questions on Newton's Laws and Optics."></textarea>
+            </div>
+
+            <label class="form-checkbox-label">
+                <input type="checkbox" id="modal-session-gcal-sync" checked />
+                <span>Instantly open & sync to Google Calendar</span>
+            </label>
+
+            <button type="submit" class="btn-submit-session">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Save & Sync Study Session
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="calendar.js"></script>
+<script src="global.js"></script>
+</body>
+</html>
