@@ -10,12 +10,10 @@
   - Implement full Google Calendar-style month grid with event chips directly inside date cells.
 - **State**:
   - Done:
-    - Updated mini-calendar day cells to display small count numbers beside the multi-colored dots (`● 2`, `● 1`) showing the exact number of events scheduled for that day.
-    - Set the Agenda / Schedule View as the primary default view (Screen 1 & Screen 3 from reference mockup) so duplicate months are never side-by-side.
-    - Added Focused Day section (`Events for [Date]` or `No Events for [Date]`) that dynamically updates when any day is clicked in the mini-calendar.
-    - Added `month-mode` rule to hide the sidebar mini-month whenever Full Month Canvas is active to completely avoid side-by-side months.
-    - Removed any opaque background boxes behind headers and titles.
-  - Now: Committing and pushing changes to GitHub.
+    - Removed the dots and kept only the clean event count number under each day in the mini calendar.
+    - Added vibrant neon glowing effects: when it is "today", the day number pulsates with a neon accent glow; when a day is selected, it renders a solid glowing circle with luminous text; and the event count number badge illuminates.
+    - Set the Schedule & Agenda Timeline View as default to prevent duplicate side-by-side months.
+  - Now: Committing and pushing updates to GitHub.
   - Next: User validation in browser.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:

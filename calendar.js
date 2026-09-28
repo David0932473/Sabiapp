@@ -240,20 +240,14 @@ function renderMiniCalendar() {
         const isToday = todayStr === dateStr;
         
         const cell = document.createElement('div');
-        cell.className = `mini-day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`;
+        cell.className = `mini-day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${dayEvents.length > 0 ? 'has-events' : ''}`;
         cell.onclick = () => onSelectDate(dateStr);
         
-        // Dot + small number indicating amount of events for that day
+        // No dot! Just the event count number, and when it's the day the number glows
         let badgeHtml = '';
         if (dayEvents.length > 0) {
-            const dots = dayEvents.slice(0, 2).map(ev => {
-                const color = getCategoryColor(ev.category);
-                return `<span class="mini-event-dot" style="background-color: ${color}"></span>`;
-            }).join('');
-            
             badgeHtml = `
                 <div class="mini-day-badge">
-                    ${dots}
                     <span class="mini-event-count">${dayEvents.length}</span>
                 </div>
             `;
