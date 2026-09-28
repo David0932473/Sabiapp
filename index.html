@@ -93,6 +93,7 @@
             object-fit: cover;
             border-radius: 50%;
             display: block;
+            background: #ffffff;
         }
 
         /* --- BENTO GRID SYSTEM --- */
@@ -240,8 +241,8 @@
         }
         .avatar-preview-wrapper {
             position: relative;
-            width: 90px;
-            height: 90px;
+            width: 96px;
+            height: 96px;
             margin-bottom: 14px;
         }
         .settings-avatar-img {
@@ -251,6 +252,7 @@
             border-radius: 50%;
             border: 3px solid var(--accent);
             box-shadow: 0 0 25px rgba(61, 142, 255, 0.35);
+            background: #ffffff;
         }
         .avatar-change-btn {
             position: absolute;
@@ -289,15 +291,26 @@
             justify-content: center;
         }
         .preset-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             background: var(--surface-light);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 6px 14px;
-            border-radius: 20px;
+            padding: 6px 12px;
+            border-radius: 24px;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+        }
+        .preset-avatar-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #ffffff;
+            object-fit: cover;
+            display: block;
         }
         .preset-pill:hover, .preset-pill.active {
             border-color: var(--accent);
@@ -488,10 +501,10 @@
     <header>
         <div>
             <div class="brand">Sabi<span>.</span></div>
-            <div class="slogan-mini">if you <span class="blue-s">s</span>abi, use <span class="blue-s">s</span>abi.</div>
+            <div class="slogan-mini">if you wan <span class="blue-s">sabi</span> use <span class="blue-s">sabi</span></div>
         </div>
         <button class="profile-btn" id="open-settings-btn" onclick="openSettingsModal()" title="Settings & Profile" aria-label="Open Settings and Profile">
-            <img src="avatar.jpg" alt="Scholar Profile" class="profile-avatar-img" id="header-avatar-img" />
+            <img src="avatars/notion-scholar.svg" alt="Scholar Profile" class="profile-avatar-img" id="header-avatar-img" />
         </button>
     </header>
 
@@ -568,18 +581,34 @@
             <!-- AVATAR PICKER SECTION -->
             <div class="settings-avatar-section">
                 <div class="avatar-preview-wrapper">
-                    <img id="settings-avatar-preview" src="avatar.jpg" alt="Avatar Preview" class="settings-avatar-img" />
+                    <img id="settings-avatar-preview" src="avatars/notion-scholar.svg" alt="Avatar Preview" class="settings-avatar-img" />
                     <button type="button" class="avatar-change-btn" onclick="document.getElementById('avatar-file-input').click()" title="Upload Photo">
                         📷
                     </button>
                 </div>
                 <input type="file" id="avatar-file-input" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)" />
-                <div class="avatar-presets-label">Choose Avatar:</div>
+                <div class="avatar-presets-label">Choose Notion Avatar:</div>
                 <div class="avatar-presets">
-                    <button type="button" class="preset-pill active" onclick="selectPresetAvatar('avatar.jpg')">Scholar</button>
-                    <button type="button" class="preset-pill" onclick="selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=sabi')">Bot</button>
-                    <button type="button" class="preset-pill" onclick="selectPresetAvatar('https://api.dicebear.com/7.x/notionists/svg?seed=yamskii')">Notion</button>
-                    <button type="button" class="preset-pill" onclick="selectPresetAvatar('https://api.dicebear.com/7.x/lorelei/svg?seed=scholar')">Lofi</button>
+                    <button type="button" class="preset-pill active" onclick="selectPresetAvatar('avatars/notion-scholar.svg')">
+                        <img src="avatars/notion-scholar.svg" alt="Scholar" class="preset-avatar-thumb" />
+                        <span>Scholar</span>
+                    </button>
+                    <button type="button" class="preset-pill" onclick="selectPresetAvatar('avatars/notion-felix.svg')">
+                        <img src="avatars/notion-felix.svg" alt="Felix" class="preset-avatar-thumb" />
+                        <span>Felix</span>
+                    </button>
+                    <button type="button" class="preset-pill" onclick="selectPresetAvatar('avatars/notion-sadie.svg')">
+                        <img src="avatars/notion-sadie.svg" alt="Sadie" class="preset-avatar-thumb" />
+                        <span>Sadie</span>
+                    </button>
+                    <button type="button" class="preset-pill" onclick="selectPresetAvatar('avatars/notion-alex.svg')">
+                        <img src="avatars/notion-alex.svg" alt="Alex" class="preset-avatar-thumb" />
+                        <span>Alex</span>
+                    </button>
+                    <button type="button" class="preset-pill" onclick="selectPresetAvatar('avatars/notion-willow.svg')">
+                        <img src="avatars/notion-willow.svg" alt="Willow" class="preset-avatar-thumb" />
+                        <span>Willow</span>
+                    </button>
                 </div>
             </div>
 
@@ -634,7 +663,18 @@
 <div id="settings-toast" class="settings-toast">✅ Profile & Settings Saved!</div>
 
 <script>
-    let currentSelectedAvatar = localStorage.getItem('sabi_avatar') || 'avatar.jpg';
+    const DEFAULT_NOTION_AVATAR = 'avatars/notion-scholar.svg';
+
+    function getValidNotionAvatar() {
+        let saved = localStorage.getItem('sabi_avatar');
+        if (!saved || saved.endsWith('.jpg') || saved.includes('bottts') || saved.includes('lorelei')) {
+            saved = DEFAULT_NOTION_AVATAR;
+            localStorage.setItem('sabi_avatar', saved);
+        }
+        return saved;
+    }
+
+    let currentSelectedAvatar = getValidNotionAvatar();
 
     function updateGreeting() {
         const hour = new Date().getHours();
@@ -655,7 +695,7 @@
         // Populate fields from localStorage
         const savedName = localStorage.getItem('sabi_user_name') || 'YAMSKII';
         const savedExam = localStorage.getItem('sabi_target_exam') || 'JAMB UTME';
-        const savedAvatar = localStorage.getItem('sabi_avatar') || 'avatar.jpg';
+        const savedAvatar = getValidNotionAvatar();
         const savedTheme = localStorage.getItem('sabi_theme') || 'dark';
 
         currentSelectedAvatar = savedAvatar;
@@ -760,7 +800,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         // Initial user avatar & greeting
-        const savedAvatar = localStorage.getItem('sabi_avatar') || 'avatar.jpg';
+        const savedAvatar = getValidNotionAvatar();
         const headerAvatar = document.getElementById('header-avatar-img');
         if (headerAvatar) headerAvatar.src = savedAvatar;
         updateGreeting();

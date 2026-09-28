@@ -1,22 +1,18 @@
-- **Goal (incl. success criteria)**: Replace crown emoji with a PFP avatar button that opens a Settings modal to edit personal information (name, target exam, avatar picture/presets) and switch between Dark and Light themes.
-- **Constraints/Assumptions**: Client-side storage via `localStorage`, vanilla CSS variables for theme switching across all views, responsive mobile & desktop layout.
+- **Goal (incl. success criteria)**: Update slogan to "if you wan sabi use sabi" and configure the app to exclusively use Notion-style avatars.
+- **Constraints/Assumptions**: Client-side storage via `localStorage`, offline-first vector SVG assets, transparent & high contrast rendering across both dark and light modes.
 - **Key decisions**:
-  - Replaced the `👑` emoji button in [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) with a circular styled avatar (`#header-avatar-btn` and `#header-avatar-img`).
-  - Added [avatar.jpg](file:///c:/Users/dave/.gemini/sabi/avatar.jpg) (3D student scholar asset) as default PFP, with support for preset selection and local image file uploads via `FileReader`.
-  - Built an accessible Settings modal bottom sheet with:
-    - Theme switcher: Dark theme (original cyberpunk-charcoal aesthetic) and Light theme (crisp glassmorphism with high contrast).
-    - Personal info editor: Scholar display name and target exam goal.
-    - Profile picture preview, preset selector, and custom image upload.
-    - Synchronized greeting: "Good Morning/Afternoon/Evening [Scholar Name]!".
-  - Integrated theme persistence in [global.js](file:///c:/Users/dave/.gemini/sabi/global.js) (`applySabiTheme()`) and global styles in [global.css](file:///c:/Users/dave/.gemini/sabi/global.css) so theme state seamlessly persists across all pages.
+  - Updated the brand slogan in [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) to: `if you wan sabi use sabi` (with `.blue-s` accent on "sabi").
+  - Replaced raster 3D avatars with authentic vector Notion-style avatars in [avatars/](file:///c:/Users/dave/.gemini/sabi/avatars) (Scholar, Felix, Sadie, Alex, Willow).
+  - Configured circular white backdrop discs for `.profile-avatar-img` and `.settings-avatar-img` so hand-drawn line art maintains crisp contrast in both dark and light themes.
+  - Updated Settings & Profile modal presets to exclusively offer Notion-style avatars with live image thumbnails.
+  - Implemented `getValidNotionAvatar()` in [index.html](file:///c:/Users/dave/.gemini/sabi/index.html) to auto-migrate legacy stored avatars in `localStorage` to Notion-style avatars.
+  - Purged obsolete `avatar.jpg` from repository.
 - **State**:
-  - Done: PFP avatar button, Settings modal, personal info editor, and Dark/Light theme switching implemented and tested.
-  - Now: Committing and pushing changes to GitHub (`David0932473/Sabiapp`).
-  - Next: User review and validation.
+  - Done: Slogan updated and Notion-style avatars implemented, tested, and styled.
+  - Now: Committing and pushing to GitHub repository (`David0932473/Sabiapp`).
+  - Next: User validation and feedback.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - Dashboard: [index.html](file:///c:/Users/dave/.gemini/sabi/index.html)
-  - Global styles: [global.css](file:///c:/Users/dave/.gemini/sabi/global.css)
-  - Global logic: [global.js](file:///c:/Users/dave/.gemini/sabi/global.js)
-  - App logic: [app.js](file:///c:/Users/dave/.gemini/sabi/app.js)
-  - Avatar asset: [avatar.jpg](file:///c:/Users/dave/.gemini/sabi/avatar.jpg)
+  - Avatars directory: [avatars/](file:///c:/Users/dave/.gemini/sabi/avatars)
+  - Continuity ledger: [CONTINUITY.md](file:///c:/Users/dave/.gemini/sabi/docs/short-term-plan/CONTINUITY.md)
