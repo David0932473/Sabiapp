@@ -43,15 +43,15 @@ function openSheet(examName, subtitle) {
     const yearHTML = data.years.map(y => `<option value="${y}">${y}</option>`).join('');
 
     document.getElementById('sheet-content-area').innerHTML = `
-        <select id="sub-select" style="width: 100%; background: #1A2130; border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 16px; color: white; font-family: 'Outfit'; font-size: 14px; margin-bottom: 15px; outline: none; appearance: none; -webkit-appearance: none;">
+        <select id="sub-select" style="width: 100%; background: #1A2130; border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 16px; color: white; font-family: 'Poppins', sans-serif; font-size: 14px; margin-bottom: 15px; outline: none; appearance: none; -webkit-appearance: none;">
             <option value="" disabled selected>Select Subject</option>
             ${subjectHTML}
         </select>
-        <select id="yr-select" style="width: 100%; background: #1A2130; border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 16px; color: white; font-family: 'Outfit'; font-size: 14px; margin-bottom: 25px; outline: none; appearance: none; -webkit-appearance: none;">
+        <select id="yr-select" style="width: 100%; background: #1A2130; border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 16px; color: white; font-family: 'Poppins', sans-serif; font-size: 14px; margin-bottom: 25px; outline: none; appearance: none; -webkit-appearance: none;">
             <option value="" disabled selected>Select Year</option>
             ${yearHTML}
         </select>
-        <button onclick="launchStandardExam('${examName}')" style="width: 100%; background: ${data.color}; color: white; padding: 16px; border-radius: 14px; border: none; font-weight: 700; font-family: 'Outfit'; cursor: pointer; font-size: 15px; transition: 0.2s;">
+        <button onclick="launchStandardExam('${examName}')" style="width: 100%; background: ${data.color}; color: white; padding: 16px; border-radius: 14px; border: none; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; font-size: 15px; transition: 0.2s;">
             BOOT ENGINE
         </button>
     `;

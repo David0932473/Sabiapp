@@ -1133,10 +1133,9 @@ function getEnrolledSubjects() {
     return DEFAULT_SUBJECT_CATALOG.slice(0, 5); // Default 5 core subjects
 }
 
-// --- SMART PLANNER SETUP (6 Questions + AI Follow-up) ---
+// --- SMART PLANNER SETUP (ONE Tap-Only Screen: 3 Questions) ---
 function initPlannerOnboarding() {
     onboardingTempProfile = getPlannerProfile();
-    // Restore previous selections or initialize from enrolled subjects
     const enrolled = getEnrolledSubjects().map(s => s.name);
     selectedSubjects = new Set(onboardingTempProfile.subjects && onboardingTempProfile.subjects.length > 0 ? onboardingTempProfile.subjects : enrolled);
     if (onboardingTempProfile.hard_subjects) {
@@ -1144,10 +1143,6 @@ function initPlannerOnboarding() {
     } else {
         hardSubjects = new Set(["Physics", "Mathematics"]);
     }
-    if (onboardingTempProfile.off_days) {
-        offDays = new Set(onboardingTempProfile.off_days);
-    }
-    selectedGoal = onboardingTempProfile.goal || 'high';
 }
 
 function openPlannerOnboardingModal() {
@@ -1159,10 +1154,6 @@ function openPlannerOnboardingModal() {
     } else {
         hardSubjects = new Set(["Physics", "Mathematics"]);
     }
-    if (onboardingTempProfile.off_days) offDays = new Set(onboardingTempProfile.off_days);
-    selectedGoal = onboardingTempProfile.goal || 'high';
-    timetablePhotoBase64 = null;
-    followUpContext = [];
 
     renderOnboardingUI();
     const modal = document.getElementById('planner-onboarding-modal');
@@ -1181,24 +1172,23 @@ function closePlannerOnboardingModal(e) {
     }
 }
 
-// --- Q1: HARDEST SUBJECTS SELECTION ---
+// --- RENDER ONBOARDING UI ---
 function renderOnboardingUI() {
     renderHardSubjectChips();
-    renderOffDaysUI();
-    renderGoalUI();
     selectHoursOption(onboardingTempProfile.hours_per_day || '3-4', false);
     selectBestTimeOption(onboardingTempProfile.best_time || 'evening', false);
     const examType = onboardingTempProfile.exam_info?.type || 'approximate';
     selectExamMode(examType, false);
 }
 
+// --- 1. Which subjects do you find hard? (chips from their subjects, any number) ---
 function renderHardSubjectChips() {
     const container = document.getElementById('onboarding-hard-subjects-chips');
     if (!container) return;
 
     const allSubjects = [...new Set([...selectedSubjects])];
     if (allSubjects.length === 0) {
-        container.innerHTML = '<p style="font-size: 12px; color: var(--text-muted);">Add subjects below to get started.</p>';
+        container.innerHTML = '<p style="font-size: 12px; color: var(--text-muted);">No subjects found. Add one below.</p>';
         return;
     }
 
@@ -1228,30 +1218,13 @@ function addCustomSubject() {
     const name = input.value.trim();
     if (name) {
         selectedSubjects.add(name);
-        hardSubjects.add(name); // newly added subjects automatically get focus
+        hardSubjects.add(name);
         input.value = '';
         renderHardSubjectChips();
     }
 }
 
-// --- Q3: TIMETABLE PHOTO UPLOAD ---
-function handleTimetablePhotoSelect(event) {
-    const file = event.target.files?.[0];
-    const label = document.getElementById('upload-filename-label');
-    if (!file) return;
-
-    if (label) label.textContent = file.name;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        // Store base64 (strip the data:image/...;base64, prefix for API)
-        const fullBase64 = e.target.result;
-        timetablePhotoBase64 = fullBase64;
-    };
-    reader.readAsDataURL(file);
-}
-
-// --- Q4: STUDY HOURS & BEST TIME (kept from original) ---
+// --- 2. Realistic study hours on a normal day (1-2 / 3-4 / 5+) and best time (morning / afternoon / evening / night) ---
 function selectHoursOption(hours, shouldUpdate = true) {
     if (shouldUpdate) onboardingTempProfile.hours_per_day = hours;
     document.querySelectorAll('#tap-row-hours .tap-segment-btn').forEach(btn => {
@@ -1266,11 +1239,12 @@ function selectBestTimeOption(time, shouldUpdate = true) {
     });
 }
 
-// --- Q5: EXAM DATES (kept from original) ---
+// --- 3. Exam dates: "I know them" (date picker per subject, optional), "In about X weeks", or "I don't know yet" ---
 function selectExamMode(type, shouldUpdate = true) {
     if (shouldUpdate) {
         if (!onboardingTempProfile.exam_info) onboardingTempProfile.exam_info = {};
         onboardingTempProfile.exam_info.type = type;
+        triggerReplanOnExamDateChange();
     }
 
     document.querySelectorAll('#tap-row-exam-mode .tap-segment-btn').forEach(btn => {
@@ -1297,6 +1271,7 @@ function selectWeeksAway(weeks, shouldUpdate = true) {
     if (shouldUpdate) {
         if (!onboardingTempProfile.exam_info) onboardingTempProfile.exam_info = { type: 'approximate' };
         onboardingTempProfile.exam_info.weeks_away = Number(weeks);
+        triggerReplanOnExamDateChange();
     }
     document.querySelectorAll('#weeks-chips-container .week-chip-btn').forEach(btn => {
         btn.classList.toggle('active', Number(btn.getAttribute('data-weeks')) === Number(weeks));
@@ -1323,6 +1298,21 @@ function renderSubjectDatePickers() {
     }).join('');
 }
 
+// Re-plan the remaining days when the student enters or changes an exam date
+let replanExamDateDebounceTimer = null;
+function triggerReplanOnExamDateChange() {
+    if (localStorage.getItem('sabi_planner_onboarded') !== 'true') return;
+    savePlannerProfile(onboardingTempProfile);
+    clearTimeout(replanExamDateDebounceTimer);
+    replanExamDateDebounceTimer = setTimeout(() => {
+        showToast('🔄 Re-planning remaining days for updated exam schedule...');
+        const monday = getMondayOfWeek(new Date());
+        generateWeeklyPlan(monday, false, true).then(() => {
+            renderAllViews();
+        });
+    }, 450);
+}
+
 function handleSubjectDateChange(subject, dateVal) {
     if (!onboardingTempProfile.exam_info) onboardingTempProfile.exam_info = { type: 'confirmed', dates: [] };
     if (!onboardingTempProfile.exam_info.dates) onboardingTempProfile.exam_info.dates = [];
@@ -1331,68 +1321,17 @@ function handleSubjectDateChange(subject, dateVal) {
     if (dateVal) {
         onboardingTempProfile.exam_info.dates.push({ subject, date: dateVal });
     }
+    triggerReplanOnExamDateChange();
 }
 
-// --- Q6: OFF DAYS ---
-function toggleOffDay(day) {
-    if (offDays.has(day)) {
-        offDays.delete(day);
-    } else {
-        offDays.add(day);
-    }
-    renderOffDaysUI();
-}
-
-function renderOffDaysUI() {
-    document.querySelectorAll('#off-days-chips .day-chip-btn').forEach(btn => {
-        btn.classList.toggle('active', offDays.has(btn.getAttribute('data-day')));
-    });
-}
-
-// --- Q7: GOAL ---
-function selectGoal(goal) {
-    selectedGoal = goal;
-    renderGoalUI();
-}
-
-function renderGoalUI() {
-    document.querySelectorAll('#tap-row-goal .tap-segment-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-goal') === selectedGoal);
-    });
-}
-
-// --- AI FOLLOW-UP ---
-async function sendFollowUpAnswer() {
-    const input = document.getElementById('ai-followup-input');
-    if (!input || !input.value.trim()) return;
-    
-    const answer = input.value.trim();
-    input.value = '';
-    
-    followUpContext.push({ role: 'user', text: answer });
-    
-    // Show loading
-    const statusBar = document.getElementById('ai-status-bar');
-    const statusText = document.getElementById('ai-status-text');
-    if (statusBar) statusBar.classList.remove('hidden');
-    if (statusText) statusText.textContent = 'Processing your answer…';
-    
-    // Re-submit with follow-up context
-    await executeAIPlanGeneration();
-}
-
-// --- SUBMIT: Collect all answers and generate ---
+// --- SUBMIT: Collect answers and generate (ONE AI call, no chat) ---
 async function submitOnboardingAndGeneratePlan() {
-    // Save profile
     onboardingTempProfile.subjects = [...selectedSubjects];
     onboardingTempProfile.hard_subjects = [...hardSubjects];
-    onboardingTempProfile.off_days = [...offDays];
-    onboardingTempProfile.goal = selectedGoal;
-    onboardingTempProfile.timetable_text = document.getElementById('timetable-text-input')?.value || '';
     savePlannerProfile(onboardingTempProfile);
     localStorage.setItem('sabi_planner_onboarded', 'true');
 
-    // Also save subjects to enrolled subjects store
+    // Save subjects to enrolled subjects store
     const subjectObjects = [...selectedSubjects].map(name => {
         const catalogMatch = DEFAULT_SUBJECT_CATALOG.find(c => c.name.toLowerCase() === name.toLowerCase());
         return { name, topics: catalogMatch ? catalogMatch.topics : [] };
@@ -1405,90 +1344,28 @@ async function submitOnboardingAndGeneratePlan() {
     const statusText = document.getElementById('ai-status-text');
     if (btn) btn.disabled = true;
     if (statusBar) statusBar.classList.remove('hidden');
-    if (statusText) statusText.textContent = 'Building your personalized study plan…';
+    if (statusText) statusText.textContent = 'Generating your personalized study plan…';
 
-    await executeAIPlanGeneration();
-}
-
-async function executeAIPlanGeneration() {
-    const statusText = document.getElementById('ai-status-text');
-    const btn = document.getElementById('btn-submit-onboarding');
-    
     try {
         const monday = getMondayOfWeek(new Date());
-        
-        // If there's a photo, first extract timetable via Gemini Vision
-        if (timetablePhotoBase64 && !onboardingTempProfile._photoExtracted) {
-            if (statusText) statusText.textContent = 'Reading your timetable photo…';
-            const extractedClasses = await extractTimetableFromPhoto(timetablePhotoBase64);
-            if (extractedClasses && extractedClasses.length > 0) {
-                localStorage.setItem('sabi_classes', JSON.stringify(extractedClasses));
-                onboardingTempProfile._photoExtracted = true;
-            }
-        }
-        
-        // If there's typed timetable text, parse that too
-        const typedText = onboardingTempProfile.timetable_text || '';
-        if (typedText.trim() && !onboardingTempProfile._textExtracted) {
-            if (statusText) statusText.textContent = 'Parsing your timetable…';
-            const extractedClasses = await extractTimetableFromText(typedText);
-            if (extractedClasses && extractedClasses.length > 0) {
-                // Merge with any photo-extracted classes
-                const existing = getStoredClasses();
-                const merged = onboardingTempProfile._photoExtracted 
-                    ? [...existing, ...extractedClasses]
-                    : extractedClasses;
-                localStorage.setItem('sabi_classes', JSON.stringify(merged));
-                onboardingTempProfile._textExtracted = true;
-            }
-        }
-
-        if (statusText) statusText.textContent = 'Generating weekly study sessions…';
         await generateWeeklyPlan(monday, false, false);
 
-        // Check if AI returned a follow-up question
-        const lastPlanResult = localStorage.getItem('sabi_last_plan_result');
-        if (lastPlanResult) {
-            try {
-                const result = JSON.parse(lastPlanResult);
-                if (result.follow_up_question) {
-                    // Show follow-up area
-                    const followUpArea = document.getElementById('ai-followup-area');
-                    const followUpBubble = document.getElementById('ai-followup-bubble');
-                    if (followUpArea) followUpArea.classList.remove('hidden');
-                    if (followUpBubble) followUpBubble.textContent = result.follow_up_question;
-                    followUpContext.push({ role: 'assistant', text: result.follow_up_question });
-                    
-                    const statusBar = document.getElementById('ai-status-bar');
-                    if (statusBar) statusBar.classList.add('hidden');
-                    if (btn) btn.disabled = false;
-                    return; // Wait for student answer
-                }
-            } catch (e) { /* ignore parse error */ }
-        }
-
-        // Success — close modal
         if (statusText) statusText.textContent = '✅ Plan generated!';
         setTimeout(() => {
             closePlannerOnboardingModal();
-            const statusBar = document.getElementById('ai-status-bar');
             if (statusBar) statusBar.classList.add('hidden');
             if (btn) btn.disabled = false;
             showToast('✨ Your personalized study plan is ready!');
             renderAllViews();
-        }, 600);
+        }, 500);
 
     } catch (err) {
         console.error('Plan generation error:', err);
-        if (statusText) statusText.textContent = 'Plan generated (offline mode)';
-        setTimeout(() => {
-            closePlannerOnboardingModal();
-            const statusBar = document.getElementById('ai-status-bar');
-            if (statusBar) statusBar.classList.add('hidden');
-            if (btn) btn.disabled = false;
-            showToast('📋 Study plan ready (offline mode)');
-            renderAllViews();
-        }, 600);
+        closePlannerOnboardingModal();
+        if (statusBar) statusBar.classList.add('hidden');
+        if (btn) btn.disabled = false;
+        showToast('📋 Study plan ready');
+        renderAllViews();
     }
 }
 
@@ -2162,6 +2039,12 @@ function synthesizeRuleCompliantPlan(input, retryViolations) {
         `Sunday reserved as a full rest day to prevent academic fatigue.`
     ];
 
+    // Rule 5: If everything can't fit, list what was reduced in notes
+    const reducedSubs = subjects.filter(s => (subjectSessionCount[s.name] || 0) < 2).map(s => s.name);
+    if (reducedSubs.length > 0) {
+        notes.push(`Reduced sessions for ${reducedSubs.join(', ')} to fit within daily study limits.`);
+    }
+
     return JSON.stringify({
         summary: `Your personalized weekly plan is set with spaced study sessions, prioritized focus on ${hardNames}, and Sunday reserved for rest.`,
         notes: notes,
@@ -2318,6 +2201,21 @@ function validatePlannerOutput(plan, inputBundle) {
             const sKey = (sess.subject || '').toLowerCase();
             if (!sessionsBySubject[sKey]) sessionsBySubject[sKey] = [];
             sessionsBySubject[sKey].push(sess.date);
+        }
+    });
+
+    // 10. Min 2 sessions per subject with 2+ days between them (unless "notes" explains the reduction)
+    const allNotesText = (plan.notes || []).join(' ').toLowerCase();
+    const explainsReduction = /reduc|cut|drop|limit|fit|less|fewer|adjust/i.test(allNotesText);
+
+    (inputBundle.subjects || []).forEach(sub => {
+        const sKey = (sub.name || '').toLowerCase();
+        const count = (sessionsBySubject[sKey] || []).length;
+        if (count < 2) {
+            const subjectMentionedInNotes = allNotesText.includes(sKey);
+            if (!explainsReduction && !subjectMentionedInNotes) {
+                violations.push(`Subject '${sub.name}' has only ${count} session(s) (minimum 2 required), and 'notes' does not explain any reduction.`);
+            }
         }
     });
 

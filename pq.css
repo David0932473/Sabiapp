@@ -22,7 +22,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background-color: var(--bg); color: var(--text-main); font-family: 'Outfit', sans-serif; padding-bottom: 50px; min-height: 100vh; overflow-x: hidden; }
+body { background-color: var(--bg); color: var(--text-main); font-family: 'Poppins', sans-serif; padding-bottom: 50px; min-height: 100vh; overflow-x: hidden; }
 
 #prep-engine { padding: 30px 20px; max-width: 500px; margin: 0 auto; }
 
@@ -105,5 +105,5 @@ body { background-color: var(--bg); color: var(--text-main); font-family: 'Outfi
 .demo .mode-tag { background: rgba(61, 142, 255, 0.1); color: var(--accent); }
 .real .mode-tag { background: rgba(239, 68, 68, 0.1); color: #EF4444; }
 
-.cancel-btn { width: 100%; background: transparent; border: none; color: #8E96A4; font-size: 13px; font-weight: 600; font-family: 'Outfit'; cursor: pointer; padding: 10px; transition: 0.2s; }
+.cancel-btn { width: 100%; background: transparent; border: none; color: #8E96A4; font-size: 13px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; padding: 10px; transition: 0.2s; }
 .cancel-btn:hover { color: #fff; }

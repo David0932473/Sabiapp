@@ -1,31 +1,30 @@
-- **Goal (incl. success criteria)**: Make the calendar section minimalist like other sections (Library, Dashboard, PQ Engine)—remove visual bloat and sensory overload while preserving full functionality (1-tap AI planner, week grid timetable, and landscape printing).
+- **Goal (incl. success criteria)**: Implement STAGE 5: Plan generator (one AI call, no chat) and use Poppins font everywhere on the website.
 - **Constraints/Assumptions**:
-  - Unified 600px mobile-first container matching [library.html](file:///c:/Users/dave/.gemini/sabi/library.html) and [index.html](file:///c:/Users/dave/.gemini/sabi/index.html).
-  - Clean top bar with back button, `+ New`, and `⋯` options menu.
-  - Minimalist tabs: `Schedule` (agenda) and `Week Grid`.
-  - Sleek 7-day horizontal week navigator strip replacing the 35-cell monthly grid.
-  - Understated AI strategy card and elegant `.session-card` items styled identically to `.book-card` in [library.css](file:///c:/Users/dave/.gemini/sabi/library.css).
-  - Strict validation, retry/drop logic, and `@media print` single-page landscape printing fully preserved.
+  - Onboarding is ONE tap-only screen with 3 questions:
+    1. Which subjects do you find hard? (chips from their subjects, any number)
+    2. Realistic study hours on a normal day (1-2 / 3-4 / 5+) and best time (morning / afternoon / evening / night)
+    3. Exam dates: "I know them" (date picker per subject, optional), "In about X weeks", or "I don't know yet"
+  - Plan ONE week at a time: generate on onboarding completion, auto-regenerate first time opened each Monday, "Regenerate plan" in ⋯ menu, and re-plan remaining days when exam date is entered or changed.
+  - One AI call, no chat, returning one JSON output strictly matching system prompt and schema.
+  - Strict validation in code: schema, subject names match input, dates in week, no overlap with classes/fixed sessions, times in 05:30-23:30, min 2 sessions per subject with 2+ days apart (unless notes explains reduction), max 3 subjects per day. Retry once with violations if invalid.
+  - Poppins font applied everywhere across the website.
 - **Key decisions**:
-  - Removed the overwhelming 1400px 2-column sidebar layout, duplicate mini-calendar grid, heavy promotional Google sync card, category pills card, pulsing timer pills, and duplicate focused-day + upcoming-day listings.
-  - Replaced card face clutter with clean typography: time pill, subject title + activity pill, completion checkmark. Tapping the card opens full detail modal with edit/delete/Google Calendar direct sync.
-  - Upgraded AI Study Planner with structured 6-question questionnaire (Hardest Subjects selection, Class Timetable Text/Photo OCR extraction, Daily Hours & Time Window, Exam Timings, Off-Days, and Target Goals).
-  - Configured secret management: API keys are stored in [.env](file:///c:/Users/dave/.gemini/sabi/.env) and [env.js](file:///c:/Users/dave/.gemini/sabi/env.js), protected by [.gitignore](file:///c:/Users/dave/.gemini/sabi/.gitignore) with a [.env.example](file:///c:/Users/dave/.gemini/sabi/.env.example) template.
-  - Prioritized Anthropic Claude 3.5 Sonnet / Claude 3.5 Haiku as primary AI engine (with direct browser CORS headers) for planner generation, timetable photo vision OCR, and text parsing, backed by Gemini/OpenAI fallbacks and the built-in 11-rule academic scheduler.
+  - Streamlined `#planner-onboarding-modal` to remove text inputs, photo uploads, off-days, goals, and follow-up bubbles, making onboarding a clean, fast tap-only modal.
+  - Wired exam date inputs and mode changes to debounce and trigger `generateWeeklyPlan(monday, false, true)` to automatically re-plan remaining days.
+  - Added strict minimum 2 sessions per subject check to `validatePlannerOutput()` with automatic fallback explanation for Rule 5 reductions.
+  - Replaced Google Font `Outfit` with `Poppins` across all 11 HTML pages and all CSS/JS stylesheets.
 - **State**:
   - Done:
-    - [.env](file:///c:/Users/dave/.gemini/sabi/.env) & [env.js](file:///c:/Users/dave/.gemini/sabi/env.js): Configured with Claude API keys and protected by `.gitignore`.
-    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Cleaned DOM into 600px minimalist container + 6-question onboarding modal with timetable photo & text import, and Claude model key settings modal.
-    - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css): Completely rebuilt with clean styling matching `library.css`.
-    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Hoisted state and constants, eliminated TDZ errors, fixed page load initialization, and implemented dynamic collision-free slot generation.
-  - Now: All lifecycle functions, page load rendering, and weekly plan generation tested and verified passing with 0 errors.
-  - Next: User can open calendar.html and generate plans smoothly.
+    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Streamlined onboarding modal to ONE tap-only screen with 3 questions.
+    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Strict validation engine with min 2 sessions check, exam date change auto-replan of remaining days, Monday auto-regeneration, and clean one AI call pipeline.
+    - Poppins font integrated across [global.css](file:///c:/Users/dave/.gemini/sabi/global.css), [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css), [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html), [index.html](file:///c:/Users/dave/.gemini/sabi/index.html), [library.html](file:///c:/Users/dave/.gemini/sabi/library.html), [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html), [pq-setup.html](file:///c:/Users/dave/.gemini/sabi/pq-setup.html), [jamb-setup.html](file:///c:/Users/dave/.gemini/sabi/jamb-setup.html), [jamb-setup.css](file:///c:/Users/dave/.gemini/sabi/jamb-setup.css), [ican.html](file:///c:/Users/dave/.gemini/sabi/ican.html), [reader.html](file:///c:/Users/dave/.gemini/sabi/reader.html), [results.html](file:///c:/Users/dave/.gemini/sabi/results.html), [results.css](file:///c:/Users/dave/.gemini/sabi/results.css), [review.html](file:///c:/Users/dave/.gemini/sabi/review.html), [review.css](file:///c:/Users/dave/.gemini/sabi/review.css), [test-room.html](file:///c:/Users/dave/.gemini/sabi/test-room.html), [test-room.css](file:///c:/Users/dave/.gemini/sabi/test-room.css), [pq.js](file:///c:/Users/dave/.gemini/sabi/pq.js).
+  - Now: All tests passing, 0 validation collisions, ready to commit and push.
+  - Next: User verification in browser.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
-  - Secrets: [.env](file:///c:/Users/dave/.gemini/sabi/.env), [env.js](file:///c:/Users/dave/.gemini/sabi/env.js), [.gitignore](file:///c:/Users/dave/.gemini/sabi/.gitignore)
-  - Calendar page: [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
-  - Calendar styles: [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css)
-  - Calendar logic: [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)
-  - Global styles: [global.css](file:///c:/Users/dave/.gemini/sabi/global.css)
-  - Continuity ledger: [docs/short-term-plan/CONTINUITY.md](file:///c:/Users/dave/.gemini/sabi/docs/short-term-plan/CONTINUITY.md)
+  - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
+  - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)
+  - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css)
+  - [global.css](file:///c:/Users/dave/.gemini/sabi/global.css)
+
 
