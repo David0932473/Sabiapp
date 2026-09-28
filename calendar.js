@@ -1,80 +1,15 @@
 /**
  * SABI OS v3.0: GOOGLE CALENDAR LANDSCAPE SYSTEM
- * Full Mini-Calendar, Filter Chips, Month Grid & Agenda Timeline
+ * Full Mini-Calendar with Event Counts, No Side-by-Side Months, & Focused Day Agenda
  */
 
 // Academic Milestones (Nigerian Exams & Study Sessions)
 const DEFAULT_EVENTS = [
     {
-        id: 'ev-jamb-2026',
-        title: 'JAMB UTME 2026 Examination',
-        category: 'jamb',
-        date: '2026-04-18',
-        time: '08:00',
-        duration: 3,
-        location: 'Accredited CBT Exam Center',
-        notes: 'Unified Tertiary Matriculation Examination (UTME). 4 registered subjects & past questions.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-felix.svg']
-    },
-    {
-        id: 'ev-waec-2026',
-        title: 'WAEC WASSCE 2026 Exam Kickoff',
-        category: 'waec',
-        date: '2026-05-04',
-        time: '09:00',
-        duration: 4,
-        location: 'Secondary Examination Hall',
-        notes: 'West African Senior School Certificate Examination commencement.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-sadie.svg']
-    },
-    {
-        id: 'ev-neco-2026',
-        title: 'NECO SSCE Senior Secondary Exam',
-        category: 'neco',
-        date: '2026-06-15',
-        time: '09:00',
-        duration: 4,
-        location: 'Accredited Exam Hall',
-        notes: 'National Examinations Council (NECO) Senior School Certificate Examination.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-alex.svg', 'avatars/notion-willow.svg']
-    },
-    {
-        id: 'ev-noun-tma',
-        title: 'NOUN TMA 1 & 2 Submission Window',
-        category: 'noun',
-        date: '2026-04-10',
-        time: '23:59',
-        duration: 1,
-        location: 'NOUN Student Portal',
-        notes: 'Final deadline for Tutor Marked Assignments 1 and 2 across all registered courses.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-scholar.svg']
-    },
-    {
-        id: 'ev-ican-2026',
-        title: 'ICAN Skills & Professional Diet Exam',
-        category: 'ican',
-        date: '2026-05-12',
-        time: '09:00',
-        duration: 4,
-        location: 'ICAN Examination Center',
-        notes: 'Institute of Chartered Accountants of Nigeria diet examinations.',
-        isDefault: true,
-        completed: false,
-        avatars: ['avatars/notion-felix.svg', 'avatars/notion-scholar.svg']
-    },
-    {
-        id: 'ev-drill-today',
-        title: 'JAMB Physics Mechanics Past Questions Speed Drill',
+        id: 'ev-drill-today-1',
+        title: 'JAMB Physics Mechanics Speed Drill',
         category: 'study',
-        date: getFutureDateString(0), // Today
+        date: getFutureDateString(0), // Today (Sept 28, 2026)
         time: '17:30',
         duration: 1.5,
         location: 'Sabi App PQ Room',
@@ -84,12 +19,12 @@ const DEFAULT_EVENTS = [
         avatars: ['avatars/notion-scholar.svg', 'avatars/notion-felix.svg', 'avatars/notion-sadie.svg']
     },
     {
-        id: 'ev-drill-tomorrow',
+        id: 'ev-drill-today-2',
         title: 'Chemistry Organic Reactions Mastery',
         category: 'study',
-        date: getFutureDateString(1), // Tomorrow
-        time: '16:00',
-        duration: 2,
+        date: getFutureDateString(0), // Today (Sept 28, 2026)
+        time: '19:30',
+        duration: 1,
         location: 'Sabi Digital Library & Notes',
         notes: 'Hydrocarbons, Alkanols & Reaction Mechanisms revision with Sabi PQ explanations.',
         isDefault: true,
@@ -97,17 +32,82 @@ const DEFAULT_EVENTS = [
         avatars: ['avatars/notion-willow.svg', 'avatars/notion-scholar.svg']
     },
     {
-        id: 'ev-drill-upcoming',
+        id: 'ev-drill-tomorrow',
         title: 'English Comprehension & Oral Speed Test',
         category: 'study',
-        date: getFutureDateString(3),
-        time: '18:00',
+        date: getFutureDateString(1), // Tomorrow
+        time: '16:00',
         duration: 1,
         location: 'Sabi App PQ Room',
         notes: 'Timed comprehension passages, stress patterns, and vowel sound contrasts.',
         isDefault: true,
         completed: false,
         avatars: ['avatars/notion-alex.svg', 'avatars/notion-felix.svg']
+    },
+    {
+        id: 'ev-jamb-2026',
+        title: 'JAMB UTME 2026 National Examination',
+        category: 'jamb',
+        date: '2026-10-15',
+        time: '08:00',
+        duration: 3,
+        location: 'Accredited CBT Exam Center',
+        notes: 'Unified Tertiary Matriculation Examination (UTME). 4 registered subjects & past questions.',
+        isDefault: true,
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-felix.svg']
+    },
+    {
+        id: 'ev-noun-tma',
+        title: 'NOUN TMA 1 & 2 Final Submission Window',
+        category: 'noun',
+        date: '2026-10-22',
+        time: '23:59',
+        duration: 1,
+        location: 'NOUN Student Portal',
+        notes: 'Final deadline for Tutor Marked Assignments 1 and 2 across all registered courses.',
+        isDefault: true,
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg']
+    },
+    {
+        id: 'ev-waec-2026',
+        title: 'WAEC WASSCE Examination Kickoff',
+        category: 'waec',
+        date: '2026-11-04',
+        time: '09:00',
+        duration: 4,
+        location: 'Secondary Examination Hall',
+        notes: 'West African Senior School Certificate Examination commencement.',
+        isDefault: true,
+        completed: false,
+        avatars: ['avatars/notion-scholar.svg', 'avatars/notion-sadie.svg']
+    },
+    {
+        id: 'ev-ican-2026',
+        title: 'ICAN Skills & Professional Diet Exam',
+        category: 'ican',
+        date: '2026-11-12',
+        time: '09:00',
+        duration: 4,
+        location: 'ICAN Examination Center',
+        notes: 'Institute of Chartered Accountants of Nigeria diet examinations.',
+        isDefault: true,
+        completed: false,
+        avatars: ['avatars/notion-felix.svg', 'avatars/notion-scholar.svg']
+    },
+    {
+        id: 'ev-neco-2026',
+        title: 'NECO SSCE Senior Secondary Exam',
+        category: 'neco',
+        date: '2026-11-20',
+        time: '09:00',
+        duration: 4,
+        location: 'Accredited Exam Hall',
+        notes: 'National Examinations Council (NECO) Senior School Certificate Examination.',
+        isDefault: true,
+        completed: false,
+        avatars: ['avatars/notion-alex.svg', 'avatars/notion-willow.svg']
     }
 ];
 
@@ -126,7 +126,7 @@ let calendarEvents = [];
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth(); // 0-indexed
 let selectedDate = getFutureDateString(0); // Today selected by default
-let currentViewMode = 'month'; // 'month', 'agenda', 'embed'
+let currentViewMode = 'agenda'; // Default to 'agenda' so months are NOT side-by-side!
 let searchQuery = '';
 let selectedDetailEventId = null;
 
@@ -145,6 +145,7 @@ let activeCategories = new Set(['jamb', 'waec', 'neco', 'noun', 'ican', 'study']
 document.addEventListener('DOMContentLoaded', () => {
     loadEvents();
     renderFilterChips();
+    switchViewMode('agenda'); // Ensure Agenda Schedule view is active by default
     renderAllViews();
     updateTargetCountdown();
     setupEmbedCalendar();
@@ -161,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Load events from LocalStorage
 function loadEvents() {
-    const stored = localStorage.getItem('sabi_calendar_events');
+    const stored = localStorage.getItem('sabi_calendar_events_v2');
     if (stored) {
         try {
             calendarEvents = JSON.parse(stored);
@@ -176,7 +177,7 @@ function loadEvents() {
 }
 
 function saveEvents() {
-    localStorage.setItem('sabi_calendar_events', JSON.stringify(calendarEvents));
+    localStorage.setItem('sabi_calendar_events_v2', JSON.stringify(calendarEvents));
 }
 
 // Master Render Function
@@ -197,7 +198,7 @@ function updateMonthTitles() {
     if (mainTitle) mainTitle.textContent = monthName;
 }
 
-// --- MINI MONTH NAVIGATOR (From User Reference Mockup) ---
+// --- MINI MONTH NAVIGATOR WITH EVENT COUNTS BESIDE DOTS ---
 function renderMiniCalendar() {
     const container = document.getElementById('mini-cal-days');
     if (!container) return;
@@ -208,7 +209,7 @@ function renderMiniCalendar() {
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const totalDays = lastDay.getDate();
     
-    // Day of week for 1st of month: 0 (Sun) to 6 (Sat). We want Mon = 0 to Sun = 6
+    // Day of week for 1st of month: Mon = 0 to Sun = 6
     let startDayOfWeek = firstDay.getDay() - 1;
     if (startDayOfWeek === -1) startDayOfWeek = 6;
     
@@ -242,26 +243,30 @@ function renderMiniCalendar() {
         cell.className = `mini-day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`;
         cell.onclick = () => onSelectDate(dateStr);
         
-        // Multi-colored dots underneath day number (From Reference Mockup!)
-        let dotsHtml = '';
+        // Dot + small number indicating amount of events for that day
+        let badgeHtml = '';
         if (dayEvents.length > 0) {
-            dotsHtml = `<div class="mini-day-dots">`;
-            // Max 4 dots to keep it clean
-            dayEvents.slice(0, 4).forEach(ev => {
+            const dots = dayEvents.slice(0, 2).map(ev => {
                 const color = getCategoryColor(ev.category);
-                dotsHtml += `<span class="mini-event-dot" style="background-color: ${color}"></span>`;
-            });
-            dotsHtml += `</div>`;
+                return `<span class="mini-event-dot" style="background-color: ${color}"></span>`;
+            }).join('');
+            
+            badgeHtml = `
+                <div class="mini-day-badge">
+                    ${dots}
+                    <span class="mini-event-count">${dayEvents.length}</span>
+                </div>
+            `;
         }
         
         cell.innerHTML = `
             <span class="mini-day-num">${day}</span>
-            ${dotsHtml}
+            ${badgeHtml}
         `;
         container.appendChild(cell);
     }
     
-    // Next month filler days to complete grid (up to 35 or 42)
+    // Next month filler days
     const filledCells = startDayOfWeek + totalDays;
     const remaining = (7 - (filledCells % 7)) % 7;
     for (let day = 1; day <= remaining; day++) {
@@ -280,12 +285,14 @@ function onSelectDate(dateStr) {
     
     renderAllViews();
     
-    // If in Agenda view, smoothly scroll to selected date group
-    if (currentViewMode === 'agenda') {
-        const el = document.getElementById(`agenda-group-${dateStr}`);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+    // Switch to agenda view and scroll to focused day
+    if (currentViewMode !== 'agenda') {
+        switchViewMode('agenda');
+    }
+    
+    const el = document.getElementById('selected-day-focus-box');
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
@@ -331,7 +338,6 @@ function renderFilterChips() {
 
 function toggleCategoryFilter(key) {
     if (activeCategories.has(key)) {
-        // Keep at least one active
         if (activeCategories.size > 1) {
             activeCategories.delete(key);
         } else {
@@ -352,7 +358,7 @@ function resetCategoryFilters() {
     showToast('All category filters restored');
 }
 
-// --- VIEW 1: FULL MONTH LANDSCAPE GRID (Google Calendar Style) ---
+// --- VIEW 1: FULL MONTH LANDSCAPE GRID ---
 function renderMainMonthGrid() {
     const container = document.getElementById('main-month-grid');
     if (!container) return;
@@ -402,7 +408,6 @@ function renderMainMonthGrid() {
         const cell = document.createElement('div');
         cell.className = `grid-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`;
         cell.onclick = (e) => {
-            // If didn't click inside an event pill
             if (!e.target.closest('.event-chip-pill')) {
                 onSelectDate(dateStr);
             }
@@ -452,12 +457,18 @@ function renderMainMonthGrid() {
     }
 }
 
-// --- VIEW 2: AGENDA / TIMELINE VIEW (Reference Mockup Screen 3!) ---
+// --- VIEW 2: AGENDA / TIMELINE & FOCUSED DAY SCHEDULE ---
 function renderAgendaTimeline() {
     const container = document.getElementById('agenda-timeline-list');
+    const focusedContainer = document.getElementById('selected-day-focus-box');
     if (!container) return;
     
-    // Filter events based on active category and search
+    // 1. Render Focused Day Section (Screen 1 & Screen 2)
+    if (focusedContainer) {
+        renderFocusedDay(focusedContainer);
+    }
+    
+    // 2. Render Upcoming Agenda Timeline (Screen 3)
     let filtered = calendarEvents.filter(ev => {
         const matchesCat = activeCategories.has(ev.category);
         const matchesSearch = !searchQuery || 
@@ -499,50 +510,7 @@ function renderAgendaTimeline() {
         const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         const weekdayStr = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
         
-        const eventsCardsHtml = dateEvents.map(ev => {
-            const accentClass = `card-accent-${ev.category}`;
-            const tagColorClass = `tag-color-${ev.category}`;
-            const gcalUrl = createGoogleCalendarUrl(ev);
-            
-            // Avatar Stack (from Reference Mockup!)
-            const avatars = ev.avatars || ['avatars/notion-scholar.svg'];
-            const avatarStackHtml = `
-                <div class="agenda-avatar-stack">
-                    ${avatars.map(av => `<img src="${av}" alt="Scholar" class="avatar-stack-img" />`).join('')}
-                </div>
-            `;
-            
-            return `
-                <div class="agenda-event-card ${accentClass} ${ev.completed ? 'completed' : ''}" id="agenda-card-${ev.id}">
-                    <div class="agenda-event-info" onclick="openEventDetailModal('${ev.id}')">
-                        <span class="agenda-cat-tag ${tagColorClass}">
-                            ${getCategoryBadgeText(ev.category)}
-                        </span>
-                        <h4 class="agenda-event-title">${escapeHtml(ev.title)}</h4>
-                        <div class="agenda-event-meta">
-                            <span>🕒 ${ev.time || 'All Day'} (${ev.duration || 1}h)</span>
-                            <span>📍 ${escapeHtml(ev.location || 'Sabi Prep Room')}</span>
-                        </div>
-                        ${avatarStackHtml}
-                    </div>
-                    
-                    <div class="agenda-actions-right">
-                        <a href="${gcalUrl}" target="_blank" rel="noopener noreferrer" class="btn-gcal-direct-link" title="Directly sync to Google Calendar">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6"/>
-                                <line x1="8" y1="2" x2="8" y2="6"/>
-                                <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                            Sync
-                        </a>
-                        <button type="button" class="btn-check-toggle ${ev.completed ? 'active' : ''}" onclick="toggleEventComplete('${ev.id}')" title="Mark Done">
-                            ${ev.completed ? '✓' : '○'}
-                        </button>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        const eventsCardsHtml = dateEvents.map(ev => renderEventCardHtml(ev)).join('');
         
         return `
             <div class="agenda-date-group" id="agenda-group-${dateKey}">
@@ -559,7 +527,103 @@ function renderAgendaTimeline() {
     }).join('');
 }
 
-// View Switching
+// Render Focused Day (Screen 1 & Screen 2)
+function renderFocusedDay(container) {
+    const dateObj = new Date(selectedDate + 'T00:00:00');
+    const dayHuman = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    
+    // Events for selected day
+    const dayEvents = calendarEvents.filter(ev => {
+        return ev.date === selectedDate && activeCategories.has(ev.category);
+    });
+    
+    if (dayEvents.length === 0) {
+        // Screen 2 empty state
+        container.innerHTML = `
+            <div class="focus-day-card empty">
+                <div class="focus-day-header">
+                    <div class="focus-day-title-group">
+                        <span class="focus-badge-dot"></span>
+                        <h3 class="focus-day-title">Events for ${dayHuman}</h3>
+                    </div>
+                    <button type="button" class="btn-focus-add" onclick="openAddSessionModal()">+ Add Event</button>
+                </div>
+                <div class="focus-empty-body">
+                    <span class="focus-empty-icon">🗓️</span>
+                    <p class="focus-empty-text">No Events for ${dayHuman}</p>
+                    <button type="button" class="btn-create-event" onclick="openAddSessionModal()">
+                        + Schedule Session for this Day
+                    </button>
+                </div>
+            </div>
+        `;
+    } else {
+        // Screen 1 events state
+        const cardsHtml = dayEvents.map(ev => renderEventCardHtml(ev)).join('');
+        container.innerHTML = `
+            <div class="focus-day-card">
+                <div class="focus-day-header">
+                    <div class="focus-day-title-group">
+                        <span class="focus-badge-dot active"></span>
+                        <h3 class="focus-day-title">Events for ${dayHuman}</h3>
+                        <span class="focus-count-pill">${dayEvents.length} session${dayEvents.length === 1 ? '' : 's'}</span>
+                    </div>
+                    <button type="button" class="btn-focus-add" onclick="openAddSessionModal()">+ Add Event</button>
+                </div>
+                <div class="focus-cards-list">
+                    ${cardsHtml}
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Reusable Event Card HTML (Vertical color bar, tags, Notion avatars, Google Calendar sync)
+function renderEventCardHtml(ev) {
+    const accentClass = `card-accent-${ev.category}`;
+    const tagColorClass = `tag-color-${ev.category}`;
+    const gcalUrl = createGoogleCalendarUrl(ev);
+    const avatars = ev.avatars || ['avatars/notion-scholar.svg'];
+    
+    const avatarStackHtml = `
+        <div class="agenda-avatar-stack">
+            ${avatars.map(av => `<img src="${av}" alt="Scholar" class="avatar-stack-img" />`).join('')}
+        </div>
+    `;
+    
+    return `
+        <div class="agenda-event-card ${accentClass} ${ev.completed ? 'completed' : ''}" id="agenda-card-${ev.id}">
+            <div class="agenda-event-info" onclick="openEventDetailModal('${ev.id}')">
+                <span class="agenda-cat-tag ${tagColorClass}">
+                    ${getCategoryBadgeText(ev.category)}
+                </span>
+                <h4 class="agenda-event-title">${escapeHtml(ev.title)}</h4>
+                <div class="agenda-event-meta">
+                    <span>🕒 ${ev.time || 'All Day'} (${ev.duration || 1}h)</span>
+                    <span>📍 ${escapeHtml(ev.location || 'Sabi Prep Room')}</span>
+                </div>
+                ${avatarStackHtml}
+            </div>
+            
+            <div class="agenda-actions-right">
+                <a href="${gcalUrl}" target="_blank" rel="noopener noreferrer" class="btn-gcal-direct-link" title="Directly sync to Google Calendar">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    Sync
+                </a>
+                <button type="button" class="btn-check-toggle ${ev.completed ? 'active' : ''}" onclick="toggleEventComplete('${ev.id}')" title="Mark Done">
+                    ${ev.completed ? '✓' : '○'}
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// View Switching: Month Mode hides sidebar so months are NOT side-by-side!
 function switchViewMode(mode) {
     currentViewMode = mode;
     
@@ -568,9 +632,19 @@ function switchViewMode(mode) {
     
     const activeBtn = document.getElementById(`btn-view-${mode}`);
     const activePane = document.getElementById(`view-${mode}-container`);
+    const workspace = document.querySelector('.calendar-workspace');
     
     if (activeBtn) activeBtn.classList.add('active');
     if (activePane) activePane.classList.remove('hidden');
+    
+    // In Month Mode: hide sidebar so duplicate months are NEVER side-by-side!
+    if (workspace) {
+        if (mode === 'month') {
+            workspace.classList.add('month-mode');
+        } else {
+            workspace.classList.remove('month-mode');
+        }
+    }
     
     if (mode === 'agenda') {
         renderAgendaTimeline();
@@ -651,6 +725,10 @@ function formatGoogleIso(d) {
 // --- MODALS & DETAILS ---
 function openAddSessionModal() {
     const overlay = document.getElementById('add-session-modal');
+    const dateInput = document.getElementById('modal-session-date');
+    if (dateInput && selectedDate) {
+        dateInput.value = selectedDate;
+    }
     if (overlay) {
         overlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -821,7 +899,7 @@ function exportToIcs() {
         ics.push(`DTSTART:${dtstart}`);
         ics.push(`DTEND:${dtend}`);
         ics.push(`SUMMARY:${escapeIcs(ev.title)}`);
-        if (ev.notes) ics.push(`DESCRIPTION:${escapeIcs(ev.notes)}`);
+        if (ev.notes) icsContent = ics.push(`DESCRIPTION:${escapeIcs(ev.notes)}`);
         ics.push(`LOCATION:${escapeIcs(ev.location || 'Sabi Prep Room')}`);
         ics.push('STATUS:CONFIRMED');
         ics.push('END:VEVENT');

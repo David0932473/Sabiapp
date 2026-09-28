@@ -9,9 +9,14 @@
     - Notion student avatar piles (`avatars/notion-*.svg`) in event cards.
   - Implement full Google Calendar-style month grid with event chips directly inside date cells.
 - **State**:
-  - Done: Transformed calendar into a landscape Google Calendar style architecture with mini-month navigator (multi-colored event dots, blue circle active date), dismissible filter chips, full month grid, and Screen 3 agenda timeline with date badges & Notion avatar stacks.
-  - Now: Committing and pushing changes to GitHub repository.
-  - Next: User review and validation.
+  - Done:
+    - Updated mini-calendar day cells to display small count numbers beside the multi-colored dots (`● 2`, `● 1`) showing the exact number of events scheduled for that day.
+    - Set the Agenda / Schedule View as the primary default view (Screen 1 & Screen 3 from reference mockup) so duplicate months are never side-by-side.
+    - Added Focused Day section (`Events for [Date]` or `No Events for [Date]`) that dynamically updates when any day is clicked in the mini-calendar.
+    - Added `month-mode` rule to hide the sidebar mini-month whenever Full Month Canvas is active to completely avoid side-by-side months.
+    - Removed any opaque background boxes behind headers and titles.
+  - Now: Committing and pushing changes to GitHub.
+  - Next: User validation in browser.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - Calendar page: [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)

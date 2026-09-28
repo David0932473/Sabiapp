@@ -51,7 +51,7 @@ body {
     background-color: var(--bg);
     color: var(--text-main);
     font-family: 'Outfit', sans-serif;
-    padding-bottom: 110px;
+    padding-bottom: 150px;
     min-height: 100vh;
     overflow-x: hidden;
 }
@@ -106,6 +106,8 @@ body {
     font-size: 22px;
     font-weight: 900;
     letter-spacing: -0.5px;
+    background: transparent !important;
+    border: none !important;
 }
 
 .cal-brand-title span {
@@ -218,6 +220,16 @@ body {
     display: flex;
     gap: 24px;
     align-items: flex-start;
+    transition: all 0.3s ease;
+}
+
+/* Eliminate Side-by-Side Months: Hide mini-calendar sidebar in Month Canvas mode */
+.calendar-workspace.month-mode .calendar-sidebar {
+    display: none !important;
+}
+
+.calendar-workspace.month-mode .calendar-main-panel {
+    width: 100% !important;
 }
 
 /* --- LEFT SIDEBAR (Width: 320px) --- */
@@ -285,6 +297,8 @@ body {
     font-weight: 800;
     color: var(--text-main);
     letter-spacing: -0.2px;
+    background: transparent !important;
+    border: none !important;
 }
 
 .mini-nav-btn {
@@ -373,23 +387,36 @@ body {
     border-radius: 50%;
 }
 
-/* Multi-colored dots underneath days with events */
-.mini-day-dots {
-    display: flex;
+/* Multi-colored dot + event count badge (Beside the dot) */
+.mini-day-badge {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    gap: 2px;
-    margin-top: 3px;
-    height: 4px;
+    gap: 3px;
+    margin-top: 1px;
+    line-height: 1;
 }
 
 .mini-event-dot {
     width: 4px;
     height: 4px;
     border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.mini-event-count {
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-muted);
 }
 
 .mini-day-cell.selected .mini-event-dot {
     background: #FFFFFF !important;
+}
+
+.mini-day-cell.selected .mini-event-count {
+    color: #FFFFFF !important;
 }
 
 /* --- FILTER PILLS CARD (From Reference Mockup Screen 2) --- */
@@ -642,6 +669,8 @@ body {
     letter-spacing: -0.5px;
     color: var(--text-main);
     min-width: 160px;
+    background: transparent !important;
+    border: none !important;
 }
 
 .toolbar-search-box {
@@ -836,6 +865,119 @@ body {
     font-weight: 800;
     color: var(--text-muted);
     padding: 2px 4px;
+}
+
+/* --- FOCUSED SELECTED DAY SECTION (Reference Mockup Screens 1 & 2) --- */
+.selected-day-focus-wrapper {
+    margin-bottom: 22px;
+}
+
+.focus-day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: all 0.25s ease;
+}
+
+.focus-day-card.empty {
+    border-style: dashed;
+    text-align: center;
+    padding: 24px 20px;
+}
+
+.focus-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.focus-day-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.focus-badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-light);
+}
+
+.focus-badge-dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+.focus-day-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-main);
+    background: transparent !important;
+}
+
+.focus-count-pill {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--accent);
+    background: rgba(61, 142, 255, 0.1);
+    border: 1px solid rgba(61, 142, 255, 0.25);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.btn-focus-add {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-focus-add:hover {
+    text-decoration: underline;
+}
+
+.focus-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.focus-empty-body {
+    padding: 10px 0;
+}
+
+.focus-empty-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.focus-empty-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.upcoming-agenda-header {
+    margin: 22px 0 12px;
+    padding: 0 4px;
+}
+
+.upcoming-heading {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* --- VIEW 2: AGENDA / TIMELINE VIEW (Reference Mockup Screen 3!) --- */
