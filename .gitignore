@@ -1,0 +1,10 @@
+# Environment files & Secret Keys
+.env
+.env.local
+.env.*.local
+env.js
+
+# OS files
+.DS_Store
+Thumbs.db
+node_modules/

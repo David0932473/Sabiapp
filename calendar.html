@@ -301,50 +301,71 @@
     </div>
 </div>
 
-<!-- MODAL 3: STAGE 5 ONBOARDING (ONE TAP-ONLY SCREEN) -->
+<!-- MODAL 3: SMART PLANNER SETUP (7 Questions + AI Follow-up) -->
 <div id="planner-onboarding-modal" class="modal-overlay hidden" onclick="closePlannerOnboardingModal(event)">
     <div class="modal-sheet onboarding-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
         <div class="sheet-top-bar">
             <div class="sheet-title-group">
                 <span class="sheet-badge-icon">⚡</span>
-                <div class="sheet-title">Weekly Study Planner Setup</div>
+                <div class="sheet-title">Study Planner Setup</div>
             </div>
             <button type="button" class="sheet-close-btn" onclick="closePlannerOnboardingModal()" aria-label="Close">✕</button>
         </div>
 
         <div class="onboarding-content-wrap">
-            <p class="onboarding-tagline">1-Tap Study Personalization. No long forms or chatbots.</p>
+            <p class="onboarding-tagline">Answer a few quick questions and we'll build your personalized study timetable.</p>
 
-            <!-- QUESTION 1: HARD SUBJECTS -->
+            <!-- Q1: HARDEST SUBJECTS -->
             <div class="onboarding-section">
                 <div class="onboarding-q-title">
                     <span class="q-num">1</span>
-                    <span>Which subjects do you find hard?</span>
+                    <span>Which are your hardest subjects?</span>
                 </div>
-                <p class="q-hint">Tap any subject you find tough. We'll give them up to double sessions and extra practice.</p>
+                <p class="q-hint">Tap subjects you struggle with — they'll receive extra focus and spaced review sessions.</p>
                 <div class="subject-chips-grid" id="onboarding-hard-subjects-chips">
-                    <!-- Populated dynamically with tap chips: Math, English, Physics, Chem, Bio, Econs, Govt, etc. -->
+                    <!-- Shows subjects, tap to mark as hard / extra focus -->
+                </div>
+                <div class="subject-add-row" style="margin-top: 10px;">
+                    <input type="text" id="custom-subject-input" class="form-input" placeholder="Add another subject…" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomSubject();}" />
+                    <button type="button" class="btn-add-chip" onclick="addCustomSubject()">+</button>
                 </div>
             </div>
 
-            <!-- QUESTION 2: STUDY HOURS & BEST TIME -->
+            <!-- Q2: CLASS TIMETABLE IMPORT -->
             <div class="onboarding-section">
                 <div class="onboarding-q-title">
                     <span class="q-num">2</span>
-                    <span>Realistic study hours & best time</span>
+                    <span>Your class / lecture timetable</span>
+                </div>
+                <p class="q-hint">Paste your class timetable below, or upload a photo. The AI will extract your schedule automatically.</p>
+                <textarea id="timetable-text-input" class="form-textarea" rows="4" placeholder="e.g. Monday 9am-11am Physics Lecture&#10;Tuesday 10am-12pm Maths&#10;Wednesday 2pm-4pm Chemistry Lab..."></textarea>
+                <div class="timetable-upload-row">
+                    <label class="btn-upload-timetable" for="timetable-photo-input">
+                        <span>📷</span> Upload timetable photo
+                    </label>
+                    <input type="file" id="timetable-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="handleTimetablePhotoSelect(event)" />
+                    <span class="upload-filename" id="upload-filename-label"></span>
+                </div>
+            </div>
+
+            <!-- Q3: STUDY HOURS & BEST TIME -->
+            <div class="onboarding-section">
+                <div class="onboarding-q-title">
+                    <span class="q-num">3</span>
+                    <span>Study hours & best time</span>
                 </div>
                 
                 <div class="sub-q-group">
-                    <label class="sub-q-label">Hours on a normal day:</label>
+                    <label class="sub-q-label">Hours per day:</label>
                     <div class="segmented-tap-row" id="tap-row-hours">
                         <button type="button" class="tap-segment-btn" data-hours="1-2" onclick="selectHoursOption('1-2')">
                             <span class="segment-label">1 - 2 hrs</span>
-                            <span class="segment-sub">Light load</span>
+                            <span class="segment-sub">Light</span>
                         </button>
                         <button type="button" class="tap-segment-btn active" data-hours="3-4" onclick="selectHoursOption('3-4')">
                             <span class="segment-label">3 - 4 hrs</span>
-                            <span class="segment-sub">Recommended</span>
+                            <span class="segment-sub">Standard</span>
                         </button>
                         <button type="button" class="tap-segment-btn" data-hours="5+" onclick="selectHoursOption('5+')">
                             <span class="segment-label">5+ hrs</span>
@@ -380,11 +401,11 @@
                 </div>
             </div>
 
-            <!-- QUESTION 3: EXAM DATES -->
+            <!-- Q4: EXAM DATES -->
             <div class="onboarding-section">
                 <div class="onboarding-q-title">
-                    <span class="q-num">3</span>
-                    <span>When are your upcoming exams?</span>
+                    <span class="q-num">4</span>
+                    <span>When are your exams?</span>
                 </div>
                 
                 <div class="segmented-tap-row" id="tap-row-exam-mode">
@@ -394,68 +415,119 @@
                     </button>
                     <button type="button" class="tap-segment-btn active" data-exam-type="approximate" onclick="selectExamMode('approximate')">
                         <span class="segment-icon">⏳</span>
-                        <span class="segment-label">In about X weeks</span>
+                        <span class="segment-label">~X weeks</span>
                     </button>
                     <button type="button" class="tap-segment-btn" data-exam-type="unknown" onclick="selectExamMode('unknown')">
                         <span class="segment-icon">❓</span>
-                        <span class="segment-label">I don't know yet</span>
+                        <span class="segment-label">Don't know</span>
                     </button>
                 </div>
 
-                <!-- Sub-panel 3A: Date Picker per subject (if "I know them") -->
                 <div class="exam-sub-panel hidden" id="exam-panel-dates">
-                    <p class="q-hint">Set known exam dates per subject (optional):</p>
-                    <div class="subject-date-pickers" id="subject-date-pickers-list">
-                        <!-- Populated dynamically with date pickers for subjects -->
-                    </div>
+                    <p class="q-hint">Set exam dates per subject:</p>
+                    <div class="subject-date-pickers" id="subject-date-pickers-list"></div>
                 </div>
 
-                <!-- Sub-panel 3B: Weeks Away Chips (if "In about X weeks") -->
                 <div class="exam-sub-panel" id="exam-panel-weeks">
-                    <p class="q-hint">Approximate timeline until exams start:</p>
+                    <p class="q-hint">Roughly how many weeks away?</p>
                     <div class="weeks-chips-row" id="weeks-chips-container">
-                        <button type="button" class="week-chip-btn" data-weeks="2" onclick="selectWeeksAway(2)">2 weeks</button>
-                        <button type="button" class="week-chip-btn" data-weeks="4" onclick="selectWeeksAway(4)">4 weeks</button>
-                        <button type="button" class="week-chip-btn active" data-weeks="6" onclick="selectWeeksAway(6)">6 weeks</button>
-                        <button type="button" class="week-chip-btn" data-weeks="8" onclick="selectWeeksAway(8)">8 weeks</button>
-                        <button type="button" class="week-chip-btn" data-weeks="12" onclick="selectWeeksAway(12)">12 weeks</button>
+                        <button type="button" class="week-chip-btn" data-weeks="2" onclick="selectWeeksAway(2)">2 wks</button>
+                        <button type="button" class="week-chip-btn" data-weeks="4" onclick="selectWeeksAway(4)">4 wks</button>
+                        <button type="button" class="week-chip-btn active" data-weeks="6" onclick="selectWeeksAway(6)">6 wks</button>
+                        <button type="button" class="week-chip-btn" data-weeks="8" onclick="selectWeeksAway(8)">8 wks</button>
+                        <button type="button" class="week-chip-btn" data-weeks="12" onclick="selectWeeksAway(12)">12 wks</button>
                     </div>
                 </div>
 
-                <!-- Sub-panel 3C: Unknown Message -->
                 <div class="exam-sub-panel hidden" id="exam-panel-unknown">
                     <div class="unknown-exam-notice">
-                        <span>ℹ️</span> We'll assume exams are roughly 6 weeks away and balance learning with progressive recall.
+                        <span>ℹ️</span> We'll assume exams are roughly 6 weeks away.
                     </div>
                 </div>
             </div>
 
-            <!-- SUBMIT ACTION -->
+            <!-- Q5: OFF DAYS -->
+            <div class="onboarding-section">
+                <div class="onboarding-q-title">
+                    <span class="q-num">5</span>
+                    <span>Days you can't study?</span>
+                </div>
+                <p class="q-hint">Tap any days you want to keep completely free.</p>
+                <div class="days-chips-row" id="off-days-chips">
+                    <button type="button" class="day-chip-btn" data-day="Monday" onclick="toggleOffDay('Monday')">Mon</button>
+                    <button type="button" class="day-chip-btn" data-day="Tuesday" onclick="toggleOffDay('Tuesday')">Tue</button>
+                    <button type="button" class="day-chip-btn" data-day="Wednesday" onclick="toggleOffDay('Wednesday')">Wed</button>
+                    <button type="button" class="day-chip-btn" data-day="Thursday" onclick="toggleOffDay('Thursday')">Thu</button>
+                    <button type="button" class="day-chip-btn" data-day="Friday" onclick="toggleOffDay('Friday')">Fri</button>
+                    <button type="button" class="day-chip-btn" data-day="Saturday" onclick="toggleOffDay('Saturday')">Sat</button>
+                    <button type="button" class="day-chip-btn active" data-day="Sunday" onclick="toggleOffDay('Sunday')">Sun</button>
+                </div>
+            </div>
+
+            <!-- Q6: GOAL -->
+            <div class="onboarding-section" style="border-bottom: none;">
+                <div class="onboarding-q-title">
+                    <span class="q-num">6</span>
+                    <span>What's your goal?</span>
+                </div>
+                <div class="segmented-tap-row" id="tap-row-goal">
+                    <button type="button" class="tap-segment-btn" data-goal="pass" onclick="selectGoal('pass')">
+                        <span class="segment-label">Pass</span>
+                        <span class="segment-sub">Comfortable</span>
+                    </button>
+                    <button type="button" class="tap-segment-btn active" data-goal="high" onclick="selectGoal('high')">
+                        <span class="segment-label">High Score</span>
+                        <span class="segment-sub">280+ / A's</span>
+                    </button>
+                    <button type="button" class="tap-segment-btn" data-goal="ace" onclick="selectGoal('ace')">
+                        <span class="segment-label">Ace It</span>
+                        <span class="segment-sub">Top marks</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI FOLLOW-UP AREA (shows when AI needs more info) -->
+            <div class="ai-followup-area hidden" id="ai-followup-area">
+                <div class="ai-followup-bubble" id="ai-followup-bubble">
+                    <!-- AI question appears here -->
+                </div>
+                <div class="ai-followup-input-row">
+                    <input type="text" id="ai-followup-input" class="form-input" placeholder="Type your answer…" />
+                    <button type="button" class="btn-send-followup" onclick="sendFollowUpAnswer()">→</button>
+                </div>
+            </div>
+
+            <!-- SUBMIT -->
             <div class="onboarding-footer">
+                <div class="ai-status-bar hidden" id="ai-status-bar">
+                    <div class="ai-status-spinner"></div>
+                    <span id="ai-status-text">Generating your study plan…</span>
+                </div>
                 <button type="button" class="btn-generate-plan" id="btn-submit-onboarding" onclick="submitOnboardingAndGeneratePlan()">
                     <span class="btn-sparkle-icon">✨</span>
-                    <span>Generate Weekly Study Plan</span>
+                    <span>Generate My Study Plan</span>
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL 4: GEMINI API KEY MODAL (Optional Direct Model Config) -->
+<!-- MODAL 4: CLAUDE & AI MODEL API KEY MODAL (Optional Direct Model Config) -->
 <div id="api-key-modal" class="modal-overlay hidden" onclick="closeApiKeyModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()" style="max-width: 440px;">
         <div class="sheet-handle"></div>
         <div class="sheet-top-bar">
-            <div class="sheet-title">AI Study Planner API Key</div>
+            <div class="sheet-title">Claude & AI Model Key</div>
             <button type="button" class="sheet-close-btn" onclick="closeApiKeyModal()" aria-label="Close">✕</button>
         </div>
         <div class="api-key-content" style="padding: 16px 0;">
             <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 14px; line-height: 1.5;">
-                Enter your Google Gemini API key to enable live AI planner generation. The app also includes an intelligent offline bundle generator that follows all 11 study rules.
+                Enter your Anthropic Claude API key (<code style="font-family: monospace; color: var(--accent-gold);">sk-ant-...</code>) or Gemini / OpenAI key to enable live Claude 3.5 Sonnet study scheduling. 
+                Sabi also includes a built-in offline engine adhering strictly to all 11 study rules.
             </p>
             <div class="form-group">
-                <label class="form-label" for="gemini-api-key-input">Gemini API Key</label>
-                <input type="password" id="gemini-api-key-input" class="form-input" placeholder="AIzaSy..." />
+                <label class="form-label" for="gemini-api-key-input">Claude / AI API Key</label>
+                <input type="password" id="gemini-api-key-input" class="form-input" placeholder="sk-ant-api03-... or AIzaSy..." />
             </div>
             <div style="display: flex; gap: 10px; margin-top: 16px;">
                 <button type="button" class="btn-submit-session" style="flex: 1;" onclick="saveApiKey()">Save API Key</button>
@@ -465,6 +537,7 @@
     </div>
 </div>
 
+<script src="env.js"></script>
 <script src="calendar.js"></script>
 <script src="global.js"></script>
 </body>

@@ -9,16 +9,20 @@
 - **Key decisions**:
   - Removed the overwhelming 1400px 2-column sidebar layout, duplicate mini-calendar grid, heavy promotional Google sync card, category pills card, pulsing timer pills, and duplicate focused-day + upcoming-day listings.
   - Replaced card face clutter with clean typography: time pill, subject title + activity pill, completion checkmark. Tapping the card opens full detail modal with edit/delete/Google Calendar direct sync.
+  - Upgraded AI Study Planner with structured 6-question questionnaire (Hardest Subjects selection, Class Timetable Text/Photo OCR extraction, Daily Hours & Time Window, Exam Timings, Off-Days, and Target Goals).
+  - Configured secret management: API keys are stored in [.env](file:///c:/Users/dave/.gemini/sabi/.env) and [env.js](file:///c:/Users/dave/.gemini/sabi/env.js), protected by [.gitignore](file:///c:/Users/dave/.gemini/sabi/.gitignore) with a [.env.example](file:///c:/Users/dave/.gemini/sabi/.env.example) template.
+  - Prioritized Anthropic Claude 3.5 Sonnet / Claude 3.5 Haiku as primary AI engine (with direct browser CORS headers) for planner generation, timetable photo vision OCR, and text parsing, backed by Gemini/OpenAI fallbacks and the built-in 11-rule academic scheduler.
 - **State**:
   - Done:
-    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Cleaned DOM into 600px minimalist container.
-    - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css): Completely rebuilt with clean styling matching `library.css`, eliminating 2,500+ lines of clutter and sidebar styles.
-    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Streamlined `renderAgendaTimeline()` and `renderEventCardHtml()` to render clean `.session-card` items and dynamic day schedules.
-    - Preserved 7-day Week Grid timetable and `@media print` landscape single-page printing.
-  - Now: Ready for user review and commit.
-  - Next: User feedback and additional tweaks.
-- **Open questions**: Browser context creation encountered a known Playwright driver download error (404 from Azure CDN) during headless testing; manual browser verification or alternative can be used.
+    - [.env](file:///c:/Users/dave/.gemini/sabi/.env) & [env.js](file:///c:/Users/dave/.gemini/sabi/env.js): Configured with Claude API keys and protected by `.gitignore`.
+    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Cleaned DOM into 600px minimalist container + 6-question onboarding modal with timetable photo & text import, and Claude model key settings modal.
+    - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css): Completely rebuilt with clean styling matching `library.css`.
+    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Hoisted state and constants, eliminated TDZ errors, fixed page load initialization, and implemented dynamic collision-free slot generation.
+  - Now: All lifecycle functions, page load rendering, and weekly plan generation tested and verified passing with 0 errors.
+  - Next: User can open calendar.html and generate plans smoothly.
+- **Open questions**: None.
 - **Working set (files/ids/commands)**:
+  - Secrets: [.env](file:///c:/Users/dave/.gemini/sabi/.env), [env.js](file:///c:/Users/dave/.gemini/sabi/env.js), [.gitignore](file:///c:/Users/dave/.gemini/sabi/.gitignore)
   - Calendar page: [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
   - Calendar styles: [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css)
   - Calendar logic: [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)

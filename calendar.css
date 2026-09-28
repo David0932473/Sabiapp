@@ -1479,3 +1479,264 @@ body {
         font-size: 8pt !important;
     }
 }
+
+/* =========================================================
+   NEW ONBOARDING ELEMENTS
+   ========================================================= */
+
+/* Subject Add Row (Q1) */
+.subject-add-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.subject-add-row .form-input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+}
+
+.btn-add-chip {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s;
+    flex-shrink: 0;
+}
+
+.btn-add-chip:active {
+    transform: scale(0.9);
+}
+
+/* Subject chips — selected vs unselected */
+.subject-chip-btn.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #FFFFFF;
+}
+
+.subject-chip-btn.hard {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #F87171;
+}
+
+/* Timetable Upload Row (Q3) */
+.timetable-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-upload-timetable {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 14px;
+    color: var(--text-main);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.btn-upload-timetable:active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.upload-filename {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+}
+
+/* Off Days Row (Q6) */
+.days-chips-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.day-chip-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 14px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.day-chip-btn.active {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #F87171;
+}
+
+/* AI Follow-up Chat Area */
+.ai-followup-area {
+    background: rgba(61, 142, 255, 0.06);
+    border: 1px solid rgba(61, 142, 255, 0.2);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.ai-followup-area.hidden {
+    display: none;
+}
+
+.ai-followup-bubble {
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.45;
+    margin-bottom: 10px;
+}
+
+.ai-followup-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.ai-followup-input-row .form-input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+}
+
+.btn-send-followup {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: 0.15s;
+}
+
+.btn-send-followup:active {
+    transform: scale(0.9);
+}
+
+/* AI Status / Loading Bar */
+.ai-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(61, 142, 255, 0.08);
+    border: 1px solid rgba(61, 142, 255, 0.2);
+    border-radius: 14px;
+    margin-bottom: 10px;
+}
+
+.ai-status-bar.hidden {
+    display: none;
+}
+
+.ai-status-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(61, 142, 255, 0.3);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spinLoader 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spinLoader {
+    to { transform: rotate(360deg); }
+}
+
+#ai-status-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+/* Onboarding sheet scroll */
+.onboarding-sheet {
+    max-height: 90vh;
+}
+
+/* Subject Chips Grid & Base Chip Button */
+.subject-chips-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.subject-chip-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 7px 12px;
+    border-radius: 14px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+    white-space: nowrap;
+}
+
+.subject-chip-btn:hover {
+    border-color: var(--accent);
+    color: var(--text-main);
+}
+
+.subject-chip-btn.hard,
+.subject-chip-btn.active {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+}
+
+.subject-chip-btn:active {
+    transform: scale(0.95);
+}
+
+/* Form textarea specific adjustments */
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+}
+

@@ -3,6 +3,60 @@
  * Full Mini-Calendar with Event Counts, No Side-by-Side Months, & Focused Day Agenda
  */
 
+// ==========================================
+// 🔑 ENVIRONMENT & API KEY CONFIGURATION
+// Keys are loaded from .env / env.js (git-ignored)
+function getAnthropicKey() {
+    if (typeof window !== 'undefined' && window.ENV) {
+        const envKey = window.ENV.ANTHROPIC_API_KEY || window.ENV.CLAUDE_API_KEY;
+        if (envKey && typeof envKey === 'string' && envKey.trim().length > 0) return envKey.trim();
+    }
+    return (localStorage.getItem('claude_api_key') || localStorage.getItem('anthropic_api_key') || '').trim();
+}
+
+function getGeminiKey() {
+    if (typeof window !== 'undefined' && window.ENV) {
+        const envKey = window.ENV.GEMINI_API_KEY;
+        if (envKey && typeof envKey === 'string' && envKey.trim().length > 0) return envKey.trim();
+    }
+    return (localStorage.getItem('gemini_api_key') || localStorage.getItem('sabi_gemini_api_key') || '').trim();
+}
+
+function getOpenAiKey() {
+    if (typeof window !== 'undefined' && window.ENV) {
+        const envKey = window.ENV.OPENAI_API_KEY;
+        if (envKey && typeof envKey === 'string' && envKey.trim().length > 0) return envKey.trim();
+    }
+    return (localStorage.getItem('openai_api_key') || '').trim();
+}
+
+function getActiveApiKey() {
+    const claudeKey = getAnthropicKey();
+    if (claudeKey) return claudeKey;
+
+    if (typeof window !== 'undefined' && window.ENV) {
+        const envKey = window.ENV.API_KEY || window.ENV.OPENAI_API_KEY || window.ENV.GEMINI_API_KEY || window.ENV.SABI_API_KEY;
+        if (envKey && typeof envKey === 'string' && envKey.trim().length > 0) {
+            return envKey.trim();
+        }
+    }
+    return getOpenAiKey() || getGeminiKey() || localStorage.getItem('sabi_api_key') || '';
+}
+
+// Helper to format YYYY-MM-DD
+function getFutureDateString(offsetDays = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function getTodayStr() {
+    return getFutureDateString(0);
+}
+
 // Academic Milestones (Nigerian Exams & Study Sessions)
 const DEFAULT_EVENTS = [
     {
@@ -121,6 +175,77 @@ function getFutureDateString(offsetDays = 0) {
     return `${year}-${month}-${day}`;
 }
 
+const DEFAULT_SUBJECT_CATALOG = [
+    { name: "Mathematics", topics: ["Algebra & Quadratic Equations", "Calculus & Derivatives", "Trigonometry & Bearing", "Statistics & Probability"] },
+    { name: "Use of English", topics: ["Comprehension & Summary", "Oral Forms & Vowels", "Lexis and Structure", "Sentence Registers"] },
+    { name: "Physics", topics: ["Kinematics & Motion Graphs", "Newton's Laws & Dynamics", "Optics & Light Reflection", "Electric Current & Circuits", "Atomic Physics"] },
+    { name: "Chemistry", topics: ["Separation Techniques", "Periodic Table Trends", "Chemical Energetics", "Hydrocarbons & Organic Families", "Acids, Bases & Salts"] },
+    { name: "Biology", topics: ["Cell Structure & Functions", "Nutrition & Enzymes", "Genetics & Heredity", "Ecology & Habitats"] },
+    { name: "Economics", topics: ["Theory of Demand and Supply", "Production & Cost Curves", "National Income Accounting", "Inflation & Monetary Policy"] },
+    { name: "Government", topics: ["Colonial Rule in Nigeria", "Constitutional Developments", "Federalism in Nigeria", "Foreign Policy"] },
+    { name: "Literature in English", topics: ["Dramatic Techniques", "Poetic Devices & Imagery", "African Prose & Themes", "Character Analysis"] }
+];
+
+const DEFAULT_CLASSES = [
+    { day: 'Monday', start_time: '09:00', end_time: '11:00', subject: 'PHY 101: General Physics Lecture' },
+    { day: 'Tuesday', start_time: '10:00', end_time: '12:00', subject: 'MTH 101: Elementary Mathematics' },
+    { day: 'Wednesday', start_time: '08:30', end_time: '10:30', subject: 'CHM 101: General Chemistry' },
+    { day: 'Thursday', start_time: '11:00', end_time: '13:00', subject: 'GST 101: Use of English' },
+    { day: 'Friday', start_time: '09:00', end_time: '11:00', subject: 'BIO 101: General Biology' }
+];
+
+function getStoredClasses() {
+    try {
+        const stored = localStorage.getItem('sabi_classes');
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    } catch (e) {
+        console.error('Failed to parse sabi_classes', e);
+    }
+    localStorage.setItem('sabi_classes', JSON.stringify(DEFAULT_CLASSES));
+    return DEFAULT_CLASSES;
+}
+
+// Helper: Calculate Monday of the week for given date
+function getMondayOfWeek(d = new Date()) {
+    const date = new Date(d);
+    const day = date.getDay();
+    // Monday is 1; Sunday is 0 -> diff: day 0 goes back 6 days, otherwise date - day + 1
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(date.setDate(diff));
+    const year = monday.getFullYear();
+    const month = String(monday.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(monday.getDate()).padStart(2, '0');
+    return `${year}-${month}-${dayStr}`;
+}
+
+// Add days to ISO date
+function addDaysToDate(dateStr, days) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function calculateEndTime(startTime, durationHours = 1) {
+    const [h, m] = startTime.split(':').map(Number);
+    const totalMinutes = h * 60 + m + Math.round(durationHours * 60);
+    const endH = String(Math.floor(totalMinutes / 60) % 24).padStart(2, '0');
+    const endM = String(totalMinutes % 60).padStart(2, '0');
+    return `${endH}:${endM}`;
+}
+
+function calculateDuration(startTime, endTime) {
+    const [h1, m1] = startTime.split(':').map(Number);
+    const [h2, m2] = endTime.split(':').map(Number);
+    const mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+    return Math.max(0.5, Math.round((mins / 60) * 10) / 10);
+}
+
 // State
 let calendarEvents = [];
 let currentYear = new Date().getFullYear();
@@ -143,11 +268,22 @@ let activeCategories = new Set(['jamb', 'waec', 'neco', 'noun', 'ican', 'study']
 
 // STAGE 5 & 6 PLANNER & WEEK VIEW STATE
 let plannerWeekOffset = 0; // offset in weeks from current Monday
+let stripWeekOffset = 0; // offset for 7-day strip
 let activeWeeklyPlanMeta = null;
 let enrolledSubjectsList = [];
 
+// SMART PLANNER SETUP STATE
+let onboardingTempProfile = null;
+let selectedSubjects = new Set();
+let hardSubjects = new Set();
+let offDays = new Set(['Sunday']);
+let selectedGoal = 'high';
+let timetablePhotoBase64 = null;
+let followUpContext = [];
+let isLiveModelAvailable = true;
+
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+function initCalendarApp() {
     loadEvents();
     loadPlannerMetadata();
     renderFilterChips();
@@ -177,7 +313,13 @@ document.addEventListener('DOMContentLoaded', () => {
             menu.classList.add('hidden');
         }
     });
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCalendarApp);
+} else {
+    initCalendarApp();
+}
 
 // Load events from LocalStorage
 function loadEvents() {
@@ -242,8 +384,6 @@ function updateMonthTitles() {
 }
 
 // --- SLEEK 7-DAY WEEK STRIP NAVIGATOR ---
-let stripWeekOffset = 0;
-
 function changeStripWeek(offset) {
     stripWeekOffset += offset;
     renderMiniCalendar();
@@ -646,7 +786,7 @@ function openAddSessionModal() {
     }
     if (overlay) {
         overlay.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        if (document.body) document.body.style.overflow = 'hidden';
     }
 }
 
@@ -655,7 +795,7 @@ function closeAddSessionModal(e) {
     const overlay = document.getElementById('add-session-modal');
     if (overlay) {
         overlay.classList.add('hidden');
-        document.body.style.overflow = '';
+        if (document.body) document.body.style.overflow = '';
     }
 }
 
@@ -946,76 +1086,7 @@ RULES
 OUTPUT (JSON only)
 {"summary": "...", "notes": ["..."], "sessions": [{"date": "YYYY-MM-DD", "start_time": "HH:MM", "end_time": "HH:MM", "subject": "...", "activity": "learn|recall|practice|review", "focus": "... or null"}]}`;
 
-const DEFAULT_SUBJECT_CATALOG = [
-    { name: "Mathematics", topics: ["Algebra & Quadratic Equations", "Calculus & Derivatives", "Trigonometry & Bearing", "Statistics & Probability"] },
-    { name: "Use of English", topics: ["Comprehension & Summary", "Oral Forms & Vowels", "Lexis and Structure", "Sentence Registers"] },
-    { name: "Physics", topics: ["Kinematics & Motion Graphs", "Newton's Laws & Dynamics", "Optics & Light Reflection", "Electric Current & Circuits", "Atomic Physics"] },
-    { name: "Chemistry", topics: ["Separation Techniques", "Periodic Table Trends", "Chemical Energetics", "Hydrocarbons & Organic Families", "Acids, Bases & Salts"] },
-    { name: "Biology", topics: ["Cell Structure & Functions", "Nutrition & Enzymes", "Genetics & Heredity", "Ecology & Habitats"] },
-    { name: "Economics", topics: ["Theory of Demand and Supply", "Production & Cost Curves", "National Income Accounting", "Inflation & Monetary Policy"] },
-    { name: "Government", topics: ["Colonial Rule in Nigeria", "Constitutional Developments", "Federalism in Nigeria", "Foreign Policy"] },
-    { name: "Literature in English", topics: ["Dramatic Techniques", "Poetic Devices & Imagery", "African Prose & Themes", "Character Analysis"] }
-];
-
-const DEFAULT_CLASSES = [
-    { day: 'Monday', start_time: '09:00', end_time: '11:00', subject: 'PHY 101: General Physics Lecture' },
-    { day: 'Tuesday', start_time: '10:00', end_time: '12:00', subject: 'MTH 101: Elementary Mathematics' },
-    { day: 'Wednesday', start_time: '08:30', end_time: '10:30', subject: 'CHM 101: General Chemistry' },
-    { day: 'Thursday', start_time: '11:00', end_time: '13:00', subject: 'GST 101: Use of English' },
-    { day: 'Friday', start_time: '09:00', end_time: '11:00', subject: 'BIO 101: General Biology' }
-];
-
-function getStoredClasses() {
-    try {
-        const stored = localStorage.getItem('sabi_classes');
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-    } catch (e) {
-        console.error('Failed to parse sabi_classes', e);
-    }
-    localStorage.setItem('sabi_classes', JSON.stringify(DEFAULT_CLASSES));
-    return DEFAULT_CLASSES;
-}
-
-// Helper: Calculate Monday of the week for given date
-function getMondayOfWeek(d = new Date()) {
-    const date = new Date(d);
-    const day = date.getDay();
-    // Monday is 1; Sunday is 0 -> diff: day 0 goes back 6 days, otherwise date - day + 1
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-    const monday = new Date(date.setDate(diff));
-    const year = monday.getFullYear();
-    const month = String(monday.getMonth() + 1).padStart(2, '0');
-    const dayStr = String(monday.getDate()).padStart(2, '0');
-    return `${year}-${month}-${dayStr}`;
-}
-
-// Add days to ISO date
-function addDaysToDate(dateStr, days) {
-    const d = new Date(dateStr + 'T00:00:00');
-    d.setDate(d.getDate() + days);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-function calculateEndTime(startTime, durationHours = 1) {
-    const [h, m] = startTime.split(':').map(Number);
-    const totalMinutes = h * 60 + m + Math.round(durationHours * 60);
-    const endH = String(Math.floor(totalMinutes / 60) % 24).padStart(2, '0');
-    const endM = String(totalMinutes % 60).padStart(2, '0');
-    return `${endH}:${endM}`;
-}
-
-function calculateDuration(startTime, endTime) {
-    const [h1, m1] = startTime.split(':').map(Number);
-    const [h2, m2] = endTime.split(':').map(Number);
-    const mins = (h2 * 60 + m2) - (h1 * 60 + m1);
-    return Math.max(0.5, Math.round((mins / 60) * 10) / 10);
-}
+// Profile Storage
 
 // Profile Storage
 function getPlannerProfile() {
@@ -1062,26 +1133,42 @@ function getEnrolledSubjects() {
     return DEFAULT_SUBJECT_CATALOG.slice(0, 5); // Default 5 core subjects
 }
 
-// --- ONBOARDING MODAL LOGIC (ONE TAP-ONLY SCREEN) ---
-let onboardingTempProfile = null;
-
+// --- SMART PLANNER SETUP (6 Questions + AI Follow-up) ---
 function initPlannerOnboarding() {
     onboardingTempProfile = getPlannerProfile();
-    const onboarded = localStorage.getItem('sabi_planner_onboarded');
-    if (!onboarded) {
-        setTimeout(() => {
-            openPlannerOnboardingModal();
-        }, 500);
+    // Restore previous selections or initialize from enrolled subjects
+    const enrolled = getEnrolledSubjects().map(s => s.name);
+    selectedSubjects = new Set(onboardingTempProfile.subjects && onboardingTempProfile.subjects.length > 0 ? onboardingTempProfile.subjects : enrolled);
+    if (onboardingTempProfile.hard_subjects) {
+        hardSubjects = new Set(onboardingTempProfile.hard_subjects);
+    } else {
+        hardSubjects = new Set(["Physics", "Mathematics"]);
     }
+    if (onboardingTempProfile.off_days) {
+        offDays = new Set(onboardingTempProfile.off_days);
+    }
+    selectedGoal = onboardingTempProfile.goal || 'high';
 }
 
 function openPlannerOnboardingModal() {
     onboardingTempProfile = getPlannerProfile();
+    const enrolled = getEnrolledSubjects().map(s => s.name);
+    selectedSubjects = new Set(onboardingTempProfile.subjects && onboardingTempProfile.subjects.length > 0 ? onboardingTempProfile.subjects : enrolled);
+    if (onboardingTempProfile.hard_subjects) {
+        hardSubjects = new Set(onboardingTempProfile.hard_subjects);
+    } else {
+        hardSubjects = new Set(["Physics", "Mathematics"]);
+    }
+    if (onboardingTempProfile.off_days) offDays = new Set(onboardingTempProfile.off_days);
+    selectedGoal = onboardingTempProfile.goal || 'high';
+    timetablePhotoBase64 = null;
+    followUpContext = [];
+
     renderOnboardingUI();
     const modal = document.getElementById('planner-onboarding-modal');
     if (modal) {
         modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        if (document.body) document.body.style.overflow = 'hidden';
     }
 }
 
@@ -1090,49 +1177,81 @@ function closePlannerOnboardingModal(e) {
     const modal = document.getElementById('planner-onboarding-modal');
     if (modal) {
         modal.classList.add('hidden');
-        document.body.style.overflow = '';
+        if (document.body) document.body.style.overflow = '';
     }
 }
 
+// --- Q1: HARDEST SUBJECTS SELECTION ---
 function renderOnboardingUI() {
-    const subjects = getEnrolledSubjects();
-    const chipsContainer = document.getElementById('onboarding-hard-subjects-chips');
-    
-    // 1. Hard Subjects Chips
-    if (chipsContainer) {
-        chipsContainer.innerHTML = subjects.map(sub => {
-            const isHard = (onboardingTempProfile.hard_subjects || []).includes(sub.name);
-            return `
-                <button type="button" class="hard-subject-chip ${isHard ? 'active' : ''}" onclick="toggleHardSubject('${escapeHtml(sub.name)}')">
-                    <span class="chip-status-icon">${isHard ? '🔥' : '＋'}</span>
-                    <span>${escapeHtml(sub.name)}</span>
-                </button>
-            `;
-        }).join('');
-    }
-
-    // 2. Realistic Study Hours
+    renderHardSubjectChips();
+    renderOffDaysUI();
+    renderGoalUI();
     selectHoursOption(onboardingTempProfile.hours_per_day || '3-4', false);
-
-    // Best Time
     selectBestTimeOption(onboardingTempProfile.best_time || 'evening', false);
-
-    // 3. Exam Info
     const examType = onboardingTempProfile.exam_info?.type || 'approximate';
     selectExamMode(examType, false);
 }
 
-function toggleHardSubject(name) {
-    if (!onboardingTempProfile.hard_subjects) onboardingTempProfile.hard_subjects = [];
-    const idx = onboardingTempProfile.hard_subjects.indexOf(name);
-    if (idx >= 0) {
-        onboardingTempProfile.hard_subjects.splice(idx, 1);
-    } else {
-        onboardingTempProfile.hard_subjects.push(name);
+function renderHardSubjectChips() {
+    const container = document.getElementById('onboarding-hard-subjects-chips');
+    if (!container) return;
+
+    const allSubjects = [...new Set([...selectedSubjects])];
+    if (allSubjects.length === 0) {
+        container.innerHTML = '<p style="font-size: 12px; color: var(--text-muted);">Add subjects below to get started.</p>';
+        return;
     }
-    renderOnboardingUI();
+
+    container.innerHTML = allSubjects.map(name => {
+        const isHard = hardSubjects.has(name);
+        return `
+            <button type="button" class="subject-chip-btn ${isHard ? 'hard' : ''}" onclick="toggleHardSubject('${escapeHtml(name)}')">
+                <span>${isHard ? '🔥' : '＋'}</span>
+                <span>${escapeHtml(name)}</span>
+            </button>
+        `;
+    }).join('');
 }
 
+function toggleHardSubject(name) {
+    if (hardSubjects.has(name)) {
+        hardSubjects.delete(name);
+    } else {
+        hardSubjects.add(name);
+    }
+    renderHardSubjectChips();
+}
+
+function addCustomSubject() {
+    const input = document.getElementById('custom-subject-input');
+    if (!input) return;
+    const name = input.value.trim();
+    if (name) {
+        selectedSubjects.add(name);
+        hardSubjects.add(name); // newly added subjects automatically get focus
+        input.value = '';
+        renderHardSubjectChips();
+    }
+}
+
+// --- Q3: TIMETABLE PHOTO UPLOAD ---
+function handleTimetablePhotoSelect(event) {
+    const file = event.target.files?.[0];
+    const label = document.getElementById('upload-filename-label');
+    if (!file) return;
+
+    if (label) label.textContent = file.name;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        // Store base64 (strip the data:image/...;base64, prefix for API)
+        const fullBase64 = e.target.result;
+        timetablePhotoBase64 = fullBase64;
+    };
+    reader.readAsDataURL(file);
+}
+
+// --- Q4: STUDY HOURS & BEST TIME (kept from original) ---
 function selectHoursOption(hours, shouldUpdate = true) {
     if (shouldUpdate) onboardingTempProfile.hours_per_day = hours;
     document.querySelectorAll('#tap-row-hours .tap-segment-btn').forEach(btn => {
@@ -1147,6 +1266,7 @@ function selectBestTimeOption(time, shouldUpdate = true) {
     });
 }
 
+// --- Q5: EXAM DATES (kept from original) ---
 function selectExamMode(type, shouldUpdate = true) {
     if (shouldUpdate) {
         if (!onboardingTempProfile.exam_info) onboardingTempProfile.exam_info = {};
@@ -1186,18 +1306,18 @@ function selectWeeksAway(weeks, shouldUpdate = true) {
 function renderSubjectDatePickers() {
     const container = document.getElementById('subject-date-pickers-list');
     if (!container) return;
-    const subjects = getEnrolledSubjects();
     const datesMap = {};
     if (onboardingTempProfile.exam_info?.dates) {
         onboardingTempProfile.exam_info.dates.forEach(d => { datesMap[d.subject] = d.date; });
     }
 
-    container.innerHTML = subjects.map(sub => {
-        const existingDate = datesMap[sub.name] || '';
+    const subjectList = selectedSubjects.size > 0 ? [...selectedSubjects] : getEnrolledSubjects().map(s => s.name);
+    container.innerHTML = subjectList.map(name => {
+        const existingDate = datesMap[name] || '';
         return `
             <div class="sub-date-row">
-                <span class="sub-date-label">${escapeHtml(sub.name)}</span>
-                <input type="date" class="sub-date-input" value="${existingDate}" onchange="handleSubjectDateChange('${escapeHtml(sub.name)}', this.value)" />
+                <span class="sub-date-label">${escapeHtml(name)}</span>
+                <input type="date" class="sub-date-input" value="${existingDate}" onchange="handleSubjectDateChange('${escapeHtml(name)}', this.value)" />
             </div>
         `;
     }).join('');
@@ -1211,20 +1331,468 @@ function handleSubjectDateChange(subject, dateVal) {
     if (dateVal) {
         onboardingTempProfile.exam_info.dates.push({ subject, date: dateVal });
     }
-    // Re-plan remaining days when student enters or changes exam date
-    if (localStorage.getItem('sabi_planner_onboarded')) {
-        savePlannerProfile(onboardingTempProfile);
+}
+
+// --- Q6: OFF DAYS ---
+function toggleOffDay(day) {
+    if (offDays.has(day)) {
+        offDays.delete(day);
+    } else {
+        offDays.add(day);
+    }
+    renderOffDaysUI();
+}
+
+function renderOffDaysUI() {
+    document.querySelectorAll('#off-days-chips .day-chip-btn').forEach(btn => {
+        btn.classList.toggle('active', offDays.has(btn.getAttribute('data-day')));
+    });
+}
+
+// --- Q7: GOAL ---
+function selectGoal(goal) {
+    selectedGoal = goal;
+    renderGoalUI();
+}
+
+function renderGoalUI() {
+    document.querySelectorAll('#tap-row-goal .tap-segment-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-goal') === selectedGoal);
+    });
+}
+
+// --- AI FOLLOW-UP ---
+async function sendFollowUpAnswer() {
+    const input = document.getElementById('ai-followup-input');
+    if (!input || !input.value.trim()) return;
+    
+    const answer = input.value.trim();
+    input.value = '';
+    
+    followUpContext.push({ role: 'user', text: answer });
+    
+    // Show loading
+    const statusBar = document.getElementById('ai-status-bar');
+    const statusText = document.getElementById('ai-status-text');
+    if (statusBar) statusBar.classList.remove('hidden');
+    if (statusText) statusText.textContent = 'Processing your answer…';
+    
+    // Re-submit with follow-up context
+    await executeAIPlanGeneration();
+}
+
+// --- SUBMIT: Collect all answers and generate ---
+async function submitOnboardingAndGeneratePlan() {
+    // Save profile
+    onboardingTempProfile.subjects = [...selectedSubjects];
+    onboardingTempProfile.hard_subjects = [...hardSubjects];
+    onboardingTempProfile.off_days = [...offDays];
+    onboardingTempProfile.goal = selectedGoal;
+    onboardingTempProfile.timetable_text = document.getElementById('timetable-text-input')?.value || '';
+    savePlannerProfile(onboardingTempProfile);
+    localStorage.setItem('sabi_planner_onboarded', 'true');
+
+    // Also save subjects to enrolled subjects store
+    const subjectObjects = [...selectedSubjects].map(name => {
+        const catalogMatch = DEFAULT_SUBJECT_CATALOG.find(c => c.name.toLowerCase() === name.toLowerCase());
+        return { name, topics: catalogMatch ? catalogMatch.topics : [] };
+    });
+    localStorage.setItem('sabi_enrolled_subjects', JSON.stringify(subjectObjects));
+
+    // Show loading state
+    const btn = document.getElementById('btn-submit-onboarding');
+    const statusBar = document.getElementById('ai-status-bar');
+    const statusText = document.getElementById('ai-status-text');
+    if (btn) btn.disabled = true;
+    if (statusBar) statusBar.classList.remove('hidden');
+    if (statusText) statusText.textContent = 'Building your personalized study plan…';
+
+    await executeAIPlanGeneration();
+}
+
+async function executeAIPlanGeneration() {
+    const statusText = document.getElementById('ai-status-text');
+    const btn = document.getElementById('btn-submit-onboarding');
+    
+    try {
+        const monday = getMondayOfWeek(new Date());
+        
+        // If there's a photo, first extract timetable via Gemini Vision
+        if (timetablePhotoBase64 && !onboardingTempProfile._photoExtracted) {
+            if (statusText) statusText.textContent = 'Reading your timetable photo…';
+            const extractedClasses = await extractTimetableFromPhoto(timetablePhotoBase64);
+            if (extractedClasses && extractedClasses.length > 0) {
+                localStorage.setItem('sabi_classes', JSON.stringify(extractedClasses));
+                onboardingTempProfile._photoExtracted = true;
+            }
+        }
+        
+        // If there's typed timetable text, parse that too
+        const typedText = onboardingTempProfile.timetable_text || '';
+        if (typedText.trim() && !onboardingTempProfile._textExtracted) {
+            if (statusText) statusText.textContent = 'Parsing your timetable…';
+            const extractedClasses = await extractTimetableFromText(typedText);
+            if (extractedClasses && extractedClasses.length > 0) {
+                // Merge with any photo-extracted classes
+                const existing = getStoredClasses();
+                const merged = onboardingTempProfile._photoExtracted 
+                    ? [...existing, ...extractedClasses]
+                    : extractedClasses;
+                localStorage.setItem('sabi_classes', JSON.stringify(merged));
+                onboardingTempProfile._textExtracted = true;
+            }
+        }
+
+        if (statusText) statusText.textContent = 'Generating weekly study sessions…';
+        await generateWeeklyPlan(monday, false, false);
+
+        // Check if AI returned a follow-up question
+        const lastPlanResult = localStorage.getItem('sabi_last_plan_result');
+        if (lastPlanResult) {
+            try {
+                const result = JSON.parse(lastPlanResult);
+                if (result.follow_up_question) {
+                    // Show follow-up area
+                    const followUpArea = document.getElementById('ai-followup-area');
+                    const followUpBubble = document.getElementById('ai-followup-bubble');
+                    if (followUpArea) followUpArea.classList.remove('hidden');
+                    if (followUpBubble) followUpBubble.textContent = result.follow_up_question;
+                    followUpContext.push({ role: 'assistant', text: result.follow_up_question });
+                    
+                    const statusBar = document.getElementById('ai-status-bar');
+                    if (statusBar) statusBar.classList.add('hidden');
+                    if (btn) btn.disabled = false;
+                    return; // Wait for student answer
+                }
+            } catch (e) { /* ignore parse error */ }
+        }
+
+        // Success — close modal
+        if (statusText) statusText.textContent = '✅ Plan generated!';
+        setTimeout(() => {
+            closePlannerOnboardingModal();
+            const statusBar = document.getElementById('ai-status-bar');
+            if (statusBar) statusBar.classList.add('hidden');
+            if (btn) btn.disabled = false;
+            showToast('✨ Your personalized study plan is ready!');
+            renderAllViews();
+        }, 600);
+
+    } catch (err) {
+        console.error('Plan generation error:', err);
+        if (statusText) statusText.textContent = 'Plan generated (offline mode)';
+        setTimeout(() => {
+            closePlannerOnboardingModal();
+            const statusBar = document.getElementById('ai-status-bar');
+            if (statusBar) statusBar.classList.add('hidden');
+            if (btn) btn.disabled = false;
+            showToast('📋 Study plan ready (offline mode)');
+            renderAllViews();
+        }, 600);
     }
 }
 
-function submitOnboardingAndGeneratePlan() {
-    savePlannerProfile(onboardingTempProfile);
-    localStorage.setItem('sabi_planner_onboarded', 'true');
-    closePlannerOnboardingModal();
+// Helper: Safe fetch with timeout to avoid freezing UI
+async function fetchWithTimeout(url, options = {}, timeoutMs = 4500) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(timeoutId);
+        return response;
+    } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+    }
+}
 
-    showToast('✨ Study profile saved! Generating weekly plan...');
-    const monday = getMondayOfWeek(new Date());
-    generateWeeklyPlan(monday, false, false);
+// --- TIMETABLE EXTRACTION VIA AI (Supports Claude 3.5, Gemini & OpenAI) ---
+async function extractTimetableFromPhoto(base64DataUrl) {
+    const promptText = 'Extract the class/lecture timetable from this image. Return ONLY a JSON array of objects with these fields: day (e.g. "Monday"), start_time (e.g. "09:00"), end_time (e.g. "11:00"), subject (e.g. "PHY 101: General Physics"). If you cannot read the timetable clearly, return an empty array []. Output strictly valid JSON with no markdown wrapping.';
+
+    try {
+        const [header, data] = base64DataUrl.split(',');
+        const mimeType = header.match(/data:(.*?);/)?.[1] || 'image/jpeg';
+
+        const claudeKey = getAnthropicKey() || getActiveApiKey();
+        const openAiKey = getOpenAiKey();
+        const geminiKey = getGeminiKey();
+
+        // 1. Anthropic Claude 3.5 Sonnet Vision
+        if (claudeKey) {
+            try {
+                const res = await fetchWithTimeout('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': claudeKey,
+                        'anthropic-version': '2023-06-01',
+                        'anthropic-dangerous-direct-browser-access': 'true'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-3-5-sonnet-20241022',
+                        max_tokens: 2048,
+                        messages: [
+                            {
+                                role: 'user',
+                                content: [
+                                    {
+                                        type: 'image',
+                                        source: {
+                                            type: 'base64',
+                                            media_type: mimeType,
+                                            data: data
+                                        }
+                                    },
+                                    {
+                                        type: 'text',
+                                        text: promptText
+                                    }
+                                ]
+                            }
+                        ]
+                    })
+                }, 6000);
+
+                if (res.ok) {
+                    const resData = await res.json();
+                    const content = resData.content?.[0]?.text;
+                    if (content) {
+                        const parsed = parseJsonSafe(content);
+                        const classes = Array.isArray(parsed) ? parsed : (parsed?.classes || parsed?.timetable || []);
+                        if (Array.isArray(classes) && classes.length > 0) return classes;
+                    }
+                }
+            } catch (err) {
+                console.warn('[Sabi Timetable] Claude photo extraction error or timeout:', err);
+            }
+        }
+
+        // 2. OpenAI GPT-4o Vision
+        const oKey = openAiKey || (claudeKey && claudeKey.startsWith('sk-') && !claudeKey.startsWith('sk-ant-') ? claudeKey : null);
+        if (oKey) {
+            try {
+                const res = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${oKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o',
+                        messages: [
+                            {
+                                role: 'user',
+                                content: [
+                                    { type: 'text', text: promptText },
+                                    { type: 'image_url', image_url: { url: base64DataUrl } }
+                                ]
+                            }
+                        ],
+                        response_format: { type: 'json_object' }
+                    })
+                }, 5000);
+
+                if (res.ok) {
+                    const resData = await res.json();
+                    const content = resData.choices?.[0]?.message?.content;
+                    if (content) {
+                        const parsed = parseJsonSafe(content);
+                        const classes = Array.isArray(parsed) ? parsed : (parsed?.classes || parsed?.timetable || []);
+                        if (Array.isArray(classes) && classes.length > 0) return classes;
+                    }
+                }
+            } catch (err) {
+                console.warn('[Sabi Timetable] OpenAI photo extraction failed:', err);
+            }
+        }
+
+        // 3. Google Gemini Vision
+        const gKey = geminiKey || (claudeKey && claudeKey.startsWith('AIzaSy') ? claudeKey : null);
+        if (gKey) {
+            const models = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+            for (const model of models) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${gKey}`;
+                    const res = await fetchWithTimeout(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                role: 'user',
+                                parts: [
+                                    { inlineData: { mimeType, data } },
+                                    { text: promptText }
+                                ]
+                            }],
+                            generationConfig: { responseMimeType: 'application/json' }
+                        })
+                    }, 5000);
+
+                    if (res.ok) {
+                        const resData = await res.json();
+                        const text = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (text) {
+                            const parsed = parseJsonSafe(text);
+                            const classes = Array.isArray(parsed) ? parsed : (parsed?.classes || parsed?.timetable || []);
+                            if (Array.isArray(classes) && classes.length > 0) return classes;
+                        }
+                    }
+                } catch (e) {}
+            }
+        }
+    } catch (err) {
+        console.error('[Sabi Timetable] Photo extraction failed:', err);
+    }
+    return null;
+}
+
+async function extractTimetableFromText(timetableText) {
+    if (!timetableText || !timetableText.trim()) return [];
+
+    const promptText = `Parse this class timetable into structured data. Return ONLY a JSON array of objects with fields: day (e.g. "Monday"), start_time (24h format e.g. "09:00"), end_time (24h format e.g. "11:00"), subject (the class name). Here is the timetable:\n\n${timetableText}\n\nReturn strictly JSON.`;
+
+    const claudeKey = getAnthropicKey() || getActiveApiKey();
+    const openAiKey = getOpenAiKey();
+    const geminiKey = getGeminiKey();
+
+    // 1. Claude Haiku
+    if (claudeKey) {
+        try {
+            const res = await fetchWithTimeout('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': claudeKey,
+                    'anthropic-version': '2023-06-01',
+                    'anthropic-dangerous-direct-browser-access': 'true'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-5-haiku-20241022',
+                    max_tokens: 2048,
+                    messages: [
+                        { role: 'user', content: promptText }
+                    ]
+                })
+            }, 5000);
+
+            if (res.ok) {
+                const resData = await res.json();
+                const content = resData.content?.[0]?.text;
+                if (content) {
+                    const parsed = parseJsonSafe(content);
+                    const classes = Array.isArray(parsed) ? parsed : (parsed?.classes || parsed?.timetable || []);
+                    if (Array.isArray(classes) && classes.length > 0) return classes;
+                }
+            }
+        } catch (err) {
+            console.warn('[Sabi Timetable] Claude text extraction error:', err);
+        }
+    }
+
+    // 2. OpenAI
+    const oKey = openAiKey || (claudeKey && claudeKey.startsWith('sk-') && !claudeKey.startsWith('sk-ant-') ? claudeKey : null);
+    if (oKey) {
+        try {
+            const res = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${oKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: 'user', content: promptText }
+                    ],
+                    response_format: { type: 'json_object' }
+                })
+            }, 4000);
+
+            if (res.ok) {
+                const data = await res.json();
+                const content = data.choices?.[0]?.message?.content;
+                if (content) {
+                    const parsed = parseJsonSafe(content);
+                    const classes = Array.isArray(parsed) ? parsed : (parsed?.classes || parsed?.timetable || []);
+                    if (Array.isArray(classes) && classes.length > 0) return classes;
+                }
+            }
+        } catch (err) {}
+    }
+
+    // 3. Gemini
+    const gKey = geminiKey || (claudeKey && claudeKey.startsWith('AIzaSy') ? claudeKey : null);
+    if (gKey) {
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gKey}`;
+            const res = await fetchWithTimeout(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ role: 'user', parts: [{ text: promptText }] }],
+                    generationConfig: { responseMimeType: 'application/json' }
+                })
+            }, 4000);
+
+            if (res.ok) {
+                const resData = await res.json();
+                const text = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    const parsed = parseJsonSafe(text);
+                    const classes = Array.isArray(parsed) ? parsed : (parsed?.classes || parsed?.timetable || []);
+                    if (Array.isArray(classes) && classes.length > 0) return classes;
+                }
+            }
+        } catch (e) {}
+    }
+
+    return simpleTextTimetableParse(timetableText);
+}
+
+// Basic offline timetable parser
+function simpleTextTimetableParse(text) {
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const lines = text.split('\n').filter(l => l.trim());
+    const classes = [];
+    
+    lines.forEach(line => {
+        const lower = line.toLowerCase();
+        const dayMatch = days.find(d => lower.includes(d));
+        if (!dayMatch) return;
+        
+        // Try to find time patterns like "9am-11am", "09:00-11:00", "9:00 - 11:00"
+        const timePattern = /(\d{1,2}(?::\d{2})?)\s*(?:am|pm)?\s*[-–to]+\s*(\d{1,2}(?::\d{2})?)\s*(?:am|pm)?/i;
+        const timeMatch = line.match(timePattern);
+        
+        if (timeMatch) {
+            let start = timeMatch[1];
+            let end = timeMatch[2];
+            
+            // Convert to 24h if needed
+            if (!start.includes(':')) start += ':00';
+            if (!end.includes(':')) end += ':00';
+            if (lower.includes('pm') && parseInt(start) < 12) {
+                start = (parseInt(start) + 12) + start.slice(start.indexOf(':'));
+            }
+            if (lower.includes('pm') && parseInt(end) < 12) {
+                end = (parseInt(end) + 12) + end.slice(end.indexOf(':'));
+            }
+            
+            // Subject is everything after the time
+            const afterTime = line.substring(line.indexOf(timeMatch[0]) + timeMatch[0].length).trim();
+            const subject = afterTime.replace(/^[-–,:\s]+/, '').trim() || 'Class';
+            
+            classes.push({
+                day: dayMatch.charAt(0).toUpperCase() + dayMatch.slice(1),
+                start_time: start.padStart(5, '0'),
+                end_time: end.padStart(5, '0'),
+                subject
+            });
+        }
+    });
+    
+    return classes;
 }
 
 // --- MONDAY AUTO-REGENERATION CHECK ---
@@ -1312,53 +1880,126 @@ function buildPlannerInputBundle(weekStartStr, isReplanRemaining = false) {
         hard_subjects: profile.hard_subjects || [],
         hours_per_day: profile.hours_per_day || "3-4",
         best_time: profile.best_time || "evening",
+        off_days: profile.off_days || ["Sunday"],
+        goal: profile.goal || "high",
+        follow_up_context: followUpContext.length > 0 ? followUpContext : undefined,
         last_week: lastWeek
     };
 }
 
-// Call AI Model (Supports Gemini API with intelligent offline fallback simulator)
+// Call AI Model (Anthropic Claude 3.5 Sonnet, Google Gemini, OpenAI, or intelligent offline fallback)
 async function callPlannerModel(inputBundle, retryViolations = null) {
-    const apiKey = localStorage.getItem('gemini_api_key') || localStorage.getItem('sabi_gemini_api_key');
     let promptContent = JSON.stringify(inputBundle);
 
     if (retryViolations && retryViolations.length > 0) {
         promptContent = `Your previous output had validation violations:\n- ${retryViolations.join('\n- ')}\n\nPlease regenerate the JSON output correcting all violations strictly according to the rules.\nInput: ${JSON.stringify(inputBundle)}`;
     }
 
-    if (apiKey) {
+    const claudeKey = getAnthropicKey() || getActiveApiKey();
+    const openAiKey = getOpenAiKey();
+    const geminiKey = getGeminiKey();
+
+    // 1. Try Anthropic Claude 3.5 Sonnet first (User preference: Claude)
+    if (isLiveModelAvailable && claudeKey) {
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
+            console.log('[Sabi Planner] Calling Anthropic Claude 3.5 Sonnet API...');
+            const res = await fetchWithTimeout('https://api.anthropic.com/v1/messages', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': claudeKey,
+                    'anthropic-version': '2023-06-01',
+                    'anthropic-dangerous-direct-browser-access': 'true'
+                },
                 body: JSON.stringify({
-                    contents: [{ role: 'user', parts: [{ text: promptContent }] }],
-                    systemInstruction: { parts: [{ text: PLANNER_SYSTEM_PROMPT }] },
-                    generationConfig: {
-                        responseMimeType: 'application/json'
-                    }
+                    model: 'claude-3-5-sonnet-20241022',
+                    max_tokens: 4096,
+                    system: PLANNER_SYSTEM_PROMPT,
+                    messages: [
+                        { role: 'user', content: promptContent }
+                    ]
                 })
-            });
+            }, 5000);
 
             if (res.ok) {
                 const data = await res.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                const text = data.content?.[0]?.text;
                 if (text) {
+                    console.log('[Sabi Planner] Received successful plan from Claude 3.5 Sonnet.');
                     return text;
                 }
             } else {
-                console.warn('Gemini API call failed with status:', res.status);
+                console.warn('[Sabi Planner] Claude API response status:', res.status);
+                if (res.status === 401 || res.status === 403) {
+                    isLiveModelAvailable = false; // Invalid key or unauthenticated, don't stall
+                }
             }
         } catch (err) {
-            console.warn('Gemini API fetch error, executing offline planner simulator:', err);
+            console.warn('[Sabi Planner] Claude API fetch error or timeout:', err);
+            isLiveModelAvailable = false;
         }
     }
 
-    // Offline bundle simulator adhering strictly to the 11 prompt rules
+    // 2. Try Google Gemini if configured
+    const gKey = geminiKey || (claudeKey && claudeKey.startsWith('AIzaSy') ? claudeKey : null);
+    if (isLiveModelAvailable && gKey) {
+        const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+        for (const model of models) {
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${gKey}`;
+                const res = await fetchWithTimeout(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ role: 'user', parts: [{ text: promptContent }] }],
+                        systemInstruction: { parts: [{ text: PLANNER_SYSTEM_PROMPT }] },
+                        generationConfig: { responseMimeType: 'application/json' }
+                    })
+                }, 4000);
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) return text;
+                }
+            } catch (err) {}
+        }
+    }
+
+    // 3. Try OpenAI if configured
+    const oKey = openAiKey || (claudeKey && claudeKey.startsWith('sk-') && !claudeKey.startsWith('sk-ant-') ? claudeKey : null);
+    if (isLiveModelAvailable && oKey) {
+        try {
+            const res = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${oKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [
+                        { role: 'system', content: PLANNER_SYSTEM_PROMPT },
+                        { role: 'user', content: promptContent }
+                    ],
+                    response_format: { type: 'json_object' }
+                })
+            }, 4000);
+
+            if (res.ok) {
+                const data = await res.json();
+                const text = data.choices?.[0]?.message?.content;
+                if (text) return text;
+            }
+        } catch (err) {}
+    }
+
+    // 4. Offline rule-compliant generator (Conflict-Free 11-rule academic scheduler)
+    console.log('[Sabi Planner] Using offline 11-rule study engine (immediate, guaranteed balance).');
     return synthesizeRuleCompliantPlan(inputBundle, retryViolations);
 }
 
-// High-fidelity offline generator following all 11 planner rules
+// High-fidelity offline generator following all 11 planner rules with dynamic collision avoidance
 function synthesizeRuleCompliantPlan(input, retryViolations) {
     const weekStart = input.week_start;
     const subjects = input.subjects || [];
@@ -1374,26 +2015,26 @@ function synthesizeRuleCompliantPlan(input, retryViolations) {
     const maxDailyMinutes = midpoint * 60 * 0.8;
     const maxSessionsPerDay = Math.min(3, Math.floor(maxDailyMinutes / sessionLengthMin)); // Rule 6: Max 3 subjects/day
     
-    // Best time slot windows
-    const timeSlotsByPref = {
-        morning: ['07:00', '08:30', '10:00'],
-        afternoon: ['13:00', '14:30', '15:45'],
-        evening: ['17:30', '19:00', '20:15'],
-        night: ['21:00', '22:15']
+    // Best time slot candidates tailored to student preference
+    const timeSlotCandidatesByPref = {
+        morning: ['07:00', '08:30', '10:00', '11:30', '06:00', '14:00', '15:30', '17:00', '18:30'],
+        afternoon: ['13:00', '14:30', '15:45', '12:00', '17:00', '18:30', '08:30', '10:00', '20:00'],
+        evening: ['17:30', '19:00', '20:30', '21:30', '16:00', '14:30', '08:30', '10:00', '07:00'],
+        night: ['21:00', '22:15', '20:00', '19:00', '17:30', '16:00', '14:30']
     };
-    const defaultSlots = timeSlotsByPref[bestTime] || timeSlotsByPref.evening;
+    const defaultCandidates = timeSlotCandidatesByPref[bestTime] || timeSlotCandidatesByPref.evening;
     
-    // 7 days of the week: Mon to Sun (index 0 to 6)
-    // Rule 6: Keep one rest day (Sunday = index 6)
-    const activeDays = [0, 1, 2, 3, 4, 5];
+    // 7 days of the week: Mon(0) to Sun(6)
+    const dayNameToIdx = { 'Monday': 0, 'Tuesday': 1, 'Wednesday': 2, 'Thursday': 3, 'Friday': 4, 'Saturday': 5, 'Sunday': 6 };
+    const offDaysSet = new Set((input.off_days || ['Sunday']).map(d => dayNameToIdx[d]).filter(v => v !== undefined));
+    const activeDays = [0, 1, 2, 3, 4, 5, 6].filter(i => !offDaysSet.has(i));
     
     const plannedSessions = [];
     const subjectSessionCount = {};
     const subjectLastDay = {};
     const subjectTopicIdx = {};
     const subjectActivityCycle = ['learn', 'recall', 'practice', 'review'];
-    const daysSessionCount = [0, 0, 0, 0, 0, 0, 0];
-    const daysSubjects = [[], [], [], [], [], [], []];
+    const daysSubjects = {};
     
     subjects.forEach(s => {
         subjectSessionCount[s.name] = 0;
@@ -1401,17 +2042,40 @@ function synthesizeRuleCompliantPlan(input, retryViolations) {
         subjectTopicIdx[s.name] = 0;
     });
 
-    // Check exam date proximity: if within 14 days, mostly recall and practice
     const isExamClose = input.exam_info?.type === 'confirmed' && (input.exam_info.dates || []).length > 0;
 
-    // Distribute sessions: Each subject gets at least 2 sessions, hard subjects get extra (Rule 4)
+    const timeToMin = (t) => {
+        if (!t || !t.includes(':')) return 0;
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+    };
+
     activeDays.forEach(dayIdx => {
         const currentDateStr = addDaysToDate(weekStart, dayIdx);
+        daysSubjects[currentDateStr] = [];
         let dailyCount = 0;
+
+        // Collect busy intervals from classes and fixed calendar sessions
+        const busy = [];
+        const dayName = new Date(currentDateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' });
+        if (input.classes) {
+            for (const cls of input.classes) {
+                if (cls.day.toLowerCase() === dayName.toLowerCase() || cls.day === currentDateStr) {
+                    busy.push([timeToMin(cls.start_time), timeToMin(cls.end_time)]);
+                }
+            }
+        }
+        if (input.fixed_sessions) {
+            for (const fix of input.fixed_sessions) {
+                if (fix.date === currentDateStr) {
+                    busy.push([timeToMin(fix.start_time), timeToMin(fix.end_time)]);
+                }
+            }
+        }
 
         subjects.forEach(sub => {
             if (dailyCount >= maxSessionsPerDay) return;
-            if (daysSubjects[dayIdx].length >= 3) return; // Rule 6: Max 3 subjects per day
+            if (daysSubjects[currentDateStr].length >= 3) return; // Rule 6: Max 3 subjects per day
 
             const isHard = hardSet.has(sub.name.toLowerCase());
             const targetCount = isHard ? 3 : 2;
@@ -1419,16 +2083,51 @@ function synthesizeRuleCompliantPlan(input, retryViolations) {
 
             // Rule 4: At least 2 days apart
             if (currentCount < targetCount && (dayIdx - subjectLastDay[sub.name] >= 2)) {
-                const slotTime = defaultSlots[dailyCount % defaultSlots.length] || '17:30';
-                const endTime = calculateEndTime(slotTime, sessionLengthMin / 60);
+                let chosenSlot = null;
+                const minAllowed = timeToMin('05:30');
+                const maxAllowed = timeToMin('23:30');
 
-                // Sequence activity: learn, recall, practice, review
+                // Check candidate slots inside preferred window
+                for (const candidateTime of defaultCandidates) {
+                    const cStart = timeToMin(candidateTime);
+                    const cEnd = cStart + sessionLengthMin;
+                    if (cStart < minAllowed || cEnd > maxAllowed) continue;
+
+                    const collides = busy.some(([bStart, bEnd]) => Math.max(cStart, bStart) < Math.min(cEnd, bEnd));
+                    if (!collides) {
+                        chosenSlot = candidateTime;
+                        break;
+                    }
+                }
+
+                // If all preferred slots busy, search open time slots across the day
+                if (!chosenSlot) {
+                    const fallbackTimes = ['06:00', '07:30', '09:00', '10:30', '12:00', '13:30', '15:00', '16:30', '18:00', '19:30', '21:00', '22:00'];
+                    for (const fTime of fallbackTimes) {
+                        const cStart = timeToMin(fTime);
+                        const cEnd = cStart + sessionLengthMin;
+                        if (cStart < minAllowed || cEnd > maxAllowed) continue;
+
+                        const collides = busy.some(([bStart, bEnd]) => Math.max(cStart, bStart) < Math.min(cEnd, bEnd));
+                        if (!collides) {
+                            chosenSlot = fTime;
+                            break;
+                        }
+                    }
+                }
+
+                if (!chosenSlot) return; // Skip if no free time window exists on this day
+
+                const endTime = calculateEndTime(chosenSlot, sessionLengthMin / 60);
+
+                // Add to busy intervals so following sessions don't overlap
+                busy.push([timeToMin(chosenSlot), timeToMin(endTime)]);
+
                 let act = subjectActivityCycle[currentCount % subjectActivityCycle.length];
                 if (isExamClose) {
                     act = (currentCount % 2 === 0) ? 'recall' : 'practice';
                 }
 
-                // Focus topic
                 let focusTopic = null;
                 if (sub.topics && sub.topics.length > 0) {
                     const tIdx = subjectTopicIdx[sub.name] % sub.topics.length;
@@ -1438,18 +2137,17 @@ function synthesizeRuleCompliantPlan(input, retryViolations) {
 
                 plannedSessions.push({
                     date: currentDateStr,
-                    start_time: slotTime,
+                    start_time: chosenSlot,
                     end_time: endTime,
                     subject: sub.name,
                     activity: act,
                     focus: focusTopic
                 });
 
+                daysSubjects[currentDateStr].push(sub.name);
                 subjectSessionCount[sub.name]++;
                 subjectLastDay[sub.name] = dayIdx;
                 dailyCount++;
-                daysSessionCount[dayIdx]++;
-                daysSubjects[dayIdx].push(sub.name);
             }
         });
     });
@@ -1899,7 +2597,7 @@ function renderWeekTimetable() {
 function promptApiKey() {
     const modal = document.getElementById('api-key-modal');
     const input = document.getElementById('gemini-api-key-input');
-    const existing = localStorage.getItem('gemini_api_key') || localStorage.getItem('sabi_gemini_api_key');
+    const existing = getAnthropicKey() || getGeminiKey() || getOpenAiKey() || getActiveApiKey();
     if (input && existing) input.value = existing;
     if (modal) modal.classList.remove('hidden');
 }
@@ -1915,20 +2613,36 @@ function saveApiKey() {
     if (input) {
         const val = input.value.trim();
         if (val) {
-            localStorage.setItem('gemini_api_key', val);
-            localStorage.setItem('sabi_gemini_api_key', val);
-            showToast('Gemini API key saved! Live AI generation active.');
+            if (val.startsWith('sk-ant-') || val.toLowerCase().includes('claude')) {
+                localStorage.setItem('claude_api_key', val);
+                localStorage.setItem('anthropic_api_key', val);
+                showToast('Claude API key saved! Live Claude 3.5 Sonnet planner active.');
+            } else if (val.startsWith('AIzaSy')) {
+                localStorage.setItem('gemini_api_key', val);
+                localStorage.setItem('sabi_gemini_api_key', val);
+                showToast('Gemini API key saved! Live AI generation active.');
+            } else {
+                localStorage.setItem('claude_api_key', val);
+                localStorage.setItem('anthropic_api_key', val);
+                localStorage.setItem('openai_api_key', val);
+                localStorage.setItem('sabi_api_key', val);
+                showToast('API key saved! AI study planner active.');
+            }
         }
     }
     closeApiKeyModal();
 }
 
 function clearApiKey() {
+    localStorage.removeItem('claude_api_key');
+    localStorage.removeItem('anthropic_api_key');
     localStorage.removeItem('gemini_api_key');
     localStorage.removeItem('sabi_gemini_api_key');
+    localStorage.removeItem('openai_api_key');
+    localStorage.removeItem('sabi_api_key');
     const input = document.getElementById('gemini-api-key-input');
     if (input) input.value = '';
-    showToast('API key removed. Using built-in planner simulator.');
+    showToast('API key removed. Using built-in planner engine.');
     closeApiKeyModal();
 }
 
