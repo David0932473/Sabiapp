@@ -65,7 +65,7 @@ function getActiveApiKey() {
 }
 
 // Helper: Safe fetch with timeout to avoid freezing UI
-async function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -77,6 +77,19 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
         throw err;
     }
 }
+
+// ==========================================
+// 🔄 RENDER ALL VIEWS (central re-render)
+// ==========================================
+function renderAllViews() {
+    renderMiniCalendarStrip();
+    if (currentViewMode === 'week') {
+        renderWeekTimetable();
+    } else {
+        renderAgendaTimeline();
+    }
+}
+window.renderAllViews = renderAllViews;
 
 // ==========================================
 // 📅 DATE & TIME HELPERS
@@ -846,13 +859,15 @@ function openAddSessionModal(initialType = 'study', prefillData = null) {
 window.openAddSessionModal = openAddSessionModal;
 
 function closeAddSessionModal(e) {
-    if (e && e.target !== e.currentTarget && !e.target.classList.contains('sheet-close-btn')) return;
+    // Allow programmatic calls (no event) or clicks on the overlay/close button
+    if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('sheet-close-btn') && !e.target.classList.contains('modal-overlay')) return;
     const overlay = document.getElementById('add-session-modal');
     if (overlay) {
         overlay.classList.add('hidden');
         document.body.style.overflow = '';
     }
-    document.getElementById('modal-edit-id').value = '';
+    const editIdEl = document.getElementById('modal-edit-id');
+    if (editIdEl) editIdEl.value = '';
 }
 window.closeAddSessionModal = closeAddSessionModal;
 
@@ -1155,7 +1170,8 @@ function openSabiAiChat() {
 window.openSabiAiChat = openSabiAiChat;
 
 function closeSabiAiChat(e) {
-    if (e && e.target !== e.currentTarget && !e.target.classList.contains('chat-tool-btn')) return;
+    // Allow programmatic calls or clicks on the overlay itself
+    if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('chat-tool-btn') && !e.target.classList.contains('modal-overlay')) return;
     const drawer = document.getElementById('sabi-ai-chat-drawer');
     if (drawer) {
         drawer.classList.add('hidden');
@@ -1322,6 +1338,22 @@ function removePendingChatMedia() {
 }
 window.removePendingChatMedia = removePendingChatMedia;
 
+// Render markdown-lite: bold (**text**), italic (*text*), newlines
+function renderMarkdownLite(text) {
+    if (!text) return '';
+    // Escape HTML first, then apply markdown patterns
+    let safe = escapeHtml(text);
+    // Bold: **text**
+    safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // Italic: *text* (not preceded by another *)
+    safe = safe.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+    // Bullet lines starting with • or -
+    safe = safe.replace(/^([•\-]) (.+)$/gm, '<span class="chat-bullet">$1 $2</span>');
+    // Newlines to <br>
+    safe = safe.replace(/\n/g, '<br>');
+    return safe;
+}
+
 function renderChatMessages() {
     const container = document.getElementById('chat-messages-container');
     if (!container) return;
@@ -1357,12 +1389,17 @@ function renderChatMessages() {
             }
         }
 
+        // Bot messages get markdown rendering; user messages stay plain
+        const contentHtml = isUser
+            ? `<div>${escapeHtml(msg.content)}</div>`
+            : `<div>${renderMarkdownLite(msg.content)}</div>`;
+
         return `
             <div class="chat-msg-row ${isUser ? 'user' : 'bot'}">
                 ${!isUser ? `<img src="avatars/notion-scholar.svg" alt="Sabi" class="chat-msg-avatar" />` : ''}
                 <div class="chat-bubble">
                     ${mediaHtml}
-                    <div style="white-space: pre-line;">${escapeHtml(msg.content)}</div>
+                    ${contentHtml}
                     ${actionCardHtml}
                 </div>
             </div>
@@ -1592,7 +1629,7 @@ async function processBuddyConversation(userText, history, media) {
                     temperature: 0.7,
                     max_tokens: 1500
                 })
-            }, 14000);
+            }, 30000); // 30s — NVIDIA Vision model needs time
 
             if (res.ok) {
                 const data = await res.json();
@@ -1608,11 +1645,15 @@ async function processBuddyConversation(userText, history, media) {
                     return parseAiReplyAndApply(replyText);
                 }
             } else {
-                const errText = await res.text();
-                console.warn('NVIDIA API non-ok status:', res.status, errText);
+                const errData = await res.json().catch(() => ({}));
+                console.warn('NVIDIA API non-ok status:', res.status, errData);
+                // If key is invalid/expired, don't retry other providers with bad key
+                if (res.status === 401) {
+                    console.warn('NVIDIA key rejected (401). Falling back...');
+                }
             }
         } catch (e) {
-            console.warn('NVIDIA API error or timeout:', e);
+            console.warn('NVIDIA API error or timeout:', e.message || e);
         }
     }
 
@@ -1633,7 +1674,7 @@ async function processBuddyConversation(userText, history, media) {
                     system: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`,
                     messages: messagesPayload
                 })
-            }, 2500);
+            }, 20000); // 20s
 
             if (res.ok) {
                 const data = await res.json();
@@ -1641,7 +1682,7 @@ async function processBuddyConversation(userText, history, media) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('Claude API error or timeout, falling back:', e);
+            console.warn('Claude API error or timeout, falling back:', e.message || e);
         }
     }
 
@@ -1655,11 +1696,11 @@ async function processBuddyConversation(userText, history, media) {
                 body: JSON.stringify({
                     contents: messagesPayload.map(m => ({
                         role: m.role === 'assistant' ? 'model' : 'user',
-                        parts: [{ text: m.content }]
+                        parts: [{ text: typeof m.content === 'string' ? m.content : JSON.stringify(m.content) }]
                     })),
                     systemInstruction: { parts: [{ text: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}` }] }
                 })
-            }, 2500);
+            }, 20000); // 20s
 
             if (res.ok) {
                 const data = await res.json();
@@ -1667,12 +1708,12 @@ async function processBuddyConversation(userText, history, media) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('Gemini API error or timeout, falling back:', e);
+            console.warn('Gemini API error or timeout, falling back:', e.message || e);
         }
     }
 
-    // 3. OpenAI GPT (Only if key is valid sk- and not the mock key)
-    if (openAiKey && openAiKey.startsWith('sk-') && !openAiKey.includes('WYVUAjLW6nPxkrQ9sVYt2vdyxnaiH4wsM3ObGzVE0WrBnskN')) {
+    // 3. OpenAI GPT (Only if key is valid sk-)
+    if (openAiKey && openAiKey.startsWith('sk-')) {
         try {
             const res = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
@@ -1687,7 +1728,7 @@ async function processBuddyConversation(userText, history, media) {
                         ...messagesPayload
                     ]
                 })
-            }, 2500);
+            }, 20000); // 20s
 
             if (res.ok) {
                 const data = await res.json();
@@ -1695,7 +1736,7 @@ async function processBuddyConversation(userText, history, media) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('OpenAI API error or timeout, falling back:', e);
+            console.warn('OpenAI API error or timeout, falling back:', e.message || e);
         }
     }
 
@@ -1885,17 +1926,18 @@ function generateOfflineBuddyReply(userText, media, history) {
     }
 
     // 4. Multi-turn step-by-step progression based on conversation turn count
-    const userTurnCount = (history || []).filter(m => m.role === 'user').length;
+    // Note: the current user message is already in history, so subtract 1 for "previous" turns
+    const userTurnCount = (history || []).filter(m => m.role === 'user').length - 1;
 
-    if (userTurnCount <= 1) {
-        // Stage 1 -> ask about tough subjects
+    if (userTurnCount <= 0) {
+        // Stage 1 -> react to intro, ask about tough subjects
         botMessage = `Got it! That gives me clear direction. 🎯\n\nTo make sure we conquer the hard stuff first: **Which 1 or 2 specific courses or topics usually give you the toughest time or the most stress?**`;
-    } else if (userTurnCount === 2) {
+    } else if (userTurnCount === 1) {
         // Stage 2 -> ask about lecture times
-        botMessage = `I completely understand. Those courses need regular, focused problem drills rather than last-minute cramming.\n\nNext step: **Do you have fixed weekly lecture times or labs on campus (e.g. Mon 9-11am or Tue 2pm)?** Tell me your main lecture days.`;
-    } else if (userTurnCount === 3) {
+        botMessage = `I completely understand — those courses need regular, focused problem drills rather than last-minute cramming.\n\nNext step: **Do you have fixed weekly lecture times or labs on campus (e.g. Mon 9–11am or Tue 2pm)?** Tell me your main lecture days.`;
+    } else if (userTurnCount === 2) {
         // Stage 3 -> ask about alertness window
-        botMessage = `Noted on your lecture commitments! 🕒\n\nNow, for your personal revision blocks: **When do you feel most alert and focused during the day?** (Early morning, afternoon, or evening night owl?)`;
+        botMessage = `Noted on your lecture commitments! 🕒\n\nNow, for your personal revision blocks: **When do you feel most alert and focused during the day?** (Early morning, afternoon, or evening / night owl?)`;
     } else {
         // Stage 4 -> propose generation
         botMessage = `Awesome, I have all the key pieces! 🌟\n\nI can now synthesize your classes, protect your peak study hours, and schedule priority practice blocks.\n\nShould I **generate your weekly timetable now**? Tap **"Generate my complete timetable now ✨"** or just say "Yes"!`;
