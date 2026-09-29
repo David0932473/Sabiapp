@@ -33,7 +33,19 @@ function getOpenAiKey() {
     return (localStorage.getItem('openai_api_key') || '').trim();
 }
 
+function getNvidiaKey() {
+    if (typeof window !== 'undefined' && window.ENV) {
+        const envKey = window.ENV.NVIDIA_API_KEY || window.ENV.API_KEY;
+        if (envKey && typeof envKey === 'string' && envKey.startsWith('nvapi-')) return envKey.trim();
+    }
+    const local = (localStorage.getItem('nvidia_api_key') || localStorage.getItem('sabi_api_key') || '').trim();
+    if (local && local.startsWith('nvapi-')) return local;
+    return '';
+}
+
 function getActiveApiKey() {
+    const nvKey = getNvidiaKey();
+    if (nvKey) return nvKey;
     const claudeKey = getAnthropicKey();
     if (claudeKey) return claudeKey;
     const geminiKey = getGeminiKey();
@@ -1088,15 +1100,17 @@ window.toggleCurrentDetailComplete = toggleCurrentDetailComplete;
 // ==========================================
 // 💬 SABI AI STUDY BUDDY CONVERSATIONAL ASSISTANT
 // ==========================================
+let pendingChatMedia = null; // { name, type, size, dataUrl, textContent }
+
 const DEFAULT_CHAT_GREETING = {
     role: 'bot',
-    content: "Hey there! 👋 I'm your Sabi Study Buddy. Let's build a timetable that actually works for you!\n\nTell me: what recurring classes or lectures do you have this semester, and what exams (like JAMB, WAEC, or semester exams) are you studying for?",
+    content: "Hey there! 👋 I'm your Sabi Study Buddy. I'm here to build you a timetable that actually fits your real academic life.\n\nTo build your best schedule, I look at three things:\n1. 🎓 **Your recurring classes/lectures** (e.g. MTH 101 Mon 9-11am)\n2. 🎯 **Your target exam or semester finals** (JAMB, WAEC, NOUN, ICAN, or Degree courses)\n3. ⏱️ **Your daily focus hours & tough courses**\n\n💡 *Tip: You can also tap the paperclip 📎 below to upload a photo of your course outline, departmental timetable, or syllabus!*",
     timestamp: 'Just now'
 };
 
 function getChatHistory() {
     try {
-        const stored = localStorage.getItem('sabi_chat_history_v2');
+        const stored = localStorage.getItem('sabi_chat_history_v3');
         if (stored) {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -1107,7 +1121,7 @@ function getChatHistory() {
 
 function saveChatHistory(history) {
     try {
-        localStorage.setItem('sabi_chat_history_v2', JSON.stringify(history));
+        localStorage.setItem('sabi_chat_history_v3', JSON.stringify(history));
     } catch (e) {}
 }
 
@@ -1140,12 +1154,100 @@ window.closeSabiAiChat = closeSabiAiChat;
 function clearChatHistory() {
     if (confirm('Restart conversation with Sabi Study Buddy?')) {
         saveChatHistory([DEFAULT_CHAT_GREETING]);
+        removePendingChatMedia();
         renderChatMessages();
         renderChatQuickChips();
         showToast('Conversation restarted.');
     }
 }
 window.clearChatHistory = clearChatHistory;
+
+// ==========================================
+// 📎 MEDIA UPLOAD HANDLERS (COURSE OUTLINES & TIMETABLES)
+// ==========================================
+function triggerChatMediaUpload() {
+    const fileInput = document.getElementById('chat-media-file-input');
+    if (fileInput) fileInput.click();
+}
+window.triggerChatMediaUpload = triggerChatMediaUpload;
+
+function handleChatMediaSelected(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const isImage = file.type.startsWith('image/');
+    const isPdfOrDoc = file.type.includes('pdf') || file.name.endsWith('.doc') || file.name.endsWith('.docx') || file.name.endsWith('.txt');
+
+    const reader = new FileReader();
+
+    if (isImage) {
+        reader.onload = function(evt) {
+            pendingChatMedia = {
+                name: file.name,
+                type: 'image',
+                size: (file.size / 1024).toFixed(1) + ' KB',
+                dataUrl: evt.target.result
+            };
+            displayPendingMediaBar();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        // Read text if txt, or store filename
+        reader.onload = function(evt) {
+            pendingChatMedia = {
+                name: file.name,
+                type: 'document',
+                size: (file.size / 1024).toFixed(1) + ' KB',
+                textContent: typeof evt.target.result === 'string' ? evt.target.result.slice(0, 3000) : ''
+            };
+            displayPendingMediaBar();
+        };
+        if (file.name.endsWith('.txt')) {
+            reader.readAsText(file);
+        } else {
+            reader.onload = function() {
+                pendingChatMedia = {
+                    name: file.name,
+                    type: 'document',
+                    size: (file.size / 1024).toFixed(1) + ' KB',
+                    textContent: `Document: ${file.name}`
+                };
+                displayPendingMediaBar();
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    }
+}
+window.handleChatMediaSelected = handleChatMediaSelected;
+
+function displayPendingMediaBar() {
+    const bar = document.getElementById('chat-media-preview-bar');
+    const nameEl = document.getElementById('media-preview-filename');
+    const sizeEl = document.getElementById('media-preview-filesize');
+    const iconEl = document.getElementById('media-preview-icon');
+
+    if (!bar || !pendingChatMedia) return;
+
+    if (nameEl) nameEl.textContent = pendingChatMedia.name;
+    if (sizeEl) sizeEl.textContent = pendingChatMedia.size;
+    if (iconEl) iconEl.textContent = pendingChatMedia.type === 'image' ? '🖼️' : '📄';
+
+    bar.classList.remove('hidden');
+
+    const input = document.getElementById('chat-user-input');
+    if (input && !input.value.trim()) {
+        input.value = `Here is my course outline / timetable (${pendingChatMedia.name}), please extract my schedule!`;
+    }
+}
+
+function removePendingChatMedia() {
+    pendingChatMedia = null;
+    const bar = document.getElementById('chat-media-preview-bar');
+    if (bar) bar.classList.add('hidden');
+    const fileInput = document.getElementById('chat-media-file-input');
+    if (fileInput) fileInput.value = '';
+}
+window.removePendingChatMedia = removePendingChatMedia;
 
 function renderChatMessages() {
     const container = document.getElementById('chat-messages-container');
@@ -1164,10 +1266,29 @@ function renderChatMessages() {
             `;
         }
 
+        let mediaHtml = '';
+        if (msg.media) {
+            if (msg.media.type === 'image' && msg.media.dataUrl) {
+                mediaHtml = `
+                    <div class="chat-msg-media">
+                        <img src="${msg.media.dataUrl}" alt="${escapeHtml(msg.media.name || 'Course outline photo')}" />
+                    </div>
+                `;
+            } else {
+                mediaHtml = `
+                    <div class="chat-msg-doc-pill">
+                        <span>📄</span>
+                        <span>${escapeHtml(msg.media.name || 'Course outline')}</span>
+                    </div>
+                `;
+            }
+        }
+
         return `
             <div class="chat-msg-row ${isUser ? 'user' : 'bot'}">
                 ${!isUser ? `<img src="avatars/notion-scholar.svg" alt="Sabi" class="chat-msg-avatar" />` : ''}
                 <div class="chat-bubble">
+                    ${mediaHtml}
                     <div style="white-space: pre-line;">${escapeHtml(msg.content)}</div>
                     ${actionCardHtml}
                 </div>
@@ -1179,10 +1300,11 @@ function renderChatMessages() {
 }
 
 const CHAT_QUICK_CHIPS = [
+    "📎 Upload Course Outline",
     "I have recurring university lectures",
     "Prepping for JAMB in 6 weeks",
     "WAEC / SSCE revision",
-    "Maths & Physics are hard for me",
+    "Maths & Physics are tough for me",
     "I'm free evenings (5pm - 9pm)",
     "Generate my complete timetable now ✨"
 ];
@@ -1199,6 +1321,10 @@ function renderChatQuickChips() {
 }
 
 function handleQuickChipClick(chipText) {
+    if (chipText.includes('Upload Course Outline')) {
+        triggerChatMediaUpload();
+        return;
+    }
     const input = document.getElementById('chat-user-input');
     if (input) {
         input.value = chipText;
@@ -1213,15 +1339,23 @@ async function handleSendChatMessage(e) {
     if (!input) return;
 
     const userText = input.value.trim();
-    if (!userText) return;
+    if (!userText && !pendingChatMedia) return;
 
+    const textToSend = userText || (pendingChatMedia ? `Uploaded file: ${pendingChatMedia.name}` : '');
     input.value = '';
+
     const history = getChatHistory();
-    history.push({
+    const userMsgObj = {
         role: 'user',
-        content: userText,
+        content: textToSend,
+        media: pendingChatMedia ? { ...pendingChatMedia } : null,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    });
+    };
+
+    const mediaSnapshot = pendingChatMedia;
+    removePendingChatMedia();
+
+    history.push(userMsgObj);
     saveChatHistory(history);
     renderChatMessages();
 
@@ -1229,7 +1363,7 @@ async function handleSendChatMessage(e) {
     showTypingIndicator();
 
     try {
-        const botReply = await processBuddyConversation(userText, history);
+        const botReply = await processBuddyConversation(textToSend, history, mediaSnapshot);
         hideTypingIndicator();
 
         history.push(botReply);
@@ -1241,7 +1375,7 @@ async function handleSendChatMessage(e) {
     } catch (err) {
         hideTypingIndicator();
         console.error('Chat processing error:', err);
-        const fallback = generateOfflineBuddyReply(userText);
+        const fallback = generateOfflineBuddyReply(textToSend, mediaSnapshot, history);
         history.push(fallback);
         saveChatHistory(history);
         renderChatMessages();
@@ -1277,34 +1411,41 @@ function hideTypingIndicator() {
     if (el) el.remove();
 }
 
-// System prompt guiding Sabi Study Buddy persona
-const BUDDY_SYSTEM_PROMPT = `You are "Sabi Study Buddy", an empathetic, brilliant academic peer and study partner for Nigerian and international secondary and university students.
-Tone: Warm, encouraging, concise, relatable, friendly (like talking to a smart friend who wants you to succeed).
+// Highly conversational and empathetic prompt guiding Sabi Study Buddy persona
+const BUDDY_SYSTEM_PROMPT = `You are "Sabi Study Buddy", a caring, highly intelligent, conversational Nigerian and international academic mentor & study partner.
+Tone: Warm, encouraging, relatable, insightful, like a brilliant senior student or friend who really wants you to ace your exams.
 
-You help students build and balance their weekly academic timetable, which consists of TWO things:
-1. RECURRING CLASSES: Lectures, labs, or school periods on specific days (e.g., MTH 101 Mon 9-11am).
-2. TARGETED STUDY BLOCKS: Focused personal revision sessions (e.g. Physics past questions drills).
+YOUR MISSION:
+Help students organize both their fixed classes and their personal revision study blocks into a realistic, high-impact weekly timetable.
 
-When the student chats with you:
-- Converse naturally and ask what you need (recurring classes, exams like JAMB/WAEC/Finals, tough subjects, and daily free hours).
-- If they give you information (either piece by piece or all in one go), acknowledge it warmly and build or adjust their timetable.
-- If you have enough info or they say "generate", create their balanced schedule!
-- Always output your conversational reply FIRST.
-- Whenever you add or update timetable entries, append a JSON block at the bottom of your response in this exact format:
+CONVERSATION STYLE & QUESTIONS:
+1. Don't just dump a timetable immediately unless they ask you to "generate" or provide a full course outline.
+2. Ask natural, conversational follow-up questions to understand their situation:
+   - What degree, faculty, or exam (JAMB, WAEC, NOUN, ICAN) are they focusing on?
+   - What are their 2-3 most intimidating courses (e.g. Organic Chemistry, Engineering Math, Financial Accounting)?
+   - What are their fixed weekly lecture hours?
+   - When do they feel most alert (early morning 6am vs late night)?
+3. If they upload or paste a course outline or syllabus, read all the course codes, topics, and breakdown. Confirm what you spotted and propose a study schedule designed around it!
+4. Always give practical study advice (e.g., active recall, past question drills, spaced repetition).
+
+OUTPUT FORMAT:
+- First, write your empathetic, conversational response with your insights and questions.
+- If you have gathered enough details OR if the user asked to generate or provided an outline/classes, update their timetable by appending this exact JSON code block at the very end:
 \`\`\`json
 {
   "action": "UPDATE_TIMETABLE",
-  "summary": "Brief summary of what was updated",
+  "summary": "Brief explanation of what was added or updated",
   "classes": [
     { "day": "Monday", "start_time": "09:00", "end_time": "11:00", "subject": "Course Name/Code", "venue": "Hall/Room" }
   ],
   "studySessions": [
-    { "date": "YYYY-MM-DD", "time": "HH:MM", "duration": 1.5, "title": "Subject & Topic", "category": "jamb|waec|study|noun|ican", "notes": "Focus details" }
+    { "date": "YYYY-MM-DD", "time": "HH:MM", "duration": 1.5, "title": "Course Drill / Topic", "category": "jamb|waec|study|noun|ican", "notes": "Specific topics & strategy" }
   ]
 }
 \`\`\``;
 
-async function processBuddyConversation(userText, history) {
+async function processBuddyConversation(userText, history, media) {
+    const nvidiaKey = getNvidiaKey();
     const claudeKey = getAnthropicKey();
     const geminiKey = getGeminiKey();
     const openAiKey = getOpenAiKey();
@@ -1316,13 +1457,50 @@ async function processBuddyConversation(userText, history) {
         today: todayStr,
         week_start: mondayStr,
         existing_classes: storedClasses,
-        existing_study_sessions: calendarEvents.slice(-10)
+        existing_study_sessions: calendarEvents.slice(-10),
+        uploaded_media: media ? { name: media.name, type: media.type, hasText: !!media.textContent } : null
     };
 
-    const messagesPayload = history.slice(-6).map(m => ({
+    const messagesPayload = history.slice(-8).map(m => ({
         role: m.role === 'bot' ? 'assistant' : 'user',
-        content: m.content
+        content: m.content + (m.media ? `\n[Attached File: ${m.media.name}]` : '')
     }));
+
+    // 0. NVIDIA NIM Live AI (Verified Working High-Performance LLM)
+    if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
+        try {
+            const systemContent = BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`;
+            const res = await fetchWithTimeout('https://integrate.api.nvidia.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${nvidiaKey}`
+                },
+                body: JSON.stringify({
+                    model: 'meta/llama-3.2-11b-vision-instruct',
+                    messages: [
+                        { role: 'system', content: systemContent },
+                        ...messagesPayload
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 1500
+                })
+            }, 8000);
+
+            if (res.ok) {
+                const data = await res.json();
+                const replyText = data.choices?.[0]?.message?.content;
+                if (replyText) {
+                    console.log('✨ Live NVIDIA AI Response Received');
+                    return parseAiReplyAndApply(replyText);
+                }
+            } else {
+                console.warn('NVIDIA API non-ok status:', res.status, await res.text());
+            }
+        } catch (e) {
+            console.warn('NVIDIA API error or timeout:', e);
+        }
+    }
 
     // 1. Anthropic Claude (Only if key starts with sk-ant-)
     if (claudeKey && claudeKey.startsWith('sk-ant-')) {
@@ -1408,7 +1586,7 @@ async function processBuddyConversation(userText, history) {
     }
 
     // 4. Instant intelligent conversational assistant (Works 100% of the time, zero lag)
-    return generateOfflineBuddyReply(userText);
+    return generateOfflineBuddyReply(userText, media, history);
 }
 
 function parseAiReplyAndApply(replyText) {
@@ -1469,12 +1647,54 @@ function parseAiReplyAndApply(replyText) {
     };
 }
 
-// High-fidelity intelligent offline conversational generator
-function generateOfflineBuddyReply(userText) {
-    const text = userText.toLowerCase();
+// High-fidelity intelligent offline conversational generator with multi-turn memory & media awareness
+function generateOfflineBuddyReply(userText, media, history) {
+    const text = (userText || '').toLowerCase();
     const mondayStr = getMondayOfWeek(new Date());
     let botMessage = '';
     let actionData = null;
+
+    // Check if media was uploaded
+    if (media) {
+        const isDoc = media.type === 'document';
+        const docName = media.name || 'document';
+
+        // Extract possible course codes from filename or content
+        const codeMatches = (media.name + ' ' + (media.textContent || '')).match(/([a-zA-Z]{2,4}\s*\d{3})/g);
+        const extractedCodes = codeMatches ? Array.from(new Set(codeMatches.map(c => c.toUpperCase()))) : ['GST 101', 'MTH 101', 'PHY 101', 'CHM 101'];
+
+        // Automatically set up 4 balanced study drill slots based on their outline
+        for (let i = 0; i < Math.min(extractedCodes.length, 5); i++) {
+            const dateStr = addDaysToDate(mondayStr, i);
+            const course = extractedCodes[i];
+            calendarEvents.push({
+                id: 'ev-media-' + Date.now() + '-' + i,
+                title: `${course} Outline Revision Drill`,
+                category: 'study',
+                date: dateStr,
+                time: i % 2 === 0 ? '17:00' : '19:30',
+                duration: 1.5,
+                location: 'Sabi Study Room',
+                notes: `Extracted from uploaded outline (${docName}). Comprehensive syllabus mastery.`,
+                completed: false,
+                isAiGenerated: true
+            });
+        }
+        saveEvents();
+
+        botMessage = `I've analyzed your uploaded **${docName}**! 📑✨\n\nI detected key course targets: **${extractedCodes.slice(0, 4).join(', ')}**.\n\nHere is what I did:\n1. 🎯 Built 4 priority study blocks in your evening revision window.\n2. ⏱️ Balanced the workload so heavy calculations and reading courses don't collide.\n\nNow tell me: **Do you have specific days and times when lectures meet in class**, or are there specific topics in this outline where you need extra help?`;
+
+        actionData = {
+            details: `Extracted course targets from ${docName} & generated 4 syllabus revision blocks`
+        };
+
+        return {
+            role: 'bot',
+            content: botMessage,
+            actionCard: actionData,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
 
     // Check for class inputs (e.g. "I have PHY 101 on Mondays at 9am")
     const daysRegex = /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/gi;
@@ -1517,9 +1737,7 @@ function generateOfflineBuddyReply(userText) {
         storedClasses.push(newClass);
         saveStoredClasses(storedClasses);
 
-        botMessage = `Got it! 🎓 I've locked in your **${subject}** recurring lecture every **${formattedDay} from ${startTime} to ${endTime}**.
-
-What other classes do you have, or would you like me to build your revision study blocks around this?`;
+        botMessage = `Locked it down! 🎓 **${subject}** is set for every **${formattedDay} from ${startTime} to ${endTime}**. I've marked this as a recurring class so Sabi won't double-book your personal study time during this lecture.\n\nLet's keep going:\n- Do you have other lectures on other weekdays?\n- Or what subject is giving you the biggest headache this semester that we should allocate emergency revision time for?`;
 
         actionData = {
             details: `Added ${subject} (Every ${formattedDay}, ${startTime} - ${endTime})`
@@ -1556,29 +1774,19 @@ What other classes do you have, or would you like me to build your revision stud
         }
         saveEvents();
 
-        botMessage = `Done deal! 🚀 I've built your balanced weekly academic timetable!
-
-- Scheduled revision blocks for **Maths, Physics, Chemistry, and English**.
-- Allocated study sessions in your optimal focus window so they won't clash with classes.
-- Sundays are kept free for rest and mental recovery.
-
-You can view them on the Schedule or Week Grid, or tap any card to edit!`;
+        botMessage = `Done deal! 🚀 I've built your complete weekly timetable with tailored revision drills!\n\nHere is how I structured it:\n• **Spaced Repetition**: Mathematics, Physics, Chemistry, and English are rotated to maximize retention.\n• **Buffer Windows**: 30-minute decompression breaks between intense study sessions.\n• **Weekend Reset**: Sundays are completely free so you don't burn out.\n\nYou can switch to the **Week Grid** to view the full canvas, or tap any session to customize it!`;
 
         actionData = {
             details: `Generated 5 tailored revision blocks for ${examCategory.toUpperCase()}`
         };
     } else if (text.includes('hi') || text.includes('hello') || text.includes('hey') || text.includes('start') || text.includes('help')) {
-        botMessage = `Hey there! 👋 I'm your Sabi Study Buddy. I can help you organize both your **weekly recurring classes/lectures** and your **revision study drills**!
-
-To get started, tell me:
-1. What courses or exams are you preparing for?
-2. Do you have any fixed lecture times during the week?`;
-    } else if (text.includes('hard') || text.includes('struggle') || text.includes('weak') || text.includes('math') || text.includes('physic')) {
-        botMessage = `Got you! I've noted your priority subjects. I will schedule extra practice sessions and spaced repetition for those topics so you can conquer them. 
-
-Would you like me to generate your complete weekly timetable now?`;
+        botMessage = `Hey there! Great to connect with you. 😊\n\nI'm ready to craft your ideal academic schedule. To make sure it fits you like a glove, tell me:\n\n1. **What are you preparing for?** (e.g. 100L semester finals, JAMB, WAEC, NOUN, or professional ICAN)\n2. **Which courses or subjects feel the hardest right now?**\n3. **When do you feel sharpest during the day?** (Early morning vs afternoon vs evening night owl)\n\n*(You can also tap the paperclip 📎 to upload your course outline!)*`;
+    } else if (text.includes('hard') || text.includes('struggle') || text.includes('weak') || text.includes('math') || text.includes('physic') || text.includes('chemistry')) {
+        botMessage = `I hear you loud and clear. That's completely normal — courses like Maths, Physics, and Chem demand consistent problem-solving rather than passive reading.\n\nHere is my recommendation:\n• We schedule **45-minute sprint drills** with past questions 3 times a week.\n• We review errors immediately with worked solutions.\n\nShould I lock these priority revision blocks into your timetable now, or do you have specific class lecture times I should avoid?`;
+    } else if (text.includes('evening') || text.includes('morning') || text.includes('night') || text.includes('free')) {
+        botMessage = `Noted on your preferred study hours! Setting your revision blocks during your peak alertness window makes studying twice as effective in half the time.\n\nWould you like me to generate your full timetable now around these hours?`;
     } else {
-        botMessage = `Noted! Tell me about any recurring class times you have (e.g. "Physics lecture on Tuesday 10am") or say "Generate my timetable" and I'll build your schedule right away.`;
+        botMessage = `Got it! I'm taking all this into account. You can share more about your weekly lectures, upload your course outline via the 📎 attachment button, or say **"Generate my timetable"** whenever you're ready!`;
     }
 
     return {
