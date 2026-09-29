@@ -1809,138 +1809,174 @@ function generateOfflineBuddyReply(userText, media, history) {
     let botMessage = '';
     let actionData = null;
 
-    // 1. If media was uploaded
+    // Scan ALL user messages for context
+    const allUserText = (history || [])
+        .filter(m => m.role === 'user')
+        .map(m => m.content || '')
+        .join(' ')
+        .toLowerCase();
+
+    // Extract subjects mentioned anywhere in the conversation
+    const SUBJECT_PATTERNS = [
+        { name: 'Mathematics',    re: /\b(math|maths|mathematics|calculus|algebra|statistics|further maths)\b/i },
+        { name: 'Physics',        re: /\b(physics|mechanics|electricity|optics|waves)\b/i },
+        { name: 'Chemistry',      re: /\b(chemistry|organic|inorganic|chemical|biochem)\b/i },
+        { name: 'Biology',        re: /\b(biology|genetics|ecology|anatomy|physiology)\b/i },
+        { name: 'Economics',      re: /\b(economics|demand|supply|macro|micro|econs)\b/i },
+        { name: 'Use of English', re: /\b(english|comprehension|lexis|oral|register)\b/i },
+        { name: 'Accounting',     re: /\b(accounting|accounts|bookkeeping)\b/i },
+        { name: 'Government',     re: /\b(government|politics|constitution|federalism)\b/i },
+        { name: 'Literature',     re: /\b(literature|prose|poetry|drama|novel)\b/i },
+        { name: 'Commerce',       re: /\b(commerce|trade|marketing|business studies)\b/i },
+    ];
+    const mentionedSubjects = SUBJECT_PATTERNS.filter(s => s.re.test(allUserText)).map(s => s.name);
+
+    // Extract exam category from anywhere in conversation
+    let examCategory = 'study';
+    if (/\bjamb\b/i.test(allUserText)) examCategory = 'jamb';
+    else if (/\bwaec\b/i.test(allUserText)) examCategory = 'waec';
+    else if (/\bneco\b/i.test(allUserText)) examCategory = 'neco';
+    else if (/\bnoun\b/i.test(allUserText)) examCategory = 'noun';
+    else if (/\bican\b/i.test(allUserText)) examCategory = 'ican';
+
+    // Extract days from CURRENT message
+    const DAY_RE = /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/gi;
+    const currentDays = [...new Set((userText.match(DAY_RE) || []).map(d => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()))];
+
+    // Parse time from text
+    function parseTimeFromText(src) {
+        const m = src.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i) || src.match(/\b(\d{1,2}):(\d{2})\b/);
+        if (!m) return null;
+        let h = parseInt(m[1], 10);
+        const min = m[2] || '00';
+        const ampm = m[3] ? m[3].toLowerCase() : null;
+        if (ampm === 'pm' && h < 12) h += 12;
+        if (ampm === 'am' && h === 12) h = 0;
+        return String(h).padStart(2, '0') + ':' + min;
+    }
+    const parsedTime = parseTimeFromText(userText);
+
+    // Extract study window preference from anywhere in conversation
+    let studyWindow = null;
+    if (/\b(morning|dawn|early)\b/i.test(allUserText)) studyWindow = 'morning';
+    else if (/\b(afternoon|midday)\b/i.test(allUserText)) studyWindow = 'afternoon';
+    else if (/\b(evening|after school|after work)\b/i.test(allUserText)) studyWindow = 'evening';
+    else if (/\b(night|midnight|late|night owl)\b/i.test(allUserText)) studyWindow = 'night';
+
+    const hasSubjects  = mentionedSubjects.length > 0;
+    const hasSchedule  = currentDays.length > 0 || storedClasses.length > 0;
+    const hasWindow    = studyWindow !== null;
+    const userTurnCount = (history || []).filter(m => m.role === 'user').length - 1;
+
+    // Personalised acknowledgement based on what the user just said
+    function ackPrefix() {
+        if (hasSubjects && userTurnCount <= 1) {
+            const subList = mentionedSubjects.slice(0, 2).join(' and ');
+            return /hard|difficult|tough|scared|stress|hate|bad at|struggle/i.test(text)
+                ? 'I totally get it \u2014 ' + subList + ' can be brutal without structure. '
+                : 'Nice! ' + subList + ' \u2014 solid focus areas. ';
+        }
+        if (studyWindow && userTurnCount === 2) {
+            const labels = { morning: '\uD83C\uDF05 Early bird!', afternoon: '\u2600\uFE0F Afternoon grinder!', evening: '\uD83C\uDF06 Evening warrior!', night: '\uD83C\uDF19 Night owl confirmed!' };
+            return (labels[studyWindow] || '') + " I'll protect that window for you. ";
+        }
+        if (currentDays.length > 0) return 'Got it \u2014 ' + currentDays.join(', ') + ' blocked out. ';
+        return '';
+    }
+
+    // 1. Media upload
     if (media) {
         const docName = media.name || 'document';
-        const detectedCodes = media.extractedCodes && media.extractedCodes.length > 0 
-            ? media.extractedCodes 
+        const detected = (media.extractedCodes && media.extractedCodes.length > 0)
+            ? media.extractedCodes
             : extractCourseCodesFromText(media.name + ' ' + (media.textContent || '') + ' ' + userText);
-
-        const extractedCodes = detectedCodes.length > 0 
-            ? detectedCodes 
-            : ['GST 101', 'MTH 101', 'PHY 101', 'CHM 101'];
-
-        botMessage = `I've analyzed your uploaded **${escapeHtml(docName)}**! 📑✨\n\nI successfully extracted your target courses: **${extractedCodes.slice(0, 5).join(', ')}**.\n\nTo weave these properly into your week without burning you out: **Which 1 or 2 of these specific courses feel the most intimidating or heavy right now?**`;
-
+        const codes = detected.length > 0 ? detected : ['GST 101', 'MTH 101', 'PHY 101', 'CHM 101'];
         return {
             role: 'bot',
-            content: botMessage,
+            content: "I've scanned your **" + escapeHtml(docName) + "**! \uD83D\uDCD1\u2728\n\nDetected: **" + codes.slice(0, 5).join(', ') + "**.\n\n**Which 1\u20132 of these feel the heaviest or most stressful right now?**",
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
 
-    // 2. Check for explicit class schedule input (e.g. "I have PHY 101 on Mondays at 9am")
-    const daysRegex = /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/gi;
-    const matchedDays = userText.match(daysRegex);
-
-    if ((text.includes('class') || text.includes('lecture') || matchedDays) && /\d/.test(text)) {
-        const day = matchedDays ? matchedDays[0] : 'Monday';
-        const formattedDay = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
-
-        let subject = 'Lecture Class';
-        const subjectMatches = userText.match(/([a-zA-Z]{2,4}\s*\d{3}|physics|mathematics|maths|chemistry|biology|economics|english|accounting|law|anatomy)/i);
-        if (subjectMatches) subject = subjectMatches[0].toUpperCase();
-
-        let startTime = '09:00';
-        const timeMatch = userText.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
-        if (timeMatch) {
-            let h = parseInt(timeMatch[1], 10);
-            const m = timeMatch[2] ? timeMatch[2] : '00';
-            if (timeMatch[3].toLowerCase() === 'pm' && h < 12) h += 12;
-            if (timeMatch[3].toLowerCase() === 'am' && h === 12) h = 0;
-            startTime = `${String(h).padStart(2, '0')}:${m}`;
-        }
+    // 2. Class schedule detected in current message \u2014 save it immediately
+    if (currentDays.length > 0 && /\d/.test(userText) && (text.includes('class') || text.includes('lecture') || text.includes('have') || parsedTime)) {
+        const day = currentDays[0];
+        let subject = 'Lecture';
+        const subMatch = userText.match(/([a-zA-Z]{2,4}\s*\d{3}[a-zA-Z]?|physics|mathematics|maths|chemistry|biology|economics|english|accounting|law|anatomy|statistics)/i);
+        if (subMatch) subject = subMatch[0].replace(/\s+/g, ' ').trim().toUpperCase();
+        else if (mentionedSubjects.length > 0) subject = mentionedSubjects[0];
+        const startTime = parsedTime || '09:00';
         const endTime = calculateEndTime(startTime, 2);
-
-        const newClass = {
+        storedClasses.push({
             id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-            subject: subject,
-            day: formattedDay,
-            start_time: startTime,
-            end_time: endTime,
-            venue: 'Lecture Hall',
-            isRecurring: true
-        };
-        storedClasses.push(newClass);
+            subject: subject, day: day, start_time: startTime, end_time: endTime,
+            venue: 'Lecture Hall', isRecurring: true
+        });
         saveStoredClasses(storedClasses);
-
-        botMessage = `Locked it down! 🎓 **${subject}** is set for every **${formattedDay} from ${startTime} to ${endTime}**.\n\nNow tell me: **Do you have other recurring classes on other weekdays, or is this the main one?**`;
-
-        actionData = {
-            details: `Added ${subject} (Every ${formattedDay}, ${startTime} - ${endTime})`
-        };
-
+        actionData = { details: 'Added ' + subject + ' (Every ' + day + ', ' + startTime + '\u2013' + endTime + ')' };
         return {
             role: 'bot',
-            content: botMessage,
+            content: 'Locked! \uD83C\uDF93 **' + subject + '** \u2192 every **' + day + '** from **' + startTime + ' to ' + endTime + '**.\n\n**Any other lecture days?** Or say "done with classes" and I\'ll build study blocks around these.',
             actionCard: actionData,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
 
-    // 3. Check if user asked to generate / finalize
-    if (text.includes('generate') || text.includes('build') || text.includes('ready') || text.includes('create timetable') || text.includes('done')) {
-        let examCategory = 'study';
-        if (text.includes('jamb')) examCategory = 'jamb';
-        else if (text.includes('waec')) examCategory = 'waec';
-        else if (text.includes('neco')) examCategory = 'neco';
-        else if (text.includes('noun')) examCategory = 'noun';
-        else if (text.includes('ican')) examCategory = 'ican';
+    // 3. User says yes / generate / done \u2014 build timetable from gathered context
+    const wantsGenerate = /\b(yes|yep|yeah|generate|build|ready|create|go|okay|ok|do it|sure|proceed|done)\b/i.test(text)
+        || text.includes('create timetable') || text.includes('generate my') || text.includes("let's go");
 
-        const subjects = ['Mathematics', 'Physics', 'Chemistry', 'Use of English'];
-        const times = ['16:30', '18:30', '20:00'];
-
+    if (wantsGenerate || (userTurnCount >= 3 && hasSubjects)) {
+        const subjects = mentionedSubjects.length > 0
+            ? mentionedSubjects
+            : ['Mathematics', 'Physics', 'Chemistry', 'Use of English'];
+        const timeMap = {
+            morning:   ['07:00', '08:30', '10:00'],
+            afternoon: ['13:00', '14:30', '16:00'],
+            evening:   ['17:00', '18:30', '20:00'],
+            night:     ['20:00', '21:30', '22:30']
+        };
+        const times = timeMap[studyWindow || 'evening'];
         for (let i = 0; i < 5; i++) {
-            const dateStr = addDaysToDate(mondayStr, i);
-            const sub = subjects[i % subjects.length];
-            const time = times[i % times.length];
-
             calendarEvents.push({
                 id: 'ev-' + Date.now() + '-' + i,
-                title: `${sub} Speed Drill`,
+                title: subjects[i % subjects.length] + ' Speed Drill',
                 category: examCategory,
-                date: dateStr,
-                time: time,
+                date: addDaysToDate(mondayStr, i),
+                time: times[i % times.length],
                 duration: 1.5,
                 location: 'Sabi Prep Room',
-                notes: `Targeted past questions drill on core high-yield topics.`,
-                completed: false,
-                isAiGenerated: true
+                notes: 'Targeted drill on high-yield topics. Spaced repetition technique.',
+                completed: false, isAiGenerated: true
             });
         }
         saveEvents();
-
-        botMessage = `Done deal! 🚀 I've built your complete weekly timetable with tailored revision drills!\n\nHere is how I structured it:\n• **Spaced Repetition**: Heavy calculations and reading subjects rotate to maximize memory.\n• **Buffer Windows**: 30-minute decompression breaks so your brain can reset.\n• **Weekend Recovery**: Sundays are completely free.\n\nCheck out the Schedule or switch to **Week Grid** to view your week canvas!`;
-
-        actionData = {
-            details: `Generated 5 tailored revision blocks for ${examCategory.toUpperCase()}`
-        };
-
+        const subList = subjects.slice(0, 3).join(', ');
+        const winLabel = studyWindow ? 'your ' + studyWindow + ' window' : 'evening slots';
+        actionData = { details: 'Generated ' + subjects.length + ' subject drills for ' + examCategory.toUpperCase() + ' (' + winLabel + ')' };
         return {
             role: 'bot',
-            content: botMessage,
+            content: 'Done! \uD83D\uDE80 Your personalised timetable is live!\n\n\u2022 **Subjects**: ' + subList + (subjects.length > 3 ? ' + more' : '') + '\n\u2022 **Slots**: Scheduled in ' + winLabel + '\n\u2022 **Style**: Spaced repetition \u2014 hardest subjects rotate first\n\u2022 **Rest**: Sundays completely free\n\nCheck **Schedule** or tap **Week Grid** to see it all. Say "add more" anytime!',
             actionCard: actionData,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
 
-    // 4. Multi-turn step-by-step progression based on conversation turn count
-    // Note: the current user message is already in history, so subtract 1 for "previous" turns
-    const userTurnCount = (history || []).filter(m => m.role === 'user').length - 1;
+    // 4. Conversational flow \u2014 respond to what they actually said, ask ONE question
+    const ack = ackPrefix();
+    const examHint = examCategory !== 'study' ? 'for **' + examCategory.toUpperCase() + '**' : 'this semester';
 
-    if (userTurnCount <= 0) {
-        // Stage 1 -> react to intro, ask about tough subjects
-        botMessage = `Got it! That gives me clear direction. 🎯\n\nTo make sure we conquer the hard stuff first: **Which 1 or 2 specific courses or topics usually give you the toughest time or the most stress?**`;
-    } else if (userTurnCount === 1) {
-        // Stage 2 -> ask about lecture times
-        botMessage = `I completely understand — those courses need regular, focused problem drills rather than last-minute cramming.\n\nNext step: **Do you have fixed weekly lecture times or labs on campus (e.g. Mon 9–11am or Tue 2pm)?** Tell me your main lecture days.`;
-    } else if (userTurnCount === 2) {
-        // Stage 3 -> ask about alertness window
-        botMessage = `Noted on your lecture commitments! 🕒\n\nNow, for your personal revision blocks: **When do you feel most alert and focused during the day?** (Early morning, afternoon, or evening / night owl?)`;
+    if (!hasSubjects) {
+        botMessage = ack + 'Got it! \uD83C\uDFAF\n\nTo build the right timetable ' + examHint + ': **Which subjects or courses feel the heaviest or most stressful right now?** (e.g. "Maths and Physics" or a course code like "MTH 101")';
+    } else if (!hasSchedule) {
+        const subList = mentionedSubjects.slice(0, 2).join(' and ');
+        botMessage = ack + '**' + subList + '** gets priority slots \u2014 we\'ll drill those hard. \uD83D\uDCAA\n\n**Do you have fixed weekly lectures on campus?** Tell me the day and time (e.g. "Physics on Mondays at 9am") so I can build around them. Or say "no fixed classes".';
+    } else if (!hasWindow) {
+        botMessage = ack + 'Schedule noted! \uD83D\uDD52\n\n**When do you study best?** Morning, afternoon, evening, or are you a night owl? I\'ll lock your revision blocks into that window.';
     } else {
-        // Stage 4 -> propose generation
-        botMessage = `Awesome, I have all the key pieces! 🌟\n\nI can now synthesize your classes, protect your peak study hours, and schedule priority practice blocks.\n\nShould I **generate your weekly timetable now**? Tap **"Generate my complete timetable now ✨"** or just say "Yes"!`;
+        const subList = mentionedSubjects.slice(0, 3).join(', ');
+        botMessage = ack + 'I\'ve got everything! \u2705\n\n\uD83D\uDCCB **Summary:**\n\u2022 Subjects: ' + (subList || 'core subjects') + '\n\u2022 Study window: ' + studyWindow + '\n\u2022 Target: ' + examCategory.toUpperCase() + '\n\nShall I **build your timetable now**? Just say **"Yes, go!"** or tap the chip below.';
     }
 
     return {
