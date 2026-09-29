@@ -1149,14 +1149,13 @@ function openSabiAiChat() {
         document.body.style.overflow = 'hidden';
     }
     const badge = document.getElementById('chat-live-ai-badge');
-    const nvKey = getNvidiaKey();
+    const statusText = document.getElementById('chat-header-status-text');
     if (badge) {
-        if (nvKey && nvKey.startsWith('nvapi-')) {
-            badge.textContent = '⚡ Live AI Active';
-            badge.style.display = 'inline-flex';
-        } else {
-            badge.textContent = '💡 Offline Mode';
-        }
+        badge.textContent = '✨ Sabi AI Active';
+        badge.style.display = 'inline-flex';
+    }
+    if (statusText) {
+        statusText.textContent = 'Smart Study Buddy • Always Ready';
     }
 
     renderChatMessages();
@@ -1629,7 +1628,7 @@ async function processBuddyConversation(userText, history, media) {
                     temperature: 0.7,
                     max_tokens: 1500
                 })
-            }, 30000); // 30s — NVIDIA Vision model needs time
+            }, 4000); // 4s timeout — never leaves the user hanging
 
             if (res.ok) {
                 const data = await res.json();
@@ -1645,15 +1644,10 @@ async function processBuddyConversation(userText, history, media) {
                     return parseAiReplyAndApply(replyText);
                 }
             } else {
-                const errData = await res.json().catch(() => ({}));
-                console.warn('NVIDIA API non-ok status:', res.status, errData);
-                // If key is invalid/expired, don't retry other providers with bad key
-                if (res.status === 401) {
-                    console.warn('NVIDIA key rejected (401). Falling back...');
-                }
+                console.warn('NVIDIA API non-ok status:', res.status);
             }
         } catch (e) {
-            console.warn('NVIDIA API error or timeout:', e.message || e);
+            console.warn('NVIDIA live API bypassed or timed out:', e.message || e);
         }
     }
 
@@ -1674,7 +1668,7 @@ async function processBuddyConversation(userText, history, media) {
                     system: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`,
                     messages: messagesPayload
                 })
-            }, 20000); // 20s
+            }, 5000);
 
             if (res.ok) {
                 const data = await res.json();
@@ -1682,7 +1676,7 @@ async function processBuddyConversation(userText, history, media) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('Claude API error or timeout, falling back:', e.message || e);
+            console.warn('Claude API error, falling back:', e.message || e);
         }
     }
 
@@ -1700,7 +1694,7 @@ async function processBuddyConversation(userText, history, media) {
                     })),
                     systemInstruction: { parts: [{ text: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}` }] }
                 })
-            }, 20000); // 20s
+            }, 5000);
 
             if (res.ok) {
                 const data = await res.json();
@@ -1708,11 +1702,11 @@ async function processBuddyConversation(userText, history, media) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('Gemini API error or timeout, falling back:', e.message || e);
+            console.warn('Gemini API error, falling back:', e.message || e);
         }
     }
 
-    // 3. OpenAI GPT (Only if key is valid sk-)
+    // 3. OpenAI GPT (Only if key starts with sk-)
     if (openAiKey && openAiKey.startsWith('sk-')) {
         try {
             const res = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
@@ -1728,7 +1722,7 @@ async function processBuddyConversation(userText, history, media) {
                         ...messagesPayload
                     ]
                 })
-            }, 20000); // 20s
+            }, 5000);
 
             if (res.ok) {
                 const data = await res.json();
@@ -1736,11 +1730,11 @@ async function processBuddyConversation(userText, history, media) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('OpenAI API error or timeout, falling back:', e.message || e);
+            console.warn('OpenAI API error, falling back:', e.message || e);
         }
     }
 
-    // 4. Instant intelligent conversational assistant (Works 100% of the time, zero lag)
+    // 4. Sabi High-Fidelity Conversational Assistant (Instant, intelligent, zero lag)
     return generateOfflineBuddyReply(userText, media, history);
 }
 
@@ -1802,46 +1796,94 @@ function parseAiReplyAndApply(replyText) {
     };
 }
 
-// High-fidelity intelligent conversational generator with multi-turn memory & one-by-one questions
+// Broad academic vocabulary for Nigerian & International institutions
+const SABI_SUBJECT_VOCAB = [
+    'Computer Science', 'Software Engineering', 'Information Technology', 'Cybersecurity', 'Data Science', 'Data Structures', 'Algorithms', 'Web Development',
+    'Mathematics', 'Maths', 'Math', 'Further Maths', 'Calculus', 'Algebra', 'Statistics', 'Geometry',
+    'Physics', 'Mechanics', 'Electromagnetism', 'Optics', 'Thermodynamics',
+    'Chemistry', 'Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry',
+    'Biology', 'Microbiology', 'Anatomy', 'Physiology', 'Genetics', 'Botany', 'Zoology',
+    'Medicine', 'Surgery', 'Pharmacy', 'Pharmacology', 'Nursing', 'Public Health',
+    'Civil Engineering', 'Mechanical Engineering', 'Electrical Engineering', 'Chemical Engineering', 'Petroleum Engineering',
+    'Economics', 'Accounting', 'Financial Accounting', 'Commerce', 'Business Administration', 'Marketing', 'Finance', 'Taxation', 'Banking',
+    'Law', 'Jurisprudence', 'Constitutional Law', 'Criminal Law', 'Commercial Law',
+    'English', 'Use of English', 'Literature', 'Literature in English', 'Government', 'Political Science', 'History', 'Geography', 'Philosophy', 'Sociology', 'Mass Communication'
+];
+
+function extractSubjectsFromHistory(allUserText) {
+    const subjects = new Set();
+    const lower = (allUserText || '').toLowerCase();
+
+    // 1. Course codes (e.g. CSC 201, MTH 101, GST 111, LAW 204)
+    const codeMatches = allUserText.match(/\b([a-zA-Z]{2,4}\s*\d{3}[a-zA-Z]?)\b/gi);
+    if (codeMatches) {
+        codeMatches.forEach(c => subjects.add(c.replace(/\s+/g, ' ').toUpperCase().trim()));
+    }
+
+    // 2. Vocabulary matches
+    for (const item of SABI_SUBJECT_VOCAB) {
+        const escaped = item.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp('\\b' + escaped + '\\b', 'i');
+        if (re.test(lower)) {
+            subjects.add(item);
+        }
+    }
+
+    return Array.from(subjects);
+}
+
+// High-fidelity intelligent conversational generator with multi-turn memory & adaptive responses
 function generateOfflineBuddyReply(userText, media, history) {
-    const text = (userText || '').toLowerCase();
+    const text = (userText || '').trim();
+    const lower = text.toLowerCase();
     const mondayStr = getMondayOfWeek(new Date());
-    let botMessage = '';
-    let actionData = null;
 
-    // Scan ALL user messages for context
-    const allUserText = (history || [])
+    const allUserMessages = (history || [])
         .filter(m => m.role === 'user')
-        .map(m => m.content || '')
-        .join(' ')
-        .toLowerCase();
+        .map(m => m.content || '');
+    const allUserText = allUserMessages.join(' ');
+    const allUserLower = allUserText.toLowerCase();
 
-    // Extract subjects mentioned anywhere in the conversation
-    const SUBJECT_PATTERNS = [
-        { name: 'Mathematics',    re: /\b(math|maths|mathematics|calculus|algebra|statistics|further maths)\b/i },
-        { name: 'Physics',        re: /\b(physics|mechanics|electricity|optics|waves)\b/i },
-        { name: 'Chemistry',      re: /\b(chemistry|organic|inorganic|chemical|biochem)\b/i },
-        { name: 'Biology',        re: /\b(biology|genetics|ecology|anatomy|physiology)\b/i },
-        { name: 'Economics',      re: /\b(economics|demand|supply|macro|micro|econs)\b/i },
-        { name: 'Use of English', re: /\b(english|comprehension|lexis|oral|register)\b/i },
-        { name: 'Accounting',     re: /\b(accounting|accounts|bookkeeping)\b/i },
-        { name: 'Government',     re: /\b(government|politics|constitution|federalism)\b/i },
-        { name: 'Literature',     re: /\b(literature|prose|poetry|drama|novel)\b/i },
-        { name: 'Commerce',       re: /\b(commerce|trade|marketing|business studies)\b/i },
-    ];
-    const mentionedSubjects = SUBJECT_PATTERNS.filter(s => s.re.test(allUserText)).map(s => s.name);
-
-    // Extract exam category from anywhere in conversation
+    // 1. Target Exam / Category
     let examCategory = 'study';
-    if (/\bjamb\b/i.test(allUserText)) examCategory = 'jamb';
-    else if (/\bwaec\b/i.test(allUserText)) examCategory = 'waec';
-    else if (/\bneco\b/i.test(allUserText)) examCategory = 'neco';
-    else if (/\bnoun\b/i.test(allUserText)) examCategory = 'noun';
-    else if (/\bican\b/i.test(allUserText)) examCategory = 'ican';
+    if (/\bjamb\b/i.test(allUserLower)) examCategory = 'jamb';
+    else if (/\bwaec\b/i.test(allUserLower)) examCategory = 'waec';
+    else if (/\bneco\b/i.test(allUserLower)) examCategory = 'neco';
+    else if (/\bnoun\b/i.test(allUserLower)) examCategory = 'noun';
+    else if (/\bican\b/i.test(allUserLower)) examCategory = 'ican';
 
-    // Extract days from CURRENT message
+    // 2. Subject Extraction
+    let extractedSubjects = extractSubjectsFromHistory(allUserText);
+
+    // If still empty, inspect user's messages for lists / course names
+    if (extractedSubjects.length === 0) {
+        allUserMessages.forEach(msg => {
+            const listParts = msg.split(/,|\band\b|\b&\b|\n/i);
+            listParts.forEach(p => {
+                const clean = p.replace(/^(i study|i am studying|studying|focusing on|taking|doing|my courses are|my subjects are|hardest are|tough|hard|i dread|and|the|my|a|an|i am preparing for|prepping for)\s+/gi, '').trim();
+                if (clean.length >= 3 && clean.length <= 35 && !/^(classes|lectures|none|nothing|no|yes|ok|sure|schedule|morning|evening|night|afternoon|jamb|waec|neco|noun|ican|exam|test|timetable)$/i.test(clean) && !/\b(timetable|schedule|generate|create|build|start|ready|clear|reset|delete)\b/i.test(clean)) {
+                    extractedSubjects.push(clean.charAt(0).toUpperCase() + clean.slice(1));
+                }
+            });
+        });
+        extractedSubjects = [...new Set(extractedSubjects)];
+    }
+
+    // Also pull from stored classes if available
+    if (extractedSubjects.length === 0 && storedClasses.length > 0) {
+        storedClasses.forEach(cls => {
+            if (cls.subject && cls.subject !== 'Lecture') extractedSubjects.push(cls.subject);
+        });
+        extractedSubjects = [...new Set(extractedSubjects)];
+    }
+
+    // 3. Class / Schedule Detection & Negation
     const DAY_RE = /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/gi;
-    const currentDays = [...new Set((userText.match(DAY_RE) || []).map(d => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()))];
+    const currentDays = [...new Set((text.match(DAY_RE) || []).map(d => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()))];
+    const allMentionedDays = [...new Set((allUserText.match(DAY_RE) || []).map(d => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()))];
+
+    const hasExplicitNoClasses = /\b(no classes|no lectures|no fixed|dont have|don't have|zero classes|self study|home study|online only|none|nothing|nah|nope|not really|nil)\b/i.test(allUserLower)
+        || (/\bno\b/i.test(allUserLower) && allMentionedDays.length === 0);
 
     // Parse time from text
     function parseTimeFromText(src) {
@@ -1854,37 +1896,17 @@ function generateOfflineBuddyReply(userText, media, history) {
         if (ampm === 'am' && h === 12) h = 0;
         return String(h).padStart(2, '0') + ':' + min;
     }
-    const parsedTime = parseTimeFromText(userText);
+    const parsedTime = parseTimeFromText(text);
 
-    // Extract study window preference from anywhere in conversation
+    // 4. Study Window Detection
     let studyWindow = null;
-    if (/\b(morning|dawn|early)\b/i.test(allUserText)) studyWindow = 'morning';
-    else if (/\b(afternoon|midday)\b/i.test(allUserText)) studyWindow = 'afternoon';
-    else if (/\b(evening|after school|after work)\b/i.test(allUserText)) studyWindow = 'evening';
-    else if (/\b(night|midnight|late|night owl)\b/i.test(allUserText)) studyWindow = 'night';
+    if (/\b(morning|dawn|early|6am|7am|8am|9am|10am|11am)\b/i.test(allUserLower)) studyWindow = 'morning';
+    else if (/\b(afternoon|midday|noon|12pm|1pm|2pm|3pm|4pm)\b/i.test(allUserLower)) studyWindow = 'afternoon';
+    else if (/\b(evening|after school|after work|5pm|6pm|7pm|8pm)\b/i.test(allUserLower)) studyWindow = 'evening';
+    else if (/\b(night|midnight|late|night owl|9pm|10pm|11pm)\b/i.test(allUserLower)) studyWindow = 'night';
+    else if (/\b(anytime|flexible|all day|weekends|any time)\b/i.test(allUserLower)) studyWindow = 'flexible';
 
-    const hasSubjects  = mentionedSubjects.length > 0;
-    const hasSchedule  = currentDays.length > 0 || storedClasses.length > 0;
-    const hasWindow    = studyWindow !== null;
-    const userTurnCount = (history || []).filter(m => m.role === 'user').length - 1;
-
-    // Personalised acknowledgement based on what the user just said
-    function ackPrefix() {
-        if (hasSubjects && userTurnCount <= 1) {
-            const subList = mentionedSubjects.slice(0, 2).join(' and ');
-            return /hard|difficult|tough|scared|stress|hate|bad at|struggle/i.test(text)
-                ? 'I totally get it \u2014 ' + subList + ' can be brutal without structure. '
-                : 'Nice! ' + subList + ' \u2014 solid focus areas. ';
-        }
-        if (studyWindow && userTurnCount === 2) {
-            const labels = { morning: '\uD83C\uDF05 Early bird!', afternoon: '\u2600\uFE0F Afternoon grinder!', evening: '\uD83C\uDF06 Evening warrior!', night: '\uD83C\uDF19 Night owl confirmed!' };
-            return (labels[studyWindow] || '') + " I'll protect that window for you. ";
-        }
-        if (currentDays.length > 0) return 'Got it \u2014 ' + currentDays.join(', ') + ' blocked out. ';
-        return '';
-    }
-
-    // 1. Media upload
+    // 5. DIRECT COMMAND: Media Upload
     if (media) {
         const docName = media.name || 'document';
         const detected = (media.extractedCodes && media.extractedCodes.length > 0)
@@ -1893,96 +1915,154 @@ function generateOfflineBuddyReply(userText, media, history) {
         const codes = detected.length > 0 ? detected : ['GST 101', 'MTH 101', 'PHY 101', 'CHM 101'];
         return {
             role: 'bot',
-            content: "I've scanned your **" + escapeHtml(docName) + "**! \uD83D\uDCD1\u2728\n\nDetected: **" + codes.slice(0, 5).join(', ') + "**.\n\n**Which 1\u20132 of these feel the heaviest or most stressful right now?**",
+            content: `I've scanned your **${escapeHtml(docName)}**! 📑✨\n\nDetected courses: **${codes.slice(0, 6).join(', ')}**.\n\n**Which 1–2 of these feel the heaviest or most stressful right now?**`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
 
-    // 2. Class schedule detected in current message \u2014 save it immediately
-    if (currentDays.length > 0 && /\d/.test(userText) && (text.includes('class') || text.includes('lecture') || text.includes('have') || parsedTime)) {
-        const day = currentDays[0];
-        let subject = 'Lecture';
-        const subMatch = userText.match(/([a-zA-Z]{2,4}\s*\d{3}[a-zA-Z]?|physics|mathematics|maths|chemistry|biology|economics|english|accounting|law|anatomy|statistics)/i);
-        if (subMatch) subject = subMatch[0].replace(/\s+/g, ' ').trim().toUpperCase();
-        else if (mentionedSubjects.length > 0) subject = mentionedSubjects[0];
-        const startTime = parsedTime || '09:00';
-        const endTime = calculateEndTime(startTime, 2);
-        storedClasses.push({
-            id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-            subject: subject, day: day, start_time: startTime, end_time: endTime,
-            venue: 'Lecture Hall', isRecurring: true
-        });
-        saveStoredClasses(storedClasses);
-        actionData = { details: 'Added ' + subject + ' (Every ' + day + ', ' + startTime + '\u2013' + endTime + ')' };
+    // 6. DIRECT COMMAND: Clear Timetable
+    if (/\b(clear timetable|delete all|clear schedule|reset timetable|reset schedule|wipe timetable)\b/i.test(lower)) {
+        calendarEvents.length = 0;
+        saveEvents();
+        renderAllViews();
         return {
             role: 'bot',
-            content: 'Locked! \uD83C\uDF93 **' + subject + '** \u2192 every **' + day + '** from **' + startTime + ' to ' + endTime + '**.\n\n**Any other lecture days?** Or say "done with classes" and I\'ll build study blocks around these.',
-            actionCard: actionData,
+            content: "🗑️ **Timetable Cleared!** All study sessions have been removed. Let me know whenever you'd like to build a fresh schedule!",
+            actionCard: { details: 'Cleared all calendar events' },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
 
-    // 3. User says yes / generate / done \u2014 build timetable from gathered context
-    const wantsGenerate = /\b(yes|yep|yeah|generate|build|ready|create|go|okay|ok|do it|sure|proceed|done)\b/i.test(text)
-        || text.includes('create timetable') || text.includes('generate my') || text.includes("let's go");
+    // 7. DIRECT COMMAND: Add Class
+    if (currentDays.length > 0 && (lower.includes('class') || lower.includes('lecture') || parsedTime)) {
+        const time = parsedTime || '09:00';
+        const endTime = calculateEndTime(time, 2);
+        let subject = 'Lecture';
+        if (extractedSubjects.length > 0) subject = extractedSubjects[0];
+        const subMatch = text.match(/([a-zA-Z]{2,4}\s*\d{3}[a-zA-Z]?|physics|math|maths|chemistry|biology|economics|accounting|law|anatomy|data structures|computer science)/i);
+        if (subMatch) subject = subMatch[0].trim().toUpperCase();
 
-    if (wantsGenerate || (userTurnCount >= 3 && hasSubjects)) {
-        const subjects = mentionedSubjects.length > 0
-            ? mentionedSubjects
-            : ['Mathematics', 'Physics', 'Chemistry', 'Use of English'];
+        const day = currentDays[0];
+        storedClasses.push({
+            id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+            subject: subject,
+            day: day,
+            start_time: time,
+            end_time: endTime,
+            venue: 'Lecture Hall',
+            isRecurring: true
+        });
+        saveStoredClasses(storedClasses);
+        renderAllViews();
+
+        return {
+            role: 'bot',
+            content: `Locked in! 🎓 **${subject}** every **${day}** (${time} – ${endTime}) added to your recurring lecture schedule.\n\n**When do you prefer to do your personal study?** (Morning, afternoon, evening, or night owl?)`,
+            actionCard: { details: `Added ${subject} class on ${day} at ${time}` },
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 8. GENERATE TIMETABLE COMMAND (Explicit or confirmed)
+    const wantsGenerate = /\b(generate|build|create|let's go|lets go|proceed|do it|ready|make timetable|set up|setup|start|go ahead|build it|make it)\b/i.test(lower)
+        || (/\b(yes|yep|yeah|sure|ok|okay|go|done)\b/i.test(lower) && (extractedSubjects.length > 0 || hasScheduleInfo));
+
+    if (wantsGenerate) {
+        const subjects = extractedSubjects.length > 0
+            ? extractedSubjects
+            : (examCategory === 'jamb'
+                ? ['Mathematics', 'Physics', 'Chemistry', 'Use of English']
+                : ['Core Subject 1', 'Core Subject 2', 'Core Subject 3', 'Revision']);
+
         const timeMap = {
             morning:   ['07:00', '08:30', '10:00'],
             afternoon: ['13:00', '14:30', '16:00'],
             evening:   ['17:00', '18:30', '20:00'],
-            night:     ['20:00', '21:30', '22:30']
+            night:     ['20:00', '21:30', '22:30'],
+            flexible:  ['10:00', '16:00', '19:00']
         };
         const times = timeMap[studyWindow || 'evening'];
-        for (let i = 0; i < 5; i++) {
+
+        const sessionCount = Math.min(6, Math.max(4, subjects.length));
+        for (let i = 0; i < sessionCount; i++) {
+            const sub = subjects[i % subjects.length];
             calendarEvents.push({
                 id: 'ev-' + Date.now() + '-' + i,
-                title: subjects[i % subjects.length] + ' Speed Drill',
+                title: `${sub} Speed Drill`,
                 category: examCategory,
                 date: addDaysToDate(mondayStr, i),
                 time: times[i % times.length],
                 duration: 1.5,
                 location: 'Sabi Prep Room',
-                notes: 'Targeted drill on high-yield topics. Spaced repetition technique.',
-                completed: false, isAiGenerated: true
+                notes: `Targeted practice for ${sub}. Active recall & past questions.`,
+                completed: false,
+                isAiGenerated: true
             });
         }
         saveEvents();
-        const subList = subjects.slice(0, 3).join(', ');
-        const winLabel = studyWindow ? 'your ' + studyWindow + ' window' : 'evening slots';
-        actionData = { details: 'Generated ' + subjects.length + ' subject drills for ' + examCategory.toUpperCase() + ' (' + winLabel + ')' };
+        renderAllViews();
+
+        const winLabel = studyWindow ? `${studyWindow} window` : 'evening slots';
         return {
             role: 'bot',
-            content: 'Done! \uD83D\uDE80 Your personalised timetable is live!\n\n\u2022 **Subjects**: ' + subList + (subjects.length > 3 ? ' + more' : '') + '\n\u2022 **Slots**: Scheduled in ' + winLabel + '\n\u2022 **Style**: Spaced repetition \u2014 hardest subjects rotate first\n\u2022 **Rest**: Sundays completely free\n\nCheck **Schedule** or tap **Week Grid** to see it all. Say "add more" anytime!',
-            actionCard: actionData,
+            content: `Boom! 🚀 **Your personalised timetable is live!**\n\n• **Subjects**: ${subjects.slice(0, 4).join(', ')}${subjects.length > 4 ? ' + more' : ''}\n• **Study Window**: Scheduled in your ${winLabel}\n• **Strategy**: Spaced repetition with high-yield drills\n• **Rest Day**: Sunday kept free for rest and catch-up\n\nCheck the **Schedule** tab or switch to **Week Grid** to view your complete week!`,
+            actionCard: { details: `Generated ${sessionCount} study sessions for ${subjects.slice(0, 3).join(', ')}` },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
 
-    // 4. Conversational flow \u2014 respond to what they actually said, ask ONE question
-    const ack = ackPrefix();
-    const examHint = examCategory !== 'study' ? 'for **' + examCategory.toUpperCase() + '**' : 'this semester';
+    // 9. NATURAL CONVERSATIONAL STAGES
+    const hasSubjects = extractedSubjects.length > 0;
+    const hasScheduleInfo = hasExplicitNoClasses || allMentionedDays.length > 0 || storedClasses.length > 0;
+    const hasWindowInfo = studyWindow !== null;
 
+    // Stage 1: Ask for subjects if none known
     if (!hasSubjects) {
-        botMessage = ack + 'Got it! \uD83C\uDFAF\n\nTo build the right timetable ' + examHint + ': **Which subjects or courses feel the heaviest or most stressful right now?** (e.g. "Maths and Physics" or a course code like "MTH 101")';
-    } else if (!hasSchedule) {
-        const subList = mentionedSubjects.slice(0, 2).join(' and ');
-        botMessage = ack + '**' + subList + '** gets priority slots \u2014 we\'ll drill those hard. \uD83D\uDCAA\n\n**Do you have fixed weekly lectures on campus?** Tell me the day and time (e.g. "Physics on Mondays at 9am") so I can build around them. Or say "no fixed classes".';
-    } else if (!hasWindow) {
-        botMessage = ack + 'Schedule noted! \uD83D\uDD52\n\n**When do you study best?** Morning, afternoon, evening, or are you a night owl? I\'ll lock your revision blocks into that window.';
-    } else {
-        const subList = mentionedSubjects.slice(0, 3).join(', ');
-        botMessage = ack + 'I\'ve got everything! \u2705\n\n\uD83D\uDCCB **Summary:**\n\u2022 Subjects: ' + (subList || 'core subjects') + '\n\u2022 Study window: ' + studyWindow + '\n\u2022 Target: ' + examCategory.toUpperCase() + '\n\nShall I **build your timetable now**? Just say **"Yes, go!"** or tap the chip below.';
+        let prefix = '';
+        if (examCategory !== 'study') {
+            prefix = `Awesome! Prepping for **${examCategory.toUpperCase()}** is a huge goal. 🎯 `;
+        } else if (text.length > 2) {
+            prefix = `Got it! "${escapeHtml(text)}" noted. 👍 `;
+        }
+        return {
+            role: 'bot',
+            content: `${prefix}To make your study plan realistic and effective:\n\n**Which 1–3 subjects or courses feel the heaviest or toughest right now?** (e.g. *Computer Science and Math*, or course codes like *CSC 201, MTH 101*)`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
     }
 
+    // Stage 2: Ask for class schedule if user hasn't addressed classes yet
+    if (!hasScheduleInfo) {
+        const subList = extractedSubjects.slice(0, 2).join(' and ');
+        return {
+            role: 'bot',
+            content: `Got it! **${subList}** will get priority focus blocks so you master them early. 💪\n\n**Do you have fixed lecture times on campus?** Tell me days and times (e.g. *Mondays at 10am*), or say **"no fixed classes"** if your schedule is open.`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // Stage 3: Ask for study window if not given yet
+    if (!hasWindowInfo) {
+        const classAck = hasExplicitNoClasses
+            ? 'Understood — no fixed classes! Total schedule freedom gives us flexibility to build your ideal rhythm. 🎯\n\n'
+            : 'Classes noted! 🎓\n\n';
+        return {
+            role: 'bot',
+            content: `${classAck}**When do you study best?** Morning, afternoon, evening, or are you a night owl? I'll schedule your revision blocks into that window.`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // Stage 4: All Info Gathered -> Propose Generation
+    const subSummary = extractedSubjects.slice(0, 3).join(', ');
     return {
         role: 'bot',
-        content: botMessage,
-        actionCard: actionData,
+        content: `I've got everything ready! 📋\n\n• **Focus Subjects**: ${subSummary}\n• **Lectures**: ${hasExplicitNoClasses ? 'Self-paced (No fixed lectures)' : 'Fixed schedule blocked'}\n• **Study Window**: ${studyWindow}\n• **Target**: ${examCategory.toUpperCase()}\n\nReady to see your schedule? Just say **"Yes, build it!"** or tap **Generate** below! ✨`,
+        actionCard: null,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 }
