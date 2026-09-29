@@ -1346,15 +1346,23 @@ function handleQuickChipClick(chipText) {
 }
 window.handleQuickChipClick = handleQuickChipClick;
 
+let isProcessingChat = false;
+
 async function handleSendChatMessage(e) {
     if (e && e.preventDefault) e.preventDefault();
+    if (isProcessingChat) return;
+
     const input = document.getElementById('chat-user-input');
     if (!input) return;
 
     const userText = input.value.trim();
     if (!userText && !pendingChatMedia) return;
 
-    const textToSend = userText || (pendingChatMedia ? `Uploaded file: ${pendingChatMedia.name}` : '');
+    isProcessingChat = true;
+    const sendBtn = document.getElementById('btn-chat-send');
+    if (sendBtn) sendBtn.disabled = true;
+
+    const textToSend = userText || (pendingChatMedia ? `Uploaded course outline: ${pendingChatMedia.name}` : '');
     input.value = '';
 
     const history = getChatHistory();
@@ -1393,6 +1401,9 @@ async function handleSendChatMessage(e) {
         saveChatHistory(history);
         renderChatMessages();
         renderAllViews();
+    } finally {
+        isProcessingChat = false;
+        if (sendBtn) sendBtn.disabled = false;
     }
 }
 window.handleSendChatMessage = handleSendChatMessage;
@@ -1437,7 +1448,7 @@ CRITICAL CONVERSATIONAL RULES (MUST FOLLOW):
    - Stage 3: Weekly fixed lecture schedule (days & times of recurring classes).
    - Stage 4: Personal alertness window (morning person vs night owl) & daily target hours.
    - Stage 5: Proposal & Confirmation -> Generate their complete timetable!
-4. **OUTLINE / MEDIA UPLOADS**: If they upload or paste a course outline or syllabus, read it carefully, extract their course codes, praise their preparation, and ask the next single question about lecture times or hard topics.
+4. **OUTLINE / MEDIA UPLOADS**: If they upload or paste a course outline or syllabus, read it carefully, extract their specific course codes & titles, praise their preparation, and ask the next single question about lecture times or hard topics.
 5. **KEEP IT NATURAL & SNAPPY**: Keep responses to 2-4 short, punchy paragraphs max.
 
 OUTPUT FORMAT:
@@ -1473,12 +1484,35 @@ async function processBuddyConversation(userText, history, media) {
         uploaded_media: media ? { name: media.name, type: media.type, hasText: !!media.textContent } : null
     };
 
-    const messagesPayload = history.slice(-8).map(m => ({
-        role: m.role === 'bot' ? 'assistant' : 'user',
-        content: m.content + (m.media ? `\n[Attached File: ${m.media.name}]` : '')
-    }));
+    // Build multimodal messages payload for NVIDIA Llama 3.2 Vision
+    const messagesPayload = history.slice(-6).map((m, idx, arr) => {
+        const isLatest = idx === arr.length - 1;
+        const role = m.role === 'bot' ? 'assistant' : 'user';
 
-    // 0. NVIDIA NIM Live AI (Verified Working High-Performance LLM)
+        if (isLatest && m.media && m.media.type === 'image' && m.media.dataUrl) {
+            return {
+                role: role,
+                content: [
+                    { type: 'text', text: m.content || 'Here is my course outline / syllabus photo. Please analyze it and extract my subjects!' },
+                    { type: 'image_url', image_url: { url: m.media.dataUrl } }
+                ]
+            };
+        }
+
+        let textContent = m.content;
+        if (m.media) {
+            textContent += `\n[Uploaded Document: ${m.media.name}]`;
+            if (m.media.textContent) {
+                textContent += `\nDocument Content Snippet:\n${m.media.textContent.slice(0, 1500)}`;
+            }
+        }
+        return {
+            role: role,
+            content: textContent
+        };
+    });
+
+    // 0. NVIDIA NIM Live AI (Verified Working High-Performance LLM with Vision)
     if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
         try {
             console.log('🚀 Connecting to live NVIDIA AI (meta/llama-3.2-11b-vision-instruct)...');
@@ -1498,7 +1532,7 @@ async function processBuddyConversation(userText, history, media) {
                     temperature: 0.7,
                     max_tokens: 1500
                 })
-            }, 10000);
+            }, 14000);
 
             if (res.ok) {
                 const data = await res.json();
