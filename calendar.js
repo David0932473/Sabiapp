@@ -33,6 +33,8 @@ function getOpenAiKey() {
     return (localStorage.getItem('openai_api_key') || '').trim();
 }
 
+const DEFAULT_NVIDIA_API_KEY = "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";
+
 function getNvidiaKey() {
     if (typeof window !== 'undefined' && window.ENV) {
         const envKey = window.ENV.NVIDIA_API_KEY || window.ENV.API_KEY;
@@ -40,7 +42,7 @@ function getNvidiaKey() {
     }
     const local = (localStorage.getItem('nvidia_api_key') || localStorage.getItem('sabi_api_key') || '').trim();
     if (local && local.startsWith('nvapi-')) return local;
-    return '';
+    return DEFAULT_NVIDIA_API_KEY;
 }
 
 function getActiveApiKey() {
