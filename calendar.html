@@ -12,7 +12,7 @@
 
 <div id="calendar-app" class="page-transition-wrapper">
 
-    <!-- TOP BAR (Minimalist, matches Library and Dashboard) -->
+    <!-- TOP BAR -->
     <div class="top-bar">
         <a href="index.html" class="back-btn back-btn-icon-only" aria-label="Dashboard" title="Dashboard">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -21,6 +21,10 @@
             </svg>
         </a>
         <div class="top-bar-actions">
+            <button type="button" class="btn-action-ai-chat" onclick="openSabiAiChat()" title="Chat with Sabi Study Buddy">
+                <span class="ai-sparkle-dot">✨</span>
+                <span>Sabi AI</span>
+            </button>
             <button type="button" class="btn-action-pill" onclick="openAddSessionModal()">
                 <span>+</span> New
             </button>
@@ -29,17 +33,21 @@
                     ⋯
                 </button>
                 <div class="planner-dropdown-menu hidden" id="planner-dropdown-menu">
-                    <button type="button" class="dropdown-item" onclick="openPlannerOnboardingModal()">
-                        <span class="dropdown-item-icon">✨</span>
-                        <span>AI Study Plan Setup</span>
+                    <button type="button" class="dropdown-item" onclick="openSabiAiChat()">
+                        <span class="dropdown-item-icon">💬</span>
+                        <span>Chat with Sabi Study Buddy</span>
+                    </button>
+                    <button type="button" class="dropdown-item" onclick="openAddSessionModal('class')">
+                        <span class="dropdown-item-icon">🎓</span>
+                        <span>Add Recurring Class</span>
+                    </button>
+                    <button type="button" class="dropdown-item" onclick="openAddSessionModal('study')">
+                        <span class="dropdown-item-icon">⏱️</span>
+                        <span>Add Study Session</span>
                     </button>
                     <button type="button" class="dropdown-item" onclick="triggerRegeneratePlan()">
                         <span class="dropdown-item-icon">⚡</span>
-                        <span>Regenerate plan</span>
-                    </button>
-                    <button type="button" class="dropdown-item" onclick="triggerReplanRemainingDays()">
-                        <span class="dropdown-item-icon">🔄</span>
-                        <span>Re-plan remaining days</span>
+                        <span>Rebalance timetable</span>
                     </button>
                     <button type="button" class="dropdown-item" onclick="triggerPrintTimetable()">
                         <span class="dropdown-item-icon">🖨️</span>
@@ -49,14 +57,16 @@
                         <span class="dropdown-item-icon">📅</span>
                         <span>Export calendar (.ics)</span>
                     </button>
+                    <button type="button" class="dropdown-item item-danger" onclick="promptClearAllEvents()">
+                        <span class="dropdown-item-icon">🗑️</span>
+                        <span>Clear All Timetable</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Header space reserved for future addition -->
-
-    <!-- VIEW TABS (Clean minimalist tabs like Library) -->
+    <!-- VIEW TABS -->
     <div class="filter-tabs">
         <button type="button" class="tab active" id="btn-view-agenda" onclick="switchViewMode('agenda')">Schedule</button>
         <button type="button" class="tab" id="btn-view-week" onclick="switchViewMode('week')">Week Grid</button>
@@ -68,7 +78,7 @@
         <!-- SLEEK 7-DAY WEEK STRIP -->
         <div class="week-strip-card">
             <div class="week-strip-header">
-                <span class="strip-month-title" id="strip-month-label">February 2026</span>
+                <span class="strip-month-title" id="strip-month-label">September 2026</span>
                 <div class="strip-nav-arrows">
                     <button type="button" class="strip-arrow-btn" onclick="changeStripWeek(-1)" aria-label="Previous week">‹</button>
                     <button type="button" class="strip-today-btn" onclick="goToToday()">Today</button>
@@ -80,11 +90,26 @@
             </div>
         </div>
 
+        <!-- AI STUDY BUDDY BANNER -->
+        <div class="ai-study-buddy-banner" id="ai-study-buddy-banner" onclick="openSabiAiChat()">
+            <div class="buddy-banner-left">
+                <div class="buddy-banner-avatar">
+                    <img src="avatars/notion-scholar.svg" alt="Sabi Study Buddy" class="buddy-banner-avatar-img" />
+                    <span class="buddy-live-pulse"></span>
+                </div>
+                <div class="buddy-banner-text">
+                    <strong class="buddy-banner-title">Need help planning your timetable?</strong>
+                    <span class="buddy-banner-sub">Chat with Sabi like a friend to set up classes, revision, & exam goals.</span>
+                </div>
+            </div>
+            <button type="button" class="btn-banner-chat" aria-label="Chat with Sabi">Chat ✨</button>
+        </div>
+
         <!-- QUICK ADD SCHEDULE BAR -->
         <div class="quick-add-schedule-card">
             <div class="quick-add-input-wrapper">
                 <span class="quick-add-sparkle">✨</span>
-                <input type="text" id="quick-schedule-input" class="quick-schedule-input" placeholder="Quickly add to schedule (e.g. Physics drill tomorrow at 6pm)..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();handleQuickScheduleAdd();}" />
+                <input type="text" id="quick-schedule-input" class="quick-schedule-input" placeholder="Quick add (e.g. Physics drill tomorrow at 6pm)..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();handleQuickScheduleAdd();}" />
                 <button type="button" class="btn-quick-add-submit" onclick="handleQuickScheduleAdd()" aria-label="Add to schedule" title="Add to schedule">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -96,7 +121,12 @@
 
         <!-- SESSIONS SECTION HEADER -->
         <div class="agenda-section-header">
-            <h3 class="agenda-section-title" id="agenda-section-title">Study Schedule</h3>
+            <h3 class="agenda-section-title" id="agenda-section-title">Schedule for Today</h3>
+            <div class="agenda-filter-chips">
+                <button type="button" class="filter-pill active" data-filter="all" onclick="filterAgendaEvents('all')">All</button>
+                <button type="button" class="filter-pill" data-filter="class" onclick="filterAgendaEvents('class')">🎓 Classes</button>
+                <button type="button" class="filter-pill" data-filter="study" onclick="filterAgendaEvents('study')">⏱️ Study</button>
+            </div>
         </div>
 
         <!-- AGENDA TIMELINE LIST -->
@@ -118,8 +148,8 @@
                 <button type="button" class="btn-print-week" onclick="triggerPrintTimetable()">
                     🖨️ Print
                 </button>
-                <button type="button" class="btn-week-regen" onclick="triggerRegeneratePlan()">
-                    ⚡ Re-plan
+                <button type="button" class="btn-week-regen" onclick="openSabiAiChat()">
+                    💬 AI Adjust
                 </button>
             </div>
         </div>
@@ -140,6 +170,14 @@
     </div>
 
 </div>
+
+<!-- FLOATING ACTION BUTTON FOR SABI STUDY BUDDY -->
+<button type="button" class="sabi-chat-fab" onclick="openSabiAiChat()" aria-label="Chat with Sabi Study Buddy" title="Chat with Sabi AI">
+    <span class="fab-avatar-badge">
+        <img src="avatars/notion-scholar.svg" alt="Sabi" />
+    </span>
+    <span class="fab-text">Study Buddy ✨</span>
+</button>
 
 <!-- BOTTOM FLOATING DOCK -->
 <nav class="app-bottom-nav">
@@ -177,70 +215,127 @@
     </a>
 </nav>
 
-<!-- MODAL 1: ADD SESSION MODAL -->
+<!-- MODAL 1: ADD / EDIT SESSION & CLASS MODAL -->
 <div id="add-session-modal" class="modal-overlay hidden" onclick="closeAddSessionModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
         <div class="sheet-top-bar">
-            <div class="sheet-title">Schedule Study Block</div>
+            <div class="sheet-title" id="modal-sheet-title">Add to Timetable</div>
             <button type="button" class="sheet-close-btn" onclick="closeAddSessionModal()" aria-label="Close">✕</button>
         </div>
 
+        <!-- Mode Segmented Switcher -->
+        <div class="modal-type-segmented" id="modal-type-switcher">
+            <button type="button" class="type-segment-btn active" id="btn-type-study" onclick="switchModalEventType('study')">
+                <span>⏱️ Study / Revision</span>
+            </button>
+            <button type="button" class="type-segment-btn" id="btn-type-class" onclick="switchModalEventType('class')">
+                <span>🎓 Recurring Class</span>
+            </button>
+        </div>
+
         <form id="add-session-form" onsubmit="handleSaveSession(event)">
-            <div class="form-group">
-                <label class="form-label" for="modal-session-title">Session Subject / Target</label>
-                <input type="text" id="modal-session-title" class="form-input" placeholder="e.g. Physics Mechanics Speed Drill" required />
-            </div>
+            <input type="hidden" id="modal-edit-id" value="" />
+            <input type="hidden" id="modal-edit-type" value="study" />
 
-            <div class="form-group">
-                <label class="form-label" for="modal-session-category">Category / Target Exam</label>
-                <select id="modal-session-category" class="form-select">
-                    <option value="study">⏱️ Sabi Study Drill</option>
-                    <option value="jamb">⚡ JAMB UTME</option>
-                    <option value="waec">📘 WAEC WASSCE</option>
-                    <option value="neco">🟣 NECO SSCE</option>
-                    <option value="noun">🎓 NOUN TMA / Exam</option>
-                    <option value="ican">💼 ICAN Professional Diet</option>
-                </select>
-            </div>
-
-            <div class="form-row">
+            <!-- STUDY / REVISION FIELDS -->
+            <div id="fields-study-session">
                 <div class="form-group">
-                    <label class="form-label" for="modal-session-date">Date</label>
-                    <input type="date" id="modal-session-date" class="form-input" required />
+                    <label class="form-label" for="modal-session-title">Session Subject / Topic</label>
+                    <input type="text" id="modal-session-title" class="form-input" placeholder="e.g. Physics Mechanics Speed Drill" />
                 </div>
+
                 <div class="form-group">
-                    <label class="form-label" for="modal-session-time">Start Time</label>
-                    <input type="time" id="modal-session-time" class="form-input" value="17:00" required />
+                    <label class="form-label" for="modal-session-category">Category / Target Exam</label>
+                    <select id="modal-session-category" class="form-select">
+                        <option value="study">⏱️ Sabi Study Drill</option>
+                        <option value="jamb">⚡ JAMB UTME</option>
+                        <option value="waec">📘 WAEC WASSCE</option>
+                        <option value="neco">🟣 NECO SSCE</option>
+                        <option value="noun">🎓 NOUN TMA / Exam</option>
+                        <option value="ican">💼 ICAN Professional Diet</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="modal-session-date">Date</label>
+                        <input type="date" id="modal-session-date" class="form-input" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modal-session-time">Start Time</label>
+                        <input type="time" id="modal-session-time" class="form-input" value="17:00" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modal-session-duration">Duration</label>
+                    <select id="modal-session-duration" class="form-select">
+                        <option value="0.75">45 Minutes (Sprint Drill)</option>
+                        <option value="1">1 Hour</option>
+                        <option value="1.5" selected>1.5 Hours (Standard Session)</option>
+                        <option value="2">2 Hours (Deep Focus)</option>
+                        <option value="3">3 Hours (Full Mock Simulation)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modal-session-notes">Study Notes / Syllabus Focus</label>
+                    <textarea id="modal-session-notes" class="form-textarea" rows="2" placeholder="e.g. Review 50 past questions on Newton's Laws and Optics."></textarea>
+                </div>
+
+                <label class="form-checkbox-label">
+                    <input type="checkbox" id="modal-session-gcal-sync" checked />
+                    <span>Instantly open & sync to Google Calendar</span>
+                </label>
+            </div>
+
+            <!-- RECURRING CLASS FIELDS -->
+            <div id="fields-recurring-class" class="hidden">
+                <div class="form-group">
+                    <label class="form-label" for="modal-class-subject">Course Code / Subject Name</label>
+                    <input type="text" id="modal-class-subject" class="form-input" placeholder="e.g. PHY 101: General Physics I" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modal-class-day">Day of the Week</label>
+                    <select id="modal-class-day" class="form-select">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="modal-class-start">Start Time</label>
+                        <input type="time" id="modal-class-start" class="form-input" value="09:00" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modal-class-end">End Time</label>
+                        <input type="time" id="modal-class-end" class="form-input" value="11:00" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modal-class-venue">Lecture Venue / Lecture Hall</label>
+                    <input type="text" id="modal-class-venue" class="form-input" placeholder="e.g. Hall 3 / Science Lecture Theatre / Online" />
+                </div>
+
+                <div class="form-notice">
+                    <span>ℹ️</span> Recurring classes repeat every week on the specified day and block out busy study hours.
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label" for="modal-session-duration">Duration</label>
-                <select id="modal-session-duration" class="form-select">
-                    <option value="0.75">45 Minutes (Sprint Drill)</option>
-                    <option value="1">1 Hour</option>
-                    <option value="1.5" selected>1.5 Hours (Standard Session)</option>
-                    <option value="2">2 Hours (Deep Focus)</option>
-                    <option value="3">3 Hours (Full Mock Simulation)</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="modal-session-notes">Study Notes / Syllabus Focus</label>
-                <textarea id="modal-session-notes" class="form-textarea" rows="2" placeholder="e.g. Review 50 past questions on Newton's Laws and Optics."></textarea>
-            </div>
-
-            <label class="form-checkbox-label">
-                <input type="checkbox" id="modal-session-gcal-sync" checked />
-                <span>Instantly open & sync to Google Calendar</span>
-            </label>
-
-            <button type="submit" class="btn-submit-session">
+            <button type="submit" class="btn-submit-session" id="btn-modal-save">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M12 5v14M5 12h14"/>
                 </svg>
-                Save & Sync Study Session
+                <span id="btn-modal-save-text">Save Study Session</span>
             </button>
         </form>
     </div>
@@ -280,8 +375,11 @@
                         <line x1="8" y1="2" x2="8" y2="6"/>
                         <line x1="3" y1="10" x2="21" y2="10"/>
                     </svg>
-                    <span>Add to Google Calendar</span>
+                    <span>Google Calendar</span>
                 </a>
+                <button type="button" id="detail-edit-btn" class="btn-detail-edit" onclick="editCurrentDetailEvent()">
+                    ✏️ Edit
+                </button>
                 <button type="button" id="detail-complete-btn" class="btn-detail-complete" onclick="toggleCurrentDetailComplete()">
                     Mark Complete
                 </button>
@@ -293,145 +391,48 @@
     </div>
 </div>
 
-<!-- MODAL 3: SMART PLANNER SETUP (ONE Tap-Only Screen: 3 Questions) -->
-<div id="planner-onboarding-modal" class="modal-overlay hidden" onclick="closePlannerOnboardingModal(event)">
-    <div class="modal-sheet onboarding-sheet" onclick="event.stopPropagation()">
-        <div class="sheet-handle"></div>
-        <div class="sheet-top-bar">
-            <div class="sheet-title-group">
-                <span class="sheet-badge-icon">⚡</span>
-                <div class="sheet-title">Study Planner Setup</div>
+<!-- MODAL 3: SABI AI STUDY BUDDY CHAT DRAWER -->
+<div id="sabi-ai-chat-drawer" class="modal-overlay hidden" onclick="closeSabiAiChat(event)">
+    <div class="chat-drawer-sheet" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="chat-drawer-header">
+            <div class="chat-header-profile">
+                <div class="chat-avatar-wrap">
+                    <img src="avatars/notion-scholar.svg" alt="Sabi Study Buddy" class="chat-avatar-img" />
+                    <span class="chat-status-dot" title="Online"></span>
+                </div>
+                <div class="chat-header-info">
+                    <h3 class="chat-header-name">Sabi Study Buddy</h3>
+                    <span class="chat-header-status">Your Academic Friend • Always ready</span>
+                </div>
             </div>
-            <button type="button" class="sheet-close-btn" onclick="closePlannerOnboardingModal()" aria-label="Close">✕</button>
+            <div class="chat-header-actions">
+                <button type="button" class="chat-tool-btn" onclick="clearChatHistory()" title="Restart Conversation">🔄</button>
+                <button type="button" class="chat-tool-btn" onclick="closeSabiAiChat()" aria-label="Close Chat">✕</button>
+            </div>
         </div>
 
-        <div class="onboarding-content-wrap">
-            <p class="onboarding-tagline">Answer 3 quick questions and Sabi will build your personalized study timetable.</p>
+        <!-- Chat Feed -->
+        <div class="chat-messages-container" id="chat-messages-container">
+            <!-- Messages rendered dynamically -->
+        </div>
 
-            <!-- 1. Which subjects do you find hard? (chips from their subjects, any number) -->
-            <div class="onboarding-section">
-                <div class="onboarding-q-title">
-                    <span class="q-num">1</span>
-                    <span>Which subjects do you find hard?</span>
-                </div>
-                <p class="q-hint">Tap any number of subjects you struggle with — they will receive prioritized focus & extra sessions.</p>
-                <div class="subject-chips-grid" id="onboarding-hard-subjects-chips">
-                    <!-- Chips from their subjects -->
-                </div>
-                <div class="subject-add-row" style="margin-top: 10px;">
-                    <input type="text" id="custom-subject-input" class="form-input" placeholder="Add subject…" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomSubject();}" />
-                    <button type="button" class="btn-add-chip" onclick="addCustomSubject()">+</button>
-                </div>
-            </div>
+        <!-- Quick Response Chips -->
+        <div class="chat-quick-chips-row" id="chat-quick-chips-row">
+            <!-- Suggested chips rendered dynamically -->
+        </div>
 
-            <!-- 2. Realistic study hours on a normal day (1-2 / 3-4 / 5+) and best time (morning / afternoon / evening / night) -->
-            <div class="onboarding-section">
-                <div class="onboarding-q-title">
-                    <span class="q-num">2</span>
-                    <span>Realistic study hours & best time</span>
-                </div>
-                
-                <div class="sub-q-group">
-                    <label class="sub-q-label">Hours on a normal day:</label>
-                    <div class="segmented-tap-row" id="tap-row-hours">
-                        <button type="button" class="tap-segment-btn" data-hours="1-2" onclick="selectHoursOption('1-2')">
-                            <span class="segment-label">1 - 2 hrs</span>
-                            <span class="segment-sub">Light</span>
-                        </button>
-                        <button type="button" class="tap-segment-btn active" data-hours="3-4" onclick="selectHoursOption('3-4')">
-                            <span class="segment-label">3 - 4 hrs</span>
-                            <span class="segment-sub">Standard</span>
-                        </button>
-                        <button type="button" class="tap-segment-btn" data-hours="5+" onclick="selectHoursOption('5+')">
-                            <span class="segment-label">5+ hrs</span>
-                            <span class="segment-sub">Intensive</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="sub-q-group" style="margin-top: 14px;">
-                    <label class="sub-q-label">Best study window:</label>
-                    <div class="segmented-tap-grid" id="tap-grid-time">
-                        <button type="button" class="tap-segment-btn" data-time="morning" onclick="selectBestTimeOption('morning')">
-                            <span class="segment-icon">🌅</span>
-                            <span class="segment-label">Morning</span>
-                            <span class="segment-sub">05:30 - 12:00</span>
-                        </button>
-                        <button type="button" class="tap-segment-btn" data-time="afternoon" onclick="selectBestTimeOption('afternoon')">
-                            <span class="segment-icon">☀️</span>
-                            <span class="segment-label">Afternoon</span>
-                            <span class="segment-sub">12:00 - 17:00</span>
-                        </button>
-                        <button type="button" class="tap-segment-btn active" data-time="evening" onclick="selectBestTimeOption('evening')">
-                            <span class="segment-icon">🌆</span>
-                            <span class="segment-label">Evening</span>
-                            <span class="segment-sub">17:00 - 21:00</span>
-                        </button>
-                        <button type="button" class="tap-segment-btn" data-time="night" onclick="selectBestTimeOption('night')">
-                            <span class="segment-icon">🌙</span>
-                            <span class="segment-label">Night</span>
-                            <span class="segment-sub">21:00 - 23:30</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. Exam dates: "I know them" (date picker per subject, optional), "In about X weeks", or "I don't know yet" -->
-            <div class="onboarding-section" style="border-bottom: none;">
-                <div class="onboarding-q-title">
-                    <span class="q-num">3</span>
-                    <span>Exam dates</span>
-                </div>
-                
-                <div class="segmented-tap-row" id="tap-row-exam-mode">
-                    <button type="button" class="tap-segment-btn" data-exam-type="confirmed" onclick="selectExamMode('confirmed')">
-                        <span class="segment-icon">📅</span>
-                        <span class="segment-label">I know them</span>
-                    </button>
-                    <button type="button" class="tap-segment-btn active" data-exam-type="approximate" onclick="selectExamMode('approximate')">
-                        <span class="segment-icon">⏳</span>
-                        <span class="segment-label">In about X weeks</span>
-                    </button>
-                    <button type="button" class="tap-segment-btn" data-exam-type="unknown" onclick="selectExamMode('unknown')">
-                        <span class="segment-icon">❓</span>
-                        <span class="segment-label">I don't know yet</span>
-                    </button>
-                </div>
-
-                <div class="exam-sub-panel hidden" id="exam-panel-dates">
-                    <p class="q-hint">Optional: Set exam date per subject</p>
-                    <div class="subject-date-pickers" id="subject-date-pickers-list"></div>
-                </div>
-
-                <div class="exam-sub-panel" id="exam-panel-weeks">
-                    <p class="q-hint">In about how many weeks?</p>
-                    <div class="weeks-chips-row" id="weeks-chips-container">
-                        <button type="button" class="week-chip-btn" data-weeks="2" onclick="selectWeeksAway(2)">2 wks</button>
-                        <button type="button" class="week-chip-btn" data-weeks="4" onclick="selectWeeksAway(4)">4 wks</button>
-                        <button type="button" class="week-chip-btn active" data-weeks="6" onclick="selectWeeksAway(6)">6 wks</button>
-                        <button type="button" class="week-chip-btn" data-weeks="8" onclick="selectWeeksAway(8)">8 wks</button>
-                        <button type="button" class="week-chip-btn" data-weeks="12" onclick="selectWeeksAway(12)">12 wks</button>
-                    </div>
-                </div>
-
-                <div class="exam-sub-panel hidden" id="exam-panel-unknown">
-                    <div class="unknown-exam-notice">
-                        <span>ℹ️</span> We'll assume your exams are roughly 6 weeks away.
-                    </div>
-                </div>
-            </div>
-
-            <!-- SUBMIT -->
-            <div class="onboarding-footer">
-                <div class="ai-status-bar hidden" id="ai-status-bar">
-                    <div class="ai-status-spinner"></div>
-                    <span id="ai-status-text">Generating your study plan…</span>
-                </div>
-                <button type="button" class="btn-generate-plan" id="btn-submit-onboarding" onclick="submitOnboardingAndGeneratePlan()">
-                    <span class="btn-sparkle-icon">✨</span>
-                    <span>Generate My Study Plan</span>
+        <!-- Chat Input Form -->
+        <div class="chat-input-area">
+            <form id="chat-input-form" onsubmit="handleSendChatMessage(event)" class="chat-input-form">
+                <input type="text" id="chat-user-input" class="chat-text-input" placeholder="Tell Sabi about your classes or exams..." autocomplete="off" />
+                <button type="submit" class="btn-chat-send" id="btn-chat-send" aria-label="Send Message">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
