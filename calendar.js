@@ -1106,13 +1106,13 @@ let pendingChatMedia = null; // { name, type, size, dataUrl, textContent }
 
 const DEFAULT_CHAT_GREETING = {
     role: 'bot',
-    content: "Hey there! 👋 I'm your Sabi Study Buddy. I'm here to build you a timetable that actually fits your real academic life.\n\nTo build your best schedule, I look at three things:\n1. 🎓 **Your recurring classes/lectures** (e.g. MTH 101 Mon 9-11am)\n2. 🎯 **Your target exam or semester finals** (JAMB, WAEC, NOUN, ICAN, or Degree courses)\n3. ⏱️ **Your daily focus hours & tough courses**\n\n💡 *Tip: You can also tap the paperclip 📎 below to upload a photo of your course outline, departmental timetable, or syllabus!*",
+    content: "Hey! 👋 I'm your Sabi Study Buddy. I'm here to build a weekly timetable that actually works for your real life without burning you out.\n\nLet's take it step-by-step. First off: **What degree, course of study, or exam (like JAMB, WAEC, NOUN, ICAN) are you focusing on this semester?**\n\n*(You can also tap the 📎 paperclip to upload a photo of your course outline or syllabus!)*",
     timestamp: 'Just now'
 };
 
 function getChatHistory() {
     try {
-        const stored = localStorage.getItem('sabi_chat_history_v3');
+        const stored = localStorage.getItem('sabi_chat_history_v4');
         if (stored) {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -1123,7 +1123,7 @@ function getChatHistory() {
 
 function saveChatHistory(history) {
     try {
-        localStorage.setItem('sabi_chat_history_v3', JSON.stringify(history));
+        localStorage.setItem('sabi_chat_history_v4', JSON.stringify(history));
     } catch (e) {}
 }
 
@@ -1424,26 +1424,25 @@ function hideTypingIndicator() {
     if (el) el.remove();
 }
 
-// Highly conversational and empathetic prompt guiding Sabi Study Buddy persona
-const BUDDY_SYSTEM_PROMPT = `You are "Sabi Study Buddy", a caring, highly intelligent, conversational Nigerian and international academic mentor & study partner.
-Tone: Warm, encouraging, relatable, insightful, like a brilliant senior student or friend who really wants you to ace your exams.
+// Highly conversational, empathetic, one-question-at-a-time prompt guiding Sabi Study Buddy persona
+const BUDDY_SYSTEM_PROMPT = `You are "Sabi Study Buddy", an empathetic, brilliant academic mentor & friend for Nigerian and international students (University, Polytechnic, JAMB, WAEC, NOUN, ICAN).
+Tone: Warm, encouraging, concise, relatable, and authentic. You speak like a smart peer who has walked in their shoes and wants them to succeed without burnout.
 
-YOUR MISSION:
-Help students organize both their fixed classes and their personal revision study blocks into a realistic, high-impact weekly timetable.
-
-CONVERSATION STYLE & QUESTIONS:
-1. Don't just dump a timetable immediately unless they ask you to "generate" or provide a full course outline.
-2. Ask natural, conversational follow-up questions to understand their situation:
-   - What degree, faculty, or exam (JAMB, WAEC, NOUN, ICAN) are they focusing on?
-   - What are their 2-3 most intimidating courses (e.g. Organic Chemistry, Engineering Math, Financial Accounting)?
-   - What are their fixed weekly lecture hours?
-   - When do they feel most alert (early morning 6am vs late night)?
-3. If they upload or paste a course outline or syllabus, read all the course codes, topics, and breakdown. Confirm what you spotted and propose a study schedule designed around it!
-4. Always give practical study advice (e.g., active recall, past question drills, spaced repetition).
+CRITICAL CONVERSATIONAL RULES (MUST FOLLOW):
+1. **ONE QUESTION AT A TIME**: Never ask a checklist of 3 or 4 questions at once! That overwhelms the student. Ask only ONE clear, focused question per message.
+2. **ACKNOWLEDGE BEFORE ASKING**: Always react warmly to what they just said first (validate their feelings, celebrate an easy course, or empathize with a tough lecturer/syllabus).
+3. **LOGICAL NATURAL STAGES**:
+   - Stage 1: Academic target (Exam/Degree/Faculty).
+   - Stage 2: Most intimidating or challenging 1-2 subjects they dread.
+   - Stage 3: Weekly fixed lecture schedule (days & times of recurring classes).
+   - Stage 4: Personal alertness window (morning person vs night owl) & daily target hours.
+   - Stage 5: Proposal & Confirmation -> Generate their complete timetable!
+4. **OUTLINE / MEDIA UPLOADS**: If they upload or paste a course outline or syllabus, read it carefully, extract their course codes, praise their preparation, and ask the next single question about lecture times or hard topics.
+5. **KEEP IT NATURAL & SNAPPY**: Keep responses to 2-4 short, punchy paragraphs max.
 
 OUTPUT FORMAT:
-- First, write your empathetic, conversational response with your insights and questions.
-- If you have gathered enough details OR if the user asked to generate or provided an outline/classes, update their timetable by appending this exact JSON code block at the very end:
+- First, write your warm, empathetic conversational response with your single question or insight.
+- ONLY when you have enough info (or when the user asks you to "generate", "create", "plan", or provides full schedule details), append this exact JSON code block at the very end to update their timetable:
 \`\`\`json
 {
   "action": "UPDATE_TIMETABLE",
@@ -1668,70 +1667,40 @@ function parseAiReplyAndApply(replyText) {
     };
 }
 
-// High-fidelity intelligent offline conversational generator with multi-turn memory & media awareness
+// High-fidelity intelligent conversational generator with multi-turn memory & one-by-one questions
 function generateOfflineBuddyReply(userText, media, history) {
     const text = (userText || '').toLowerCase();
     const mondayStr = getMondayOfWeek(new Date());
     let botMessage = '';
     let actionData = null;
 
-    // Check if media was uploaded
+    // 1. If media was uploaded
     if (media) {
-        const isDoc = media.type === 'document';
         const docName = media.name || 'document';
-
-        // Extract possible course codes from filename or content
         const codeMatches = (media.name + ' ' + (media.textContent || '')).match(/([a-zA-Z]{2,4}\s*\d{3})/g);
         const extractedCodes = codeMatches ? Array.from(new Set(codeMatches.map(c => c.toUpperCase()))) : ['GST 101', 'MTH 101', 'PHY 101', 'CHM 101'];
 
-        // Automatically set up 4 balanced study drill slots based on their outline
-        for (let i = 0; i < Math.min(extractedCodes.length, 5); i++) {
-            const dateStr = addDaysToDate(mondayStr, i);
-            const course = extractedCodes[i];
-            calendarEvents.push({
-                id: 'ev-media-' + Date.now() + '-' + i,
-                title: `${course} Outline Revision Drill`,
-                category: 'study',
-                date: dateStr,
-                time: i % 2 === 0 ? '17:00' : '19:30',
-                duration: 1.5,
-                location: 'Sabi Study Room',
-                notes: `Extracted from uploaded outline (${docName}). Comprehensive syllabus mastery.`,
-                completed: false,
-                isAiGenerated: true
-            });
-        }
-        saveEvents();
-
-        botMessage = `I've analyzed your uploaded **${docName}**! 📑✨\n\nI detected key course targets: **${extractedCodes.slice(0, 4).join(', ')}**.\n\nHere is what I did:\n1. 🎯 Built 4 priority study blocks in your evening revision window.\n2. ⏱️ Balanced the workload so heavy calculations and reading courses don't collide.\n\nNow tell me: **Do you have specific days and times when lectures meet in class**, or are there specific topics in this outline where you need extra help?`;
-
-        actionData = {
-            details: `Extracted course targets from ${docName} & generated 4 syllabus revision blocks`
-        };
+        botMessage = `I've gone through your uploaded **${docName}**! 📑✨\n\nI spotted your target courses: **${extractedCodes.slice(0, 4).join(', ')}**.\n\nTo weave these properly into your week without exhausting you: **Which 1 or 2 of these courses feel the most intimidating or heavy right now?**`;
 
         return {
             role: 'bot',
             content: botMessage,
-            actionCard: actionData,
+            actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
 
-    // Check for class inputs (e.g. "I have PHY 101 on Mondays at 9am")
+    // 2. Check for explicit class schedule input (e.g. "I have PHY 101 on Mondays at 9am")
     const daysRegex = /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/gi;
     const matchedDays = userText.match(daysRegex);
 
-    if (text.includes('class') || text.includes('lecture') || matchedDays) {
-        // Parse classes
+    if ((text.includes('class') || text.includes('lecture') || matchedDays) && /\d/.test(text)) {
         const day = matchedDays ? matchedDays[0] : 'Monday';
         const formattedDay = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
 
-        // Extract subject if present
         let subject = 'Lecture Class';
         const subjectMatches = userText.match(/([a-zA-Z]{2,4}\s*\d{3}|physics|mathematics|maths|chemistry|biology|economics|english|accounting|law|anatomy)/i);
-        if (subjectMatches) {
-            subject = subjectMatches[0].toUpperCase();
-        }
+        if (subjectMatches) subject = subjectMatches[0].toUpperCase();
 
         let startTime = '09:00';
         const timeMatch = userText.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
@@ -1742,7 +1711,6 @@ function generateOfflineBuddyReply(userText, media, history) {
             if (timeMatch[3].toLowerCase() === 'am' && h === 12) h = 0;
             startTime = `${String(h).padStart(2, '0')}:${m}`;
         }
-
         const endTime = calculateEndTime(startTime, 2);
 
         const newClass = {
@@ -1754,17 +1722,25 @@ function generateOfflineBuddyReply(userText, media, history) {
             venue: 'Lecture Hall',
             isRecurring: true
         };
-
         storedClasses.push(newClass);
         saveStoredClasses(storedClasses);
 
-        botMessage = `Locked it down! 🎓 **${subject}** is set for every **${formattedDay} from ${startTime} to ${endTime}**. I've marked this as a recurring class so Sabi won't double-book your personal study time during this lecture.\n\nLet's keep going:\n- Do you have other lectures on other weekdays?\n- Or what subject is giving you the biggest headache this semester that we should allocate emergency revision time for?`;
+        botMessage = `Locked it down! 🎓 **${subject}** is set for every **${formattedDay} from ${startTime} to ${endTime}**.\n\nNow tell me: **Do you have other recurring classes on other weekdays, or is this the main one?**`;
 
         actionData = {
             details: `Added ${subject} (Every ${formattedDay}, ${startTime} - ${endTime})`
         };
-    } else if (text.includes('jamb') || text.includes('waec') || text.includes('neco') || text.includes('noun') || text.includes('ican') || text.includes('exam') || text.includes('generate') || text.includes('timetable') || text.includes('schedule') || text.includes('build') || text.includes('create') || text.includes('plan')) {
-        // Generate a balanced weekly study plan
+
+        return {
+            role: 'bot',
+            content: botMessage,
+            actionCard: actionData,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 3. Check if user asked to generate / finalize
+    if (text.includes('generate') || text.includes('build') || text.includes('ready') || text.includes('create timetable') || text.includes('done')) {
         let examCategory = 'study';
         if (text.includes('jamb')) examCategory = 'jamb';
         else if (text.includes('waec')) examCategory = 'waec';
@@ -1795,19 +1771,35 @@ function generateOfflineBuddyReply(userText, media, history) {
         }
         saveEvents();
 
-        botMessage = `Done deal! 🚀 I've built your complete weekly timetable with tailored revision drills!\n\nHere is how I structured it:\n• **Spaced Repetition**: Mathematics, Physics, Chemistry, and English are rotated to maximize retention.\n• **Buffer Windows**: 30-minute decompression breaks between intense study sessions.\n• **Weekend Reset**: Sundays are completely free so you don't burn out.\n\nYou can switch to the **Week Grid** to view the full canvas, or tap any session to customize it!`;
+        botMessage = `Done deal! 🚀 I've built your complete weekly timetable with tailored revision drills!\n\nHere is how I structured it:\n• **Spaced Repetition**: Heavy calculations and reading subjects rotate to maximize memory.\n• **Buffer Windows**: 30-minute decompression breaks so your brain can reset.\n• **Weekend Recovery**: Sundays are completely free.\n\nCheck out the Schedule or switch to **Week Grid** to view your week canvas!`;
 
         actionData = {
             details: `Generated 5 tailored revision blocks for ${examCategory.toUpperCase()}`
         };
-    } else if (text.includes('hi') || text.includes('hello') || text.includes('hey') || text.includes('start') || text.includes('help')) {
-        botMessage = `Hey there! Great to connect with you. 😊\n\nI'm ready to craft your ideal academic schedule. To make sure it fits you like a glove, tell me:\n\n1. **What are you preparing for?** (e.g. 100L semester finals, JAMB, WAEC, NOUN, or professional ICAN)\n2. **Which courses or subjects feel the hardest right now?**\n3. **When do you feel sharpest during the day?** (Early morning vs afternoon vs evening night owl)\n\n*(You can also tap the paperclip 📎 to upload your course outline!)*`;
-    } else if (text.includes('hard') || text.includes('struggle') || text.includes('weak') || text.includes('math') || text.includes('physic') || text.includes('chemistry')) {
-        botMessage = `I hear you loud and clear. That's completely normal — courses like Maths, Physics, and Chem demand consistent problem-solving rather than passive reading.\n\nHere is my recommendation:\n• We schedule **45-minute sprint drills** with past questions 3 times a week.\n• We review errors immediately with worked solutions.\n\nShould I lock these priority revision blocks into your timetable now, or do you have specific class lecture times I should avoid?`;
-    } else if (text.includes('evening') || text.includes('morning') || text.includes('night') || text.includes('free')) {
-        botMessage = `Noted on your preferred study hours! Setting your revision blocks during your peak alertness window makes studying twice as effective in half the time.\n\nWould you like me to generate your full timetable now around these hours?`;
+
+        return {
+            role: 'bot',
+            content: botMessage,
+            actionCard: actionData,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 4. Multi-turn step-by-step progression based on conversation turn count
+    const userTurnCount = (history || []).filter(m => m.role === 'user').length;
+
+    if (userTurnCount <= 1) {
+        // Stage 1 -> ask about tough subjects
+        botMessage = `Got it! That gives me clear direction. 🎯\n\nTo make sure we conquer the hard stuff first: **Which 1 or 2 specific courses or topics usually give you the toughest time or the most stress?**`;
+    } else if (userTurnCount === 2) {
+        // Stage 2 -> ask about lecture times
+        botMessage = `I completely understand. Those courses need regular, focused problem drills rather than last-minute cramming.\n\nNext step: **Do you have fixed weekly lecture times or labs on campus (e.g. Mon 9-11am or Tue 2pm)?** Tell me your main lecture days.`;
+    } else if (userTurnCount === 3) {
+        // Stage 3 -> ask about alertness window
+        botMessage = `Noted on your lecture commitments! 🕒\n\nNow, for your personal revision blocks: **When do you feel most alert and focused during the day?** (Early morning, afternoon, or evening night owl?)`;
     } else {
-        botMessage = `Got it! I'm taking all this into account. You can share more about your weekly lectures, upload your course outline via the 📎 attachment button, or say **"Generate my timetable"** whenever you're ready!`;
+        // Stage 4 -> propose generation
+        botMessage = `Awesome, I have all the key pieces! 🌟\n\nI can now synthesize your classes, protect your peak study hours, and schedule priority practice blocks.\n\nShould I **generate your weekly timetable now**? Tap **"Generate my complete timetable now ✨"** or just say "Yes"!`;
     }
 
     return {
