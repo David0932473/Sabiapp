@@ -217,6 +217,11 @@ let agendaFilter = 'all'; // 'all', 'class', 'study'
 let selectedDetailEventId = null;
 let selectedDetailType = 'study'; // 'study' or 'class'
 
+if (typeof window !== 'undefined') {
+    window.storedClasses = storedClasses;
+    window.calendarEvents = calendarEvents;
+}
+
 // ==========================================
 // 💾 PERSISTENCE HELPERS
 // ==========================================
@@ -1143,8 +1148,31 @@ function getChatHistory() {
 
 function saveChatHistory(history) {
     try {
-        localStorage.setItem('sabi_chat_history_v4', JSON.stringify(history));
-    } catch (e) {}
+        const sanitized = (history || []).slice(-35).map(msg => {
+            if (!msg.media) return msg;
+            const cleanMedia = { ...msg.media };
+            // Strip large base64 dataUrl before saving to localStorage to prevent QuotaExceededError
+            if (cleanMedia.dataUrl && cleanMedia.dataUrl.length > 2500) {
+                cleanMedia.dataUrl = null;
+            }
+            return {
+                ...msg,
+                media: cleanMedia
+            };
+        });
+        localStorage.setItem('sabi_chat_history_v4', JSON.stringify(sanitized));
+    } catch (e) {
+        console.warn('Failed to save chat history to localStorage:', e);
+        try {
+            const minimal = (history || []).slice(-10).map(m => ({
+                role: m.role,
+                content: m.content,
+                actionCard: m.actionCard,
+                timestamp: m.timestamp
+            }));
+            localStorage.setItem('sabi_chat_history_v4', JSON.stringify(minimal));
+        } catch (e2) {}
+    }
 }
 
 function openSabiAiChat() {
@@ -1204,13 +1232,158 @@ function triggerChatMediaUpload() {
 }
 window.triggerChatMediaUpload = triggerChatMediaUpload;
 
+// Broad academic vocabulary for Nigerian & International institutions
+const SABI_SUBJECT_VOCAB = [
+    'Computer Science', 'Software Engineering', 'Information Technology', 'Cybersecurity', 'Data Science', 'Data Structures', 'Algorithms', 'Web Development',
+    'Mathematics', 'Maths', 'Math', 'Further Maths', 'Calculus', 'Algebra', 'Statistics', 'Geometry',
+    'Physics', 'Mechanics', 'Electromagnetism', 'Optics', 'Thermodynamics',
+    'Chemistry', 'Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry',
+    'Biology', 'Microbiology', 'Anatomy', 'Physiology', 'Genetics', 'Botany', 'Zoology',
+    'Medicine', 'Surgery', 'Pharmacy', 'Pharmacology', 'Nursing', 'Public Health',
+    'Civil Engineering', 'Mechanical Engineering', 'Electrical Engineering', 'Chemical Engineering', 'Petroleum Engineering',
+    'Economics', 'Accounting', 'Financial Accounting', 'Commerce', 'Business Administration', 'Marketing', 'Finance', 'Taxation', 'Banking',
+    'Law', 'Jurisprudence', 'Constitutional Law', 'Criminal Law', 'Commercial Law',
+    'English', 'Use of English', 'Literature', 'Literature in English', 'Government', 'Political Science', 'History', 'Geography', 'Philosophy', 'Sociology', 'Mass Communication'
+];
+
+const SABI_DAY_MAP = {
+    'mon': 'Monday', 'monday': 'Monday',
+    'tue': 'Tuesday', 'tues': 'Tuesday', 'tuesday': 'Tuesday',
+    'wed': 'Wednesday', 'wednesday': 'Wednesday',
+    'thu': 'Thursday', 'thur': 'Thursday', 'thurs': 'Thursday', 'thursday': 'Thursday',
+    'fri': 'Friday', 'friday': 'Friday',
+    'sat': 'Saturday', 'saturday': 'Saturday',
+    'sun': 'Sunday', 'sunday': 'Sunday'
+};
+
 function extractCourseCodesFromText(text) {
     if (!text) return [];
-    // Match common course codes (e.g. MTH 101, PHY102, BIO 201, GST 111, ACC 204, LAW 101, etc.)
-    const codeRegex = /\b([a-zA-Z]{2,4}\s*\d{3}[a-zA-Z]?)\b/gi;
+    // Match common course codes (e.g. MTH 101, CSC-201, PHY102, BIO 201, GST 111, ACC 204, LAW 101, etc.)
+    const codeRegex = /\b([a-zA-Z]{2,4}\s*[-]?\s*\d{3}[a-zA-Z]?)\b/gi;
     const matches = text.match(codeRegex);
     if (!matches) return [];
-    return Array.from(new Set(matches.map(c => c.replace(/\s+/g, ' ').toUpperCase().trim())));
+    return Array.from(new Set(matches.map(c => c.replace(/[-_\s]+/g, ' ').toUpperCase().trim())));
+}
+
+function parseTimetableFromOcrText(text) {
+    if (!text) return { courses: [], classes: [] };
+
+    // Support both newline and piped/semicolon tabular splits
+    const rawLines = text.split(/\r?\n/);
+    const lines = [];
+    rawLines.forEach(l => {
+        if (l.includes('|') || l.includes(';')) {
+            l.split(/[|;]/).forEach(sub => lines.push(sub.trim()));
+        } else {
+            lines.push(l.trim());
+        }
+    });
+
+    const detectedClasses = [];
+    const detectedCourses = new Set();
+
+    // 1. Extract raw course codes
+    const codes = extractCourseCodesFromText(text);
+    codes.forEach(c => detectedCourses.add(c));
+
+    // 2. Vocabulary subjects
+    for (const item of SABI_SUBJECT_VOCAB) {
+        const escaped = item.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp('\\b' + escaped + '\\b', 'i');
+        if (re.test(text)) detectedCourses.add(item);
+    }
+
+    // 3. Line-by-line schedule parsing with context tracking
+    let currentCourseContext = null;
+
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.length < 3) continue;
+
+        // Check if line establishes a course context (e.g. "CSC 201: Data Structures" or "MTH 101")
+        const lineCodes = extractCourseCodesFromText(trimmed);
+        if (lineCodes.length > 0) {
+            currentCourseContext = lineCodes[0];
+            detectedCourses.add(lineCodes[0]);
+        } else {
+            for (const item of SABI_SUBJECT_VOCAB) {
+                const escaped = item.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const re = new RegExp('\\b' + escaped + '\\b', 'i');
+                if (re.test(trimmed)) {
+                    currentCourseContext = item;
+                    detectedCourses.add(item);
+                    break;
+                }
+            }
+        }
+
+        // Day detection
+        const dayMatch = trimmed.match(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|tues|wed|thu|thur|thurs|fri|sat|sun)\b/i);
+        if (!dayMatch) continue;
+
+        const dayKey = dayMatch[1].toLowerCase();
+        const fullDay = SABI_DAY_MAP[dayKey];
+        if (!fullDay) continue;
+
+        const lineSubject = (lineCodes.length > 0 ? lineCodes[0] : null) || currentCourseContext || 'Lecture';
+
+        // Time range detection: e.g. 09:00 - 11:00, 9am - 11am, 9-11am, 14:00 - 16:00, 2pm to 4pm
+        const rangeMatch = trimmed.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*(?:-|–|to)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
+        // Single time: e.g. at 9am, 10:00am, 14:00
+        const singleMatch = !rangeMatch && (trimmed.match(/\b(?:at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i) || trimmed.match(/\b(\d{1,2}):(\d{2})\b/));
+
+        let startTime = '09:00';
+        let endTime = '11:00';
+
+        if (rangeMatch) {
+            let h1 = parseInt(rangeMatch[1], 10);
+            const m1 = rangeMatch[2] || '00';
+            const ap1 = (rangeMatch[3] || rangeMatch[6] || '').toLowerCase();
+            if (ap1 === 'pm' && h1 < 12) h1 += 12;
+            if (ap1 === 'am' && h1 === 12) h1 = 0;
+            startTime = String(h1).padStart(2, '0') + ':' + m1;
+
+            let h2 = parseInt(rangeMatch[4], 10);
+            const m2 = rangeMatch[5] || '00';
+            const ap2 = (rangeMatch[6] || rangeMatch[3] || '').toLowerCase();
+            if (ap2 === 'pm' && h2 < 12) h2 += 12;
+            if (ap2 === 'am' && h2 === 12) h2 = 0;
+            endTime = String(h2).padStart(2, '0') + ':' + m2;
+        } else if (singleMatch) {
+            let h = parseInt(singleMatch[1], 10);
+            const m = singleMatch[2] || '00';
+            const ap = (singleMatch[3] || '').toLowerCase();
+            if (ap === 'pm' && h < 12) h += 12;
+            if (ap === 'am' && h === 12) h = 0;
+            startTime = String(h).padStart(2, '0') + ':' + m;
+            endTime = String((h + 2) % 24).padStart(2, '0') + ':' + m;
+        }
+
+        // Venue detection
+        let venue = 'Lecture Hall';
+        const venueMatch = trimmed.match(/\(([^)]+)\)/) || trimmed.match(/\b(LT\s*\d+|Hall\s*[A-Z0-9]+|Lab\s*[A-Z0-9]+|Auditorium\s*[A-Z0-9]?|Room\s*\d+)\b/i);
+        if (venueMatch) {
+            venue = venueMatch[1].trim();
+        }
+
+        detectedClasses.push({
+            day: fullDay,
+            start_time: startTime,
+            end_time: endTime,
+            subject: lineSubject,
+            venue: venue
+        });
+    }
+
+    return {
+        courses: Array.from(detectedCourses),
+        classes: detectedClasses
+    };
+}
+
+function updateChatMediaPreviewStatus(statusText) {
+    const sizeEl = document.getElementById('media-preview-filesize');
+    if (sizeEl) sizeEl.textContent = statusText;
 }
 
 function processImageTextClientSide(file, dataUrl, callback) {
@@ -1218,9 +1391,9 @@ function processImageTextClientSide(file, dataUrl, callback) {
     img.crossOrigin = 'anonymous';
     img.onload = function() {
         try {
-            // Heuristic OCR / keyword detector using canvas for course outlines
+            // 1. High-resolution canvas for OCR
             const canvas = document.createElement('canvas');
-            const maxDim = 1200;
+            const maxDim = 1400;
             let w = img.width;
             let h = img.height;
             if (w > maxDim || h > maxDim) {
@@ -1236,51 +1409,174 @@ function processImageTextClientSide(file, dataUrl, callback) {
             canvas.height = h;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
-            const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
 
-            // Also check filename for course indicators
-            const extractedCodes = extractCourseCodesFromText(file.name);
-            callback({
-                optimizedDataUrl: optimizedDataUrl,
-                extractedCodes: extractedCodes,
-                width: w,
-                height: h
-            });
+            // 2. Ultra-compact thumbnail (<320px) for preview without filling localStorage
+            const thumbCanvas = document.createElement('canvas');
+            const thumbMax = 320;
+            let tw = img.width;
+            let th = img.height;
+            if (tw > thumbMax || th > thumbMax) {
+                if (tw > th) {
+                    th = Math.round((th * thumbMax) / tw);
+                    tw = thumbMax;
+                } else {
+                    tw = Math.round((tw * thumbMax) / th);
+                    th = thumbMax;
+                }
+            }
+            thumbCanvas.width = tw;
+            thumbCanvas.height = th;
+            const thumbCtx = thumbCanvas.getContext('2d');
+            thumbCtx.drawImage(img, 0, 0, tw, th);
+            const optimizedThumbUrl = thumbCanvas.toDataURL('image/jpeg', 0.7);
+
+            // 3. Tesseract OCR Recognition
+            if (typeof Tesseract !== 'undefined' && Tesseract.recognize) {
+                updateChatMediaPreviewStatus('🔍 Scanning timetable text (0%)...');
+
+                const ocrPromise = Tesseract.recognize(canvas, 'eng', {
+                    logger: m => {
+                        if (m.status === 'recognizing text' && typeof m.progress === 'number') {
+                            const pct = Math.round(m.progress * 100);
+                            updateChatMediaPreviewStatus(`🔍 Reading timetable (${pct}%)...`);
+                        }
+                    }
+                });
+
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('OCR Timeout')), 15000)
+                );
+
+                Promise.race([ocrPromise, timeoutPromise])
+                    .then(res => {
+                        const rawText = res?.data?.text || '';
+                        const parsed = parseTimetableFromOcrText(rawText);
+                        const fallbackCodes = extractCourseCodesFromText(file.name);
+                        const allCodes = Array.from(new Set([...parsed.courses, ...fallbackCodes]));
+
+                        if (parsed.classes.length > 0) {
+                            updateChatMediaPreviewStatus(`✅ Found ${parsed.classes.length} classes & ${allCodes.length} courses`);
+                        } else if (allCodes.length > 0) {
+                            updateChatMediaPreviewStatus(`✅ Detected ${allCodes.length} courses`);
+                        } else {
+                            updateChatMediaPreviewStatus(`✅ Screenshot scanned`);
+                        }
+
+                        callback({
+                            optimizedDataUrl: optimizedThumbUrl,
+                            extractedCodes: allCodes,
+                            extractedClasses: parsed.classes,
+                            rawText: rawText,
+                            width: w,
+                            height: h
+                        });
+                    })
+                    .catch(err => {
+                        console.warn('Tesseract OCR error/timeout, using fallback:', err);
+                        const fallbackCodes = extractCourseCodesFromText(file.name);
+                        updateChatMediaPreviewStatus('Image attached');
+                        callback({
+                            optimizedDataUrl: optimizedThumbUrl,
+                            extractedCodes: fallbackCodes,
+                            extractedClasses: [],
+                            rawText: '',
+                            width: w,
+                            height: h
+                        });
+                    });
+            } else {
+                const fallbackCodes = extractCourseCodesFromText(file.name);
+                callback({
+                    optimizedDataUrl: optimizedThumbUrl,
+                    extractedCodes: fallbackCodes,
+                    extractedClasses: [],
+                    rawText: '',
+                    width: w,
+                    height: h
+                });
+            }
         } catch (e) {
-            callback({ optimizedDataUrl: dataUrl, extractedCodes: extractCourseCodesFromText(file.name) });
+            console.error('Image processing error:', e);
+            callback({
+                optimizedDataUrl: dataUrl,
+                extractedCodes: extractCourseCodesFromText(file.name),
+                extractedClasses: [],
+                rawText: ''
+            });
         }
     };
     img.onerror = function() {
-        callback({ optimizedDataUrl: dataUrl, extractedCodes: extractCourseCodesFromText(file.name) });
+        callback({
+            optimizedDataUrl: dataUrl,
+            extractedCodes: extractCourseCodesFromText(file.name),
+            extractedClasses: [],
+            rawText: ''
+        });
     };
     img.src = dataUrl;
 }
+
+function handleChatImageFile(file, label) {
+    if (!file) return;
+    const isImage = file.type ? file.type.startsWith('image/') : true;
+    if (!isImage) return;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        const rawDataUrl = evt.target.result;
+        pendingChatMedia = {
+            name: file.name || label || 'Screenshot',
+            type: 'image',
+            size: (file.size / 1024).toFixed(1) + ' KB',
+            dataUrl: rawDataUrl,
+            extractedCodes: [],
+            extractedClasses: [],
+            textContent: `[Uploaded Outline: ${file.name || label}]`
+        };
+        displayPendingMediaBar();
+        updateChatMediaPreviewStatus('🔍 Reading screenshot text with AI OCR...');
+
+        processImageTextClientSide(file, rawDataUrl, (processed) => {
+            if (!pendingChatMedia) return;
+            pendingChatMedia.dataUrl = processed.optimizedDataUrl;
+            pendingChatMedia.extractedCodes = processed.extractedCodes;
+            pendingChatMedia.extractedClasses = processed.extractedClasses;
+            pendingChatMedia.textContent = `[Uploaded Timetable Screenshot: ${file.name || label}]\n` +
+                (processed.extractedClasses && processed.extractedClasses.length > 0
+                    ? `Extracted Classes:\n` + processed.extractedClasses.map(c => `- ${c.subject}: ${c.day} ${c.start_time}-${c.end_time} (${c.venue})`).join('\n')
+                    : '') +
+                (processed.extractedCodes && processed.extractedCodes.length > 0
+                    ? `\nDetected Courses: ${processed.extractedCodes.join(', ')}`
+                    : '') +
+                (processed.rawText ? `\nOCR Text:\n${processed.rawText.slice(0, 1500)}` : '');
+
+            displayPendingMediaBar();
+
+            const input = document.getElementById('chat-user-input');
+            if (input && (!input.value.trim() || input.value.startsWith('Here is my course outline') || input.value.startsWith('Here is my timetable'))) {
+                if (processed.extractedClasses && processed.extractedClasses.length > 0) {
+                    input.value = `Here is my timetable screenshot (${pendingChatMedia.name})! It has ${processed.extractedClasses.length} classes. Please lock them into my schedule and plan my study hours.`;
+                } else if (processed.extractedCodes && processed.extractedCodes.length > 0) {
+                    input.value = `Here is my course outline (${pendingChatMedia.name})! Please create a weekly study plan for my courses: ${processed.extractedCodes.slice(0, 4).join(', ')}.`;
+                } else {
+                    input.value = `Here is my timetable screenshot (${pendingChatMedia.name})! Please extract my schedule.`;
+                }
+            }
+        });
+    };
+    reader.readAsDataURL(file);
+}
+window.handleChatImageFile = handleChatImageFile;
 
 function handleChatMediaSelected(e) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const isImage = file.type.startsWith('image/');
-    const reader = new FileReader();
-
-    if (isImage) {
-        reader.onload = function(evt) {
-            const rawDataUrl = evt.target.result;
-            processImageTextClientSide(file, rawDataUrl, (processed) => {
-                pendingChatMedia = {
-                    name: file.name,
-                    type: 'image',
-                    size: (file.size / 1024).toFixed(1) + ' KB',
-                    dataUrl: processed.optimizedDataUrl,
-                    extractedCodes: processed.extractedCodes,
-                    textContent: `[Uploaded Outline Photo: ${file.name}]${processed.extractedCodes && processed.extractedCodes.length > 0 ? `\nDetected Courses: ${processed.extractedCodes.join(', ')}` : ''}`
-                };
-                displayPendingMediaBar();
-            });
-        };
-        reader.readAsDataURL(file);
+    if (file.type.startsWith('image/')) {
+        handleChatImageFile(file, file.name);
     } else {
-        // Read text if txt, or store filename
+        // Document reader
+        const reader = new FileReader();
         reader.onload = function(evt) {
             const content = typeof evt.target.result === 'string' ? evt.target.result.slice(0, 4000) : '';
             const detected = extractCourseCodesFromText(file.name + ' ' + content);
@@ -1289,7 +1585,8 @@ function handleChatMediaSelected(e) {
                 type: 'document',
                 size: (file.size / 1024).toFixed(1) + ' KB',
                 textContent: content || `Document: ${file.name}`,
-                extractedCodes: detected
+                extractedCodes: detected,
+                extractedClasses: []
             };
             displayPendingMediaBar();
         };
@@ -1303,7 +1600,8 @@ function handleChatMediaSelected(e) {
                     type: 'document',
                     size: (file.size / 1024).toFixed(1) + ' KB',
                     textContent: `Document: ${file.name}`,
-                    extractedCodes: detected
+                    extractedCodes: detected,
+                    extractedClasses: []
                 };
                 displayPendingMediaBar();
             };
@@ -1312,6 +1610,23 @@ function handleChatMediaSelected(e) {
     }
 }
 window.handleChatMediaSelected = handleChatMediaSelected;
+
+// Global clipboard paste listener for screenshots (Ctrl+V)
+window.addEventListener('paste', function(e) {
+    const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+    if (!items) return;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+            const file = items[i].getAsFile();
+            if (file) {
+                e.preventDefault();
+                openSabiAiChat();
+                handleChatImageFile(file, 'Pasted Timetable Screenshot');
+                break;
+            }
+        }
+    }
+});
 
 function displayPendingMediaBar() {
     const bar = document.getElementById('chat-media-preview-bar');
@@ -1322,7 +1637,9 @@ function displayPendingMediaBar() {
     if (!bar || !pendingChatMedia) return;
 
     if (nameEl) nameEl.textContent = pendingChatMedia.name;
-    if (sizeEl) sizeEl.textContent = pendingChatMedia.size;
+    if (sizeEl && (!sizeEl.textContent || sizeEl.textContent.endsWith('KB'))) {
+        sizeEl.textContent = pendingChatMedia.size;
+    }
     if (iconEl) iconEl.textContent = pendingChatMedia.type === 'image' ? '🖼️' : '📄';
 
     bar.classList.remove('hidden');
@@ -1801,28 +2118,14 @@ function parseAiReplyAndApply(replyText) {
     };
 }
 
-// Broad academic vocabulary for Nigerian & International institutions
-const SABI_SUBJECT_VOCAB = [
-    'Computer Science', 'Software Engineering', 'Information Technology', 'Cybersecurity', 'Data Science', 'Data Structures', 'Algorithms', 'Web Development',
-    'Mathematics', 'Maths', 'Math', 'Further Maths', 'Calculus', 'Algebra', 'Statistics', 'Geometry',
-    'Physics', 'Mechanics', 'Electromagnetism', 'Optics', 'Thermodynamics',
-    'Chemistry', 'Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry',
-    'Biology', 'Microbiology', 'Anatomy', 'Physiology', 'Genetics', 'Botany', 'Zoology',
-    'Medicine', 'Surgery', 'Pharmacy', 'Pharmacology', 'Nursing', 'Public Health',
-    'Civil Engineering', 'Mechanical Engineering', 'Electrical Engineering', 'Chemical Engineering', 'Petroleum Engineering',
-    'Economics', 'Accounting', 'Financial Accounting', 'Commerce', 'Business Administration', 'Marketing', 'Finance', 'Taxation', 'Banking',
-    'Law', 'Jurisprudence', 'Constitutional Law', 'Criminal Law', 'Commercial Law',
-    'English', 'Use of English', 'Literature', 'Literature in English', 'Government', 'Political Science', 'History', 'Geography', 'Philosophy', 'Sociology', 'Mass Communication'
-];
-
 function extractSubjectsFromHistory(allUserText) {
     const subjects = new Set();
     const lower = (allUserText || '').toLowerCase();
 
     // 1. Course codes (e.g. CSC 201, MTH 101, GST 111, LAW 204)
-    const codeMatches = allUserText.match(/\b([a-zA-Z]{2,4}\s*\d{3}[a-zA-Z]?)\b/gi);
+    const codeMatches = allUserText.match(/\b([a-zA-Z]{2,4}\s*[-]?\s*\d{3}[a-zA-Z]?)\b/gi);
     if (codeMatches) {
-        codeMatches.forEach(c => subjects.add(c.replace(/\s+/g, ' ').toUpperCase().trim()));
+        codeMatches.forEach(c => subjects.add(c.replace(/[-_\s]+/g, ' ').toUpperCase().trim()));
     }
 
     // 2. Vocabulary matches
@@ -1849,7 +2152,112 @@ function generateOfflineBuddyReply(userText, media, history) {
     const allUserText = allUserMessages.join(' ');
     const allUserLower = allUserText.toLowerCase();
 
-    // 1. Target Exam / Category
+    // 1. Direct Command: Screenshot / Media Upload
+    if (media) {
+        const docName = media.name || 'timetable screenshot';
+
+        // Check if classes were detected
+        if (media.extractedClasses && media.extractedClasses.length > 0) {
+            media.extractedClasses.forEach(cls => {
+                storedClasses.push({
+                    id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+                    subject: cls.subject,
+                    day: cls.day,
+                    start_time: cls.start_time,
+                    end_time: cls.end_time,
+                    venue: cls.venue || 'Lecture Hall',
+                    isRecurring: true
+                });
+            });
+            saveStoredClasses(storedClasses);
+            renderAllViews();
+
+            const classSummary = media.extractedClasses.map(c => `• **${c.subject}**: ${c.day} (${c.start_time} – ${c.end_time}) [${c.venue}]`).join('\n');
+            return {
+                role: 'bot',
+                content: `I've analyzed your timetable screenshot (**${escapeHtml(docName)}**) and extracted **${media.extractedClasses.length} recurring classes**! 🎓📅\n\n${classSummary}\n\nThese have been locked into your calendar so personal study sessions will never clash with lecture hours.\n\n**When do you prefer to do your personal revision?** (e.g. *Mornings (7am–10am)*, *Evenings (5pm–8pm)*, or *Night owl (8pm–11pm)*?)`,
+                actionCard: { details: `Imported ${media.extractedClasses.length} classes from timetable screenshot` },
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+        }
+
+        // Check if courses were detected
+        const detected = (media.extractedCodes && media.extractedCodes.length > 0)
+            ? media.extractedCodes
+            : extractCourseCodesFromText(media.name + ' ' + (media.textContent || '') + ' ' + userText);
+
+        if (detected.length > 0) {
+            return {
+                role: 'bot',
+                content: `I've scanned your **${escapeHtml(docName)}**! 📑✨\n\nDetected courses: **${detected.slice(0, 8).join(', ')}**.\n\n**Which 1–2 of these feel the heaviest or most stressful right now?**`,
+                actionCard: null,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+        }
+
+        // Neither classes nor courses detected from image
+        return {
+            role: 'bot',
+            content: `I received your upload (**${escapeHtml(docName)}**), but couldn't clearly detect your course codes or lecture times from this image.\n\nCould you type out your main subjects or tell me when your lectures take place? (e.g. *"CSC 201 Mondays at 9am, MTH 101 Wednesdays at 2pm"*). I'll add them right away!`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 2. Direct Command: Clear Timetable
+    if (/\b(clear timetable|delete all|clear schedule|reset timetable|reset schedule|wipe timetable)\b/i.test(lower)) {
+        calendarEvents.length = 0;
+        saveEvents();
+        renderAllViews();
+        return {
+            role: 'bot',
+            content: "🗑️ **Timetable Cleared!** All study sessions have been removed. Let me know whenever you'd like to build a fresh schedule!",
+            actionCard: { details: 'Cleared all calendar events' },
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 3. Conversational: Study Advice & Tips
+    if (/\b(study tips|study advice|how to study|how should i study|best way to study|study techniques|feynman)\b/i.test(lower)) {
+        return {
+            role: 'bot',
+            content: `Here is the high-yield study formula used by top university students: 💡📚\n\n1. **Active Recall over Passive Re-reading**: Close your notes and test yourself. Practice past questions (try Sabi's Past Question room) instead of highlighting.\n2. **Spaced Repetition**: Review challenging topics 24 hours later, then 3 days later, then 1 week later so they stick in long-term memory.\n3. **Pomodoro Sprints**: Study in focused 25-minute or 45-minute blocks with 5-minute stretch breaks.\n4. **The Feynman Technique**: Explain tough concepts in simple words as if teaching a classmate.\n\nWould you like me to build a balanced weekly study plan around these techniques? Just tell me your main subjects!`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 4. Conversational: Active Recall Explained
+    if (/\b(active recall|what is active recall)\b/i.test(lower)) {
+        return {
+            role: 'bot',
+            content: `**Active Recall** is testing your brain to retrieve information from memory rather than passively looking at your notes! 🧠⚡\n\n• Instead of reading a textbook chapter 3 times, read it once, close the book, and write down everything you remember.\n• Solve past exam questions under timed conditions.\n• When your brain has to work to retrieve a fact, neural connections strengthen by up to 300%.\n\nWhich course would you like to start practicing active recall on?`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 5. Conversational: Stress & Overwhelm Empathy
+    if (/\b(stressed|stress|overwhelmed|anxious|can't focus|burnout|exhausted|so much to read|panicking)\b/i.test(lower)) {
+        return {
+            role: 'bot',
+            content: `Take a deep breath — you've got this, and you don't have to carry it all at once! 🌿💙\n\nWhen syllabus workload piles up, overwhelm happens because everything feels equally urgent. Here is how we conquer it:\n1. **Pick just ONE hard subject**: We won't try to study 6 subjects in one day. Focus on 1 or 2 high-yield topics today.\n2. **Short 30-Minute Sprints**: Tell yourself you'll only study for 30 minutes. Once you start, inertia disappears.\n3. **Guaranteed Rest**: Keep 1 day a week (like Sunday) completely free from guilt and study.\n\nTell me which single subject is stressing you out the most, and we'll break it down into easy, bite-sized sessions!`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 6. Conversational: Greetings & Capabilities
+    if (/^(hi|hello|hey|yo|good morning|good afternoon|good evening|howdy|sup)\b/i.test(lower) || /\b(who are you|what can you do|how does this work|help me|capabilities)\b/i.test(lower)) {
+        return {
+            role: 'bot',
+            content: `Hey! 👋 I'm your **Sabi Study Buddy** — your academic mentor & schedule planner! 🎓✨\n\nHere is what I can do for you:\n• 📸 **Read Timetables & Outlines**: Upload or paste (\`Ctrl+V\`) a screenshot of your lecture timetable, and I'll extract your classes automatically!\n• 🗓️ **Personalized Weekly Schedules**: Build a realistic study routine that fits around your real lectures and sleep.\n• ⚡ **Direct Calendar Actions**: Say *"Add class CSC 201 Mondays at 9am"* or *"Generate timetable"*.\n• 🎯 **Exam Prep Coaching**: Tailored strategies for University courses, JAMB, WAEC, NOUN, or ICAN.\n\nWhat degree, course of study, or exam are you working on?`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 7. Exam Category Detection
     let examCategory = 'study';
     if (/\bjamb\b/i.test(allUserLower)) examCategory = 'jamb';
     else if (/\bwaec\b/i.test(allUserLower)) examCategory = 'waec';
@@ -1857,10 +2265,9 @@ function generateOfflineBuddyReply(userText, media, history) {
     else if (/\bnoun\b/i.test(allUserLower)) examCategory = 'noun';
     else if (/\bican\b/i.test(allUserLower)) examCategory = 'ican';
 
-    // 2. Subject Extraction
+    // 8. Subject Extraction
     let extractedSubjects = extractSubjectsFromHistory(allUserText);
 
-    // If still empty, inspect user's messages for lists / course names
     if (extractedSubjects.length === 0) {
         allUserMessages.forEach(msg => {
             const listParts = msg.split(/,|\band\b|\b&\b|\n/i);
@@ -1874,7 +2281,6 @@ function generateOfflineBuddyReply(userText, media, history) {
         extractedSubjects = [...new Set(extractedSubjects)];
     }
 
-    // Also pull from stored classes if available
     if (extractedSubjects.length === 0 && storedClasses.length > 0) {
         storedClasses.forEach(cls => {
             if (cls.subject && cls.subject !== 'Lecture') extractedSubjects.push(cls.subject);
@@ -1882,13 +2288,13 @@ function generateOfflineBuddyReply(userText, media, history) {
         extractedSubjects = [...new Set(extractedSubjects)];
     }
 
-    // 3. Class / Schedule Detection & Negation
+    // 9. Class / Schedule Detection & Negation
     const DAY_RE = /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/gi;
     const currentDays = [...new Set((text.match(DAY_RE) || []).map(d => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()))];
     const allMentionedDays = [...new Set((allUserText.match(DAY_RE) || []).map(d => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()))];
 
     const hasExplicitNoClasses = /\b(no classes|no lectures|no fixed|dont have|don't have|zero classes|self study|home study|online only|none|nothing|nah|nope|not really|nil)\b/i.test(allUserLower)
-        || (/\bno\b/i.test(allUserLower) && allMentionedDays.length === 0);
+        || (/\bno\b/i.test(allUserLower) && allMentionedDays.length === 0 && storedClasses.length === 0);
 
     // Parse time from text
     function parseTimeFromText(src) {
@@ -1903,7 +2309,7 @@ function generateOfflineBuddyReply(userText, media, history) {
     }
     const parsedTime = parseTimeFromText(text);
 
-    // 4. Study Window Detection
+    // 10. Study Window Detection
     let studyWindow = null;
     if (/\b(morning|dawn|early|6am|7am|8am|9am|10am|11am)\b/i.test(allUserLower)) studyWindow = 'morning';
     else if (/\b(afternoon|midday|noon|12pm|1pm|2pm|3pm|4pm)\b/i.test(allUserLower)) studyWindow = 'afternoon';
@@ -1911,42 +2317,14 @@ function generateOfflineBuddyReply(userText, media, history) {
     else if (/\b(night|midnight|late|night owl|9pm|10pm|11pm)\b/i.test(allUserLower)) studyWindow = 'night';
     else if (/\b(anytime|flexible|all day|weekends|any time)\b/i.test(allUserLower)) studyWindow = 'flexible';
 
-    // 5. DIRECT COMMAND: Media Upload
-    if (media) {
-        const docName = media.name || 'document';
-        const detected = (media.extractedCodes && media.extractedCodes.length > 0)
-            ? media.extractedCodes
-            : extractCourseCodesFromText(media.name + ' ' + (media.textContent || '') + ' ' + userText);
-        const codes = detected.length > 0 ? detected : ['GST 101', 'MTH 101', 'PHY 101', 'CHM 101'];
-        return {
-            role: 'bot',
-            content: `I've scanned your **${escapeHtml(docName)}**! 📑✨\n\nDetected courses: **${codes.slice(0, 6).join(', ')}**.\n\n**Which 1–2 of these feel the heaviest or most stressful right now?**`,
-            actionCard: null,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-    }
-
-    // 6. DIRECT COMMAND: Clear Timetable
-    if (/\b(clear timetable|delete all|clear schedule|reset timetable|reset schedule|wipe timetable)\b/i.test(lower)) {
-        calendarEvents.length = 0;
-        saveEvents();
-        renderAllViews();
-        return {
-            role: 'bot',
-            content: "🗑️ **Timetable Cleared!** All study sessions have been removed. Let me know whenever you'd like to build a fresh schedule!",
-            actionCard: { details: 'Cleared all calendar events' },
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-    }
-
-    // 7. DIRECT COMMAND: Add Class
+    // 11. DIRECT COMMAND: Add Class
     if (currentDays.length > 0 && (lower.includes('class') || lower.includes('lecture') || parsedTime)) {
         const time = parsedTime || '09:00';
         const endTime = calculateEndTime(time, 2);
         let subject = 'Lecture';
         if (extractedSubjects.length > 0) subject = extractedSubjects[0];
-        const subMatch = text.match(/([a-zA-Z]{2,4}\s*\d{3}[a-zA-Z]?|physics|math|maths|chemistry|biology|economics|accounting|law|anatomy|data structures|computer science)/i);
-        if (subMatch) subject = subMatch[0].trim().toUpperCase();
+        const subMatch = text.match(/([a-zA-Z]{2,4}\s*[-]?\s*\d{3}[a-zA-Z]?|physics|math|maths|chemistry|biology|economics|accounting|law|anatomy|data structures|computer science)/i);
+        if (subMatch) subject = subMatch[0].replace(/[-_\s]+/g, ' ').trim().toUpperCase();
 
         const day = currentDays[0];
         storedClasses.push({
@@ -1969,7 +2347,8 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // 8. GENERATE TIMETABLE COMMAND (Explicit or confirmed)
+    // 12. GENERATE TIMETABLE COMMAND
+    const hasScheduleInfo = hasExplicitNoClasses || allMentionedDays.length > 0 || storedClasses.length > 0;
     const wantsGenerate = /\b(generate|build|create|let's go|lets go|proceed|do it|ready|make timetable|set up|setup|start|go ahead|build it|make it)\b/i.test(lower)
         || (/\b(yes|yep|yeah|sure|ok|okay|go|done)\b/i.test(lower) && (extractedSubjects.length > 0 || hasScheduleInfo));
 
@@ -2017,12 +2396,10 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // 9. NATURAL CONVERSATIONAL STAGES
+    // 13. NATURAL CONVERSATIONAL STAGES
     const hasSubjects = extractedSubjects.length > 0;
-    const hasScheduleInfo = hasExplicitNoClasses || allMentionedDays.length > 0 || storedClasses.length > 0;
     const hasWindowInfo = studyWindow !== null;
 
-    // Stage 1: Ask for subjects if none known
     if (!hasSubjects) {
         let prefix = '';
         if (examCategory !== 'study') {
@@ -2038,7 +2415,6 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // Stage 2: Ask for class schedule if user hasn't addressed classes yet
     if (!hasScheduleInfo) {
         const subList = extractedSubjects.slice(0, 2).join(' and ');
         return {
@@ -2049,7 +2425,6 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // Stage 3: Ask for study window if not given yet
     if (!hasWindowInfo) {
         const classAck = hasExplicitNoClasses
             ? 'Understood — no fixed classes! Total schedule freedom gives us flexibility to build your ideal rhythm. 🎯\n\n'
@@ -2062,7 +2437,6 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // Stage 4: All Info Gathered -> Propose Generation
     const subSummary = extractedSubjects.slice(0, 3).join(', ');
     return {
         role: 'bot',
@@ -2301,7 +2675,7 @@ if (typeof document !== 'undefined') {
     function onCalendarReady() {
         initCalendarApp();
         if (typeof window !== 'undefined') {
-            const hasChatParam = window.location.search.includes('chat=1') || window.location.hash === '#chat';
+            const hasChatParam = (window.location?.search || '').includes('chat=1') || window.location?.hash === '#chat';
             if (hasChatParam) {
                 setTimeout(() => {
                     openSabiAiChat();
