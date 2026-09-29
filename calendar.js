@@ -1131,6 +1131,17 @@ function openSabiAiChat() {
         drawer.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
+    const badge = document.getElementById('chat-live-ai-badge');
+    const nvKey = getNvidiaKey();
+    if (badge) {
+        if (nvKey && nvKey.startsWith('nvapi-')) {
+            badge.textContent = '⚡ Live AI Active';
+            badge.style.display = 'inline-flex';
+        } else {
+            badge.textContent = '💡 Offline Mode';
+        }
+    }
+
     renderChatMessages();
     renderChatQuickChips();
 
@@ -1469,6 +1480,7 @@ async function processBuddyConversation(userText, history, media) {
     // 0. NVIDIA NIM Live AI (Verified Working High-Performance LLM)
     if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
         try {
+            console.log('🚀 Connecting to live NVIDIA AI (meta/llama-3.2-11b-vision-instruct)...');
             const systemContent = BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`;
             const res = await fetchWithTimeout('https://integrate.api.nvidia.com/v1/chat/completions', {
                 method: 'POST',
@@ -1485,17 +1497,24 @@ async function processBuddyConversation(userText, history, media) {
                     temperature: 0.7,
                     max_tokens: 1500
                 })
-            }, 8000);
+            }, 10000);
 
             if (res.ok) {
                 const data = await res.json();
                 const replyText = data.choices?.[0]?.message?.content;
                 if (replyText) {
-                    console.log('✨ Live NVIDIA AI Response Received');
+                    console.log('✨ Live NVIDIA AI Response successfully received!');
+                    const badge = document.getElementById('chat-live-ai-badge');
+                    if (badge) {
+                        badge.textContent = '⚡ Live AI Active';
+                        badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                        badge.style.color = '#34D399';
+                    }
                     return parseAiReplyAndApply(replyText);
                 }
             } else {
-                console.warn('NVIDIA API non-ok status:', res.status, await res.text());
+                const errText = await res.text();
+                console.warn('NVIDIA API non-ok status:', res.status, errText);
             }
         } catch (e) {
             console.warn('NVIDIA API error or timeout:', e);
