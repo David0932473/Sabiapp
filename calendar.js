@@ -249,8 +249,8 @@ function initCalendarApp() {
     renderMiniCalendarStrip();
     renderAllViews();
 
-    // Initialize Intake Modal if user hasn't entered calendar yet
-    checkAndShowIntakeModal();
+    // Initialize First-Time Setup Popup Menu if user hasn't entered calendar yet
+    checkAndShowFirstTimePopup();
 
     // Close planner dropdown on outside click
     document.addEventListener('click', (e) => {
@@ -263,7 +263,7 @@ function initCalendarApp() {
 }
 
 // ========================================================
-// 🎯 INTAKE MODAL LOGIC (COLLECT DATA BEFORE CALENDAR)
+// 🎯 FIRST-TIME POPUP MENU MODAL (WITH PROMINENT SKIP BUTTON)
 // ========================================================
 let intakeProfile = {
     target: 'uni',
@@ -273,45 +273,83 @@ let intakeProfile = {
     hoursPerDay: '3-4'
 };
 
-function checkAndShowIntakeModal() {
+function checkAndShowFirstTimePopup() {
     const hasEntered = localStorage.getItem('sabi_calendar_entered_v7') === 'true';
     if (!hasEntered) {
         setTimeout(() => {
-            openCalendarIntakeModal();
+            openFirstTimePopup();
         }, 120);
     }
 }
 
-function openCalendarIntakeModal() {
-    const modal = document.getElementById('calendar-intake-modal');
+function openFirstTimePopup() {
+    const modal = document.getElementById('first-time-popup-modal');
     if (modal) {
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
-    renderIntakeHardSubjects();
-    renderIntakeAddedClasses();
-}
-window.openCalendarIntakeModal = openCalendarIntakeModal;
+    // Reset to main menu
+    const mainMenu = document.getElementById('popup-menu-main');
+    const quickPanel = document.getElementById('popup-quick-panel');
+    if (mainMenu) mainMenu.classList.remove('hidden');
+    if (quickPanel) quickPanel.classList.add('hidden');
 
-function closeCalendarIntakeModal() {
-    const modal = document.getElementById('calendar-intake-modal');
+    renderPopupHardSubjects();
+}
+window.openFirstTimePopup = openFirstTimePopup;
+window.openCalendarIntakeModal = openFirstTimePopup; // Backwards-compatible alias
+
+function closeFirstTimePopup() {
+    const modal = document.getElementById('first-time-popup-modal');
     if (modal) {
         modal.classList.add('hidden');
         document.body.style.overflow = '';
     }
 }
-window.closeCalendarIntakeModal = closeCalendarIntakeModal;
+window.closeFirstTimePopup = closeFirstTimePopup;
 
-function skipIntakeAndEnterCalendar() {
+function skipFirstTimePopup() {
     localStorage.setItem('sabi_calendar_entered_v7', 'true');
-    closeCalendarIntakeModal();
+    closeFirstTimePopup();
     showToast('Entered Calendar! You can set up your schedule anytime.');
 }
-window.skipIntakeAndEnterCalendar = skipIntakeAndEnterCalendar;
+window.skipFirstTimePopup = skipFirstTimePopup;
+window.skipIntakeAndEnterCalendar = skipFirstTimePopup; // Backwards-compatible alias
+
+function startFirstTimeAiChat() {
+    localStorage.setItem('sabi_calendar_entered_v7', 'true');
+    closeFirstTimePopup();
+    openSabiAiChat();
+}
+window.startFirstTimeAiChat = startFirstTimeAiChat;
+
+function showPopupQuickSetup() {
+    const mainMenu = document.getElementById('popup-menu-main');
+    const quickPanel = document.getElementById('popup-quick-panel');
+    if (mainMenu) mainMenu.classList.add('hidden');
+    if (quickPanel) quickPanel.classList.remove('hidden');
+    renderPopupHardSubjects();
+}
+window.showPopupQuickSetup = showPopupQuickSetup;
+
+function hidePopupQuickSetup() {
+    const mainMenu = document.getElementById('popup-menu-main');
+    const quickPanel = document.getElementById('popup-quick-panel');
+    if (quickPanel) quickPanel.classList.add('hidden');
+    if (mainMenu) mainMenu.classList.remove('hidden');
+}
+window.hidePopupQuickSetup = hidePopupQuickSetup;
+
+function openAddSessionFromPopup(type) {
+    localStorage.setItem('sabi_calendar_entered_v7', 'true');
+    closeFirstTimePopup();
+    openAddSessionModal(type || 'class');
+}
+window.openAddSessionFromPopup = openAddSessionFromPopup;
 
 function selectIntakeTarget(targetKey) {
     intakeProfile.target = targetKey;
-    document.querySelectorAll('#intake-target-chips .intake-chip').forEach(btn => {
+    document.querySelectorAll('#popup-target-chips .popup-chip').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-target') === targetKey);
     });
 }
@@ -319,29 +357,21 @@ window.selectIntakeTarget = selectIntakeTarget;
 
 function selectIntakeTimeWindow(windowKey) {
     intakeProfile.timeWindow = windowKey;
-    document.querySelectorAll('#intake-time-window-chips .intake-chip').forEach(btn => {
+    document.querySelectorAll('#popup-time-window-chips .popup-chip').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-window') === windowKey);
     });
 }
 window.selectIntakeTimeWindow = selectIntakeTimeWindow;
 
-function selectIntakeHours(hoursKey) {
-    intakeProfile.hoursPerDay = hoursKey;
-    document.querySelectorAll('#intake-hours-chips .intake-chip').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-hours') === hoursKey);
-    });
-}
-window.selectIntakeHours = selectIntakeHours;
-
-function renderIntakeHardSubjects() {
-    const container = document.getElementById('intake-hard-subjects-grid');
+function renderPopupHardSubjects() {
+    const container = document.getElementById('popup-hard-subjects-grid');
     if (!container) return;
 
     const subjects = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'Economics', 'English', 'Accounting', 'Government', 'Literature'];
     container.innerHTML = subjects.map(sub => {
         const isHard = intakeProfile.hardSubjects.has(sub);
         return `
-            <button type="button" class="intake-chip ${isHard ? 'hard-active' : ''}" onclick="toggleIntakeHardSubject('${escapeHtml(sub)}')">
+            <button type="button" class="popup-chip ${isHard ? 'hard-active' : ''}" onclick="togglePopupHardSubject('${escapeHtml(sub)}')">
                 <span>${isHard ? '🔥' : '○'}</span>
                 <span>${escapeHtml(sub)}</span>
             </button>
@@ -349,80 +379,17 @@ function renderIntakeHardSubjects() {
     }).join('');
 }
 
-function toggleIntakeHardSubject(sub) {
+function togglePopupHardSubject(sub) {
     if (intakeProfile.hardSubjects.has(sub)) {
         intakeProfile.hardSubjects.delete(sub);
     } else {
         intakeProfile.hardSubjects.add(sub);
     }
-    renderIntakeHardSubjects();
+    renderPopupHardSubjects();
 }
-window.toggleIntakeHardSubject = toggleIntakeHardSubject;
+window.togglePopupHardSubject = togglePopupHardSubject;
 
-function addIntakeClass() {
-    const subjectInput = document.getElementById('intake-class-subject');
-    const daySelect = document.getElementById('intake-class-day');
-    const timeInput = document.getElementById('intake-class-time');
-
-    const subject = subjectInput?.value.trim();
-    const day = daySelect?.value || 'Monday';
-    const time = timeInput?.value || '09:00';
-
-    if (!subject) {
-        alert('Please enter a course code (e.g. MTH 101)');
-        return;
-    }
-
-    const endTime = calculateEndTime(time, 2);
-    intakeProfile.classes.push({
-        id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-        subject,
-        day,
-        start_time: time,
-        end_time: endTime,
-        venue: 'Lecture Hall',
-        isRecurring: true
-    });
-
-    if (subjectInput) subjectInput.value = '';
-    renderIntakeAddedClasses();
-    showToast(`Added ${subject} on ${day}`);
-}
-window.addIntakeClass = addIntakeClass;
-
-function removeIntakeClass(index) {
-    intakeProfile.classes.splice(index, 1);
-    renderIntakeAddedClasses();
-}
-window.removeIntakeClass = removeIntakeClass;
-
-function renderIntakeAddedClasses() {
-    const container = document.getElementById('intake-added-classes-list');
-    if (!container) return;
-
-    if (intakeProfile.classes.length === 0) {
-        container.innerHTML = '<span style="font-size: 11px; color: var(--text-muted); font-style: italic;">No classes added yet. Use the box below to add your recurring weekly lectures.</span>';
-        return;
-    }
-
-    container.innerHTML = intakeProfile.classes.map((cls, idx) => `
-        <span class="intake-class-pill">
-            <span>🎓 ${escapeHtml(cls.subject)} (${cls.day} ${cls.start_time})</span>
-            <button type="button" class="intake-class-del-btn" onclick="removeIntakeClass(${idx})" title="Remove class">✕</button>
-        </span>
-    `).join('');
-}
-
-function submitIntakeAndGenerateTimetable() {
-    // 1. Save recurring classes
-    if (intakeProfile.classes.length > 0) {
-        intakeProfile.classes.forEach(cls => {
-            storedClasses.push(cls);
-        });
-        saveStoredClasses(storedClasses);
-    }
-
-    // 2. Generate balanced revision sessions
+function submitPopupQuickSetup() {
     const mondayStr = getMondayOfWeek(new Date());
     const targetExam = intakeProfile.target === 'uni' ? 'study' : intakeProfile.target;
     const hardSubsList = Array.from(intakeProfile.hardSubjects);
@@ -452,7 +419,7 @@ function submitIntakeAndGenerateTimetable() {
             time: time,
             duration: 1.5,
             location: 'Sabi Prep Room',
-            notes: `High-yield past questions drill and spaced revision.`,
+            notes: `Targeted revision drill and spaced repetition.`,
             completed: false,
             isAiGenerated: true
         });
@@ -460,13 +427,14 @@ function submitIntakeAndGenerateTimetable() {
 
     saveEvents();
 
-    // 3. Mark intake complete & enter
+    // Mark completed and enter
     localStorage.setItem('sabi_calendar_entered_v7', 'true');
-    closeCalendarIntakeModal();
+    closeFirstTimePopup();
     renderAllViews();
     showToast('✨ Sabi generated your personalized timetable! Welcome.');
 }
-window.submitIntakeAndGenerateTimetable = submitIntakeAndGenerateTimetable;
+window.submitPopupQuickSetup = submitPopupQuickSetup;
+window.submitIntakeAndGenerateTimetable = submitPopupQuickSetup;
 
 // ==========================================
 // 🎛️ VIEW SWITCHING
