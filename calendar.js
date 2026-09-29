@@ -1241,9 +1241,9 @@ const SABI_SUBJECT_VOCAB = [
     'Biology', 'Microbiology', 'Anatomy', 'Physiology', 'Genetics', 'Botany', 'Zoology',
     'Medicine', 'Surgery', 'Pharmacy', 'Pharmacology', 'Nursing', 'Public Health',
     'Civil Engineering', 'Mechanical Engineering', 'Electrical Engineering', 'Chemical Engineering', 'Petroleum Engineering',
-    'Economics', 'Accounting', 'Financial Accounting', 'Commerce', 'Business Administration', 'Marketing', 'Finance', 'Taxation', 'Banking',
+    'Economics', 'Microeconomics', 'Macroeconomics', 'Project Evaluation', 'Mathematical Economics', 'International Economics', 'Development Economics', 'Accounting', 'Financial Accounting', 'Commerce', 'Business Administration', 'Marketing', 'Finance', 'Taxation', 'Banking',
     'Law', 'Jurisprudence', 'Constitutional Law', 'Criminal Law', 'Commercial Law',
-    'English', 'Use of English', 'Literature', 'Literature in English', 'Government', 'Political Science', 'History', 'Geography', 'Philosophy', 'Sociology', 'Mass Communication'
+    'English', 'Use of English', 'Literature', 'Literature in English', 'Government', 'Political Science', 'History', 'Geography', 'Philosophy', 'Sociology', 'Social Sciences', 'Mass Communication'
 ];
 
 const SABI_DAY_MAP = {
@@ -1258,11 +1258,15 @@ const SABI_DAY_MAP = {
 
 function extractCourseCodesFromText(text) {
     if (!text) return [];
-    // Match common course codes (e.g. MTH 101, CSC-201, PHY102, BIO 201, GST 111, ACC 204, LAW 101, etc.)
-    const codeRegex = /\b([a-zA-Z]{2,4}\s*[-]?\s*\d{3}[a-zA-Z]?)\b/gi;
+    // Match common course codes including university prefixes (e.g. ECO301, OOU-ECO371, MTH 101, CSC-201, PHY102, BIO 201, GST 111, SSC301, etc.)
+    const codeRegex = /\b((?:[a-zA-Z]{2,4}-)?[a-zA-Z]{2,4}\s*[-]?\s*\d{3}[a-zA-Z]?)\b/gi;
     const matches = text.match(codeRegex);
     if (!matches) return [];
-    return Array.from(new Set(matches.map(c => c.replace(/[-_\s]+/g, ' ').toUpperCase().trim())));
+    return Array.from(new Set(matches.map(c => {
+        let clean = c.toUpperCase().trim();
+        clean = clean.replace(/([A-Z])(\d{3})/g, '$1 $2');
+        return clean;
+    })));
 }
 
 function parseTimetableFromOcrText(text) {
@@ -2204,7 +2208,17 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // 2. Direct Command: Clear Timetable
+    // 2. Direct Correction: User says "those courses are not on the thing", "wrong courses", "that's wrong"
+    if (/\b(not on the (thing|list|image|screenshot|outline)|wrong courses|not my courses|that('s| is) (wrong|incorrect)|incorrect|those are not|none of (those|them)|wrong list)\b/i.test(lower)) {
+        return {
+            role: 'bot',
+            content: `My apologies! 🤦‍♂️ You're totally right — let's get your actual courses locked in.\n\nCould you type out your courses (e.g. *ECO 301, ECO 303, ECO 305*), or re-paste your screenshot? I will update your subjects immediately!`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 3. Direct Command: Clear Timetable
     if (/\b(clear timetable|delete all|clear schedule|reset timetable|reset schedule|wipe timetable)\b/i.test(lower)) {
         calendarEvents.length = 0;
         saveEvents();
