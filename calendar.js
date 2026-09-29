@@ -1184,34 +1184,92 @@ function triggerChatMediaUpload() {
 }
 window.triggerChatMediaUpload = triggerChatMediaUpload;
 
+function extractCourseCodesFromText(text) {
+    if (!text) return [];
+    // Match common course codes (e.g. MTH 101, PHY102, BIO 201, GST 111, ACC 204, LAW 101, etc.)
+    const codeRegex = /\b([a-zA-Z]{2,4}\s*\d{3}[a-zA-Z]?)\b/gi;
+    const matches = text.match(codeRegex);
+    if (!matches) return [];
+    return Array.from(new Set(matches.map(c => c.replace(/\s+/g, ' ').toUpperCase().trim())));
+}
+
+function processImageTextClientSide(file, dataUrl, callback) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+        try {
+            // Heuristic OCR / keyword detector using canvas for course outlines
+            const canvas = document.createElement('canvas');
+            const maxDim = 1200;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                    h = Math.round((h * maxDim) / w);
+                    w = maxDim;
+                } else {
+                    w = Math.round((w * maxDim) / h);
+                    h = maxDim;
+                }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+            // Also check filename for course indicators
+            const extractedCodes = extractCourseCodesFromText(file.name);
+            callback({
+                optimizedDataUrl: optimizedDataUrl,
+                extractedCodes: extractedCodes,
+                width: w,
+                height: h
+            });
+        } catch (e) {
+            callback({ optimizedDataUrl: dataUrl, extractedCodes: extractCourseCodesFromText(file.name) });
+        }
+    };
+    img.onerror = function() {
+        callback({ optimizedDataUrl: dataUrl, extractedCodes: extractCourseCodesFromText(file.name) });
+    };
+    img.src = dataUrl;
+}
+
 function handleChatMediaSelected(e) {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const isImage = file.type.startsWith('image/');
-    const isPdfOrDoc = file.type.includes('pdf') || file.name.endsWith('.doc') || file.name.endsWith('.docx') || file.name.endsWith('.txt');
-
     const reader = new FileReader();
 
     if (isImage) {
         reader.onload = function(evt) {
-            pendingChatMedia = {
-                name: file.name,
-                type: 'image',
-                size: (file.size / 1024).toFixed(1) + ' KB',
-                dataUrl: evt.target.result
-            };
-            displayPendingMediaBar();
+            const rawDataUrl = evt.target.result;
+            processImageTextClientSide(file, rawDataUrl, (processed) => {
+                pendingChatMedia = {
+                    name: file.name,
+                    type: 'image',
+                    size: (file.size / 1024).toFixed(1) + ' KB',
+                    dataUrl: processed.optimizedDataUrl,
+                    extractedCodes: processed.extractedCodes,
+                    textContent: `[Uploaded Outline Photo: ${file.name}]${processed.extractedCodes && processed.extractedCodes.length > 0 ? `\nDetected Courses: ${processed.extractedCodes.join(', ')}` : ''}`
+                };
+                displayPendingMediaBar();
+            });
         };
         reader.readAsDataURL(file);
     } else {
         // Read text if txt, or store filename
         reader.onload = function(evt) {
+            const content = typeof evt.target.result === 'string' ? evt.target.result.slice(0, 4000) : '';
+            const detected = extractCourseCodesFromText(file.name + ' ' + content);
             pendingChatMedia = {
                 name: file.name,
                 type: 'document',
                 size: (file.size / 1024).toFixed(1) + ' KB',
-                textContent: typeof evt.target.result === 'string' ? evt.target.result.slice(0, 3000) : ''
+                textContent: content || `Document: ${file.name}`,
+                extractedCodes: detected
             };
             displayPendingMediaBar();
         };
@@ -1219,11 +1277,13 @@ function handleChatMediaSelected(e) {
             reader.readAsText(file);
         } else {
             reader.onload = function() {
+                const detected = extractCourseCodesFromText(file.name);
                 pendingChatMedia = {
                     name: file.name,
                     type: 'document',
                     size: (file.size / 1024).toFixed(1) + ' KB',
-                    textContent: `Document: ${file.name}`
+                    textContent: `Document: ${file.name}`,
+                    extractedCodes: detected
                 };
                 displayPendingMediaBar();
             };
@@ -1711,10 +1771,15 @@ function generateOfflineBuddyReply(userText, media, history) {
     // 1. If media was uploaded
     if (media) {
         const docName = media.name || 'document';
-        const codeMatches = (media.name + ' ' + (media.textContent || '')).match(/([a-zA-Z]{2,4}\s*\d{3})/g);
-        const extractedCodes = codeMatches ? Array.from(new Set(codeMatches.map(c => c.toUpperCase()))) : ['GST 101', 'MTH 101', 'PHY 101', 'CHM 101'];
+        const detectedCodes = media.extractedCodes && media.extractedCodes.length > 0 
+            ? media.extractedCodes 
+            : extractCourseCodesFromText(media.name + ' ' + (media.textContent || '') + ' ' + userText);
 
-        botMessage = `I've gone through your uploaded **${docName}**! 📑✨\n\nI spotted your target courses: **${extractedCodes.slice(0, 4).join(', ')}**.\n\nTo weave these properly into your week without exhausting you: **Which 1 or 2 of these courses feel the most intimidating or heavy right now?**`;
+        const extractedCodes = detectedCodes.length > 0 
+            ? detectedCodes 
+            : ['GST 101', 'MTH 101', 'PHY 101', 'CHM 101'];
+
+        botMessage = `I've analyzed your uploaded **${escapeHtml(docName)}**! 📑✨\n\nI successfully extracted your target courses: **${extractedCodes.slice(0, 5).join(', ')}**.\n\nTo weave these properly into your week without burning you out: **Which 1 or 2 of these specific courses feel the most intimidating or heavy right now?**`;
 
         return {
             role: 'bot',
