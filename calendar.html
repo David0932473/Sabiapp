@@ -33,6 +33,10 @@
                     ⋯
                 </button>
                 <div class="planner-dropdown-menu hidden" id="planner-dropdown-menu">
+                    <button type="button" class="dropdown-item" onclick="openCalendarIntakeModal()">
+                        <span class="dropdown-item-icon">✨</span>
+                        <span>Re-run Academic Setup</span>
+                    </button>
                     <button type="button" class="dropdown-item" onclick="openSabiAiChat()">
                         <span class="dropdown-item-icon">💬</span>
                         <span>Chat with Sabi Study Buddy</span>
@@ -214,6 +218,142 @@
         <span class="nav-label">Calendar</span>
     </a>
 </nav>
+
+<!-- ======================================================== -->
+<!-- MODAL 0: REQUIRED INTAKE SCREEN BEFORE ENTERING CALENDAR -->
+<!-- ======================================================== -->
+<div id="calendar-intake-modal" class="modal-overlay hidden">
+    <div class="modal-sheet intake-sheet" onclick="event.stopPropagation()">
+        <!-- Top Bar with Sabi Logo & Skip Button -->
+        <div class="intake-top-bar">
+            <div class="intake-brand">
+                <img src="avatars/notion-scholar.svg" alt="Sabi" class="intake-brand-avatar" />
+                <div class="intake-brand-text">
+                    <h2 class="intake-brand-title">Academic Setup</h2>
+                    <span class="intake-brand-sub">Sabi AI Timetable Builder</span>
+                </div>
+            </div>
+            <button type="button" class="btn-skip-intake" onclick="skipIntakeAndEnterCalendar()" title="Skip onboarding and go directly to calendar">
+                <span>Skip to Calendar</span>
+                <span>→</span>
+            </button>
+        </div>
+
+        <!-- Conversational Intro Bubble -->
+        <div class="intake-buddy-intro">
+            <div class="intake-buddy-bubble">
+                <span class="intake-sparkle">👋</span>
+                <p>Hey there! Before entering your calendar, let's take a minute to set up your weekly schedule so Sabi AI can build your personalized timetable.</p>
+            </div>
+        </div>
+
+        <!-- Intake Form Body -->
+        <div class="intake-scroll-body">
+
+            <!-- 1. What are you studying for? -->
+            <div class="intake-section">
+                <div class="intake-section-head">
+                    <span class="step-num-pill">1</span>
+                    <label class="intake-step-label">What is your primary academic target / exam?</label>
+                </div>
+                <div class="intake-chips-grid" id="intake-target-chips">
+                    <button type="button" class="intake-chip active" data-target="uni" onclick="selectIntakeTarget('uni')">🎓 University / College</button>
+                    <button type="button" class="intake-chip" data-target="jamb" onclick="selectIntakeTarget('jamb')">⚡ JAMB UTME</button>
+                    <button type="button" class="intake-chip" data-target="waec" onclick="selectIntakeTarget('waec')">📘 WAEC / SSCE</button>
+                    <button type="button" class="intake-chip" data-target="neco" onclick="selectIntakeTarget('neco')">🟣 NECO</button>
+                    <button type="button" class="intake-chip" data-target="noun" onclick="selectIntakeTarget('noun')">🎓 NOUN</button>
+                    <button type="button" class="intake-chip" data-target="ican" onclick="selectIntakeTarget('ican')">💼 ICAN Diet</button>
+                </div>
+            </div>
+
+            <!-- 2. Recurring Classes / Lectures -->
+            <div class="intake-section">
+                <div class="intake-section-head">
+                    <span class="step-num-pill">2</span>
+                    <div>
+                        <label class="intake-step-label">Do you have recurring weekly classes/lectures?</label>
+                        <p class="intake-step-hint">Add any weekly lectures. Sabi blocks them out so you don't double-book study time.</p>
+                    </div>
+                </div>
+
+                <!-- Added Classes Chips List -->
+                <div class="intake-added-classes" id="intake-added-classes-list">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Inline Quick Class Adder -->
+                <div class="intake-class-adder-box">
+                    <div class="intake-class-row-inputs">
+                        <input type="text" id="intake-class-subject" class="intake-input" placeholder="Course code (e.g. MTH 101)" />
+                        <select id="intake-class-day" class="intake-select">
+                            <option value="Monday">Mon</option>
+                            <option value="Tuesday">Tue</option>
+                            <option value="Wednesday">Wed</option>
+                            <option value="Thursday">Thu</option>
+                            <option value="Friday">Fri</option>
+                            <option value="Saturday">Sat</option>
+                        </select>
+                        <input type="time" id="intake-class-time" class="intake-input" value="09:00" />
+                        <button type="button" class="btn-intake-add-class" onclick="addIntakeClass()">+ Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Tough Subjects -->
+            <div class="intake-section">
+                <div class="intake-section-head">
+                    <span class="step-num-pill">3</span>
+                    <div>
+                        <label class="intake-step-label">Which subjects give you the toughest time?</label>
+                        <p class="intake-step-hint">Tap any subjects. Sabi will allocate extra priority revision blocks for them.</p>
+                    </div>
+                </div>
+                <div class="intake-chips-grid" id="intake-hard-subjects-grid">
+                    <!-- Populated dynamically with subjects -->
+                </div>
+            </div>
+
+            <!-- 4. Study Window & Target -->
+            <div class="intake-section">
+                <div class="intake-section-head">
+                    <span class="step-num-pill">4</span>
+                    <label class="intake-step-label">When do you study best & daily hours?</label>
+                </div>
+
+                <div class="intake-subgroup">
+                    <span class="intake-sublabel">Best focus window:</span>
+                    <div class="intake-chips-grid" id="intake-time-window-chips">
+                        <button type="button" class="intake-chip" data-window="morning" onclick="selectIntakeTimeWindow('morning')">🌅 Morning (06:00 - 12:00)</button>
+                        <button type="button" class="intake-chip" data-window="afternoon" onclick="selectIntakeTimeWindow('afternoon')">☀️ Afternoon (12:00 - 17:00)</button>
+                        <button type="button" class="intake-chip active" data-window="evening" onclick="selectIntakeTimeWindow('evening')">🌆 Evening (17:00 - 21:00)</button>
+                        <button type="button" class="intake-chip" data-window="night" onclick="selectIntakeTimeWindow('night')">🌙 Night (21:00 - 23:30)</button>
+                    </div>
+                </div>
+
+                <div class="intake-subgroup" style="margin-top: 14px;">
+                    <span class="intake-sublabel">Realistic daily study target:</span>
+                    <div class="intake-chips-grid" id="intake-hours-chips">
+                        <button type="button" class="intake-chip" data-hours="1-2" onclick="selectIntakeHours('1-2')">1 - 2 hrs (Light)</button>
+                        <button type="button" class="intake-chip active" data-hours="3-4" onclick="selectIntakeHours('3-4')">3 - 4 hrs (Standard)</button>
+                        <button type="button" class="intake-chip" data-hours="5+" onclick="selectIntakeHours('5+')">5+ hrs (Intensive)</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="intake-footer">
+            <button type="button" class="btn-build-timetable" onclick="submitIntakeAndGenerateTimetable()">
+                <span class="btn-sparkle-icon">✨</span>
+                <span>Build My Timetable & Enter</span>
+            </button>
+            <button type="button" class="btn-skip-sublink" onclick="skipIntakeAndEnterCalendar()">
+                Skip for now, I'll set up manually →
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- MODAL 1: ADD / EDIT SESSION & CLASS MODAL -->
 <div id="add-session-modal" class="modal-overlay hidden" onclick="closeAddSessionModal(event)">

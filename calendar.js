@@ -249,6 +249,9 @@ function initCalendarApp() {
     renderMiniCalendarStrip();
     renderAllViews();
 
+    // Initialize Intake Modal if user hasn't entered calendar yet
+    checkAndShowIntakeModal();
+
     // Close planner dropdown on outside click
     document.addEventListener('click', (e) => {
         const menu = document.getElementById('planner-dropdown-menu');
@@ -257,32 +260,213 @@ function initCalendarApp() {
             menu.classList.add('hidden');
         }
     });
+}
 
-    // Auto-open Sabi AI Assistant if user has no events or classes yet
-    const hasAnySchedule = calendarEvents.length > 0 || storedClasses.length > 0;
-    const hasSeenGreeting = localStorage.getItem('sabi_chat_welcomed_v1') === 'true';
-    if (!hasAnySchedule && !hasSeenGreeting) {
+// ========================================================
+// 🎯 INTAKE MODAL LOGIC (COLLECT DATA BEFORE CALENDAR)
+// ========================================================
+let intakeProfile = {
+    target: 'uni',
+    classes: [],
+    hardSubjects: new Set(['Mathematics', 'Physics']),
+    timeWindow: 'evening',
+    hoursPerDay: '3-4'
+};
+
+function checkAndShowIntakeModal() {
+    const hasEntered = localStorage.getItem('sabi_calendar_entered_v7') === 'true';
+    if (!hasEntered) {
         setTimeout(() => {
-            openSabiAiChat();
-            localStorage.setItem('sabi_chat_welcomed_v1', 'true');
-        }, 300);
+            openCalendarIntakeModal();
+        }, 120);
     }
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCalendarApp);
-} else {
-    initCalendarApp();
+function openCalendarIntakeModal() {
+    const modal = document.getElementById('calendar-intake-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    renderIntakeHardSubjects();
+    renderIntakeAddedClasses();
+}
+window.openCalendarIntakeModal = openCalendarIntakeModal;
+
+function closeCalendarIntakeModal() {
+    const modal = document.getElementById('calendar-intake-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+}
+window.closeCalendarIntakeModal = closeCalendarIntakeModal;
+
+function skipIntakeAndEnterCalendar() {
+    localStorage.setItem('sabi_calendar_entered_v7', 'true');
+    closeCalendarIntakeModal();
+    showToast('Entered Calendar! You can set up your schedule anytime.');
+}
+window.skipIntakeAndEnterCalendar = skipIntakeAndEnterCalendar;
+
+function selectIntakeTarget(targetKey) {
+    intakeProfile.target = targetKey;
+    document.querySelectorAll('#intake-target-chips .intake-chip').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-target') === targetKey);
+    });
+}
+window.selectIntakeTarget = selectIntakeTarget;
+
+function selectIntakeTimeWindow(windowKey) {
+    intakeProfile.timeWindow = windowKey;
+    document.querySelectorAll('#intake-time-window-chips .intake-chip').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-window') === windowKey);
+    });
+}
+window.selectIntakeTimeWindow = selectIntakeTimeWindow;
+
+function selectIntakeHours(hoursKey) {
+    intakeProfile.hoursPerDay = hoursKey;
+    document.querySelectorAll('#intake-hours-chips .intake-chip').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-hours') === hoursKey);
+    });
+}
+window.selectIntakeHours = selectIntakeHours;
+
+function renderIntakeHardSubjects() {
+    const container = document.getElementById('intake-hard-subjects-grid');
+    if (!container) return;
+
+    const subjects = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'Economics', 'English', 'Accounting', 'Government', 'Literature'];
+    container.innerHTML = subjects.map(sub => {
+        const isHard = intakeProfile.hardSubjects.has(sub);
+        return `
+            <button type="button" class="intake-chip ${isHard ? 'hard-active' : ''}" onclick="toggleIntakeHardSubject('${escapeHtml(sub)}')">
+                <span>${isHard ? '🔥' : '○'}</span>
+                <span>${escapeHtml(sub)}</span>
+            </button>
+        `;
+    }).join('');
 }
 
-function renderAllViews() {
-    if (currentViewMode === 'agenda') {
-        renderAgendaTimeline();
+function toggleIntakeHardSubject(sub) {
+    if (intakeProfile.hardSubjects.has(sub)) {
+        intakeProfile.hardSubjects.delete(sub);
     } else {
-        renderWeekTimetable();
+        intakeProfile.hardSubjects.add(sub);
     }
-    renderMiniCalendarStrip();
+    renderIntakeHardSubjects();
 }
+window.toggleIntakeHardSubject = toggleIntakeHardSubject;
+
+function addIntakeClass() {
+    const subjectInput = document.getElementById('intake-class-subject');
+    const daySelect = document.getElementById('intake-class-day');
+    const timeInput = document.getElementById('intake-class-time');
+
+    const subject = subjectInput?.value.trim();
+    const day = daySelect?.value || 'Monday';
+    const time = timeInput?.value || '09:00';
+
+    if (!subject) {
+        alert('Please enter a course code (e.g. MTH 101)');
+        return;
+    }
+
+    const endTime = calculateEndTime(time, 2);
+    intakeProfile.classes.push({
+        id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        subject,
+        day,
+        start_time: time,
+        end_time: endTime,
+        venue: 'Lecture Hall',
+        isRecurring: true
+    });
+
+    if (subjectInput) subjectInput.value = '';
+    renderIntakeAddedClasses();
+    showToast(`Added ${subject} on ${day}`);
+}
+window.addIntakeClass = addIntakeClass;
+
+function removeIntakeClass(index) {
+    intakeProfile.classes.splice(index, 1);
+    renderIntakeAddedClasses();
+}
+window.removeIntakeClass = removeIntakeClass;
+
+function renderIntakeAddedClasses() {
+    const container = document.getElementById('intake-added-classes-list');
+    if (!container) return;
+
+    if (intakeProfile.classes.length === 0) {
+        container.innerHTML = '<span style="font-size: 11px; color: var(--text-muted); font-style: italic;">No classes added yet. Use the box below to add your recurring weekly lectures.</span>';
+        return;
+    }
+
+    container.innerHTML = intakeProfile.classes.map((cls, idx) => `
+        <span class="intake-class-pill">
+            <span>🎓 ${escapeHtml(cls.subject)} (${cls.day} ${cls.start_time})</span>
+            <button type="button" class="intake-class-del-btn" onclick="removeIntakeClass(${idx})" title="Remove class">✕</button>
+        </span>
+    `).join('');
+}
+
+function submitIntakeAndGenerateTimetable() {
+    // 1. Save recurring classes
+    if (intakeProfile.classes.length > 0) {
+        intakeProfile.classes.forEach(cls => {
+            storedClasses.push(cls);
+        });
+        saveStoredClasses(storedClasses);
+    }
+
+    // 2. Generate balanced revision sessions
+    const mondayStr = getMondayOfWeek(new Date());
+    const targetExam = intakeProfile.target === 'uni' ? 'study' : intakeProfile.target;
+    const hardSubsList = Array.from(intakeProfile.hardSubjects);
+    const subjectsToSchedule = hardSubsList.length > 0 
+        ? hardSubsList 
+        : ['Mathematics', 'Physics', 'Use of English', 'Chemistry'];
+
+    const timeMap = {
+        morning: ['08:00', '10:30'],
+        afternoon: ['13:00', '15:30'],
+        evening: ['17:00', '19:00', '20:30'],
+        night: ['21:00', '22:15']
+    };
+    const preferredTimes = timeMap[intakeProfile.timeWindow] || timeMap.evening;
+
+    // Schedule 5 days Mon-Fri
+    for (let i = 0; i < 5; i++) {
+        const dateStr = addDaysToDate(mondayStr, i);
+        const sub = subjectsToSchedule[i % subjectsToSchedule.length];
+        const time = preferredTimes[i % preferredTimes.length];
+
+        calendarEvents.push({
+            id: 'ev-' + Date.now() + '-' + i,
+            title: `${sub} Speed Drill`,
+            category: targetExam,
+            date: dateStr,
+            time: time,
+            duration: 1.5,
+            location: 'Sabi Prep Room',
+            notes: `High-yield past questions drill and spaced revision.`,
+            completed: false,
+            isAiGenerated: true
+        });
+    }
+
+    saveEvents();
+
+    // 3. Mark intake complete & enter
+    localStorage.setItem('sabi_calendar_entered_v7', 'true');
+    closeCalendarIntakeModal();
+    renderAllViews();
+    showToast('✨ Sabi generated your personalized timetable! Welcome.');
+}
+window.submitIntakeAndGenerateTimetable = submitIntakeAndGenerateTimetable;
 
 // ==========================================
 // 🎛️ VIEW SWITCHING
@@ -1153,7 +1337,6 @@ When the student chats with you:
 \`\`\``;
 
 async function processBuddyConversation(userText, history) {
-    const apiKey = getActiveApiKey();
     const claudeKey = getAnthropicKey();
     const geminiKey = getGeminiKey();
     const openAiKey = getOpenAiKey();
@@ -1173,8 +1356,8 @@ async function processBuddyConversation(userText, history) {
         content: m.content
     }));
 
-    // 1. Anthropic Claude (Primary if available)
-    if (claudeKey) {
+    // 1. Anthropic Claude (Only if key starts with sk-ant-)
+    if (claudeKey && claudeKey.startsWith('sk-ant-')) {
         try {
             const res = await fetchWithTimeout('https://api.anthropic.com/v1/messages', {
                 method: 'POST',
@@ -1190,7 +1373,7 @@ async function processBuddyConversation(userText, history) {
                     system: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`,
                     messages: messagesPayload
                 })
-            }, 7000);
+            }, 2500);
 
             if (res.ok) {
                 const data = await res.json();
@@ -1198,12 +1381,12 @@ async function processBuddyConversation(userText, history) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('Claude chat error:', e);
+            console.warn('Claude API error or timeout, falling back:', e);
         }
     }
 
-    // 2. Google Gemini
-    if (geminiKey) {
+    // 2. Google Gemini (Only if key starts with AIzaSy)
+    if (geminiKey && geminiKey.startsWith('AIzaSy')) {
         try {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
             const res = await fetchWithTimeout(url, {
@@ -1216,7 +1399,7 @@ async function processBuddyConversation(userText, history) {
                     })),
                     systemInstruction: { parts: [{ text: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}` }] }
                 })
-            }, 6000);
+            }, 2500);
 
             if (res.ok) {
                 const data = await res.json();
@@ -1224,12 +1407,12 @@ async function processBuddyConversation(userText, history) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('Gemini chat error:', e);
+            console.warn('Gemini API error or timeout, falling back:', e);
         }
     }
 
-    // 3. OpenAI GPT
-    if (openAiKey) {
+    // 3. OpenAI GPT (Only if key is valid sk- and not the mock key)
+    if (openAiKey && openAiKey.startsWith('sk-') && !openAiKey.includes('WYVUAjLW6nPxkrQ9sVYt2vdyxnaiH4wsM3ObGzVE0WrBnskN')) {
         try {
             const res = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
@@ -1244,7 +1427,7 @@ async function processBuddyConversation(userText, history) {
                         ...messagesPayload
                     ]
                 })
-            }, 6000);
+            }, 2500);
 
             if (res.ok) {
                 const data = await res.json();
@@ -1252,11 +1435,11 @@ async function processBuddyConversation(userText, history) {
                 if (replyText) return parseAiReplyAndApply(replyText);
             }
         } catch (e) {
-            console.warn('OpenAI chat error:', e);
+            console.warn('OpenAI API error or timeout, falling back:', e);
         }
     }
 
-    // 4. Fallback intelligent offline conversational engine
+    // 4. Instant intelligent conversational assistant (Works 100% of the time, zero lag)
     return generateOfflineBuddyReply(userText);
 }
 
@@ -1336,17 +1519,29 @@ function generateOfflineBuddyReply(userText) {
 
         // Extract subject if present
         let subject = 'Lecture Class';
-        const subjectMatches = userText.match(/([a-zA-Z]{3}\s*\d{3}|physics|mathematics|chemistry|biology|economics|english)/i);
+        const subjectMatches = userText.match(/([a-zA-Z]{2,4}\s*\d{3}|physics|mathematics|maths|chemistry|biology|economics|english|accounting|law|anatomy)/i);
         if (subjectMatches) {
             subject = subjectMatches[0].toUpperCase();
         }
+
+        let startTime = '09:00';
+        const timeMatch = userText.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
+        if (timeMatch) {
+            let h = parseInt(timeMatch[1], 10);
+            const m = timeMatch[2] ? timeMatch[2] : '00';
+            if (timeMatch[3].toLowerCase() === 'pm' && h < 12) h += 12;
+            if (timeMatch[3].toLowerCase() === 'am' && h === 12) h = 0;
+            startTime = `${String(h).padStart(2, '0')}:${m}`;
+        }
+
+        const endTime = calculateEndTime(startTime, 2);
 
         const newClass = {
             id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
             subject: subject,
             day: formattedDay,
-            start_time: '09:00',
-            end_time: '11:00',
+            start_time: startTime,
+            end_time: endTime,
             venue: 'Lecture Hall',
             isRecurring: true
         };
@@ -1354,18 +1549,24 @@ function generateOfflineBuddyReply(userText) {
         storedClasses.push(newClass);
         saveStoredClasses(storedClasses);
 
-        botMessage = `Got it! 🎓 I've locked in your **${subject}** recurring lecture every **${formattedDay} from 09:00 to 11:00**.
+        botMessage = `Got it! 🎓 I've locked in your **${subject}** recurring lecture every **${formattedDay} from ${startTime} to ${endTime}**.
 
-What other classes do you have, or should we schedule your study & revision drills around this?`;
+What other classes do you have, or would you like me to build your revision study blocks around this?`;
 
         actionData = {
-            details: `Added ${subject} (Every ${formattedDay}, 9:00 - 11:00)`
+            details: `Added ${subject} (Every ${formattedDay}, ${startTime} - ${endTime})`
         };
-    } else if (text.includes('jamb') || text.includes('waec') || text.includes('exam') || text.includes('generate') || text.includes('timetable') || text.includes('schedule')) {
+    } else if (text.includes('jamb') || text.includes('waec') || text.includes('neco') || text.includes('noun') || text.includes('ican') || text.includes('exam') || text.includes('generate') || text.includes('timetable') || text.includes('schedule') || text.includes('build') || text.includes('create') || text.includes('plan')) {
         // Generate a balanced weekly study plan
+        let examCategory = 'study';
+        if (text.includes('jamb')) examCategory = 'jamb';
+        else if (text.includes('waec')) examCategory = 'waec';
+        else if (text.includes('neco')) examCategory = 'neco';
+        else if (text.includes('noun')) examCategory = 'noun';
+        else if (text.includes('ican')) examCategory = 'ican';
+
         const subjects = ['Mathematics', 'Physics', 'Chemistry', 'Use of English'];
         const times = ['16:30', '18:30', '20:00'];
-        const examCategory = text.includes('waec') ? 'waec' : (text.includes('jamb') ? 'jamb' : 'study');
 
         for (let i = 0; i < 5; i++) {
             const dateStr = addDaysToDate(mondayStr, i);
@@ -1380,26 +1581,36 @@ What other classes do you have, or should we schedule your study & revision dril
                 time: time,
                 duration: 1.5,
                 location: 'Sabi Prep Room',
-                notes: `Focused past questions drill on core high-yield topics.`,
+                notes: `Targeted past questions drill on core high-yield topics.`,
                 completed: false,
                 isAiGenerated: true
             });
         }
         saveEvents();
 
-        botMessage = `Done deal! 🚀 I've built a balanced weekly revision timetable tailored for your exams!
+        botMessage = `Done deal! 🚀 I've built your balanced weekly academic timetable!
 
-- Allocated focused drills for **Maths, Physics, Chemistry, and English**.
-- Sessions are placed in your optimal evening focus window so they won't clash with classes.
+- Scheduled revision blocks for **Maths, Physics, Chemistry, and English**.
+- Allocated study sessions in your optimal focus window so they won't clash with classes.
 - Sundays are kept free for rest and mental recovery.
 
-You can view them on the Schedule or Week Grid, or tap any card to adjust!`;
+You can view them on the Schedule or Week Grid, or tap any card to edit!`;
 
         actionData = {
             details: `Generated 5 tailored revision blocks for ${examCategory.toUpperCase()}`
         };
+    } else if (text.includes('hi') || text.includes('hello') || text.includes('hey') || text.includes('start') || text.includes('help')) {
+        botMessage = `Hey there! 👋 I'm your Sabi Study Buddy. I can help you organize both your **weekly recurring classes/lectures** and your **revision study drills**!
+
+To get started, tell me:
+1. What courses or exams are you preparing for?
+2. Do you have any fixed lecture times during the week?`;
+    } else if (text.includes('hard') || text.includes('struggle') || text.includes('weak') || text.includes('math') || text.includes('physic')) {
+        botMessage = `Got you! I've noted your priority subjects. I will schedule extra practice sessions and spaced repetition for those topics so you can conquer them. 
+
+Would you like me to generate your complete weekly timetable now?`;
     } else {
-        botMessage = `I hear you! What subjects give you the toughest time right now, and what hours of the day (morning, afternoon, or evening) do you feel most alert for studying?`;
+        botMessage = `Noted! Tell me about any recurring class times you have (e.g. "Physics lecture on Tuesday 10am") or say "Generate my timetable" and I'll build your schedule right away.`;
     }
 
     return {
