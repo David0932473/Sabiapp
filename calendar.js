@@ -82,11 +82,15 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
 // 🔄 RENDER ALL VIEWS (central re-render)
 // ==========================================
 function renderAllViews() {
-    renderMiniCalendarStrip();
-    if (currentViewMode === 'week') {
-        renderWeekTimetable();
-    } else {
-        renderAgendaTimeline();
+    if (document.getElementById('mini-cal-days')) {
+        renderMiniCalendarStrip();
+    }
+    if (document.getElementById('view-week-container')) {
+        if (currentViewMode === 'week') {
+            renderWeekTimetable();
+        } else {
+            renderAgendaTimeline();
+        }
     }
 }
 window.renderAllViews = renderAllViews;
@@ -272,12 +276,12 @@ function initCalendarApp() {
         dateInput.value = selectedDate || getTodayStr();
     }
 
-    // Render components
-    renderMiniCalendarStrip();
-    renderAllViews();
-
-    // Initialize First-Time Setup Popup Menu if user hasn't entered calendar yet
-    checkAndShowFirstTimePopup();
+    // Render components if on calendar page
+    if (document.getElementById('mini-cal-days')) {
+        renderMiniCalendarStrip();
+        renderAllViews();
+        checkAndShowFirstTimePopup();
+    }
 
     // Close planner dropdown on outside click
     document.addEventListener('click', (e) => {
@@ -288,6 +292,7 @@ function initCalendarApp() {
         }
     });
 }
+window.initCalendarApp = initCalendarApp;
 
 // ========================================================
 // 🎯 FIRST-TIME POPUP MENU MODAL (WITH PROMINENT SKIP BUTTON)
@@ -2290,3 +2295,25 @@ function getCategoryBadgeText(cat) {
     const found = CATEGORIES.find(c => c.key === (cat || '').toLowerCase());
     return found ? found.label : '⏱️ Study';
 }
+
+// Auto-initialize when DOM is ready
+if (typeof document !== 'undefined') {
+    function onCalendarReady() {
+        initCalendarApp();
+        if (typeof window !== 'undefined') {
+            const hasChatParam = window.location.search.includes('chat=1') || window.location.hash === '#chat';
+            if (hasChatParam) {
+                setTimeout(() => {
+                    openSabiAiChat();
+                }, 350);
+            }
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', onCalendarReady);
+    } else {
+        onCalendarReady();
+    }
+}
+
