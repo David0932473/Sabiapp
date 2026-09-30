@@ -24,25 +24,11 @@
             <div class="deck-brand-info">
                 <div class="deck-brand-title-row">
                     <span class="deck-brand-name">Sabi</span>
-                    <span class="deck-brand-tag">OS</span>
                 </div>
-                <span class="deck-brand-sub">Timetable Cockpit</span>
             </div>
         </div>
 
         <div class="deck-controls-matrix">
-            <!-- AI Copilot Beacon Button -->
-            <button type="button" class="deck-copilot-beacon" onclick="openSabiAiChat()" title="Open Sabi AI Copilot Studio">
-                <div class="beacon-avatar-wrapper">
-                    <img src="avatars/notion-scholar.svg" alt="Sabi Copilot" class="beacon-avatar-img" />
-                    <span class="beacon-pulse-ring"></span>
-                </div>
-                <div class="beacon-text-col">
-                    <span class="beacon-title">Copilot</span>
-                    <span class="beacon-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> AI</span>
-                </div>
-            </button>
-
             <!-- Quick Add Action -->
             <button type="button" class="deck-btn-add" onclick="openAddSessionModal()" title="Add Session or Class">
                 <span class="deck-add-plus">+</span>
@@ -672,21 +658,7 @@
             </div>
         </header>
 
-        <!-- Studio Tactical Mode Bar -->
-        <div class="studio-mode-bar">
-            <button type="button" class="studio-mode-pill active" id="mode-pill-planner" onclick="setStudioMode('planner')">
-                <span class="mode-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-                <span>Timetable Architect</span>
-            </button>
-            <button type="button" class="studio-mode-pill" id="mode-pill-vision" onclick="setStudioMode('vision')">
-                <span class="mode-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
-                <span>Outline Vision</span>
-            </button>
-            <button type="button" class="studio-mode-pill" id="mode-pill-exam" onclick="setStudioMode('exam')">
-                <span class="mode-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
-                <span>Exam Crunch</span>
-            </button>
-        </div>
+
 
         <!-- Studio Message Stream Canvas -->
         <main class="studio-messages-canvas" id="chat-messages-container">

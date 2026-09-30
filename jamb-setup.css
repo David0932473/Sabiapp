@@ -1,4 +1,4 @@
-/* =========================================
+﻿/* =========================================
    SABI OS: JAMB SETUP (jamb-setup.css)
 ========================================= */
 
@@ -86,3 +86,4 @@ body { background-color: var(--bg); color: var(--text-main); font-family: 'Poppi
     background: var(--surface-light); color: var(--text-muted);
     box-shadow: none; cursor: not-allowed; opacity: 0.5;
 }
+

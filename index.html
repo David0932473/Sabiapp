@@ -9,16 +9,6 @@
     <link rel="stylesheet" href="calendar.css" type="text/css" media="all" />
     <style>
         :root {
-            --bg: #000000;
-            --surface: #0A0A0A;
-            --surface-light: #121212;
-            --border: #27272A;
-            --accent: #3D8EFF;
-            --text-main: #FAFAFA;
-            --text-muted: #71717A;
-        }
-
-        [data-theme="light"] {
             --bg: #F4F6FB;
             --surface: #FFFFFF;
             --surface-light: #FFFFFF;
@@ -28,31 +18,41 @@
             --text-muted: #64748B;
         }
 
-        [data-theme="light"] .hero-widget {
-            background: linear-gradient(145deg, #FFFFFF 0%, #F1F5F9 100%) !important;
-            border-color: rgba(37, 99, 235, 0.2) !important;
-            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.08) !important;
+        [data-theme="dark"] {
+            --bg: #000000;
+            --surface: #0A0A0A;
+            --surface-light: #121212;
+            --border: #27272A;
+            --accent: #3D8EFF;
+            --text-main: #FAFAFA;
+            --text-muted: #71717A;
         }
-        [data-theme="light"] .hero-widget::before {
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(255, 255, 255, 0) 70%) !important;
+
+        [data-theme="dark"] .hero-widget {
+            background: linear-gradient(145deg, #0A0A0A 0%, #111111 100%) !important;
+            border-color: rgba(61, 142, 255, 0.2) !important;
+            box-shadow: 0 15px 35px rgba(61, 142, 255, 0.05) !important;
         }
-        [data-theme="light"] .bento-card {
-            background: #FFFFFF !important;
-            border-color: #E2E8F0 !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+        [data-theme="dark"] .hero-widget::before {
+            background: radial-gradient(circle, rgba(61, 142, 255, 0.12) 0%, rgba(0, 0, 0, 0) 70%) !important;
         }
-        [data-theme="light"] .pq-card,
-        [data-theme="light"] .library-card,
-        [data-theme="light"] .calendar-card {
-            background: linear-gradient(to bottom right, #FFFFFF, #F8FAFC) !important;
+        [data-theme="dark"] .bento-card {
+            background: #0A0A0A !important;
+            border-color: #27272A !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
         }
-        [data-theme="light"] .streak-badge {
+        [data-theme="dark"] .pq-card,
+        [data-theme="dark"] .library-card,
+        [data-theme="dark"] .calendar-card {
+            background: linear-gradient(to bottom right, #0A0A0A, #111111) !important;
+        }
+        [data-theme="dark"] .streak-badge {
             background: rgba(245, 158, 11, 0.12) !important;
             border-color: rgba(245, 158, 11, 0.3) !important;
         }
-        [data-theme="light"] .play-btn {
-            background: #0F172A !important;
-            color: #FFFFFF !important;
+        [data-theme="dark"] .play-btn {
+            background: #FAFAFA !important;
+            color: #000000 !important;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -737,7 +737,7 @@
         const savedName = localStorage.getItem('sabi_user_name') || 'YAMSKII';
         const savedExam = localStorage.getItem('sabi_target_exam') || 'JAMB UTME';
         const savedAvatar = getValidNotionAvatar();
-        const savedTheme = localStorage.getItem('sabi_theme') || 'dark';
+        const savedTheme = localStorage.getItem('sabi_theme') || 'light';
 
         currentSelectedAvatar = savedAvatar;
         if (nameInput) nameInput.value = savedName;

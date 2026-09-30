@@ -30,9 +30,9 @@ window.addEventListener('resize', initSabiDock);
 
 // Theme Initialization & Sync
 function applySabiTheme(themeName) {
-    const theme = themeName || localStorage.getItem('sabi_theme') || 'dark';
-    if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
+    const theme = themeName || localStorage.getItem('sabi_theme') || 'light';
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
     } else {
         document.documentElement.removeAttribute('data-theme');
     }

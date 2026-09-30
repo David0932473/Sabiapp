@@ -1,4 +1,4 @@
-/* --- RAZOR SHARP TRUE BLACK THEME --- */
+﻿/* --- RAZOR SHARP TRUE BLACK THEME --- */
 :root {
     --bg-outside: #000000;
     --bg-app: #000000;         /* Pure Black */
@@ -21,7 +21,7 @@
 body {
     background-color: var(--bg-outside);
     color: var(--text-white);
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -261,3 +261,4 @@ body {
     opacity: 0.5;
     cursor: not-allowed;
 }
+

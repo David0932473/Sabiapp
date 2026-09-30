@@ -1,0 +1,45 @@
+﻿{
+  "meta": {
+    "brand_name": "Sabi",
+    "description": "Core design tokens for Sabi OS UI implementation."
+  },
+  "colors": {
+    "primary": {
+      "DEFAULT": "#3D8EFF",
+      "hover": "#2563EB",
+      "foreground": "#FFFFFF"
+    },
+    "secondary": {
+      "DEFAULT": "#F4F6FB",
+      "foreground": "#0F172A"
+    },
+    "background": "#FFFFFF",
+    "foreground": "#0F172A",
+    "muted": "#F1F5F9",
+    "border": "#E2E8F0",
+    "accent": "#3D8EFF",
+    "destructive": "#EF4444",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "dark": {
+      "background": "#000000",
+      "surface": "#0A0A0A",
+      "surface_light": "#18181B",
+      "border": "#27272A",
+      "text_main": "#FAFAFA",
+      "text_muted": "#A1A1AA"
+    }
+  },
+  "typography": {
+    "font_family_all": ["Poppins", "sans-serif"],
+    "font_weights": ["300", "400", "500", "600", "700", "800", "900"],
+    "font_google_url": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+  },
+  "ui": {
+    "border_radius_default": "16px",
+    "border_radius_small": "8px",
+    "border_radius_pill": "30px",
+    "spacing_base_unit": "4px",
+    "default_theme": "light"
+  }
+}
