@@ -2071,34 +2071,29 @@ async function processBuddyConversation(userText, history, media) {
             max_tokens: 1500
         };
 
-        // Determine available proxy endpoints (same-origin /api/chat or local server http://localhost:3000/api/chat)
+        // Prioritize localhost:3000/api/chat where Sabi server runs
         const endpoints = [];
-        if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+        if (typeof window !== 'undefined' && window.location && window.location.origin.includes(':3000')) {
             endpoints.push('/api/chat');
+        } else {
+            endpoints.push('http://localhost:3000/api/chat');
+            if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+                endpoints.push('/api/chat');
+            }
         }
-        endpoints.push('http://localhost:3000/api/chat');
-        endpoints.push('https://integrate.api.nvidia.com/v1/chat/completions');
 
         for (const endpoint of endpoints) {
             try {
-                console.log(`Connecting to live NVIDIA AI via ${endpoint}...`);
-                const isDirectNvidia = endpoint.includes('integrate.api.nvidia.com');
-                const headers = { 'Content-Type': 'application/json' };
-                if (isDirectNvidia) {
-                    headers['Authorization'] = `Bearer ${nvidiaKey}`;
-                }
-
                 const res = await fetchWithTimeout(endpoint, {
                     method: 'POST',
-                    headers: headers,
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(chatPayload)
-                }, 20000); // 20s realistic LLM generation timeout
+                }, 8000);
 
                 if (res.ok) {
                     const data = await res.json();
                     const replyText = data.choices?.[0]?.message?.content;
                     if (replyText) {
-                        console.log('Live AI Response successfully received from:', endpoint);
                         const badge = document.getElementById('chat-live-ai-badge');
                         if (badge) {
                             badge.textContent = 'AI Active';
@@ -2107,11 +2102,9 @@ async function processBuddyConversation(userText, history, media) {
                         }
                         return parseAiReplyAndApply(replyText);
                     }
-                } else {
-                    console.warn(`NVIDIA endpoint ${endpoint} returned status:`, res.status);
                 }
             } catch (e) {
-                console.warn(`NVIDIA connection via ${endpoint} failed or timed out:`, e.message || e);
+                console.warn(`Connection to AI endpoint ${endpoint} failed:`, e.message || e);
             }
         }
     }
