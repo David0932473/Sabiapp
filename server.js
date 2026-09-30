@@ -100,7 +100,7 @@ function proxyChat(req, res, bodyData) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${OPENROUTER_KEY}`,
                 'HTTP-Referer': 'https://sabi.app',
-                'X-Title': 'Sabi Academic OS'
+                'X-Title': 'Steady - Sabi Academic OS'
             }
         }, (orRes) => {
             if (orRes.statusCode >= 200 && orRes.statusCode < 300) {

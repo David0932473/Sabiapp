@@ -1143,7 +1143,7 @@ let pendingChatMedia = null; // { name, type, size, dataUrl, textContent }
 
 const DEFAULT_CHAT_GREETING = {
     role: 'bot',
-    content: "Hey! I'm your Sabi Copilot, here to build a weekly timetable that fits your life. What degree, courses, or exam (JAMB, WAEC, NOUN, ICAN) are you focusing on this semester? *(Tap the attach button below to upload a course outline)*",
+    content: "Hey! I'm Steady, your academic mentor and study partner. What degree, courses, or exam (JAMB, WAEC, NOUN, ICAN) are you focusing on this semester? *(Tap the attach button below to upload a course outline)*",
     timestamp: 'Just now'
 };
 
@@ -1203,7 +1203,7 @@ function openSabiAiChat() {
         badge.style.display = 'inline-flex';
     }
     if (statusText) {
-        statusText.textContent = 'Academic Architect • Multimodal Vision Enabled';
+        statusText.textContent = 'Academic Architect • Powered by Steady';
     }
 
     setStudioMode(currentStudioMode || 'planner');
@@ -1215,6 +1215,7 @@ function openSabiAiChat() {
     }, 200);
 }
 window.openSabiAiChat = openSabiAiChat;
+window.openSteadyChat = openSabiAiChat;
 
 function closeSabiAiChat(e) {
     if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('close-btn') && !e.target.closest('.close-btn') && !e.target.classList.contains('modal-overlay')) return;
@@ -1225,14 +1226,15 @@ function closeSabiAiChat(e) {
     }
 }
 window.closeSabiAiChat = closeSabiAiChat;
+window.closeSteadyChat = closeSabiAiChat;
 
 function clearChatHistory() {
-    if (confirm('Restart session with Sabi AI Copilot?')) {
+    if (confirm('Restart session with Steady?')) {
         saveChatHistory([DEFAULT_CHAT_GREETING]);
         removePendingChatMedia();
         renderChatMessages();
         renderChatQuickChips();
-        showToast('Copilot session restarted.');
+        showToast('Steady session restarted.');
     }
 }
 window.clearChatHistory = clearChatHistory;
@@ -1760,7 +1762,7 @@ function renderChatMessages() {
         heroHtml = `
             <div class="copilot-launchpad-hero">
                 <div class="launchpad-header">
-                    <span class="launchpad-badge">ACADEMIC COPILOT STUDIO</span>
+                    <span class="launchpad-badge">STEADY AI STUDIO</span>
                     <h3 class="launchpad-heading">What are we planning today?</h3>
                     <p class="launchpad-sub">Scan a course outline photo, lock in lecture times, or build a personalized revision routine.</p>
                 </div>
@@ -1834,7 +1836,7 @@ function renderChatMessages() {
 
         return `
             <div class="studio-msg-row chat-msg-row ${isUser ? 'user' : 'bot'}">
-                ${!isUser ? `<img src="avatars/notion-scholar.svg" alt="Sabi Copilot" class="studio-msg-avatar chat-msg-avatar" />` : ''}
+                ${!isUser ? `<img src="avatars/notion-scholar.svg" alt="Steady" class="studio-msg-avatar chat-msg-avatar" />` : ''}
                 <div class="studio-bubble chat-bubble">
                     ${mediaHtml}
                     ${contentHtml}
@@ -1954,7 +1956,7 @@ function showTypingIndicator() {
     typingEl.id = 'chat-typing-indicator';
     typingEl.className = 'studio-msg-row chat-msg-row bot';
     typingEl.innerHTML = `
-        <img src="avatars/notion-scholar.svg" alt="Sabi Copilot" class="studio-msg-avatar chat-msg-avatar" />
+        <img src="avatars/notion-scholar.svg" alt="Steady" class="studio-msg-avatar chat-msg-avatar" />
         <div class="studio-bubble chat-bubble">
             <div class="typing-dots">
                 <span></span><span></span><span></span>
@@ -1970,8 +1972,8 @@ function hideTypingIndicator() {
     if (el) el.remove();
 }
 
-// Highly intelligent, contextual, and responsive system prompt for Sabi AI Copilot
-const BUDDY_SYSTEM_PROMPT = `You are "Sabi AI Copilot", an elite academic mentor, tutor, and timetable architect for students (University, Polytechnic, JAMB, WAEC, NOUN, ICAN).
+// Highly intelligent, contextual, and responsive system prompt for Steady
+const BUDDY_SYSTEM_PROMPT = `You are "Steady", an elite academic mentor, tutor, and timetable architect for students (University, Polytechnic, JAMB, WAEC, NOUN, ICAN).
 
 CRITICAL DIRECT-RESPONSE RULE:
 - ALWAYS DIRECTLY, SPECIFICALLY, AND THOUGHTFULLY ADDRESS WHAT THE USER ASKS OR STATES.
@@ -2000,7 +2002,7 @@ MULTIMODAL & VISION:
 - You can analyze screenshots of course outlines, syllabi, notes, and timetable photos. Accurately identify courses, codes, lecture times, and exam dates when images or OCR data are provided.
 
 IDENTITY:
-- You are strictly "Sabi AI Copilot". Never disclose underlying LLM models or vendors. Speak with authority, warmth, and academic excellence.`;
+- You are strictly "Steady". Never disclose underlying LLM models or vendors. Speak with authority, warmth, and academic excellence.`;
 
 async function processBuddyConversation(userText, history, media) {
     const openRouterKey = getOpenRouterKey();
@@ -2067,7 +2069,7 @@ async function processBuddyConversation(userText, history, media) {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${openRouterKey}`,
                         'HTTP-Referer': typeof window !== 'undefined' && window.location ? window.location.origin : 'https://sabi.app',
-                        'X-Title': 'Sabi Academic OS'
+                        'X-Title': 'Steady - Sabi Academic OS'
                     },
                     body: JSON.stringify({
                         model: modelName,
@@ -2463,7 +2465,7 @@ Which specific course or exam are you working on right now? Tell me, and I can a
     if (/^(hi|hello|hey|yo|good morning|good afternoon|good evening|howdy|sup)\b/i.test(lower) || /\b(who are you|what can you do|how does this work|capabilities)\b/i.test(lower)) {
         return {
             role: 'bot',
-            content: `Hey! I'm your Sabi Copilot, here to build a weekly timetable that fits your life. What degree, courses, or exam are you focusing on this semester?`,
+            content: `Hey! I'm Steady, your academic mentor and study partner. What degree, courses, or exam are you focusing on this semester?`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };

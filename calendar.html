@@ -62,12 +62,12 @@
                             <div class="bento-hero-glow"></div>
                             <div class="bento-hero-left">
                                 <div class="bento-hero-avatar">
-                                    <img src="avatars/notion-scholar.svg" alt="Sabi AI" />
+                                    <img src="avatars/notion-scholar.svg" alt="Steady" />
                                     <span class="bento-avatar-sparkle"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18.5 21.5 12 18 5.5 21.5 7 14.5 2 9.5 9 8.5 12 2"></polygon></svg></span>
                                 </div>
                                 <div class="bento-hero-meta">
                                     <div class="bento-hero-title-row">
-                                        <span class="bento-hero-title">Sabi AI Copilot Studio</span>
+                                        <span class="bento-hero-title">Steady AI Studio</span>
                                         <span class="bento-badge-live">Live</span>
                                     </div>
                                     <p class="bento-hero-desc">Interactive timetable architect, course outline OCR & clash solver.</p>
@@ -182,19 +182,19 @@
             </div>
         </div>
 
-        <!-- AI STUDY BUDDY BANNER -->
+        <!-- STEADY AI BANNER -->
         <div class="ai-study-buddy-banner" id="ai-study-buddy-banner" onclick="openSabiAiChat()">
             <div class="buddy-banner-left">
                 <div class="buddy-banner-avatar">
-                    <img src="avatars/notion-scholar.svg" alt="Sabi Study Buddy" class="buddy-banner-avatar-img" />
+                    <img src="avatars/notion-scholar.svg" alt="Steady" class="buddy-banner-avatar-img" />
                     <span class="buddy-live-pulse"></span>
                 </div>
                 <div class="buddy-banner-text">
                     <strong class="buddy-banner-title">Need help planning your timetable?</strong>
-                    <span class="buddy-banner-sub">Chat with Sabi like a friend to set up classes, revision, & exam goals.</span>
+                    <span class="buddy-banner-sub">Chat with Steady to set up classes, revision, & exam goals.</span>
                 </div>
             </div>
-            <button type="button" class="btn-banner-chat" aria-label="Chat with Sabi">Chat</button>
+            <button type="button" class="btn-banner-chat" aria-label="Chat with Steady">Chat</button>
         </div>
 
         <!-- QUICK ADD SCHEDULE BAR -->
@@ -267,12 +267,12 @@
 
 </div>
 
-<!-- FLOATING ACTION BUTTON FOR SABI STUDY BUDDY -->
-<button type="button" class="sabi-chat-fab" onclick="openSabiAiChat()" aria-label="Chat with Sabi Study Buddy" title="Chat with Sabi AI">
+<!-- FLOATING ACTION BUTTON FOR STEADY -->
+<button type="button" class="sabi-chat-fab" onclick="openSabiAiChat()" aria-label="Chat with Steady" title="Chat with Steady">
     <span class="fab-avatar-badge">
-        <img src="avatars/notion-scholar.svg" alt="Sabi" />
+        <img src="avatars/notion-scholar.svg" alt="Steady" />
     </span>
-    <span class="fab-text">AI Copilot</span>
+    <span class="fab-text">Steady</span>
 </button>
 
 <!-- BOTTOM FLOATING DOCK -->
@@ -336,14 +336,14 @@
 
         <!-- Main Popup Menu Options -->
         <div class="popup-menu-body" id="popup-menu-main">
-            <!-- Option 1: Chat with Sabi AI -->
+            <!-- Option 1: Chat with Steady -->
             <button type="button" class="popup-option-card highlighted" onclick="startFirstTimeAiChat()">
                 <div class="popup-option-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </div>
                 <div class="popup-option-text">
-                    <strong class="popup-option-title">Chat with Sabi AI</strong>
-                    <span class="popup-option-desc">Tell Sabi your classes & exams in natural conversation like a friend.</span>
+                    <strong class="popup-option-title">Chat with Steady</strong>
+                    <span class="popup-option-desc">Tell Steady your classes & exams in natural conversation like a friend.</span>
                 </div>
                 <span class="popup-option-badge">Recommended</span>
             </button>
@@ -611,7 +611,7 @@
     </div>
 </div>
 
-<!-- MODAL 3: SABI AI ACADEMIC COPILOT STUDIO -->
+<!-- MODAL 3: STEADY AI ACADEMIC STUDIO -->
 <div id="sabi-ai-chat-drawer" class="modal-overlay hidden" onclick="closeSabiAiChat(event)">
     <div class="copilot-studio-window" onclick="event.stopPropagation()">
         <!-- Tactile Mobile Dock Handle -->
@@ -626,17 +626,17 @@
         <header class="copilot-studio-header">
             <div class="studio-header-identity">
                 <div class="studio-avatar-pod">
-                    <img src="avatars/notion-scholar.svg" alt="Sabi Copilot" class="studio-avatar-img" />
+                    <img src="avatars/notion-scholar.svg" alt="Steady" class="studio-avatar-img" />
                     <span class="studio-avatar-aura-outer"></span>
                     <span class="studio-avatar-aura-inner"></span>
                     <span class="studio-status-orb" title="Online & Ready"></span>
                 </div>
                 <div class="studio-profile-text">
                     <div class="studio-title-badge-row">
-                        <h2 class="studio-title">Sabi AI Copilot</h2>
+                        <h2 class="studio-title">Steady</h2>
                         <span class="studio-model-chip" id="chat-live-ai-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> AI Active</span>
                     </div>
-                    <span class="studio-sub-status" id="chat-header-status-text">Academic Architect • Multimodal Vision Enabled</span>
+                    <span class="studio-sub-status" id="chat-header-status-text">Academic Architect • Powered by Steady</span>
                 </div>
             </div>
 
@@ -703,13 +703,13 @@
                 </button>
 
                 <div class="studio-input-field-wrapper">
-                    <input type="text" id="chat-user-input" class="studio-text-input" placeholder="Message Copilot, paste outline, or ask to schedule..." autocomplete="off" />
+                    <input type="text" id="chat-user-input" class="studio-text-input" placeholder="Message Steady, paste outline, or ask to schedule..." autocomplete="off" />
                     <button type="button" class="studio-btn-scan-shortcut" onclick="triggerChatMediaUpload()" title="Scan Timetable Photo (Vision)">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                     </button>
                 </div>
 
-                <button type="submit" class="studio-btn-send" id="btn-chat-send" aria-label="Send to Copilot" title="Send">
+                <button type="submit" class="studio-btn-send" id="btn-chat-send" aria-label="Send to Steady" title="Send">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="22" y1="2" x2="11" y2="13"></line>
                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
