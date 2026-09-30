@@ -2113,24 +2113,25 @@ async function processBuddyConversation(userText, history, media) {
             max_tokens: 1500
         };
 
-        // Prioritize localhost:3000/api/chat where Sabi server runs
-        const endpoints = [];
-        if (typeof window !== 'undefined' && window.location && window.location.origin.includes(':3000')) {
-            endpoints.push('/api/chat');
-        } else {
+        // Use current domain's /api/chat (works on localhost, mobile, Vercel, and custom domains)
+        const endpoints = ['/api/chat'];
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
             endpoints.push('http://localhost:3000/api/chat');
-            if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
-                endpoints.push('/api/chat');
-            }
         }
 
         for (const endpoint of endpoints) {
             try {
+                const authKey = nvidiaKey || openRouterKey || '';
+                const reqHeaders = { 'Content-Type': 'application/json' };
+                if (authKey) {
+                    reqHeaders['Authorization'] = `Bearer ${authKey}`;
+                }
+
                 const res = await fetchWithTimeout(endpoint, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: reqHeaders,
                     body: JSON.stringify(chatPayload)
-                }, 8000);
+                }, 15000);
 
                 if (res.ok) {
                     const data = await res.json();
