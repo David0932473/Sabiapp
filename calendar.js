@@ -1131,7 +1131,7 @@ let pendingChatMedia = null; // { name, type, size, dataUrl, textContent }
 
 const DEFAULT_CHAT_GREETING = {
     role: 'bot',
-    content: "Hey! 👋 I'm your Sabi Study Buddy. I'm here to build a weekly timetable that actually works for your real life without burning you out.\n\nLet's take it step-by-step. First off: **What degree, course of study, or exam (like JAMB, WAEC, NOUN, ICAN) are you focusing on this semester?**\n\n*(You can also tap the 📎 paperclip to upload a photo of your course outline or syllabus!)*",
+    content: "Hey! 👋 I'm your Sabi Study Buddy, here to build a weekly timetable that fits your life. What degree, courses, or exam (JAMB, WAEC, NOUN, ICAN) are you focusing on this semester? *(Tap 📎 to upload a course outline)*",
     timestamp: 'Just now'
 };
 
@@ -1176,6 +1176,9 @@ function saveChatHistory(history) {
 }
 
 function openSabiAiChat() {
+    const hubMenu = document.getElementById('planner-dropdown-menu');
+    if (hubMenu) hubMenu.classList.add('hidden');
+
     const drawer = document.getElementById('sabi-ai-chat-drawer');
     if (drawer) {
         drawer.classList.remove('hidden');
@@ -1184,15 +1187,15 @@ function openSabiAiChat() {
     const badge = document.getElementById('chat-live-ai-badge');
     const statusText = document.getElementById('chat-header-status-text');
     if (badge) {
-        badge.textContent = '✨ Sabi AI Active';
+        badge.textContent = '⚡ NVIDIA LLaMA 3.2';
         badge.style.display = 'inline-flex';
     }
     if (statusText) {
-        statusText.textContent = 'Smart Study Buddy • Always Ready';
+        statusText.textContent = 'Academic Architect • Multimodal Vision Enabled';
     }
 
+    setStudioMode(currentStudioMode || 'planner');
     renderChatMessages();
-    renderChatQuickChips();
 
     setTimeout(() => {
         const input = document.getElementById('chat-user-input');
@@ -1202,8 +1205,7 @@ function openSabiAiChat() {
 window.openSabiAiChat = openSabiAiChat;
 
 function closeSabiAiChat(e) {
-    // Allow programmatic calls or clicks on the overlay itself
-    if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('chat-tool-btn') && !e.target.classList.contains('modal-overlay')) return;
+    if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('close-btn') && !e.target.closest('.close-btn') && !e.target.classList.contains('modal-overlay')) return;
     const drawer = document.getElementById('sabi-ai-chat-drawer');
     if (drawer) {
         drawer.classList.add('hidden');
@@ -1213,12 +1215,12 @@ function closeSabiAiChat(e) {
 window.closeSabiAiChat = closeSabiAiChat;
 
 function clearChatHistory() {
-    if (confirm('Restart conversation with Sabi Study Buddy?')) {
+    if (confirm('Restart session with Sabi AI Copilot?')) {
         saveChatHistory([DEFAULT_CHAT_GREETING]);
         removePendingChatMedia();
         renderChatMessages();
         renderChatQuickChips();
-        showToast('Conversation restarted.');
+        showToast('Copilot session restarted.');
     }
 }
 window.clearChatHistory = clearChatHistory;
@@ -1414,7 +1416,9 @@ function processImageTextClientSide(file, dataUrl, callback) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
 
-            // 2. Ultra-compact thumbnail (<320px) for preview without filling localStorage
+            // 2. High-clarity vision image for AI model and compact thumbnail for UI
+            const visionDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
             const thumbCanvas = document.createElement('canvas');
             const thumbMax = 320;
             let tw = img.width;
@@ -1467,6 +1471,7 @@ function processImageTextClientSide(file, dataUrl, callback) {
                         }
 
                         callback({
+                            visionDataUrl: visionDataUrl,
                             optimizedDataUrl: optimizedThumbUrl,
                             extractedCodes: allCodes,
                             extractedClasses: parsed.classes,
@@ -1480,6 +1485,7 @@ function processImageTextClientSide(file, dataUrl, callback) {
                         const fallbackCodes = extractCourseCodesFromText(file.name);
                         updateChatMediaPreviewStatus('Image attached');
                         callback({
+                            visionDataUrl: visionDataUrl,
                             optimizedDataUrl: optimizedThumbUrl,
                             extractedCodes: fallbackCodes,
                             extractedClasses: [],
@@ -1491,6 +1497,7 @@ function processImageTextClientSide(file, dataUrl, callback) {
             } else {
                 const fallbackCodes = extractCourseCodesFromText(file.name);
                 callback({
+                    visionDataUrl: visionDataUrl,
                     optimizedDataUrl: optimizedThumbUrl,
                     extractedCodes: fallbackCodes,
                     extractedClasses: [],
@@ -1542,7 +1549,8 @@ function handleChatImageFile(file, label) {
 
         processImageTextClientSide(file, rawDataUrl, (processed) => {
             if (!pendingChatMedia) return;
-            pendingChatMedia.dataUrl = processed.optimizedDataUrl;
+            pendingChatMedia.dataUrl = processed.visionDataUrl || processed.optimizedDataUrl;
+            pendingChatMedia.thumbUrl = processed.optimizedDataUrl;
             pendingChatMedia.extractedCodes = processed.extractedCodes;
             pendingChatMedia.extractedClasses = processed.extractedClasses;
             pendingChatMedia.textContent = `[Uploaded Timetable Screenshot: ${file.name || label}]\n` +
@@ -1679,19 +1687,112 @@ function renderMarkdownLite(text) {
     return safe;
 }
 
+let currentStudioMode = 'planner';
+
+const STUDIO_MODE_CHIPS = {
+    planner: [
+        "Generate my complete weekly timetable ✨",
+        "I have lectures Mon, Wed, Fri (9am - 12pm)",
+        "Lock in 2 hours study every evening",
+        "Maths & Physics need extra study blocks",
+        "Keep Sundays completely free for rest"
+    ],
+    vision: [
+        "📷 Upload Timetable Screenshot",
+        "📄 Upload Course Outline / Syllabus",
+        "Extract recurring lectures from photo",
+        "Identify tough topics from outline",
+        "Re-scan uploaded image"
+    ],
+    exam: [
+        "Prepping for JAMB in 6 weeks",
+        "WAEC / SSCE revision timetable",
+        "Finals in 3 weeks: ECO375 & MTH101",
+        "Intensive 3-hour daily drill mode",
+        "Build spaced repetition schedule"
+    ]
+};
+
+function setStudioMode(mode) {
+    if (!STUDIO_MODE_CHIPS[mode]) mode = 'planner';
+    currentStudioMode = mode;
+
+    ['planner', 'vision', 'exam'].forEach(m => {
+        const pill = document.getElementById(`mode-pill-${m}`);
+        if (pill) {
+            if (m === mode) pill.classList.add('active');
+            else pill.classList.remove('active');
+        }
+    });
+
+    renderChatQuickChips();
+
+    if (mode === 'vision') {
+        const input = document.getElementById('chat-user-input');
+        if (input && !input.value.trim() && !pendingChatMedia) {
+            input.placeholder = "Upload or paste course outline photo for Vision OCR...";
+        }
+    }
+}
+window.setStudioMode = setStudioMode;
+
 function renderChatMessages() {
     const container = document.getElementById('chat-messages-container');
     if (!container) return;
 
     const history = getChatHistory();
-    container.innerHTML = history.map(msg => {
+    const isInitialState = history.length <= 1;
+
+    let heroHtml = '';
+    if (isInitialState) {
+        heroHtml = `
+            <div class="copilot-launchpad-hero">
+                <div class="launchpad-header">
+                    <span class="launchpad-badge">ACADEMIC COPILOT STUDIO</span>
+                    <h3 class="launchpad-heading">What are we planning today?</h3>
+                    <p class="launchpad-sub">Scan a course outline photo, lock in lecture times, or build a personalized revision routine.</p>
+                </div>
+                <div class="launchpad-grid">
+                    <div class="launchpad-tile" onclick="triggerChatMediaUpload()">
+                        <span class="launchpad-tile-icon">📷</span>
+                        <span class="launchpad-tile-title">Scan Course Outline</span>
+                        <span class="launchpad-tile-desc">Upload timetable photo for instant Vision OCR</span>
+                    </div>
+                    <div class="launchpad-tile" onclick="handleQuickChipClick('I want to auto-balance my weekly study sessions around my lectures')">
+                        <span class="launchpad-tile-icon">⚡</span>
+                        <span class="launchpad-tile-title">Auto-Balance Week</span>
+                        <span class="launchpad-tile-desc">Distribute study blocks without clashes</span>
+                    </div>
+                    <div class="launchpad-tile" onclick="setStudioMode('exam'); handleQuickChipClick('Prepping for exams in 6 weeks, help me build a timetable')">
+                        <span class="launchpad-tile-icon">🎯</span>
+                        <span class="launchpad-tile-title">Exam Crunch Mode</span>
+                        <span class="launchpad-tile-desc">Prioritize tough subjects with spaced review</span>
+                    </div>
+                    <div class="launchpad-tile" onclick="handleQuickChipClick('Schedule 2 hours of focused evening study (7pm - 9pm) every weekday')">
+                        <span class="launchpad-tile-icon">🌙</span>
+                        <span class="launchpad-tile-title">Evening Deep Work</span>
+                        <span class="launchpad-tile-desc">Lock in daily 7pm - 9pm distraction-free study</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    const messagesHtml = history.map(msg => {
         const isUser = msg.role === 'user';
         let actionCardHtml = '';
         if (msg.actionCard) {
             actionCardHtml = `
-                <div class="chat-action-card">
-                    <div class="chat-action-card-title">⚡ Timetable Updated</div>
-                    <div>${escapeHtml(msg.actionCard.details)}</div>
+                <div class="studio-transmission-card">
+                    <div class="transmission-header">
+                        <span class="transmission-badge">⚡ TIMETABLE SYNCHRONIZED</span>
+                        <span class="transmission-status-tag">Updated</span>
+                    </div>
+                    <div class="transmission-summary">${escapeHtml(msg.actionCard.details)}</div>
+                    <button type="button" class="btn-transmission-view" onclick="viewGeneratedScheduleInWeekGrid()">
+                        <span>View in Week Grid</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
                 </div>
             `;
         }
@@ -1720,9 +1821,9 @@ function renderChatMessages() {
             : `<div>${renderMarkdownLite(msg.content)}</div>`;
 
         return `
-            <div class="chat-msg-row ${isUser ? 'user' : 'bot'}">
-                ${!isUser ? `<img src="avatars/notion-scholar.svg" alt="Sabi" class="chat-msg-avatar" />` : ''}
-                <div class="chat-bubble">
+            <div class="studio-msg-row chat-msg-row ${isUser ? 'user' : 'bot'}">
+                ${!isUser ? `<img src="avatars/notion-scholar.svg" alt="Sabi Copilot" class="studio-msg-avatar chat-msg-avatar" />` : ''}
+                <div class="studio-bubble chat-bubble">
                     ${mediaHtml}
                     ${contentHtml}
                     ${actionCardHtml}
@@ -1731,32 +1832,32 @@ function renderChatMessages() {
         `;
     }).join('');
 
+    container.innerHTML = heroHtml + messagesHtml;
     container.scrollTop = container.scrollHeight;
 }
 
-const CHAT_QUICK_CHIPS = [
-    "📎 Upload Course Outline",
-    "I have recurring university lectures",
-    "Prepping for JAMB in 6 weeks",
-    "WAEC / SSCE revision",
-    "Maths & Physics are tough for me",
-    "I'm free evenings (5pm - 9pm)",
-    "Generate my complete timetable now ✨"
-];
+function viewGeneratedScheduleInWeekGrid() {
+    closeSabiAiChat();
+    switchViewMode('week');
+    showToast('Switched to Week Grid Timetable ✨');
+}
+window.viewGeneratedScheduleInWeekGrid = viewGeneratedScheduleInWeekGrid;
 
 function renderChatQuickChips() {
     const container = document.getElementById('chat-quick-chips-row');
     if (!container) return;
 
-    container.innerHTML = CHAT_QUICK_CHIPS.map(text => `
-        <button type="button" class="quick-chip" onclick="handleQuickChipClick('${escapeHtml(text)}')">
+    const chips = STUDIO_MODE_CHIPS[currentStudioMode] || STUDIO_MODE_CHIPS.planner;
+
+    container.innerHTML = chips.map(text => `
+        <button type="button" class="studio-chip quick-chip" onclick="handleQuickChipClick('${escapeHtml(text)}')">
             ${escapeHtml(text)}
         </button>
     `).join('');
 }
 
 function handleQuickChipClick(chipText) {
-    if (chipText.includes('Upload Course Outline')) {
+    if (chipText.includes('Upload Course Outline') || chipText.includes('Upload Timetable Screenshot') || chipText.includes('Upload Course Outline / Syllabus')) {
         triggerChatMediaUpload();
         return;
     }
@@ -1839,10 +1940,10 @@ function showTypingIndicator() {
 
     const typingEl = document.createElement('div');
     typingEl.id = 'chat-typing-indicator';
-    typingEl.className = 'chat-msg-row bot';
+    typingEl.className = 'studio-msg-row chat-msg-row bot';
     typingEl.innerHTML = `
-        <img src="avatars/notion-scholar.svg" alt="Sabi" class="chat-msg-avatar" />
-        <div class="chat-bubble">
+        <img src="avatars/notion-scholar.svg" alt="Sabi Copilot" class="studio-msg-avatar chat-msg-avatar" />
+        <div class="studio-bubble chat-bubble">
             <div class="typing-dots">
                 <span></span><span></span><span></span>
             </div>
@@ -1857,25 +1958,39 @@ function hideTypingIndicator() {
     if (el) el.remove();
 }
 
-// Highly conversational, empathetic, one-question-at-a-time prompt guiding Sabi Study Buddy persona
-const BUDDY_SYSTEM_PROMPT = `You are "Sabi Study Buddy", an empathetic, brilliant academic mentor & friend for Nigerian and international students (University, Polytechnic, JAMB, WAEC, NOUN, ICAN).
-Tone: Warm, encouraging, concise, relatable, and authentic. You speak like a smart peer who has walked in their shoes and wants them to succeed without burnout.
+// Highly conversational, empathetic, goal-driven prompt guiding Sabi Study Buddy persona
+const BUDDY_SYSTEM_PROMPT = `You are "Sabi Study Buddy", an empathetic academic timetable planner & mentor for Nigerian and international students (University, Polytechnic, JAMB, WAEC, NOUN, ICAN).
+Tone: Warm, encouraging, concise, relatable, and authentic. You speak like a smart peer who wants them to succeed without burnout.
+CORE MISSION: Build an actionable, balanced weekly study timetable that populates their calendar.
 
-CRITICAL CONVERSATIONAL RULES (MUST FOLLOW):
-1. **ONE QUESTION AT A TIME**: Never ask a checklist of 3 or 4 questions at once! That overwhelms the student. Ask only ONE clear, focused question per message.
-2. **ACKNOWLEDGE BEFORE ASKING**: Always react warmly to what they just said first (validate their feelings, celebrate an easy course, or empathize with a tough lecturer/syllabus).
-3. **LOGICAL NATURAL STAGES**:
-   - Stage 1: Academic target (Exam/Degree/Faculty).
-   - Stage 2: Most intimidating or challenging 1-2 subjects they dread.
-   - Stage 3: Weekly fixed lecture schedule (days & times of recurring classes).
-   - Stage 4: Personal alertness window (morning person vs night owl) & daily target hours.
-   - Stage 5: Proposal & Confirmation -> Generate their complete timetable!
-4. **OUTLINE / MEDIA UPLOADS**: If they upload or paste a course outline or syllabus, read it carefully, extract their specific course codes & titles, praise their preparation, and ask the next single question about lecture times or hard topics.
-5. **KEEP IT NATURAL & SNAPPY**: Keep responses to 2-4 short, punchy paragraphs max.
+CRITICAL BREVITY RULE (MANDATORY - MAX 2 TO 3 SENTENCES):
+- Every text response MUST be strictly 2 to 3 sentences maximum (unless presenting the generated timetable JSON block).
+- Absolutely NO long text blocks, NO multi-paragraph essays, and NO bulleted walls of text.
+- Structure:
+  * Sentence 1: Warm 1-sentence acknowledgment of what the student said or uploaded.
+  * Sentence 2 (and optional Sentence 3): Your single practical question about their timetable parameters, or a 1-sentence summary of the schedule you generated.
+
+STRICT RULE - NO SYLLABUS DRILLING OR SUBJECT TUTORING:
+- NEVER ask the student about specific syllabus topics, chapters, equations, or academic subtopics (e.g., NEVER ask "are you worried about optimization, econometrics, or calculus?"). That is completely useless for building their timetable.
+- When a student mentions a tough course (like ECO375 or Maths), acknowledge it warmly, note that you will give it prime study slots with extra review sessions, and immediately ask for their TIMETABLE parameters:
+  "When are your fixed lectures for this course, or what time of day (morning, afternoon, or evening) do you have the highest energy to study it?"
+
+MULTIMODAL & VISION INSTRUCTIONS:
+- You are equipped with advanced vision capabilities (Meta LLaMA 3.2 Vision). You CAN and MUST analyze photos, screenshots, course outlines, syllabi, notes, and timetable screenshots provided by the user.
+- NEVER refuse or claim "I can't extract your schedule from a photo or URL" or tell the student you cannot read images.
+- When an image or timetable OCR snippet is provided, immediately inspect it, list the detected courses or lecture slots, and help them lock it into their timetable!
+
+CONVERSATIONAL RULES (DIRECT TO END GOAL):
+1. **ONE PRACTICAL QUESTION AT A TIME**: Keep your questions strictly focused on timetable inputs:
+   - Target degree/exam & subjects.
+   - Fixed lecture hours (days and start/end times).
+   - Study availability (how many hours a day and best time window: morning, afternoon, evening, or night).
+2. **PROACTIVE PLANNING**: As soon as you know their subjects (or if they ask to generate/plan), propose a complete weekly timetable right away with the JSON block! Don't stall.
+3. **STRICT LENGTH**: 2 to 3 sentences maximum per message, followed by the timetable JSON block when ready.
 
 OUTPUT FORMAT:
-- First, write your warm, empathetic conversational response with your single question or insight.
-- ONLY when you have enough info (or when the user asks you to "generate", "create", "plan", or provides full schedule details), append this exact JSON code block at the very end to update their timetable:
+- First, write your warm, 2-3 sentence response with your single scheduling question or plan summary.
+- Whenever you have subjects to schedule, append this exact JSON code block at the very end to update their timetable:
 \`\`\`json
 {
   "action": "UPDATE_TIMETABLE",
@@ -1912,10 +2027,14 @@ async function processBuddyConversation(userText, history, media) {
         const role = m.role === 'bot' ? 'assistant' : 'user';
 
         if (isLatest && m.media && m.media.type === 'image' && m.media.dataUrl) {
+            let combinedPrompt = m.content || 'Here is my course outline / syllabus photo. Please analyze it and extract my subjects!';
+            if (m.media.textContent) {
+                combinedPrompt += `\n\n[Extracted Text & Course Details from Screenshot]:\n${m.media.textContent}`;
+            }
             return {
                 role: role,
                 content: [
-                    { type: 'text', text: m.content || 'Here is my course outline / syllabus photo. Please analyze it and extract my subjects!' },
+                    { type: 'text', text: combinedPrompt },
                     { type: 'image_url', image_url: { url: m.media.dataUrl } }
                 ]
             };
@@ -1934,48 +2053,64 @@ async function processBuddyConversation(userText, history, media) {
         };
     });
 
-    // 0. NVIDIA NIM Live AI (Verified Working High-Performance LLM with Vision)
+    // 0. NVIDIA NIM Live AI (Verified Working High-Performance LLM with Vision via Proxy & Direct)
     if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
-        try {
-            console.log('🚀 Connecting to live NVIDIA AI (meta/llama-3.2-11b-vision-instruct)...');
-            const systemContent = BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`;
-            const res = await fetchWithTimeout('https://integrate.api.nvidia.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${nvidiaKey}`
-                },
-                body: JSON.stringify({
-                    model: 'meta/llama-3.2-11b-vision-instruct',
-                    messages: [
-                        { role: 'system', content: systemContent },
-                        ...messagesPayload
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 1500
-                })
-            }, 4000); // 4s timeout — never leaves the user hanging
+        const systemContent = BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`;
+        const chatPayload = {
+            model: 'meta/llama-3.2-11b-vision-instruct',
+            messages: [
+                { role: 'system', content: systemContent },
+                ...messagesPayload
+            ],
+            temperature: 0.7,
+            max_tokens: 1500
+        };
 
-            if (res.ok) {
-                const data = await res.json();
-                const replyText = data.choices?.[0]?.message?.content;
-                if (replyText) {
-                    console.log('✨ Live NVIDIA AI Response successfully received!');
-                    const badge = document.getElementById('chat-live-ai-badge');
-                    if (badge) {
-                        badge.textContent = '⚡ Live AI Active';
-                        badge.style.background = 'rgba(16, 185, 129, 0.2)';
-                        badge.style.color = '#34D399';
-                    }
-                    return parseAiReplyAndApply(replyText);
+        // Determine available proxy endpoints (same-origin /api/chat or local server http://localhost:3000/api/chat)
+        const endpoints = [];
+        if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+            endpoints.push('/api/chat');
+        }
+        endpoints.push('http://localhost:3000/api/chat');
+        endpoints.push('https://integrate.api.nvidia.com/v1/chat/completions');
+
+        for (const endpoint of endpoints) {
+            try {
+                console.log(`🚀 Connecting to live NVIDIA AI via ${endpoint}...`);
+                const isDirectNvidia = endpoint.includes('integrate.api.nvidia.com');
+                const headers = { 'Content-Type': 'application/json' };
+                if (isDirectNvidia) {
+                    headers['Authorization'] = `Bearer ${nvidiaKey}`;
                 }
-            } else {
-                console.warn('NVIDIA API non-ok status:', res.status);
+
+                const res = await fetchWithTimeout(endpoint, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(chatPayload)
+                }, 20000); // 20s realistic LLM generation timeout
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const replyText = data.choices?.[0]?.message?.content;
+                    if (replyText) {
+                        console.log('✨ Live NVIDIA AI Response successfully received from:', endpoint);
+                        const badge = document.getElementById('chat-live-ai-badge');
+                        if (badge) {
+                            badge.textContent = '⚡ NVIDIA AI Active';
+                            badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                            badge.style.color = '#34D399';
+                        }
+                        return parseAiReplyAndApply(replyText);
+                    }
+                } else {
+                    console.warn(`NVIDIA endpoint ${endpoint} returned status:`, res.status);
+                }
+            } catch (e) {
+                console.warn(`NVIDIA connection via ${endpoint} failed or timed out:`, e.message || e);
             }
-        } catch (e) {
-            console.warn('NVIDIA live API bypassed or timed out:', e.message || e);
         }
     }
+
 
     // 1. Anthropic Claude (Only if key starts with sk-ant-)
     if (claudeKey && claudeKey.startsWith('sk-ant-')) {
@@ -2006,8 +2141,8 @@ async function processBuddyConversation(userText, history, media) {
         }
     }
 
-    // 2. Google Gemini (Only if key starts with AIzaSy)
-    if (geminiKey && geminiKey.startsWith('AIzaSy')) {
+    // 2. Google Gemini (Native browser CORS support)
+    if (geminiKey && geminiKey.length > 15) {
         try {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
             const res = await fetchWithTimeout(url, {
@@ -2020,12 +2155,20 @@ async function processBuddyConversation(userText, history, media) {
                     })),
                     systemInstruction: { parts: [{ text: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}` }] }
                 })
-            }, 5000);
+            }, 15000);
 
             if (res.ok) {
                 const data = await res.json();
                 const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (replyText) return parseAiReplyAndApply(replyText);
+                if (replyText) {
+                    const badge = document.getElementById('chat-live-ai-badge');
+                    if (badge) {
+                        badge.textContent = '⚡ Gemini AI Active';
+                        badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                        badge.style.color = '#34D399';
+                    }
+                    return parseAiReplyAndApply(replyText);
+                }
             }
         } catch (e) {
             console.warn('Gemini API error, falling back:', e.message || e);
@@ -2179,7 +2322,7 @@ function generateOfflineBuddyReply(userText, media, history) {
             const classSummary = media.extractedClasses.map(c => `• **${c.subject}**: ${c.day} (${c.start_time} – ${c.end_time}) [${c.venue}]`).join('\n');
             return {
                 role: 'bot',
-                content: `I've analyzed your timetable screenshot (**${escapeHtml(docName)}**) and extracted **${media.extractedClasses.length} recurring classes**! 🎓📅\n\n${classSummary}\n\nThese have been locked into your calendar so personal study sessions will never clash with lecture hours.\n\n**When do you prefer to do your personal revision?** (e.g. *Mornings (7am–10am)*, *Evenings (5pm–8pm)*, or *Night owl (8pm–11pm)*?)`,
+                content: `I've locked ${media.extractedClasses.length} recurring classes from your timetable into your calendar. What time window (morning, afternoon, or evening) do you prefer for your personal study sessions?`,
                 actionCard: { details: `Imported ${media.extractedClasses.length} classes from timetable screenshot` },
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
@@ -2193,7 +2336,7 @@ function generateOfflineBuddyReply(userText, media, history) {
         if (detected.length > 0) {
             return {
                 role: 'bot',
-                content: `I've scanned your **${escapeHtml(docName)}**! 📑✨\n\nDetected courses: **${detected.slice(0, 8).join(', ')}**.\n\n**Which 1–2 of these feel the heaviest or most stressful right now?**`,
+                content: `I detected your courses: ${detected.slice(0, 6).join(', ')}. When are your fixed lecture times, or how many hours a day would you like to study?`,
                 actionCard: null,
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
@@ -2202,7 +2345,7 @@ function generateOfflineBuddyReply(userText, media, history) {
         // Neither classes nor courses detected from image
         return {
             role: 'bot',
-            content: `I received your upload (**${escapeHtml(docName)}**), but couldn't clearly detect your course codes or lecture times from this image.\n\nCould you type out your main subjects or tell me when your lectures take place? (e.g. *"CSC 201 Mondays at 9am, MTH 101 Wednesdays at 2pm"*). I'll add them right away!`,
+            content: `I received your upload, but couldn't detect clear lecture times from it. Could you type your courses or lecture days (e.g., "CSC 201 Mondays at 9am") so I can add them?`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2212,7 +2355,7 @@ function generateOfflineBuddyReply(userText, media, history) {
     if (/\b(not on the (thing|list|image|screenshot|outline)|wrong courses|not my courses|that('s| is) (wrong|incorrect)|incorrect|those are not|none of (those|them)|wrong list)\b/i.test(lower)) {
         return {
             role: 'bot',
-            content: `My apologies! 🤦‍♂️ You're totally right — let's get your actual courses locked in.\n\nCould you type out your courses (e.g. *ECO 301, ECO 303, ECO 305*), or re-paste your screenshot? I will update your subjects immediately!`,
+            content: `My apologies for the confusion! Could you type your actual courses (e.g. ECO 301, ECO 375), and I will update your schedule immediately?`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2225,7 +2368,7 @@ function generateOfflineBuddyReply(userText, media, history) {
         renderAllViews();
         return {
             role: 'bot',
-            content: "🗑️ **Timetable Cleared!** All study sessions have been removed. Let me know whenever you'd like to build a fresh schedule!",
+            content: "🗑️ Timetable cleared! All study sessions have been removed. Let me know whenever you'd like to build a fresh schedule.",
             actionCard: { details: 'Cleared all calendar events' },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2235,7 +2378,7 @@ function generateOfflineBuddyReply(userText, media, history) {
     if (/\b(study tips|study advice|how to study|how should i study|best way to study|study techniques|feynman)\b/i.test(lower)) {
         return {
             role: 'bot',
-            content: `Here is the high-yield study formula used by top university students: 💡📚\n\n1. **Active Recall over Passive Re-reading**: Close your notes and test yourself. Practice past questions (try Sabi's Past Question room) instead of highlighting.\n2. **Spaced Repetition**: Review challenging topics 24 hours later, then 3 days later, then 1 week later so they stick in long-term memory.\n3. **Pomodoro Sprints**: Study in focused 25-minute or 45-minute blocks with 5-minute stretch breaks.\n4. **The Feynman Technique**: Explain tough concepts in simple words as if teaching a classmate.\n\nWould you like me to build a balanced weekly study plan around these techniques? Just tell me your main subjects!`,
+            content: `The top technique is active recall: practice retrieval with short 25-minute sprints instead of passive re-reading. Which course would you like to schedule focused practice sessions for?`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2245,7 +2388,7 @@ function generateOfflineBuddyReply(userText, media, history) {
     if (/\b(active recall|what is active recall)\b/i.test(lower)) {
         return {
             role: 'bot',
-            content: `**Active Recall** is testing your brain to retrieve information from memory rather than passively looking at your notes! 🧠⚡\n\n• Instead of reading a textbook chapter 3 times, read it once, close the book, and write down everything you remember.\n• Solve past exam questions under timed conditions.\n• When your brain has to work to retrieve a fact, neural connections strengthen by up to 300%.\n\nWhich course would you like to start practicing active recall on?`,
+            content: `Active recall means testing your memory with questions rather than passively looking over notes. Which course would you like to schedule active recall sessions for?`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2255,7 +2398,7 @@ function generateOfflineBuddyReply(userText, media, history) {
     if (/\b(stressed|stress|overwhelmed|anxious|can't focus|burnout|exhausted|so much to read|panicking)\b/i.test(lower)) {
         return {
             role: 'bot',
-            content: `Take a deep breath — you've got this, and you don't have to carry it all at once! 🌿💙\n\nWhen syllabus workload piles up, overwhelm happens because everything feels equally urgent. Here is how we conquer it:\n1. **Pick just ONE hard subject**: We won't try to study 6 subjects in one day. Focus on 1 or 2 high-yield topics today.\n2. **Short 30-Minute Sprints**: Tell yourself you'll only study for 30 minutes. Once you start, inertia disappears.\n3. **Guaranteed Rest**: Keep 1 day a week (like Sunday) completely free from guilt and study.\n\nTell me which single subject is stressing you out the most, and we'll break it down into easy, bite-sized sessions!`,
+            content: `Take a deep breath—you don't have to tackle everything at once! Tell me your hardest subject, and we'll schedule short, bite-sized study blocks around your rest hours.`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2265,7 +2408,7 @@ function generateOfflineBuddyReply(userText, media, history) {
     if (/^(hi|hello|hey|yo|good morning|good afternoon|good evening|howdy|sup)\b/i.test(lower) || /\b(who are you|what can you do|how does this work|help me|capabilities)\b/i.test(lower)) {
         return {
             role: 'bot',
-            content: `Hey! 👋 I'm your **Sabi Study Buddy** — your academic mentor & schedule planner! 🎓✨\n\nHere is what I can do for you:\n• 📸 **Read Timetables & Outlines**: Upload or paste (\`Ctrl+V\`) a screenshot of your lecture timetable, and I'll extract your classes automatically!\n• 🗓️ **Personalized Weekly Schedules**: Build a realistic study routine that fits around your real lectures and sleep.\n• ⚡ **Direct Calendar Actions**: Say *"Add class CSC 201 Mondays at 9am"* or *"Generate timetable"*.\n• 🎯 **Exam Prep Coaching**: Tailored strategies for University courses, JAMB, WAEC, NOUN, or ICAN.\n\nWhat degree, course of study, or exam are you working on?`,
+            content: `Hey! 👋 I'm your Sabi Study Buddy, here to build a weekly timetable that fits your life. What degree, courses, or exam are you focusing on this semester?`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };

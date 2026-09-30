@@ -1,0 +1,13 @@
+{
+  "name": "sabi",
+  "version": "1.0.0",
+  "description": "Sabi Academic OS & AI Study Buddy",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["sabi", "ai", "study", "timetable"],
+  "author": "",
+  "license": "ISC"
+}

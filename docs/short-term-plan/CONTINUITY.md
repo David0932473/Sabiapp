@@ -1,30 +1,34 @@
-- **Goal (incl. success criteria)**: Implement STAGE 5: Plan generator (one AI call, no chat) and use Poppins font everywhere on the website.
+- **Goal (incl. success criteria)**: Execute a complete redesign of both the calendar menu/navigation and the Chat AI interface using the `/frontend-design` skill — creating a bespoke, high-craft Cyber-Academic Command Deck & Bento Matrix Hub, paired with the Sabi AI Academic Copilot Studio.
 - **Constraints/Assumptions**:
-  - Onboarding is ONE tap-only screen with 3 questions:
-    1. Which subjects do you find hard? (chips from their subjects, any number)
-    2. Realistic study hours on a normal day (1-2 / 3-4 / 5+) and best time (morning / afternoon / evening / night)
-    3. Exam dates: "I know them" (date picker per subject, optional), "In about X weeks", or "I don't know yet"
-  - Plan ONE week at a time: generate on onboarding completion, auto-regenerate first time opened each Monday, "Regenerate plan" in ⋯ menu, and re-plan remaining days when exam date is entered or changed.
-  - One AI call, no chat, returning one JSON output strictly matching system prompt and schema.
-  - Strict validation in code: schema, subject names match input, dates in week, no overlap with classes/fixed sessions, times in 05:30-23:30, min 2 sessions per subject with 2+ days apart (unless notes explains reduction), max 3 subjects per day. Retry once with violations if invalid.
-  - Poppins font applied everywhere across the website.
+  - Full operational backward-compatibility: all functions (`openSabiAiChat`, `openAddSessionModal`, `togglePlannerMenu`, `handleSendChatMessage`, etc.) preserved.
+  - Zero generic components or "AI slop" aesthetics. Architectural obsidian glass, electric sapphire gradients, luminous status indicators, and tactical micro-interactions.
+  - Strict brevity standard: Maximum 2-3 sentences per AI conversational response, strictly preventing syllabus/topic tutoring and directing 100% of questions toward timetable inputs.
 - **Key decisions**:
-  - Streamlined `#planner-onboarding-modal` to remove text inputs, photo uploads, off-days, goals, and follow-up bubbles, making onboarding a clean, fast tap-only modal.
-  - Wired exam date inputs and mode changes to debounce and trigger `generateWeeklyPlan(monday, false, true)` to automatically re-plan remaining days.
-  - Added strict minimum 2 sessions per subject check to `validatePlannerOutput()` with automatic fallback explanation for Rule 5 reductions.
-  - Replaced Google Font `Outfit` with `Poppins` across all 11 HTML pages and all CSS/JS stylesheets.
+  - **Calendar Navigation & Menu Redesign**:
+    - Replaced the basic top bar with the **Sabi Academic Command Deck** (`.cal-command-deck`), featuring a branded navigation capsule (`[← Sabi OS • Timetable Cockpit]`), an active AI Copilot Beacon with pulsating double-ring energy aura, and a tactile `+ New` pill.
+    - Replaced the simple vertical dropdown with an **Architectural Bento Matrix Hub** (`.planner-dropdown-menu` -> `.command-hub-bento-grid`):
+      1. Full-width Hero Bento card: `Sabi AI Copilot Studio` with live avatar, sparkle indicator, and 1-tap launcher.
+      2. 2-column interactive tiles: `Academic Setup Wizard`, `Auto-Rebalance Engine`, `Recurring Lecture Slot`, `Deep Work Study Block`, `ICS Calendar Export`, and `Vector Print Timetable PDF`.
+      3. Clean bottom danger strip for resetting data with confirmation guard.
+  - **Chat AI Interface Complete Redesign**:
+    - Transformed the slide-up drawer into the **Sabi AI Academic Copilot Studio** (`.copilot-studio-window`), an immersive floating glass cockpit with top ambient aurora glow.
+    - Added **Studio Tactical Mode Bar** with 3 distinct operational modes:
+      1. `🗓️ Timetable Architect` (weekly study & lecture balancing)
+      2. `📷 Outline Vision` (course outline OCR & syllabus intake)
+      3. `🎯 Exam Crunch` (JAMB/WAEC/Finals spaced repetition)
+    - Added **Copilot Launchpad Hero**: A visually striking greeting card rendered when chat begins, featuring 4 interactive launch tiles (Scan Course Outline, Auto-Balance Week, Exam Crunch, Evening Deep Work).
+    - Designed **Holographic Timetable Transmission Cards** (`.studio-transmission-card`) embedded directly in conversation with 1-tap "View on Week Grid" navigation.
+    - Engineered **Advanced Multimodal Studio Dock**: Floating capsule preview for uploaded outline photos, in-field camera scan shortcut icon, and active physics on the send button.
 - **State**:
   - Done:
-    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Streamlined onboarding modal to ONE tap-only screen with 3 questions.
-    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Strict validation engine with min 2 sessions check, exam date change auto-replan of remaining days, Monday auto-regeneration, and clean one AI call pipeline.
-    - Poppins font integrated across [global.css](file:///c:/Users/dave/.gemini/sabi/global.css), [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css), [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html), [index.html](file:///c:/Users/dave/.gemini/sabi/index.html), [library.html](file:///c:/Users/dave/.gemini/sabi/library.html), [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html), [pq-setup.html](file:///c:/Users/dave/.gemini/sabi/pq-setup.html), [jamb-setup.html](file:///c:/Users/dave/.gemini/sabi/jamb-setup.html), [jamb-setup.css](file:///c:/Users/dave/.gemini/sabi/jamb-setup.css), [ican.html](file:///c:/Users/dave/.gemini/sabi/ican.html), [reader.html](file:///c:/Users/dave/.gemini/sabi/reader.html), [results.html](file:///c:/Users/dave/.gemini/sabi/results.html), [results.css](file:///c:/Users/dave/.gemini/sabi/results.css), [review.html](file:///c:/Users/dave/.gemini/sabi/review.html), [review.css](file:///c:/Users/dave/.gemini/sabi/review.css), [test-room.html](file:///c:/Users/dave/.gemini/sabi/test-room.html), [test-room.css](file:///c:/Users/dave/.gemini/sabi/test-room.css), [pq.js](file:///c:/Users/dave/.gemini/sabi/pq.js).
-  - Now: All tests passing, 0 validation collisions, ready to commit and push.
-  - Next: User verification in browser.
+    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Redesigned top navigation to Command Deck and Bento Hub; transformed chat drawer into Copilot Studio with mode switcher, launchpad hero, and multimodal dock.
+    - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css): Implemented all Cyber-Academic glassmorphic styles, Bento grid layout, holographic transmission cards, avatar aura pulse, and ambient aurora effects.
+    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Added `setStudioMode()`, dynamic mode-based quick chips, launchpad hero generator, and `viewGeneratedScheduleInWeekGrid()`.
+  - Now: Complete redesign implemented and verified with Node syntax checks and server response validation.
+  - Next: User browser inspection and feedback.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
-  - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)
   - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css)
-  - [global.css](file:///c:/Users/dave/.gemini/sabi/global.css)
-
-
+  - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)
+  - [server.js](file:///c:/Users/dave/.gemini/sabi/server.js)

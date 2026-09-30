@@ -12,63 +12,153 @@
 
 <div id="calendar-app" class="page-transition-wrapper">
 
-    <!-- TOP BAR -->
-    <div class="top-bar">
-        <a href="index.html" class="back-btn back-btn-icon-only" aria-label="Dashboard" title="Dashboard">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-        </a>
-        <div class="top-bar-actions">
-            <button type="button" class="btn-action-ai-chat" onclick="openSabiAiChat()" title="Chat with Sabi Study Buddy">
-                <span class="ai-sparkle-dot">✨</span>
-                <span>Sabi AI</span>
+    <!-- REDESIGNED ACADEMIC COMMAND DECK (TOP NAVIGATION) -->
+    <header class="cal-command-deck">
+        <div class="deck-brand-capsule">
+            <a href="index.html" class="deck-back-btn" aria-label="Return to Dashboard" title="Dashboard">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </a>
+            <div class="deck-brand-info">
+                <div class="deck-brand-title-row">
+                    <span class="deck-brand-name">Sabi</span>
+                    <span class="deck-brand-tag">OS</span>
+                </div>
+                <span class="deck-brand-sub">Timetable Cockpit</span>
+            </div>
+        </div>
+
+        <div class="deck-controls-matrix">
+            <!-- AI Copilot Beacon Button -->
+            <button type="button" class="deck-copilot-beacon" onclick="openSabiAiChat()" title="Open Sabi AI Copilot Studio">
+                <div class="beacon-avatar-wrapper">
+                    <img src="avatars/notion-scholar.svg" alt="Sabi Copilot" class="beacon-avatar-img" />
+                    <span class="beacon-pulse-ring"></span>
+                </div>
+                <div class="beacon-text-col">
+                    <span class="beacon-title">Copilot</span>
+                    <span class="beacon-badge">AI ✨</span>
+                </div>
             </button>
-            <button type="button" class="btn-action-pill" onclick="openAddSessionModal()">
-                <span>+</span> New
+
+            <!-- Quick Add Action -->
+            <button type="button" class="deck-btn-add" onclick="openAddSessionModal()" title="Add Session or Class">
+                <span class="deck-add-plus">+</span>
+                <span class="deck-add-label">New</span>
             </button>
+
+            <!-- Command Hub Matrix Trigger -->
             <div class="cal-more-menu-wrapper">
-                <button type="button" class="btn-more-menu" id="btn-planner-menu" onclick="togglePlannerMenu(event)" aria-label="Planner options" title="Planner Options">
-                    ⋯
+                <button type="button" class="deck-btn-hub" id="btn-planner-menu" onclick="togglePlannerMenu(event)" aria-label="Academic Command Hub" title="Academic Command Hub">
+                    <span class="hub-grid-dots">
+                        <i></i><i></i>
+                        <i></i><i></i>
+                    </span>
                 </button>
+
+                <!-- ARCHITECTURAL COMMAND HUB (BENTO MATRIX OVERLAY) -->
                 <div class="planner-dropdown-menu hidden" id="planner-dropdown-menu">
-                    <button type="button" class="dropdown-item" onclick="openFirstTimePopup()">
-                        <span class="dropdown-item-icon">✨</span>
-                        <span>Re-run Academic Setup</span>
-                    </button>
-                    <button type="button" class="dropdown-item" onclick="openSabiAiChat()">
-                        <span class="dropdown-item-icon">💬</span>
-                        <span>Chat with Sabi Study Buddy</span>
-                    </button>
-                    <button type="button" class="dropdown-item" onclick="openAddSessionModal('class')">
-                        <span class="dropdown-item-icon">🎓</span>
-                        <span>Add Recurring Class</span>
-                    </button>
-                    <button type="button" class="dropdown-item" onclick="openAddSessionModal('study')">
-                        <span class="dropdown-item-icon">⏱️</span>
-                        <span>Add Study Session</span>
-                    </button>
-                    <button type="button" class="dropdown-item" onclick="triggerRegeneratePlan()">
-                        <span class="dropdown-item-icon">⚡</span>
-                        <span>Rebalance timetable</span>
-                    </button>
-                    <button type="button" class="dropdown-item" onclick="triggerPrintTimetable()">
-                        <span class="dropdown-item-icon">🖨️</span>
-                        <span>Print week timetable</span>
-                    </button>
-                    <button type="button" class="dropdown-item" onclick="exportToIcs()">
-                        <span class="dropdown-item-icon">📅</span>
-                        <span>Export calendar (.ics)</span>
-                    </button>
-                    <button type="button" class="dropdown-item item-danger" onclick="promptClearAllEvents()">
-                        <span class="dropdown-item-icon">🗑️</span>
-                        <span>Clear All Timetable</span>
-                    </button>
+                    <!-- Hub Header -->
+                    <div class="command-hub-header">
+                        <div class="hub-header-title-row">
+                            <span class="hub-header-badge">COMMAND HUB</span>
+                            <span class="hub-engine-status">⚡ NVIDIA NIM Active</span>
+                        </div>
+                        <h4 class="hub-header-heading">Academic Operations</h4>
+                    </div>
+
+                    <!-- Bento Grid Actions -->
+                    <div class="command-hub-bento-grid">
+                        <!-- Bento 1: Featured AI Copilot Studio (Spans full width) -->
+                        <div class="bento-tile bento-hero-ai" onclick="openSabiAiChat()">
+                            <div class="bento-hero-glow"></div>
+                            <div class="bento-hero-left">
+                                <div class="bento-hero-avatar">
+                                    <img src="avatars/notion-scholar.svg" alt="Sabi AI" />
+                                    <span class="bento-avatar-sparkle">✨</span>
+                                </div>
+                                <div class="bento-hero-meta">
+                                    <div class="bento-hero-title-row">
+                                        <span class="bento-hero-title">Sabi AI Copilot Studio</span>
+                                        <span class="bento-badge-live">Live</span>
+                                    </div>
+                                    <p class="bento-hero-desc">Interactive timetable architect, course outline OCR & clash solver.</p>
+                                </div>
+                            </div>
+                            <div class="bento-hero-action">
+                                <span>Launch Studio</span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </div>
+
+                        <!-- Bento 2: Academic Setup Wizard -->
+                        <div class="bento-tile bento-tile-setup" onclick="openFirstTimePopup()">
+                            <div class="bento-tile-icon-box">🎯</div>
+                            <div class="bento-tile-text">
+                                <span class="bento-tile-title">Academic Setup</span>
+                                <span class="bento-tile-sub">Exams, weak courses & goals</span>
+                            </div>
+                        </div>
+
+                        <!-- Bento 3: Weekly Rebalance Engine -->
+                        <div class="bento-tile bento-tile-rebalance" onclick="triggerRegeneratePlan()">
+                            <div class="bento-tile-icon-box">⚡</div>
+                            <div class="bento-tile-text">
+                                <span class="bento-tile-title">Auto-Rebalance</span>
+                                <span class="bento-tile-sub">Recalculate remaining days</span>
+                            </div>
+                        </div>
+
+                        <!-- Bento 4: Add Recurring Class -->
+                        <div class="bento-tile bento-tile-class" onclick="openAddSessionModal('class')">
+                            <div class="bento-tile-icon-box">🎓</div>
+                            <div class="bento-tile-text">
+                                <span class="bento-tile-title">Recurring Class</span>
+                                <span class="bento-tile-sub">Fixed lectures & lecture hall</span>
+                            </div>
+                        </div>
+
+                        <!-- Bento 5: Add Study Session -->
+                        <div class="bento-tile bento-tile-study" onclick="openAddSessionModal('study')">
+                            <div class="bento-tile-icon-box">⏱️</div>
+                            <div class="bento-tile-text">
+                                <span class="bento-tile-title">Study Session</span>
+                                <span class="bento-tile-sub">Focused revision blocks</span>
+                            </div>
+                        </div>
+
+                        <!-- Bento 6: Export (.ics) Calendar -->
+                        <div class="bento-tile bento-tile-export" onclick="exportToIcs()">
+                            <div class="bento-tile-icon-box">📅</div>
+                            <div class="bento-tile-text">
+                                <span class="bento-tile-title">Export Calendar</span>
+                                <span class="bento-tile-sub">Sync to Google / Apple .ics</span>
+                            </div>
+                        </div>
+
+                        <!-- Bento 7: Print Timetable PDF -->
+                        <div class="bento-tile bento-tile-print" onclick="triggerPrintTimetable()">
+                            <div class="bento-tile-icon-box">🖨️</div>
+                            <div class="bento-tile-text">
+                                <span class="bento-tile-title">Print Timetable</span>
+                                <span class="bento-tile-sub">Clean paper & PDF view</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hub Footer / Danger Zone -->
+                    <div class="command-hub-footer">
+                        <button type="button" class="btn-hub-danger" onclick="promptClearAllEvents()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            <span>Clear Timetable Data</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
     <!-- VIEW TABS -->
     <div class="filter-tabs">
@@ -509,72 +599,124 @@
     </div>
 </div>
 
-<!-- MODAL 3: SABI AI STUDY BUDDY CHAT DRAWER -->
+<!-- MODAL 3: SABI AI ACADEMIC COPILOT STUDIO -->
 <div id="sabi-ai-chat-drawer" class="modal-overlay hidden" onclick="closeSabiAiChat(event)">
-    <div class="chat-drawer-sheet" onclick="event.stopPropagation()">
-        <!-- Header -->
-        <div class="chat-drawer-header">
-            <div class="chat-header-profile">
-                <div class="chat-avatar-wrap">
-                    <img src="avatars/notion-scholar.svg" alt="Sabi Study Buddy" class="chat-avatar-img" />
-                    <span class="chat-status-dot" title="Online"></span>
+    <div class="copilot-studio-window" onclick="event.stopPropagation()">
+        <!-- Tactile Mobile Dock Handle -->
+        <div class="studio-drag-bar">
+            <span class="studio-drag-pill"></span>
+        </div>
+
+        <!-- Studio Ambient Backdrop Glow -->
+        <div class="studio-ambient-glow"></div>
+
+        <!-- Studio Command Header -->
+        <header class="copilot-studio-header">
+            <div class="studio-header-identity">
+                <div class="studio-avatar-pod">
+                    <img src="avatars/notion-scholar.svg" alt="Sabi Copilot" class="studio-avatar-img" />
+                    <span class="studio-avatar-aura-outer"></span>
+                    <span class="studio-avatar-aura-inner"></span>
+                    <span class="studio-status-orb" title="Online & Ready"></span>
                 </div>
-                <div class="chat-header-info">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <h3 class="chat-header-name">Sabi Study Buddy</h3>
-                        <span class="live-ai-badge" id="chat-live-ai-badge">⚡ Live AI</span>
+                <div class="studio-profile-text">
+                    <div class="studio-title-badge-row">
+                        <h2 class="studio-title">Sabi AI Copilot</h2>
+                        <span class="studio-model-chip" id="chat-live-ai-badge">⚡ NVIDIA LLaMA 3.2</span>
                     </div>
-                    <span class="chat-header-status" id="chat-header-status-text">Powered by Llama 3.2 • Always ready</span>
+                    <span class="studio-sub-status" id="chat-header-status-text">Academic Architect • Multimodal Vision Enabled</span>
                 </div>
             </div>
-            <div class="chat-header-actions">
-                <button type="button" class="chat-tool-btn" onclick="clearChatHistory()" title="Restart Conversation">🔄</button>
-                <button type="button" class="chat-tool-btn" onclick="closeSabiAiChat()" aria-label="Close Chat">✕</button>
+
+            <!-- Studio Modes & Controls -->
+            <div class="studio-header-actions">
+                <button type="button" class="studio-action-btn" onclick="clearChatHistory()" title="Restart Studio Session" aria-label="Restart Studio Session">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                </button>
+                <button type="button" class="studio-action-btn close-btn" onclick="closeSabiAiChat()" title="Exit Studio" aria-label="Exit Studio">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
             </div>
+        </header>
+
+        <!-- Studio Tactical Mode Bar -->
+        <div class="studio-mode-bar">
+            <button type="button" class="studio-mode-pill active" id="mode-pill-planner" onclick="setStudioMode('planner')">
+                <span class="mode-icon">🗓️</span>
+                <span>Timetable Architect</span>
+            </button>
+            <button type="button" class="studio-mode-pill" id="mode-pill-vision" onclick="setStudioMode('vision')">
+                <span class="mode-icon">📷</span>
+                <span>Outline Vision</span>
+            </button>
+            <button type="button" class="studio-mode-pill" id="mode-pill-exam" onclick="setStudioMode('exam')">
+                <span class="mode-icon">🎯</span>
+                <span>Exam Crunch</span>
+            </button>
         </div>
 
-        <!-- Chat Feed -->
-        <div class="chat-messages-container" id="chat-messages-container">
-            <!-- Messages rendered dynamically -->
+        <!-- Studio Message Stream Canvas -->
+        <main class="studio-messages-canvas" id="chat-messages-container">
+            <!-- Messages & Hero Launchpad rendered dynamically -->
+        </main>
+
+        <!-- Studio Dynamic Suggestions Strip -->
+        <div class="studio-suggestions-strip" id="chat-quick-chips-row">
+            <!-- Rendered dynamically -->
         </div>
 
-        <!-- Quick Response Chips -->
-        <div class="chat-quick-chips-row" id="chat-quick-chips-row">
-            <!-- Suggested chips rendered dynamically -->
-        </div>
-
-        <!-- Chat Input Form & Media Attachments -->
-        <div class="chat-input-area">
-            <!-- Media Preview Bar (Shown when user selects an image or document) -->
+        <!-- Studio Multimodal Input Dock -->
+        <footer class="studio-input-dock">
+            <!-- Media Attachment Capsule Preview -->
             <div class="chat-media-preview-bar hidden" id="chat-media-preview-bar">
                 <div class="media-preview-card" id="media-preview-card">
-                    <span class="media-preview-icon" id="media-preview-icon">📎</span>
+                    <div class="media-preview-icon-capsule">
+                        <span id="media-preview-icon">📷</span>
+                    </div>
                     <div class="media-preview-details">
-                        <span class="media-preview-filename" id="media-preview-filename">course_outline.png</span>
-                        <span class="media-preview-filesize" id="media-preview-filesize">Image selected</span>
+                        <div class="media-preview-title-row">
+                            <span class="media-preview-filename" id="media-preview-filename">course_outline.png</span>
+                            <span class="media-preview-ocr-tag">AI Vision OCR</span>
+                        </div>
+                        <span class="media-preview-filesize" id="media-preview-filesize">Image ready for scanning</span>
                     </div>
                     <button type="button" class="btn-remove-media" onclick="removePendingChatMedia()" aria-label="Remove media">✕</button>
                 </div>
             </div>
 
-            <!-- Hidden file input for uploading images & course outline documents -->
+            <!-- Hidden File Input for Image/Document Upload -->
             <input type="file" id="chat-media-file-input" class="hidden" accept="image/*,application/pdf,.doc,.docx,.txt" onchange="handleChatMediaSelected(event)" />
 
-            <form id="chat-input-form" onsubmit="handleSendChatMessage(event)" class="chat-input-form">
-                <button type="button" class="btn-chat-attach" onclick="triggerChatMediaUpload()" title="Attach Course Outline, Timetable photo, or Syllabus (Image / PDF)">
+            <!-- Integrated Input Bar -->
+            <form id="chat-input-form" onsubmit="handleSendChatMessage(event)" class="studio-form-dock">
+                <button type="button" class="studio-btn-attach" onclick="triggerChatMediaUpload()" title="Attach Course Outline photo or document (Vision OCR)">
                     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
                     </svg>
                 </button>
-                <input type="text" id="chat-user-input" class="chat-text-input" placeholder="Chat with Sabi, paste outline, or attach course file..." autocomplete="off" />
-                <button type="submit" class="btn-chat-send" id="btn-chat-send" aria-label="Send Message">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+
+                <div class="studio-input-field-wrapper">
+                    <input type="text" id="chat-user-input" class="studio-text-input" placeholder="Message Copilot, paste outline, or ask to schedule..." autocomplete="off" />
+                    <button type="button" class="studio-btn-scan-shortcut" onclick="triggerChatMediaUpload()" title="Scan Timetable Photo (Vision)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    </button>
+                </div>
+
+                <button type="submit" class="studio-btn-send" id="btn-chat-send" aria-label="Send to Copilot" title="Send">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="22" y1="2" x2="11" y2="13"></line>
                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
                 </button>
             </form>
-        </div>
+        </footer>
     </div>
 </div>
 
