@@ -7,6 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css" type="text/css" media="all" />
     <link rel="stylesheet" href="calendar.css" type="text/css" media="all" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="auth-guard.js"></script>
     <style>
         :root {
             --bg: #F4F6FB;
@@ -693,8 +696,12 @@
                 </select>
             </div>
 
-            <div class="settings-actions">
+            <div class="settings-actions" style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
                 <button type="button" class="save-settings-btn" onclick="savePersonalSettings()">Save Settings</button>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="preset-pill" style="flex: 1; justify-content: center; padding: 10px;" onclick="window.location.href='auth.html?onboarding=true'">Edit Academic Track</button>
+                    <button type="button" class="preset-pill" style="flex: 1; justify-content: center; padding: 10px; color: #EF4444; border-color: rgba(239, 68, 68, 0.3);" onclick="if(window.SabiAuth) SabiAuth.signOut();">Sign Out</button>
+                </div>
             </div>
         </div>
     </div>
@@ -814,6 +821,11 @@
         localStorage.setItem('sabi_user_name', newName);
         localStorage.setItem('sabi_target_exam', newExam);
         localStorage.setItem('sabi_avatar', currentSelectedAvatar);
+
+        // Sync to cloud profile if logged in
+        if (window.SabiAuth && typeof window.SabiAuth.saveProfile === 'function') {
+            window.SabiAuth.saveProfile({ full_name: newName }).catch(() => {});
+        }
 
         // Update header avatar & dashboard greeting immediately
         const headerAvatar = document.getElementById('header-avatar-img');

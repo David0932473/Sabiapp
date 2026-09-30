@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sabi - Sign In & Onboarding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<div class="auth-container">
+    <!-- Header Branding -->
+    <div class="auth-header">
+        <div class="auth-logo-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            Sabi Academic OS
+        </div>
+        <h1 class="auth-title">Welcome to <span>Sabi</span></h1>
+        <p class="auth-subtitle" id="auth-subtitle">Your all-in-one academic operating system and AI study companion.</p>
+    </div>
+
+    <!-- Alert / Message Container -->
+    <div id="auth-message" class="auth-message"></div>
+
+    <!-- Main Auth Card -->
+    <div class="auth-card">
+        
+        <!-- SECTION 1: AUTHENTICATION (LOGIN / REGISTER) -->
+        <div id="auth-section">
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+                <button type="button" class="auth-tab-btn" id="tab-register" onclick="switchAuthTab('register')">Create Account</button>
+            </div>
+
+            <!-- Google OAuth -->
+            <button type="button" class="btn-google" id="btn-google-auth" onclick="handleGoogleSignIn()">
+                <svg viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z"/>
+                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.14C3.25 21.31 7.31 24 12 24z"/>
+                    <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.59H1.27C.46 8.21 0 10.05 0 12s.46 3.79 1.27 5.41l4.01-3.14z"/>
+                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.69 1.27 6.59l4.01 3.14c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                </svg>
+                Continue with Google
+            </button>
+
+            <div class="auth-divider">
+                <span>or continue with email</span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleEmailLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input type="email" id="login-email" class="form-input" placeholder="student@example.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('login-password')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <div class="form-footer-link">
+                        <a href="javascript:void(0)" onclick="showForgotPassword()">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btn-login-submit">
+                    <span>Sign In to Sabi</span>
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" style="display: none;" onsubmit="handleEmailRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </span>
+                        <input type="text" id="reg-name" class="form-input" placeholder="e.g. David Olawale" required autocomplete="name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input type="email" id="reg-email" class="form-input" placeholder="student@example.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <input type="password" id="reg-password" class="form-input" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('reg-password')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btn-register-submit">
+                    <span>Create Account & Continue</span>
+                </button>
+            </form>
+
+            <!-- Forgot Password View -->
+            <div id="forgot-password-view" style="display: none;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                    Enter your registered email address and we'll send you a password recovery link.
+                </p>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </span>
+                        <input type="email" id="forgot-email" class="form-input" placeholder="student@example.com">
+                    </div>
+                </div>
+                <button type="button" class="btn-primary" id="btn-forgot-submit" onclick="handleSendPasswordReset()">
+                    <span>Send Recovery Link</span>
+                </button>
+                <div class="form-footer-link" style="justify-content: center; margin-top: 14px;">
+                    <a href="javascript:void(0)" onclick="hideForgotPassword()">Back to Sign In</a>
+                </div>
+            </div>
+
+            <!-- Set New Password View (Recovery Hash) -->
+            <div id="update-password-view" style="display: none;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                    Enter your new secure password below to restore access.
+                </p>
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </span>
+                        <input type="password" id="new-password" class="form-input" placeholder="New password" minlength="6">
+                    </div>
+                </div>
+                <button type="button" class="btn-primary" id="btn-update-password-submit" onclick="handleUpdateNewPassword()">
+                    <span>Set New Password & Enter Sabi</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SECTION 2: ADAPTIVE ONBOARDING WIZARD -->
+        <div id="onboarding-section" class="onboarding-screen">
+            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">Set Up Your Study Profile</h2>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px;">
+                Personalize your Sabi OS timetable, past questions, and AI companion.
+            </p>
+
+            <label class="form-label">What is your primary study goal?</label>
+            <div class="study-tracks-grid">
+                <!-- Track 1: University -->
+                <div class="track-card selected" id="track-uni" onclick="selectStudyTrack('university')">
+                    <div class="track-card-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                    </div>
+                    <div class="track-title">University Degree</div>
+                    <div class="track-desc">Undergraduate or postgraduate studies</div>
+                </div>
+
+                <!-- Track 2: Casual / Other Exams -->
+                <div class="track-card" id="track-casual" onclick="selectStudyTrack('casual')">
+                    <div class="track-card-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="6"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                    </div>
+                    <div class="track-title">Casual / Other Exams</div>
+                    <div class="track-desc">JAMB, Post-UTME, ICAN, or general prep</div>
+                </div>
+            </div>
+
+            <!-- Dynamic University Section (shown when 'university' is active) -->
+            <div id="uni-fields" class="uni-details-section active">
+                <div class="form-group">
+                    <label class="form-label">Institution / University Name</label>
+                    <input type="text" id="ob-uni-name" class="form-input" style="padding-left: 14px;" placeholder="e.g. UNILAG, UI, NOUN, Covenant">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Current Academic Level</label>
+                    <div class="level-pills">
+                        <button type="button" class="level-pill selected" onclick="selectLevel('100L')">100L</button>
+                        <button type="button" class="level-pill" onclick="selectLevel('200L')">200L</button>
+                        <button type="button" class="level-pill" onclick="selectLevel('300L')">300L</button>
+                        <button type="button" class="level-pill" onclick="selectLevel('400L')">400L</button>
+                        <button type="button" class="level-pill" onclick="selectLevel('500L')">500L</button>
+                        <button type="button" class="level-pill" onclick="selectLevel('Postgrad')">Postgrad</button>
+                    </div>
+                    <input type="hidden" id="ob-level" value="100L">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Course / Department</label>
+                    <input type="text" id="ob-course" class="form-input" style="padding-left: 14px;" placeholder="e.g. Computer Science, Accounting, Law">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label class="form-label">Target GPA (e.g. 5.0)</label>
+                        <input type="number" id="ob-gpa" class="form-input" style="padding-left: 14px;" step="0.1" min="1.0" max="5.0" placeholder="4.50">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Graduation Year</label>
+                        <input type="number" id="ob-grad-year" class="form-input" style="padding-left: 14px;" min="2024" max="2035" placeholder="2028">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Casual / Exam Note (shown when 'casual' is selected) -->
+            <div id="casual-note" class="casual-note">
+                ⚡ <strong>University details skipped.</strong> You can jump directly into Sabi's Past Question engines (JAMB, Post-UTME, ICAN), digital library, and Steady AI study chat.
+            </div>
+
+            <button type="button" class="btn-primary" id="btn-save-onboarding" onclick="handleSaveOnboarding()">
+                <span>Complete & Launch Sabi OS</span>
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+    let currentStudyTrack = 'university';
+    let selectedAcademicLevel = '100L';
+
+    function showMessage(msg, isError = false) {
+        const el = document.getElementById('auth-message');
+        el.className = 'auth-message ' + (isError ? 'error' : 'success');
+        el.innerText = msg;
+        el.style.display = 'block';
+    }
+
+    function clearMessage() {
+        const el = document.getElementById('auth-message');
+        el.style.display = 'none';
+        el.innerText = '';
+    }
+
+    function togglePasswordVisibility(inputId) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+        } else {
+            input.type = 'password';
+        }
+    }
+
+    function switchAuthTab(tab) {
+        clearMessage();
+        const tabLogin = document.getElementById('tab-login');
+        const tabReg = document.getElementById('tab-register');
+        const formLogin = document.getElementById('login-form');
+        const formReg = document.getElementById('register-form');
+        const forgotView = document.getElementById('forgot-password-view');
+        const updateView = document.getElementById('update-password-view');
+
+        forgotView.style.display = 'none';
+        updateView.style.display = 'none';
+
+        if (tab === 'login') {
+            tabLogin.classList.add('active');
+            tabReg.classList.remove('active');
+            formLogin.style.display = 'block';
+            formReg.style.display = 'none';
+            document.getElementById('auth-subtitle').innerText = "Your all-in-one academic operating system and AI study companion.";
+        } else {
+            tabReg.classList.add('active');
+            tabLogin.classList.remove('active');
+            formLogin.style.display = 'none';
+            formReg.style.display = 'block';
+            document.getElementById('auth-subtitle').innerText = "Create your student account to sync notes, past questions, and progress.";
+        }
+    }
+
+    function showForgotPassword() {
+        clearMessage();
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'none';
+        document.getElementById('forgot-password-view').style.display = 'block';
+    }
+
+    function hideForgotPassword() {
+        clearMessage();
+        switchAuthTab('login');
+    }
+
+    // Google Sign In
+    async function handleGoogleSignIn() {
+        clearMessage();
+        const btn = document.getElementById('btn-google-auth');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner" style="border-top-color: #3D8EFF; border-color: rgba(61,142,255,0.2);"></span> Connecting to Google...';
+        }
+        try {
+            await SabiAuth.signInWithGoogle();
+        } catch (err) {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.14C3.25 21.31 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.59H1.27C.46 8.21 0 10.05 0 12s.46 3.79 1.27 5.41l4.01-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.69 1.27 6.59l4.01 3.14c.95-2.83 3.6-4.98 6.72-4.98z"/></svg> Continue with Google';
+            }
+            showMessage(err.message || 'Google Sign-In failed', true);
+        }
+    }
+
+    // Email Sign In
+    async function handleEmailLogin(e) {
+        e.preventDefault();
+        clearMessage();
+        const btn = document.getElementById('btn-login-submit');
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Signing in...';
+
+        try {
+            await SabiAuth.signIn(email, password);
+            // Check if user requires onboarding
+            const needsOnboarding = await SabiAuth.needsOnboarding();
+            if (needsOnboarding) {
+                switchToOnboarding();
+            } else {
+                completeAuthRedirect();
+            }
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>Sign In to Sabi</span>';
+            showMessage(err.message || 'Invalid email or password', true);
+        }
+    }
+
+    // Email Registration
+    async function handleEmailRegister(e) {
+        e.preventDefault();
+        clearMessage();
+        const btn = document.getElementById('btn-register-submit');
+        const name = document.getElementById('reg-name').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Creating account...';
+
+        try {
+            await SabiAuth.signUp(email, password, name);
+            // Instant onboarding transition
+            switchToOnboarding();
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>Create Account & Continue</span>';
+            showMessage(err.message || 'Failed to create account', true);
+        }
+    }
+
+    // Send Password Reset
+    async function handleSendPasswordReset() {
+        clearMessage();
+        const email = document.getElementById('forgot-email').value;
+        if (!email) {
+            showMessage('Please enter your email address', true);
+            return;
+        }
+
+        const btn = document.getElementById('btn-forgot-submit');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Sending link...';
+
+        try {
+            await SabiAuth.resetPassword(email);
+            showMessage('Password reset link sent! Check your email inbox.', false);
+            btn.disabled = false;
+            btn.innerHTML = '<span>Send Recovery Link</span>';
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>Send Recovery Link</span>';
+            showMessage(err.message || 'Failed to send recovery email', true);
+        }
+    }
+
+    // Update New Password
+    async function handleUpdateNewPassword() {
+        clearMessage();
+        const newPassword = document.getElementById('new-password').value;
+        if (!newPassword || newPassword.length < 6) {
+            showMessage('Password must be at least 6 characters', true);
+            return;
+        }
+
+        const btn = document.getElementById('btn-update-password-submit');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Updating...';
+
+        try {
+            await SabiAuth.updatePassword(newPassword);
+            showMessage('Password updated successfully! Entering Sabi...', false);
+            setTimeout(() => {
+                completeAuthRedirect();
+            }, 1200);
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>Set New Password & Enter Sabi</span>';
+            showMessage(err.message || 'Failed to update password', true);
+        }
+    }
+
+    // Switch to Onboarding Wizard
+    function switchToOnboarding() {
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('onboarding-section').classList.add('active');
+        document.getElementById('auth-subtitle').innerText = "Customize your academic experience for maximum study output.";
+        clearMessage();
+    }
+
+    // Study Track Selection (Adaptive Branching)
+    function selectStudyTrack(track) {
+        currentStudyTrack = track;
+        const cardUni = document.getElementById('track-uni');
+        const cardCasual = document.getElementById('track-casual');
+        const uniFields = document.getElementById('uni-fields');
+        const casualNote = document.getElementById('casual-note');
+
+        if (track === 'university') {
+            cardUni.classList.add('selected');
+            cardCasual.classList.remove('selected');
+            uniFields.classList.add('active');
+            casualNote.classList.remove('active');
+        } else {
+            cardCasual.classList.add('selected');
+            cardUni.classList.remove('selected');
+            uniFields.classList.remove('active');
+            casualNote.classList.add('active');
+        }
+    }
+
+    // Level Pill Selector
+    function selectLevel(level) {
+        selectedAcademicLevel = level;
+        document.getElementById('ob-level').value = level;
+        document.querySelectorAll('.level-pill').forEach(btn => {
+            if (btn.innerText.trim() === level) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    // Save Onboarding Profile
+    async function handleSaveOnboarding() {
+        clearMessage();
+        const btn = document.getElementById('btn-save-onboarding');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Saving profile...';
+
+        let profileData = {
+            study_mode: currentStudyTrack
+        };
+
+        if (currentStudyTrack === 'university') {
+            profileData.university = document.getElementById('ob-uni-name').value.trim();
+            profileData.level = selectedAcademicLevel;
+            profileData.course = document.getElementById('ob-course').value.trim();
+            profileData.projected_grad_year = document.getElementById('ob-grad-year').value.trim();
+            profileData.target_gpa = document.getElementById('ob-gpa').value.trim();
+        } else {
+            // Casual or other exams track
+            profileData.university = null;
+            profileData.level = 'Casual / Prep';
+            profileData.course = null;
+            profileData.projected_grad_year = null;
+            profileData.target_gpa = null;
+        }
+
+        try {
+            await SabiAuth.saveProfile(profileData);
+            completeAuthRedirect();
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>Complete & Launch Sabi OS</span>';
+            showMessage(err.message || 'Failed to save profile. Continuing to dashboard...', true);
+            // Allow continuing to dashboard even if DB sync has transient error
+            setTimeout(() => {
+                completeAuthRedirect();
+            }, 1000);
+        }
+    }
+
+    // Switch to Onboarding Wizard
+    function switchToOnboarding(user) {
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('onboarding-section').classList.add('active');
+        const scholarName = (user && (user.user_metadata?.full_name || user.email?.split('@')[0])) || '';
+        document.getElementById('auth-subtitle').innerText = scholarName 
+            ? `Welcome ${scholarName}! Personalize your academic track for Sabi OS.`
+            : "Customize your academic experience for maximum study output.";
+        clearMessage();
+    }
+
+    // Completion & Redirect logic
+    function completeAuthRedirect() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let redirectUrl = urlParams.get('redirect') || sessionStorage.getItem('sabi_redirect_url') || 'index.html';
+        sessionStorage.removeItem('sabi_redirect_url');
+        window.location.href = redirectUrl;
+    }
+
+    async function evaluateUserSession() {
+        try {
+            const user = await SabiAuth.getUser();
+            if (user) {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('onboarding') === 'true') {
+                    switchToOnboarding(user);
+                    return;
+                }
+                const needs = await SabiAuth.needsOnboarding();
+                if (needs) {
+                    switchToOnboarding(user);
+                } else {
+                    completeAuthRedirect();
+                }
+            }
+        } catch (e) {
+            console.warn('[AUTH] Session evaluation notice:', e);
+        }
+    }
+
+    // Initialization check on load
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Theme sync
+        const theme = localStorage.getItem('sabi_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+
+        // Check if hash is recovery
+        if (window.location.hash.includes('type=recovery') || window.location.hash === '#reset-password') {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('forgot-password-view').style.display = 'none';
+            document.getElementById('update-password-view').style.display = 'block';
+            showMessage('Please enter your new password below.', false);
+            return;
+        }
+
+        // Listen for OAuth sign-in completion
+        try {
+            await SabiAuth.onAuthStateChange(async (event, session) => {
+                if ((event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') && session && session.user) {
+                    await evaluateUserSession();
+                }
+            });
+        } catch (e) {}
+
+        // Immediate session check
+        await evaluateUserSession();
+    });
+</script>
+
+</body>
+</html>
