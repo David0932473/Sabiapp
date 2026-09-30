@@ -140,22 +140,38 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    fs.stat(safePath, (err, stats) => {
+    // Check direct file or append .html
+    let filePath = safePath;
+    fs.stat(filePath, (err, stats) => {
         if (err || !stats.isFile()) {
+            if (!path.extname(filePath)) {
+                filePath = filePath + '.html';
+                return fs.stat(filePath, (htmlErr, htmlStats) => {
+                    if (htmlErr || !htmlStats.isFile()) {
+                        res.writeHead(404, { 'Content-Type': 'text/plain' });
+                        res.end('404 Not Found');
+                        return;
+                    }
+                    serveFile(filePath, res);
+                });
+            }
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('404 Not Found');
             return;
         }
-
-        const ext = path.extname(safePath).toLowerCase();
-        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-
-        setCorsHeaders(res);
-        res.writeHead(200, { 'Content-Type': contentType });
-        const stream = fs.createReadStream(safePath);
-        stream.pipe(res);
+        serveFile(filePath, res);
     });
 });
+
+function serveFile(targetPath, res) {
+    const ext = path.extname(targetPath).toLowerCase();
+    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
+    setCorsHeaders(res);
+    res.writeHead(200, { 'Content-Type': contentType });
+    const stream = fs.createReadStream(targetPath);
+    stream.pipe(res);
+}
 
 server.listen(PORT, () => {
     console.log(`\n======================================================`);
