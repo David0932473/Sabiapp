@@ -1,24 +1,23 @@
-- **Goal (incl. success criteria)**: Completely eliminate all Unicode emojis across the entire Sabi web application and replace them with clean, crisp, production-grade vector icons (SVG) or minimal typographic labels (0 emojis total).
+- **Goal (incl. success criteria)**: 
+  - Integrated OpenRouter (DeepSeek V3 & LLaMA 3.3 70B) for zero-server, high-intelligence direct browser AI execution.
+  - Consistently renamed the AI Study Companion across the entire codebase to **"Steady"**.
+  - Pushed all changes cleanly to Git `origin/main`.
 - **Constraints/Assumptions**:
-  - Zero external CDN icon dependencies (FontAwesome, Lucide font) to avoid network latency and layout shift; use lightweight inline SVGs.
-  - Zero functional regressions across navigation, modals, exam engines, scoring flows, calendar management, and ICAN catalog.
+  - Keep master app branding as Sabi Academic OS, while the study assistant is consistently branded as Steady.
+  - Never commit raw API keys to tracked git files; keys are read from `env.js` and `.env` (gitignored).
 - **Key decisions**:
-  - Replaced all emojis in core views:
-    - [index.html](file:///c:/Users/dave/.gemini/sabi/index.html): Navigation Bento cards, theme toggles, modal close triggers, and toast notifications.
-    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) & [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Command deck badges, Bento matrix cards, intake selector pills, category badges, agenda icons, and copilot launchpad.
-    - [library.html](file:///c:/Users/dave/.gemini/sabi/library.html) & [library.js](file:///c:/Users/dave/.gemini/sabi/library.js): Search input, empty states, textbook cover icons, and professional discipline cards.
-    - [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html), [pq-setup.html](file:///c:/Users/dave/.gemini/sabi/pq-setup.html), [jamb-setup.js](file:///c:/Users/dave/.gemini/sabi/jamb-setup.js): Exam mode selector icons, subject lock indicators, and catalog cards.
-    - [ican.html](file:///c:/Users/dave/.gemini/sabi/ican.html) & [ican.js](file:///c:/Users/dave/.gemini/sabi/ican.js): All 23 ATSWA and Professional subject covers, syllabus cards, and search feedback.
-    - [post-utme.html](file:///c:/Users/dave/.gemini/sabi/post-utme.html) & [post-utme.js](file:///c:/Users/dave/.gemini/sabi/post-utme.js): Universal mix globe and university campus icons.
-    - [results.html](file:///c:/Users/dave/.gemini/sabi/results.html) & [results.js](file:///c:/Users/dave/.gemini/sabi/results.js): Score tier badges (Trophy, Scholar Medal, On Track Trend, Alert) and review corrections button.
-    - [test-room.js](file:///c:/Users/dave/.gemini/sabi/test-room.js): Crash report alert vector.
-    - [app.js](file:///c:/Users/dave/.gemini/sabi/app.js): Countdown timer and streak icons.
+  - Renamed Study AI to "Steady" in all UI touchpoints:
+    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Bento Studio card ("Steady AI Studio"), Timetable Planning banner, Floating Action Button ("Steady"), AI Studio Modal header ("Steady • Powered by Steady"), Chat input dock placeholder ("Message Steady..."), and Onboarding quick action cards ("Chat with Steady").
+    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Default greeting, identity prompts, typing indicator avatars, offline fallback greetings, and global window helper `openSteadyChat`.
+    - [server.js](file:///c:/Users/dave/.gemini/sabi/server.js): OpenRouter headers set to `Steady - Sabi Academic OS`.
+    - [package.json](file:///c:/Users/dave/.gemini/sabi/package.json): Updated description and keywords for Steady.
 - **State**:
   - Done:
-    - Workspace-wide regex scan confirmed: 0 unicode emojis remain in `.html`, `.js`, and `.css` files.
-    - Node syntax validation passed (`node -c`) for all modified scripts.
-  - Now: Committing and pushing changes to GitHub.
-  - Next: User confirmation.
+    - All occurrences of Sabi Copilot / Study Buddy updated to Steady.
+    - Zero syntax errors validated with `node -c calendar.js server.js`.
+    - Committed `27ce697` and pushed to `origin/main`.
+  - Now: Ready and active.
+  - Next: User testing and next requested feature.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
-  - `app.js`, `calendar.html`, `calendar.js`, `ican.html`, `ican.js`, `index.html`, `jamb-setup.js`, `library.html`, `library.js`, `post-utme.html`, `post-utme.js`, `pq-setup.html`, `pq.html`, `results.html`, `results.js`, `server.js`, `test-room.js`, `vault.js`
+  - `calendar.html`, `calendar.js`, `server.js`, `package.json`, `docs/short-term-plan/CONTINUITY.md`
