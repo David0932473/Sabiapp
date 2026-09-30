@@ -2353,17 +2353,34 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // 3. Conversational: Study Advice & Tips
-    if (/\b(study tips|study advice|how to study|how should i study|best way to study|study techniques|feynman)\b/i.test(lower)) {
+    // 3. Conversational: Study Advice, Time Management & Techniques
+    if (/\b(time|time management|study tips|study advice|how to study|how should i study|best way to study|study techniques|feynman|pomodoro|schedule|plan my day|productive|productivity|focus)\b/i.test(lower)) {
         return {
             role: 'bot',
-            content: `The top technique is active recall: practice retrieval with short 25-minute sprints instead of passive re-reading. Which course would you like to schedule focused practice sessions for?`,
+            content: `To make the best use of your time:
+1. **Time-block in 25–45 min sprints (Pomodoro)**: Focus purely on one topic without your phone, followed by a 5-minute break.
+2. **Prioritize high-friction subjects first**: Tackle your hardest course during your peak energy window (usually morning or early evening).
+3. **Active Recall over re-reading**: Test yourself with flashcards and past questions instead of just staring at notes.
+
+Tell me which subjects or exams you want to master, and I'll schedule targeted study blocks right into your calendar!`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
 
-    // 4. Conversational: Active Recall Explained
+    // 4. Conversational: General Questions & Inquiries
+    if (/\?|how (can|do|should)|what (is|are|should)|why|explain|tell me|help me with|teach/i.test(lower) && !lower.includes('generate') && !lower.includes('build timetable')) {
+        return {
+            role: 'bot',
+            content: `Great question regarding "${escapeHtml(text)}"! The best approach is to break complex topics into daily 30-minute practice sessions and test yourself with past questions. 
+
+Which specific course or exam are you working on right now? Tell me, and I can add high-yield study sessions to your calendar.`,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 5. Conversational: Active Recall Explained
     if (/\b(active recall|what is active recall)\b/i.test(lower)) {
         return {
             role: 'bot',
@@ -2373,7 +2390,7 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // 5. Conversational: Stress & Overwhelm Empathy
+    // 6. Conversational: Stress & Overwhelm Empathy
     if (/\b(stressed|stress|overwhelmed|anxious|can't focus|burnout|exhausted|so much to read|panicking)\b/i.test(lower)) {
         return {
             role: 'bot',
@@ -2383,8 +2400,8 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // 6. Conversational: Greetings & Capabilities
-    if (/^(hi|hello|hey|yo|good morning|good afternoon|good evening|howdy|sup)\b/i.test(lower) || /\b(who are you|what can you do|how does this work|help me|capabilities)\b/i.test(lower)) {
+    // 7. Conversational: Greetings & Capabilities
+    if (/^(hi|hello|hey|yo|good morning|good afternoon|good evening|howdy|sup)\b/i.test(lower) || /\b(who are you|what can you do|how does this work|capabilities)\b/i.test(lower)) {
         return {
             role: 'bot',
             content: `Hey! I'm your Sabi Copilot, here to build a weekly timetable that fits your life. What degree, courses, or exam are you focusing on this semester?`,
