@@ -56,7 +56,75 @@ function setCorsHeaders(res) {
     res.setHeader('Access-Control-Allow-Private-Network', 'true');
 }
 
-// Proxy chat request to NVIDIA NIM API
+function getOpenRouterKey() {
+    if (process.env.OPENROUTER_API_KEY) return process.env.OPENROUTER_API_KEY.trim();
+    try {
+        const envPath = path.join(__dirname, '.env');
+        if (fs.existsSync(envPath)) {
+            const content = fs.readFileSync(envPath, 'utf8');
+            const match = content.match(/OPENROUTER_API_KEY\s*=\s*(.+)/);
+            if (match && match[1].trim()) return match[1].trim();
+        }
+    } catch (e) {}
+
+    try {
+        const envJsPath = path.join(__dirname, 'env.js');
+        if (fs.existsSync(envJsPath)) {
+            const content = fs.readFileSync(envJsPath, 'utf8');
+            const match = content.match(/OPENROUTER_API_KEY:\s*["']([^"']+)["']/);
+            if (match && match[1].trim()) return match[1].trim();
+        }
+    } catch (e) {}
+
+    return "";
+}
+
+const OPENROUTER_KEY = getOpenRouterKey();
+
+// Proxy chat request to OpenRouter (DeepSeek V3 / Llama 70B) or NVIDIA NIM
+function proxyChat(req, res, bodyData) {
+    setCorsHeaders(res);
+
+    if (OPENROUTER_KEY && OPENROUTER_KEY.startsWith('sk-or-')) {
+        let payload = {};
+        try { payload = JSON.parse(bodyData); } catch(e) {}
+        if (!payload.model || payload.model.includes('llama-3.2-11b')) {
+            payload.model = 'deepseek/deepseek-chat';
+        }
+
+        const orReq = https.request({
+            hostname: 'openrouter.ai',
+            path: '/api/v1/chat/completions',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENROUTER_KEY}`,
+                'HTTP-Referer': 'https://sabi.app',
+                'X-Title': 'Sabi Academic OS'
+            }
+        }, (orRes) => {
+            if (orRes.statusCode >= 200 && orRes.statusCode < 300) {
+                res.writeHead(orRes.statusCode, {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                });
+                return orRes.pipe(res);
+            }
+            proxyNvidiaChat(req, res, bodyData);
+        });
+
+        orReq.on('error', () => {
+            proxyNvidiaChat(req, res, bodyData);
+        });
+
+        orReq.write(JSON.stringify(payload));
+        orReq.end();
+        return;
+    }
+
+    proxyNvidiaChat(req, res, bodyData);
+}
+
 function proxyNvidiaChat(req, res, bodyData) {
     setCorsHeaders(res);
 
@@ -77,9 +145,9 @@ function proxyNvidiaChat(req, res, bodyData) {
     });
 
     nvidiaReq.on('error', (err) => {
-        console.error('NVIDIA Proxy error:', err);
+        console.error('AI Proxy error:', err);
         res.writeHead(502, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-        res.end(JSON.stringify({ error: 'Failed to connect to NVIDIA NIM API', message: err.message }));
+        res.end(JSON.stringify({ error: 'Failed to connect to AI API', message: err.message }));
     });
 
     nvidiaReq.write(bodyData);
@@ -106,7 +174,7 @@ const server = http.createServer((req, res) => {
             try {
                 // Validate JSON
                 JSON.parse(body);
-                proxyNvidiaChat(req, res, body);
+                proxyChat(req, res, body);
             } catch (err) {
                 setCorsHeaders(res);
                 res.writeHead(400, { 'Content-Type': 'application/json' });

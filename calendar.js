@@ -33,6 +33,16 @@ function getOpenAiKey() {
     return (localStorage.getItem('openai_api_key') || '').trim();
 }
 
+function getOpenRouterKey() {
+    if (typeof window !== 'undefined' && window.ENV) {
+        const envKey = window.ENV.OPENROUTER_API_KEY || window.ENV.API_KEY;
+        if (envKey && typeof envKey === 'string' && envKey.startsWith('sk-or-')) return envKey.trim();
+    }
+    const local = (localStorage.getItem('openrouter_api_key') || localStorage.getItem('sabi_api_key') || '').trim();
+    if (local && local.startsWith('sk-or-')) return local;
+    return "";
+}
+
 const DEFAULT_NVIDIA_API_KEY = "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";
 
 function getNvidiaKey() {
@@ -46,6 +56,8 @@ function getNvidiaKey() {
 }
 
 function getActiveApiKey() {
+    const orKey = getOpenRouterKey();
+    if (orKey) return orKey;
     const nvKey = getNvidiaKey();
     if (nvKey) return nvKey;
     const claudeKey = getAnthropicKey();
@@ -1991,6 +2003,7 @@ IDENTITY:
 - You are strictly "Sabi AI Copilot". Never disclose underlying LLM models or vendors. Speak with authority, warmth, and academic excellence.`;
 
 async function processBuddyConversation(userText, history, media) {
+    const openRouterKey = getOpenRouterKey();
     const nvidiaKey = getNvidiaKey();
     const claudeKey = getAnthropicKey();
     const geminiKey = getGeminiKey();
@@ -2007,7 +2020,7 @@ async function processBuddyConversation(userText, history, media) {
         uploaded_media: media ? { name: media.name, type: media.type, hasText: !!media.textContent } : null
     };
 
-    // Build multimodal messages payload for NVIDIA Llama 3.2 Vision
+    // Build multimodal messages payload for LLMs
     const messagesPayload = history.slice(-6).map((m, idx, arr) => {
         const isLatest = idx === arr.length - 1;
         const role = m.role === 'bot' ? 'assistant' : 'user';
@@ -2039,9 +2052,55 @@ async function processBuddyConversation(userText, history, media) {
         };
     });
 
-    // 0. NVIDIA NIM Live AI (Verified Working High-Performance LLM with Vision via Proxy & Direct)
+    const systemContent = BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`;
+
+    // 0. OpenRouter Frontier AI (DeepSeek V3 & LLaMA 3.3 70B - Native Browser CORS, Zero Server Needed)
+    if (openRouterKey && openRouterKey.startsWith('sk-or-')) {
+        const openRouterModels = ['deepseek/deepseek-chat', 'meta-llama/llama-3.3-70b-instruct'];
+
+        for (const modelName of openRouterModels) {
+            try {
+                console.log(`Connecting to OpenRouter (${modelName})...`);
+                const res = await fetchWithTimeout('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${openRouterKey}`,
+                        'HTTP-Referer': typeof window !== 'undefined' && window.location ? window.location.origin : 'https://sabi.app',
+                        'X-Title': 'Sabi Academic OS'
+                    },
+                    body: JSON.stringify({
+                        model: modelName,
+                        messages: [
+                            { role: 'system', content: systemContent },
+                            ...messagesPayload
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 1500
+                    })
+                }, 15000);
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const replyText = data.choices?.[0]?.message?.content;
+                    if (replyText) {
+                        const badge = document.getElementById('chat-live-ai-badge');
+                        if (badge) {
+                            badge.textContent = 'AI Active';
+                            badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                            badge.style.color = '#34D399';
+                        }
+                        return parseAiReplyAndApply(replyText);
+                    }
+                }
+            } catch (err) {
+                console.warn(`OpenRouter model ${modelName} error, falling back:`, err.message || err);
+            }
+        }
+    }
+
+    // 1. NVIDIA NIM Live AI (Verified Working High-Performance LLM with Vision via Proxy & Direct)
     if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
-        const systemContent = BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`;
         const chatPayload = {
             model: 'meta/llama-3.2-11b-vision-instruct',
             messages: [
