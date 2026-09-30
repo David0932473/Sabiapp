@@ -1187,7 +1187,7 @@ function openSabiAiChat() {
     const badge = document.getElementById('chat-live-ai-badge');
     const statusText = document.getElementById('chat-header-status-text');
     if (badge) {
-        badge.textContent = '⚡ NVIDIA LLaMA 3.2';
+        badge.textContent = '⚡ AI Active';
         badge.style.display = 'inline-flex';
     }
     if (statusText) {
@@ -1975,8 +1975,13 @@ STRICT RULE - NO SYLLABUS DRILLING OR SUBJECT TUTORING:
 - When a student mentions a tough course (like ECO375 or Maths), acknowledge it warmly, note that you will give it prime study slots with extra review sessions, and immediately ask for their TIMETABLE parameters:
   "When are your fixed lectures for this course, or what time of day (morning, afternoon, or evening) do you have the highest energy to study it?"
 
+STRICT IDENTITY & ANONYMITY RULE:
+- You are strictly "Sabi AI" or "Sabi Copilot".
+- NEVER reveal, state, or mention the underlying AI model, architecture, or provider (such as NVIDIA, NIM, LLaMA, Meta, OpenAI, GPT, Claude, Anthropic, or Gemini) to the user under any circumstance.
+- If asked what model or AI you are, reply simply: "I am Sabi AI Copilot, your academic architect."
+
 MULTIMODAL & VISION INSTRUCTIONS:
-- You are equipped with advanced vision capabilities (Meta LLaMA 3.2 Vision). You CAN and MUST analyze photos, screenshots, course outlines, syllabi, notes, and timetable screenshots provided by the user.
+- You are equipped with advanced vision capabilities. You CAN and MUST analyze photos, screenshots, course outlines, syllabi, notes, and timetable screenshots provided by the user.
 - NEVER refuse or claim "I can't extract your schedule from a photo or URL" or tell the student you cannot read images.
 - When an image or timetable OCR snippet is provided, immediately inspect it, list the detected courses or lecture slots, and help them lock it into their timetable!
 
@@ -2096,7 +2101,7 @@ async function processBuddyConversation(userText, history, media) {
                         console.log('✨ Live NVIDIA AI Response successfully received from:', endpoint);
                         const badge = document.getElementById('chat-live-ai-badge');
                         if (badge) {
-                            badge.textContent = '⚡ NVIDIA AI Active';
+                            badge.textContent = '⚡ AI Active';
                             badge.style.background = 'rgba(16, 185, 129, 0.2)';
                             badge.style.color = '#34D399';
                         }
@@ -2163,7 +2168,7 @@ async function processBuddyConversation(userText, history, media) {
                 if (replyText) {
                     const badge = document.getElementById('chat-live-ai-badge');
                     if (badge) {
-                        badge.textContent = '⚡ Gemini AI Active';
+                        badge.textContent = '⚡ AI Active';
                         badge.style.background = 'rgba(16, 185, 129, 0.2)';
                         badge.style.color = '#34D399';
                     }
