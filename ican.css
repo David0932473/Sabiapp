@@ -2,13 +2,13 @@
    SABI ICAN VAULT STYLES - "VIBRANT FINTECH"
 ========================================== */
 :root {
-    --bg: #000000;
-    --surface: #09090B; /* Deep zinc */
-    --surface-light: #18181B; /* Soft card background */
-    --border: #27272A;
-    --accent: #3D8EFF; /* Sabi Core Blue */
-    --text-main: #F4F4F5;
-    --text-muted: #A1A1AA;
+    --bg: #F4F6FB;
+    --surface: #FFFFFF;
+    --surface-light: #F1F5F9;
+    --border: #E2E8F0;
+    --accent: #2563EB;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
 }
 
 #app { padding: 24px 20px; max-width: 600px; margin: 0 auto; }
