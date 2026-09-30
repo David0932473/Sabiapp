@@ -12,14 +12,8 @@
 <div class="auth-container">
     <!-- Header Branding -->
     <div class="auth-header">
-        <div class="auth-logo-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-            </svg>
-            Sabi Academic OS
-        </div>
         <h1 class="auth-title">Welcome to <span>Sabi</span></h1>
-        <p class="auth-subtitle" id="auth-subtitle">Your all-in-one academic operating system and AI study companion.</p>
+        <p class="auth-subtitle" id="auth-subtitle">Your AI study companion and learning platform.</p>
     </div>
 
     <!-- Alert / Message Container -->
@@ -185,8 +179,22 @@
         <div id="onboarding-section" class="onboarding-screen">
             <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">Set Up Your Study Profile</h2>
             <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px;">
-                Personalize your Sabi OS timetable, past questions, and AI companion.
+                Personalize your Sabi timetable, past questions, and AI companion.
             </p>
+
+            <!-- Name Prompt -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label class="form-label" for="ob-nickname">What should we call you?</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <input type="text" id="ob-nickname" class="form-input" placeholder="e.g. David, Tunde, or Chisom" required autocomplete="name">
+                </div>
+            </div>
 
             <label class="form-label">What is your primary study goal?</label>
             <div class="study-tracks-grid">
@@ -218,9 +226,19 @@
 
             <!-- Dynamic University Section (shown when 'university' is active) -->
             <div id="uni-fields" class="uni-details-section active">
-                <div class="form-group">
-                    <label class="form-label">Institution / University Name</label>
-                    <input type="text" id="ob-uni-name" class="form-input" style="padding-left: 14px;" placeholder="e.g. UNILAG, UI, NOUN, Covenant">
+                <div class="form-group" style="position: relative;">
+                    <label class="form-label" for="ob-uni-name">Institution / University Name</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                        </span>
+                        <input type="text" id="ob-uni-name" class="form-input" placeholder="Type your university (e.g. UNILAG, UI, Covenant...)" autocomplete="off" oninput="handleUniSearch(this.value)" onfocus="handleUniSearch(this.value)">
+                    </div>
+                    <!-- Dropdown for suggestions -->
+                    <div id="uni-dropdown" class="uni-dropdown hidden"></div>
                 </div>
 
                 <div class="form-group">
@@ -271,6 +289,228 @@
 <script>
     let currentStudyTrack = 'university';
     let selectedAcademicLevel = '100L';
+
+    // Comprehensive Nigerian Universities Directory
+    const DEFAULT_NIGERIAN_UNIVERSITIES = [
+        "University of Lagos (UNILAG)",
+        "University of Ibadan (UI)",
+        "Obafemi Awolowo University (OAU)",
+        "University of Nigeria, Nsukka (UNN)",
+        "Ahmadu Bello University (ABU Zaria)",
+        "University of Benin (UNIBEN)",
+        "University of Ilorin (UNILORIN)",
+        "Federal University of Technology, Akure (FUTA)",
+        "Federal University of Technology, Minna (FUTMINNA)",
+        "Federal University of Technology, Owerri (FUTO)",
+        "University of Abuja (UNIABUJA)",
+        "University of Port Harcourt (UNIPORT)",
+        "National Open University of Nigeria (NOUN)",
+        "Lagos State University (LASU)",
+        "Covenant University (CU)",
+        "Babcock University",
+        "Landmark University",
+        "Bowen University",
+        "Pan-Atlantic University (PAU)",
+        "Bells University of Technology",
+        "Nile University of Nigeria",
+        "Veritas University",
+        "Afe Babalola University (ABUAD)",
+        "Bayero University Kano (BUK)",
+        "Nnamdi Azikiwe University (UNIZIK)",
+        "Ekiti State University (EKSU)",
+        "Olabisi Onabanjo University (OOU)",
+        "Tai Solarin University of Education (TASUED)",
+        "Delta State University (DELSU)",
+        "Rivers State University (RSU)",
+        "Ambrose Alli University (AAU)",
+        "Ladoke Akintola University of Technology (LAUTECH)",
+        "Federal University of Agriculture, Abeokuta (FUNAAB)",
+        "Usmanu Danfodiyo University, Sokoto (UDUS)",
+        "University of Calabar (UNICAL)",
+        "University of Uyo (UNIUYO)",
+        "Adeleke University",
+        "Redeemer's University (RUN)",
+        "Mountain Top University",
+        "Lead City University",
+        "Caleb University",
+        "Baze University",
+        "Godfrey Okoye University",
+        "Federal University, Oye-Ekiti (FUOYE)",
+        "Federal University, Lokoja (FULOKOJA)",
+        "Federal University, Lafia (FULAFIA)",
+        "Abia State University (ABSU)",
+        "Enugu State University of Science and Technology (ESUT)",
+        "Imo State University (IMSU)",
+        "Ebonyi State University (EBSU)",
+        "Chukwuemeka Odumegwu Ojukwu University (COOU)",
+        "Benue State University (BSU)",
+        "Kaduna State University (KASU)",
+        "Kwara State University (KWASU)",
+        "Osun State University (UNIOSUN)",
+        "Adekunle Ajasin University (AAUA)",
+        "Ondo State University of Science and Technology (OSUSTECH)",
+        "Prince Abubakar Audu University (KSU)",
+        "Ignatius Ajuru University of Education (IAUE)",
+        "Federal University, Dutse (FUD)",
+        "Federal University, Dutsin-Ma (FUDMA)",
+        "Federal University, Kashere (FUKASHERE)",
+        "Federal University, Wukari (FUWUKARI)",
+        "Federal University, Birnin Kebbi (FUBK)",
+        "Federal University, Gashua (FUGASHUA)",
+        "Federal University, Gusau (FUGUS)",
+        "Alex Ekwueme Federal University, Ndufu-Alike (AE-FUNAI)",
+        "Joseph Ayo Babalola University (JABU)",
+        "Ajayi Crowther University",
+        "Al-Hikmah University",
+        "American University of Nigeria (AUN)",
+        "Madonna University",
+        "Igbinedion University, Okada",
+        "Crawford University",
+        "Elizade University",
+        "Achievers University",
+        "Anchor University",
+        "Augustine University",
+        "Chrisland University",
+        "Dominican University",
+        "Koladaisi University",
+        "Precious Cornerstone University",
+        "Summit University",
+        "Topfaith University",
+        "Clifford University",
+        "Arthur Jarvis University",
+        "Crown Hill University",
+        "Edo State University, Uzairue",
+        "Nasarawa State University, Keffi (NSUK)",
+        "Sule Lamido University",
+        "Yusuf Maitama Sule University",
+        "Kano University of Science and Technology (KUST)",
+        "Kebbi State University of Science and Technology",
+        "Sokoto State University"
+    ];
+
+    let currentUniversitiesList = [...DEFAULT_NIGERIAN_UNIVERSITIES];
+
+    async function loadUniversities() {
+        try {
+            // 1. Load locally cached new universities
+            const cached = JSON.parse(localStorage.getItem('sabi_custom_universities') || '[]');
+            if (Array.isArray(cached)) {
+                cached.forEach(u => {
+                    if (u && !currentUniversitiesList.some(x => x.toLowerCase() === u.toLowerCase())) {
+                        currentUniversitiesList.push(u);
+                    }
+                });
+            }
+
+            // 2. Fetch community-added universities from Supabase
+            if (window.sabiDb) {
+                const { data } = await window.sabiDb.from('universities').select('name');
+                if (data && Array.isArray(data)) {
+                    data.forEach(row => {
+                        if (row.name && !currentUniversitiesList.some(x => x.toLowerCase() === row.name.toLowerCase())) {
+                            currentUniversitiesList.push(row.name);
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn('[AUTH] University list sync notice:', e);
+        }
+    }
+
+    async function saveNewUniversityIfAbsent(uniName) {
+        if (!uniName) return;
+        const cleanName = uniName.trim();
+        if (!cleanName || cleanName.length < 2) return;
+
+        const exists = currentUniversitiesList.some(u => u.toLowerCase() === cleanName.toLowerCase());
+        if (!exists) {
+            currentUniversitiesList.push(cleanName);
+
+            // Save in localStorage for immediate retention
+            const cached = JSON.parse(localStorage.getItem('sabi_custom_universities') || '[]');
+            if (!cached.some(x => x.toLowerCase() === cleanName.toLowerCase())) {
+                cached.push(cleanName);
+                localStorage.setItem('sabi_custom_universities', JSON.stringify(cached));
+            }
+
+            // Save in Supabase universities table for all users
+            if (window.sabiDb) {
+                try {
+                    await window.sabiDb.from('universities').insert({ name: cleanName });
+                } catch (err) {
+                    console.warn('[AUTH] Could not write new university to Supabase:', err);
+                }
+            }
+        }
+    }
+
+    function handleUniSearch(query) {
+        const dropdown = document.getElementById('uni-dropdown');
+        if (!dropdown) return;
+
+        const trimmed = (query || '').trim().toLowerCase();
+        let matches = [];
+        if (!trimmed) {
+            matches = currentUniversitiesList.slice(0, 15);
+        } else {
+            matches = currentUniversitiesList.filter(u => u.toLowerCase().includes(trimmed)).slice(0, 20);
+        }
+
+        let html = '';
+        if (matches.length > 0) {
+            matches.forEach(name => {
+                const escaped = name.replace(/'/g, "\\'");
+                html += `
+                    <div class="uni-suggestion-item" onclick="selectUniversity('${escaped}')">
+                        <span>${name}</span>
+                        <span class="uni-suggestion-badge">Nigeria</span>
+                    </div>
+                `;
+            });
+        }
+
+        if (trimmed && !currentUniversitiesList.some(u => u.toLowerCase() === trimmed)) {
+            const escapedQuery = query.trim().replace(/'/g, "\\'");
+            html += `
+                <div class="uni-add-new-btn" onclick="selectUniversity('${escapedQuery}', true)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Add <strong>"${query.trim()}"</strong> to universities</span>
+                </div>
+            `;
+        }
+
+        if (!html) {
+            dropdown.classList.add('hidden');
+            return;
+        }
+
+        dropdown.innerHTML = html;
+        dropdown.classList.remove('hidden');
+    }
+
+    function selectUniversity(uniName, isNew = false) {
+        const input = document.getElementById('ob-uni-name');
+        if (input) {
+            input.value = uniName;
+        }
+        const dropdown = document.getElementById('uni-dropdown');
+        if (dropdown) {
+            dropdown.classList.add('hidden');
+        }
+        if (isNew) {
+            saveNewUniversityIfAbsent(uniName);
+        }
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('uni-dropdown');
+        const input = document.getElementById('ob-uni-name');
+        if (dropdown && !dropdown.contains(e.target) && e.target !== input) {
+            dropdown.classList.add('hidden');
+        }
+    });
 
     function showMessage(msg, isError = false) {
         const el = document.getElementById('auth-message');
@@ -502,16 +742,24 @@
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner"></span> Saving profile...';
 
+        const nickname = (document.getElementById('ob-nickname')?.value || '').trim() || 'Scholar';
+
         let profileData = {
+            full_name: nickname,
             study_mode: currentStudyTrack
         };
 
         if (currentStudyTrack === 'university') {
-            profileData.university = document.getElementById('ob-uni-name').value.trim();
+            const chosenUni = document.getElementById('ob-uni-name').value.trim();
+            profileData.university = chosenUni;
             profileData.level = selectedAcademicLevel;
             profileData.course = document.getElementById('ob-course').value.trim();
             profileData.projected_grad_year = document.getElementById('ob-grad-year').value.trim();
             profileData.target_gpa = document.getElementById('ob-gpa').value.trim();
+
+            if (chosenUni) {
+                saveNewUniversityIfAbsent(chosenUni);
+            }
         } else {
             // Casual or other exams track
             profileData.university = null;
@@ -539,10 +787,15 @@
     function switchToOnboarding(user) {
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('onboarding-section').classList.add('active');
-        const scholarName = (user && (user.user_metadata?.full_name || user.email?.split('@')[0])) || '';
+        const scholarName = (user && (user.user_metadata?.full_name || localStorage.getItem('sabi_user_name') || user.email?.split('@')[0])) || '';
         document.getElementById('auth-subtitle').innerText = scholarName 
-            ? `Welcome ${scholarName}! Personalize your academic track for Sabi OS.`
+            ? `Welcome ${scholarName}! Personalize your academic track.`
             : "Customize your academic experience for maximum study output.";
+        const nicknameInput = document.getElementById('ob-nickname');
+        if (nicknameInput && !nicknameInput.value) {
+            nicknameInput.value = scholarName;
+        }
+        loadUniversities();
         clearMessage();
     }
 
