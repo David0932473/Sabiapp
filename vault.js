@@ -66,7 +66,7 @@ async function loadSabiVault() {
     });
 
     isVaultLoaded = true;
-    console.log(`✅ LOAD COMPLETE: ${Object.keys(sabiVault).length} items in library.`);
+    console.log(`[VAULT] LOAD COMPLETE: ${Object.keys(sabiVault).length} items in library.`);
 
   } catch (err) {
     console.error("Critical System Error:", err);

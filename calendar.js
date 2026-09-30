@@ -6,7 +6,7 @@
  */
 
 // ==========================================
-// 🔑 ENVIRONMENT & API KEY CONFIGURATION
+// --- ENVIRONMENT & API KEY CONFIGURATION ---
 // Keys loaded from .env / env.js
 // ==========================================
 function getAnthropicKey() {
@@ -79,7 +79,7 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
 }
 
 // ==========================================
-// 🔄 RENDER ALL VIEWS (central re-render)
+// --- RENDER ALL VIEWS --- (central re-render)
 // ==========================================
 function renderAllViews() {
     if (document.getElementById('mini-cal-days')) {
@@ -96,7 +96,7 @@ function renderAllViews() {
 window.renderAllViews = renderAllViews;
 
 // ==========================================
-// 📅 DATE & TIME HELPERS
+// --- DATE & TIME HELPERS ---
 // ==========================================
 function getFutureDateString(offsetDays = 0) {
     const d = new Date();
@@ -185,7 +185,7 @@ function showToast(message) {
 }
 
 // ==========================================
-// 📚 DATA STORES & STATE
+// --- DATA STORES & STATE ---
 // ==========================================
 const DEFAULT_SUBJECT_CATALOG = [
     { name: "Mathematics", topics: ["Algebra & Quadratic Equations", "Calculus & Derivatives", "Trigonometry & Bearing", "Statistics & Probability"] },
@@ -199,12 +199,12 @@ const DEFAULT_SUBJECT_CATALOG = [
 ];
 
 const CATEGORIES = [
-    { key: 'jamb', label: '⚡ JAMB UTME', color: '#10B981' },
-    { key: 'waec', label: '📘 WAEC SSCE', color: '#3D8EFF' },
-    { key: 'neco', label: '🟣 NECO', color: '#8B5CF6' },
-    { key: 'noun', label: '🎓 NOUN TMA', color: '#0EA5E9' },
-    { key: 'ican', label: '💼 ICAN Diet', color: '#F59E0B' },
-    { key: 'study', label: '⏱️ Study Drills', color: '#EC4899' }
+    { key: 'jamb', label: 'JAMB UTME', color: '#10B981' },
+    { key: 'waec', label: 'WAEC SSCE', color: '#3D8EFF' },
+    { key: 'neco', label: 'NECO', color: '#8B5CF6' },
+    { key: 'noun', label: 'NOUN TMA', color: '#0EA5E9' },
+    { key: 'ican', label: 'ICAN Diet', color: '#F59E0B' },
+    { key: 'study', label: 'Study Drills', color: '#EC4899' }
 ];
 
 let calendarEvents = [];
@@ -223,7 +223,7 @@ if (typeof window !== 'undefined') {
 }
 
 // ==========================================
-// 💾 PERSISTENCE HELPERS
+// --- PERSISTENCE HELPERS ---
 // ==========================================
 function loadEvents() {
     try {
@@ -269,7 +269,7 @@ function getStoredClasses() {
 }
 
 // ==========================================
-// 🚀 APP INITIALIZATION
+// --- APP INITIALIZATION ---
 // ==========================================
 function initCalendarApp() {
     loadEvents();
@@ -300,7 +300,7 @@ function initCalendarApp() {
 window.initCalendarApp = initCalendarApp;
 
 // ========================================================
-// 🎯 FIRST-TIME POPUP MENU MODAL (WITH PROMINENT SKIP BUTTON)
+// --- FIRST-TIME POPUP MENU MODAL --- (WITH PROMINENT SKIP BUTTON)
 // ========================================================
 let intakeProfile = {
     target: 'uni',
@@ -409,7 +409,7 @@ function renderPopupHardSubjects() {
         const isHard = intakeProfile.hardSubjects.has(sub);
         return `
             <button type="button" class="popup-chip ${isHard ? 'hard-active' : ''}" onclick="togglePopupHardSubject('${escapeHtml(sub)}')">
-                <span>${isHard ? '🔥' : '○'}</span>
+                <span>${isHard ? '●' : '○'}</span>
                 <span>${escapeHtml(sub)}</span>
             </button>
         `;
@@ -468,13 +468,13 @@ function submitPopupQuickSetup() {
     localStorage.setItem('sabi_calendar_entered_v7', 'true');
     closeFirstTimePopup();
     renderAllViews();
-    showToast('✨ Sabi generated your personalized timetable! Welcome.');
+    showToast('Sabi generated your personalized timetable! Welcome.');
 }
 window.submitPopupQuickSetup = submitPopupQuickSetup;
 window.submitIntakeAndGenerateTimetable = submitPopupQuickSetup;
 
 // ==========================================
-// 🎛️ VIEW SWITCHING
+// --- VIEW SWITCHING ---
 // ==========================================
 function switchViewMode(mode) {
     currentViewMode = mode;
@@ -503,7 +503,7 @@ function switchViewMode(mode) {
 window.switchViewMode = switchViewMode;
 
 // ==========================================
-// 🗓️ 7-DAY MINI CALENDAR STRIP
+// --- 7-DAY MINI CALENDAR STRIP ---
 // ==========================================
 function changeStripWeek(direction) {
     stripWeekOffset += direction;
@@ -569,7 +569,7 @@ function renderMiniCalendarStrip() {
 }
 
 // ==========================================
-// 📋 AGENDA SCHEDULE VIEW
+// --- AGENDA SCHEDULE VIEW ---
 // ==========================================
 function filterAgendaEvents(type) {
     agendaFilter = type;
@@ -630,7 +630,7 @@ function renderAgendaTimeline() {
     if (combined.length === 0) {
         container.innerHTML = `
             <div class="session-empty-card">
-                <span class="session-empty-icon">☕</span>
+                <span class="session-empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
                 <p>No ${agendaFilter === 'class' ? 'classes' : (agendaFilter === 'study' ? 'study sessions' : 'events')} scheduled for ${dayDisplay}.</p>
                 <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px;">
                     <button type="button" class="btn-minimal-add" onclick="openAddSessionModal('study')">
@@ -651,17 +651,17 @@ function renderAgendaTimeline() {
                 <div class="session-card is-class" onclick="openClassDetailModal('${item.id}')">
                     <div class="session-card-main">
                         <div class="session-card-header">
-                            <span class="class-tag-pill">🎓 Class Lecture</span>
-                            <span class="session-time-text">🕒 ${item.time || '09:00'} - ${item.end_time || '11:00'} · Every ${item.day}</span>
+                            <span class="class-tag-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:3px;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Class Lecture</span>
+                            <span class="session-time-text"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:3px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${item.time || '09:00'} - ${item.end_time || '11:00'} · Every ${item.day}</span>
                         </div>
                         <h4 class="session-title">${escapeHtml(item.title)}</h4>
                         <div class="class-venue-info">
-                            <span>📍 ${escapeHtml(item.location || 'Lecture Hall')}</span>
+                            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${escapeHtml(item.location || 'Lecture Hall')}</span>
                         </div>
                     </div>
                     <div class="session-card-actions">
                         <button type="button" class="btn-detail-edit" onclick="event.stopPropagation(); editClassById('${item.id}')" title="Edit Class">
-                            ✏️
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                         </button>
                     </div>
                 </div>
@@ -673,14 +673,14 @@ function renderAgendaTimeline() {
                     <div class="session-card-main">
                         <div class="session-card-header">
                             <span class="session-cat-pill cat-${item.category || 'study'}">${categoryName}</span>
-                            <span class="session-time-text">🕒 ${item.time || '17:00'} · ${item.duration || 1.5}h</span>
+                            <span class="session-time-text"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:3px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${item.time || '17:00'} · ${item.duration || 1.5}h</span>
                         </div>
                         <h4 class="session-title">${escapeHtml(item.title)}</h4>
                         ${item.notes ? `<p class="session-notes-snippet">${escapeHtml(item.notes)}</p>` : ''}
                     </div>
                     <div class="session-card-actions">
                         <button type="button" class="session-check-pill ${item.completed ? 'active' : ''}" onclick="event.stopPropagation(); toggleEventComplete('${item.id}')" title="${item.completed ? 'Mark incomplete' : 'Mark done'}" aria-label="Mark done">
-                            ${item.completed ? '✓' : '○'}
+                            ${item.completed ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
                         </button>
                     </div>
                 </div>
@@ -692,7 +692,7 @@ function renderAgendaTimeline() {
 }
 
 // ==========================================
-// 📅 WEEK TIMETABLE GRID VIEW
+// --- WEEK TIMETABLE GRID VIEW ---
 // ==========================================
 function changeWeekOffset(offset) {
     plannerWeekOffset += offset;
@@ -758,7 +758,7 @@ function renderWeekTimetable() {
         if (allItems.length === 0) {
             itemsHtml = `
                 <div class="week-day-empty">
-                    <span class="week-day-empty-icon">${idx === 6 ? '🛌' : '✨'}</span>
+                    <span class="week-day-empty-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
                     <span>${idx === 6 ? 'Rest Day' : 'No Events'}</span>
                 </div>
             `;
@@ -773,11 +773,11 @@ function renderWeekTimetable() {
                 itemsHtml += `
                     <div class="week-session-card ${isClass ? 'is-class' : ''}" onclick="${isClass ? `openClassDetailModal('${item.id}')` : `openEventDetailModal('${item.id}')`}">
                         <div class="week-card-top">
-                            <span class="week-card-time">🕒 ${item.time || '17:00'} - ${endTime}</span>
+                            <span class="week-card-time"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:3px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${item.time || '17:00'} - ${endTime}</span>
                             <span class="week-card-activity-tag ${tagClass}">${tagLabel}</span>
                         </div>
                         <div class="week-card-subject">${escapeHtml(item.title)}</div>
-                        ${isClass && item.location ? `<div class="week-card-focus">📍 ${escapeHtml(item.location)}</div>` : ''}
+                        ${isClass && item.location ? `<div class="week-card-focus"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${escapeHtml(item.location)}</div>` : ''}
                         ${!isClass && item.notes ? `<div class="week-card-focus">${escapeHtml(item.notes)}</div>` : ''}
                     </div>
                 `;
@@ -798,7 +798,7 @@ function renderWeekTimetable() {
 }
 
 // ==========================================
-// ✏️ MANUAL ADD & EDIT MODAL
+// --- MANUAL ADD & EDIT MODAL ---
 // ==========================================
 function switchModalEventType(type) {
     const studyFields = document.getElementById('fields-study-session');
@@ -915,7 +915,7 @@ function handleSaveSession(e) {
             });
         }
         saveStoredClasses(storedClasses);
-        showToast(editId ? 'Class updated!' : 'Recurring class added to timetable! 🎓');
+        showToast(editId ? 'Class updated!' : 'Recurring class added to timetable!');
     } else {
         const title = document.getElementById('modal-session-title')?.value.trim();
         const category = document.getElementById('modal-session-category')?.value || 'study';
@@ -961,7 +961,7 @@ function handleSaveSession(e) {
             calendarEvents.push(savedEvent);
         }
         saveEvents();
-        showToast(editId ? 'Study session updated!' : 'Study session scheduled! ⏱️');
+        showToast(editId ? 'Study session updated!' : 'Study session scheduled!');
 
         if (syncGcal && savedEvent) {
             window.open(createGoogleCalendarUrl(savedEvent), '_blank');
@@ -974,7 +974,7 @@ function handleSaveSession(e) {
 window.handleSaveSession = handleSaveSession;
 
 // ==========================================
-// 🔍 EVENT DETAILS & CLASS DETAILS MODAL
+// --- EVENT DETAILS & CLASS DETAILS MODAL ---
 // ==========================================
 function openEventDetailModal(id) {
     const ev = calendarEvents.find(e => e.id === id);
@@ -1006,7 +1006,7 @@ function openEventDetailModal(id) {
     }
     if (compBtn) {
         compBtn.style.display = 'inline-flex';
-        compBtn.textContent = ev.completed ? 'Mark Pending' : 'Mark Done ✓';
+        compBtn.textContent = ev.completed ? 'Mark Pending' : 'Mark Done';
     }
 
     if (modal) {
@@ -1033,7 +1033,7 @@ function openClassDetailModal(id) {
     const compBtn = document.getElementById('detail-complete-btn');
 
     if (tag) {
-        tag.textContent = '🎓 RECURRING CLASS';
+        tag.textContent = 'RECURRING CLASS';
         tag.style.color = '#818CF8';
     }
     if (title) title.textContent = cls.subject;
@@ -1113,7 +1113,7 @@ function toggleEventComplete(id) {
     ev.completed = !ev.completed;
     saveEvents();
     renderAllViews();
-    showToast(ev.completed ? 'Session completed! 🎯' : 'Marked pending.');
+    showToast(ev.completed ? 'Session completed!' : 'Marked pending.');
 }
 window.toggleEventComplete = toggleEventComplete;
 
@@ -1125,13 +1125,13 @@ function toggleCurrentDetailComplete() {
 window.toggleCurrentDetailComplete = toggleCurrentDetailComplete;
 
 // ==========================================
-// 💬 SABI AI STUDY BUDDY CONVERSATIONAL ASSISTANT
+// --- SABI AI STUDY BUDDY CONVERSATIONAL ASSISTANT ---
 // ==========================================
 let pendingChatMedia = null; // { name, type, size, dataUrl, textContent }
 
 const DEFAULT_CHAT_GREETING = {
     role: 'bot',
-    content: "Hey! 👋 I'm your Sabi Study Buddy, here to build a weekly timetable that fits your life. What degree, courses, or exam (JAMB, WAEC, NOUN, ICAN) are you focusing on this semester? *(Tap 📎 to upload a course outline)*",
+    content: "Hey! I'm your Sabi Copilot, here to build a weekly timetable that fits your life. What degree, courses, or exam (JAMB, WAEC, NOUN, ICAN) are you focusing on this semester? *(Tap the attach button below to upload a course outline)*",
     timestamp: 'Just now'
 };
 
@@ -1187,7 +1187,7 @@ function openSabiAiChat() {
     const badge = document.getElementById('chat-live-ai-badge');
     const statusText = document.getElementById('chat-header-status-text');
     if (badge) {
-        badge.textContent = '⚡ AI Active';
+        badge.textContent = 'AI Active';
         badge.style.display = 'inline-flex';
     }
     if (statusText) {
@@ -1226,7 +1226,7 @@ function clearChatHistory() {
 window.clearChatHistory = clearChatHistory;
 
 // ==========================================
-// 📎 MEDIA UPLOAD HANDLERS (COURSE OUTLINES & TIMETABLES)
+// --- MEDIA UPLOAD HANDLERS --- (COURSE OUTLINES & TIMETABLES)
 // ==========================================
 function triggerChatMediaUpload() {
     const fileInput = document.getElementById('chat-media-file-input');
@@ -1440,13 +1440,13 @@ function processImageTextClientSide(file, dataUrl, callback) {
 
             // 3. Tesseract OCR Recognition
             if (typeof Tesseract !== 'undefined' && Tesseract.recognize) {
-                updateChatMediaPreviewStatus('🔍 Scanning timetable text (0%)...');
+                updateChatMediaPreviewStatus('Scanning timetable text (0%)...');
 
                 const ocrPromise = Tesseract.recognize(canvas, 'eng', {
                     logger: m => {
                         if (m.status === 'recognizing text' && typeof m.progress === 'number') {
                             const pct = Math.round(m.progress * 100);
-                            updateChatMediaPreviewStatus(`🔍 Reading timetable (${pct}%)...`);
+                            updateChatMediaPreviewStatus(`Reading timetable (${pct}%)...`);
                         }
                     }
                 });
@@ -1463,11 +1463,11 @@ function processImageTextClientSide(file, dataUrl, callback) {
                         const allCodes = Array.from(new Set([...parsed.courses, ...fallbackCodes]));
 
                         if (parsed.classes.length > 0) {
-                            updateChatMediaPreviewStatus(`✅ Found ${parsed.classes.length} classes & ${allCodes.length} courses`);
+                            updateChatMediaPreviewStatus(`Found ${parsed.classes.length} classes & ${allCodes.length} courses`);
                         } else if (allCodes.length > 0) {
-                            updateChatMediaPreviewStatus(`✅ Detected ${allCodes.length} courses`);
+                            updateChatMediaPreviewStatus(`Detected ${allCodes.length} courses`);
                         } else {
-                            updateChatMediaPreviewStatus(`✅ Screenshot scanned`);
+                            updateChatMediaPreviewStatus(`Screenshot scanned`);
                         }
 
                         callback({
@@ -1545,7 +1545,7 @@ function handleChatImageFile(file, label) {
             textContent: `[Uploaded Outline: ${file.name || label}]`
         };
         displayPendingMediaBar();
-        updateChatMediaPreviewStatus('🔍 Reading screenshot text with AI OCR...');
+        updateChatMediaPreviewStatus('Reading screenshot text with AI OCR...');
 
         processImageTextClientSide(file, rawDataUrl, (processed) => {
             if (!pendingChatMedia) return;
@@ -1652,7 +1652,7 @@ function displayPendingMediaBar() {
     if (sizeEl && (!sizeEl.textContent || sizeEl.textContent.endsWith('KB'))) {
         sizeEl.textContent = pendingChatMedia.size;
     }
-    if (iconEl) iconEl.textContent = pendingChatMedia.type === 'image' ? '🖼️' : '📄';
+    if (iconEl) iconEl.innerHTML = pendingChatMedia.type === 'image' ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
 
     bar.classList.remove('hidden');
 
@@ -1691,15 +1691,15 @@ let currentStudioMode = 'planner';
 
 const STUDIO_MODE_CHIPS = {
     planner: [
-        "Generate my complete weekly timetable ✨",
+        "Generate my complete weekly timetable",
         "I have lectures Mon, Wed, Fri (9am - 12pm)",
         "Lock in 2 hours study every evening",
         "Maths & Physics need extra study blocks",
         "Keep Sundays completely free for rest"
     ],
     vision: [
-        "📷 Upload Timetable Screenshot",
-        "📄 Upload Course Outline / Syllabus",
+        "Upload Timetable Screenshot",
+        "Upload Course Outline / Syllabus",
         "Extract recurring lectures from photo",
         "Identify tough topics from outline",
         "Re-scan uploaded image"
@@ -1754,22 +1754,22 @@ function renderChatMessages() {
                 </div>
                 <div class="launchpad-grid">
                     <div class="launchpad-tile" onclick="triggerChatMediaUpload()">
-                        <span class="launchpad-tile-icon">📷</span>
+                        <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
                         <span class="launchpad-tile-title">Scan Course Outline</span>
                         <span class="launchpad-tile-desc">Upload timetable photo for instant Vision OCR</span>
                     </div>
                     <div class="launchpad-tile" onclick="handleQuickChipClick('I want to auto-balance my weekly study sessions around my lectures')">
-                        <span class="launchpad-tile-icon">⚡</span>
+                        <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
                         <span class="launchpad-tile-title">Auto-Balance Week</span>
                         <span class="launchpad-tile-desc">Distribute study blocks without clashes</span>
                     </div>
                     <div class="launchpad-tile" onclick="setStudioMode('exam'); handleQuickChipClick('Prepping for exams in 6 weeks, help me build a timetable')">
-                        <span class="launchpad-tile-icon">🎯</span>
+                        <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
                         <span class="launchpad-tile-title">Exam Crunch Mode</span>
                         <span class="launchpad-tile-desc">Prioritize tough subjects with spaced review</span>
                     </div>
                     <div class="launchpad-tile" onclick="handleQuickChipClick('Schedule 2 hours of focused evening study (7pm - 9pm) every weekday')">
-                        <span class="launchpad-tile-icon">🌙</span>
+                        <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
                         <span class="launchpad-tile-title">Evening Deep Work</span>
                         <span class="launchpad-tile-desc">Lock in daily 7pm - 9pm distraction-free study</span>
                     </div>
@@ -1785,7 +1785,7 @@ function renderChatMessages() {
             actionCardHtml = `
                 <div class="studio-transmission-card">
                     <div class="transmission-header">
-                        <span class="transmission-badge">⚡ TIMETABLE SYNCHRONIZED</span>
+                        <span class="transmission-badge">TIMETABLE SYNCHRONIZED</span>
                         <span class="transmission-status-tag">Updated</span>
                     </div>
                     <div class="transmission-summary">${escapeHtml(msg.actionCard.details)}</div>
@@ -1808,7 +1808,7 @@ function renderChatMessages() {
             } else {
                 mediaHtml = `
                     <div class="chat-msg-doc-pill">
-                        <span>📄</span>
+                        <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
                         <span>${escapeHtml(msg.media.name || 'Course outline')}</span>
                     </div>
                 `;
@@ -1839,7 +1839,7 @@ function renderChatMessages() {
 function viewGeneratedScheduleInWeekGrid() {
     closeSabiAiChat();
     switchViewMode('week');
-    showToast('Switched to Week Grid Timetable ✨');
+    showToast('Switched to Week Grid Timetable');
 }
 window.viewGeneratedScheduleInWeekGrid = viewGeneratedScheduleInWeekGrid;
 
@@ -2081,7 +2081,7 @@ async function processBuddyConversation(userText, history, media) {
 
         for (const endpoint of endpoints) {
             try {
-                console.log(`🚀 Connecting to live NVIDIA AI via ${endpoint}...`);
+                console.log(`Connecting to live NVIDIA AI via ${endpoint}...`);
                 const isDirectNvidia = endpoint.includes('integrate.api.nvidia.com');
                 const headers = { 'Content-Type': 'application/json' };
                 if (isDirectNvidia) {
@@ -2098,10 +2098,10 @@ async function processBuddyConversation(userText, history, media) {
                     const data = await res.json();
                     const replyText = data.choices?.[0]?.message?.content;
                     if (replyText) {
-                        console.log('✨ Live NVIDIA AI Response successfully received from:', endpoint);
+                        console.log('Live AI Response successfully received from:', endpoint);
                         const badge = document.getElementById('chat-live-ai-badge');
                         if (badge) {
-                            badge.textContent = '⚡ AI Active';
+                            badge.textContent = 'AI Active';
                             badge.style.background = 'rgba(16, 185, 129, 0.2)';
                             badge.style.color = '#34D399';
                         }
@@ -2168,7 +2168,7 @@ async function processBuddyConversation(userText, history, media) {
                 if (replyText) {
                     const badge = document.getElementById('chat-live-ai-badge');
                     if (badge) {
-                        badge.textContent = '⚡ AI Active';
+                        badge.textContent = 'AI Active';
                         badge.style.background = 'rgba(16, 185, 129, 0.2)';
                         badge.style.color = '#34D399';
                     }
@@ -2259,7 +2259,7 @@ function parseAiReplyAndApply(replyText) {
             saveEvents();
         }
 
-        showToast('✨ Timetable updated by Sabi!');
+        showToast('Timetable updated by Sabi!');
     }
 
     return {
@@ -2373,7 +2373,7 @@ function generateOfflineBuddyReply(userText, media, history) {
         renderAllViews();
         return {
             role: 'bot',
-            content: "🗑️ Timetable cleared! All study sessions have been removed. Let me know whenever you'd like to build a fresh schedule.",
+            content: "Timetable cleared! All study sessions have been removed. Let me know whenever you'd like to build a fresh schedule.",
             actionCard: { details: 'Cleared all calendar events' },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2413,7 +2413,7 @@ function generateOfflineBuddyReply(userText, media, history) {
     if (/^(hi|hello|hey|yo|good morning|good afternoon|good evening|howdy|sup)\b/i.test(lower) || /\b(who are you|what can you do|how does this work|help me|capabilities)\b/i.test(lower)) {
         return {
             role: 'bot',
-            content: `Hey! 👋 I'm your Sabi Study Buddy, here to build a weekly timetable that fits your life. What degree, courses, or exam are you focusing on this semester?`,
+            content: `Hey! I'm your Sabi Copilot, here to build a weekly timetable that fits your life. What degree, courses, or exam are you focusing on this semester?`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2503,7 +2503,7 @@ function generateOfflineBuddyReply(userText, media, history) {
 
         return {
             role: 'bot',
-            content: `Locked in! 🎓 **${subject}** every **${day}** (${time} – ${endTime}) added to your recurring lecture schedule.\n\n**When do you prefer to do your personal study?** (Morning, afternoon, evening, or night owl?)`,
+            content: `Locked in! **${subject}** every **${day}** (${time} – ${endTime}) added to your recurring lecture schedule.\n\n**When do you prefer to do your personal study?** (Morning, afternoon, evening, or night owl?)`,
             actionCard: { details: `Added ${subject} class on ${day} at ${time}` },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2552,7 +2552,7 @@ function generateOfflineBuddyReply(userText, media, history) {
         const winLabel = studyWindow ? `${studyWindow} window` : 'evening slots';
         return {
             role: 'bot',
-            content: `Boom! 🚀 **Your personalised timetable is live!**\n\n• **Subjects**: ${subjects.slice(0, 4).join(', ')}${subjects.length > 4 ? ' + more' : ''}\n• **Study Window**: Scheduled in your ${winLabel}\n• **Strategy**: Spaced repetition with high-yield drills\n• **Rest Day**: Sunday kept free for rest and catch-up\n\nCheck the **Schedule** tab or switch to **Week Grid** to view your complete week!`,
+            content: `**Your personalised timetable is live!**\n\n• **Subjects**: ${subjects.slice(0, 4).join(', ')}${subjects.length > 4 ? ' + more' : ''}\n• **Study Window**: Scheduled in your ${winLabel}\n• **Strategy**: Spaced repetition with high-yield drills\n• **Rest Day**: Sunday kept free for rest and catch-up\n\nCheck the **Schedule** tab or switch to **Week Grid** to view your complete week!`,
             actionCard: { details: `Generated ${sessionCount} study sessions for ${subjects.slice(0, 3).join(', ')}` },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2565,9 +2565,9 @@ function generateOfflineBuddyReply(userText, media, history) {
     if (!hasSubjects) {
         let prefix = '';
         if (examCategory !== 'study') {
-            prefix = `Awesome! Prepping for **${examCategory.toUpperCase()}** is a huge goal. 🎯 `;
+            prefix = `Awesome! Prepping for **${examCategory.toUpperCase()}** is a huge goal. `;
         } else if (text.length > 2) {
-            prefix = `Got it! "${escapeHtml(text)}" noted. 👍 `;
+            prefix = `Got it! "${escapeHtml(text)}" noted. `;
         }
         return {
             role: 'bot',
@@ -2581,7 +2581,7 @@ function generateOfflineBuddyReply(userText, media, history) {
         const subList = extractedSubjects.slice(0, 2).join(' and ');
         return {
             role: 'bot',
-            content: `Got it! **${subList}** will get priority focus blocks so you master them early. 💪\n\n**Do you have fixed lecture times on campus?** Tell me days and times (e.g. *Mondays at 10am*), or say **"no fixed classes"** if your schedule is open.`,
+            content: `Got it! **${subList}** will get priority focus blocks so you master them early.\n\n**Do you have fixed lecture times on campus?** Tell me days and times (e.g. *Mondays at 10am*), or say **"no fixed classes"** if your schedule is open.`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2589,8 +2589,8 @@ function generateOfflineBuddyReply(userText, media, history) {
 
     if (!hasWindowInfo) {
         const classAck = hasExplicitNoClasses
-            ? 'Understood — no fixed classes! Total schedule freedom gives us flexibility to build your ideal rhythm. 🎯\n\n'
-            : 'Classes noted! 🎓\n\n';
+            ? 'Understood — no fixed classes! Total schedule freedom gives us flexibility to build your ideal rhythm.\n\n'
+            : 'Classes noted!\n\n';
         return {
             role: 'bot',
             content: `${classAck}**When do you study best?** Morning, afternoon, evening, or are you a night owl? I'll schedule your revision blocks into that window.`,
@@ -2602,14 +2602,14 @@ function generateOfflineBuddyReply(userText, media, history) {
     const subSummary = extractedSubjects.slice(0, 3).join(', ');
     return {
         role: 'bot',
-        content: `I've got everything ready! 📋\n\n• **Focus Subjects**: ${subSummary}\n• **Lectures**: ${hasExplicitNoClasses ? 'Self-paced (No fixed lectures)' : 'Fixed schedule blocked'}\n• **Study Window**: ${studyWindow}\n• **Target**: ${examCategory.toUpperCase()}\n\nReady to see your schedule? Just say **"Yes, build it!"** or tap **Generate** below! ✨`,
+        content: `I've got everything ready!\n\n• **Focus Subjects**: ${subSummary}\n• **Lectures**: ${hasExplicitNoClasses ? 'Self-paced (No fixed lectures)' : 'Fixed schedule blocked'}\n• **Study Window**: ${studyWindow}\n• **Target**: ${examCategory.toUpperCase()}\n\nReady to see your schedule? Just say **"Yes, build it!"** or tap **Generate** below!`,
         actionCard: null,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 }
 
 // ==========================================
-// ⚡ QUICK-ADD NATURAL LANGUAGE HANDLER
+// --- QUICK-ADD NATURAL LANGUAGE HANDLER ---
 // ==========================================
 function parseQuickScheduleText(raw) {
     let text = raw.trim();
@@ -2679,7 +2679,7 @@ function handleQuickScheduleAdd() {
 window.handleQuickScheduleAdd = handleQuickScheduleAdd;
 
 // ==========================================
-// 📅 EXPORT & SYNC (RFC 5545 .ICS & GCAL)
+// --- EXPORT & SYNC --- (RFC 5545 .ICS & GCAL)
 // ==========================================
 function createGoogleCalendarUrl(event) {
     const title = encodeURIComponent(event.title);
@@ -2743,7 +2743,7 @@ function exportToIcs() {
         ics.push(`DTSTART:${formatGoogleIso(startD)}`);
         ics.push(`DTEND:${formatGoogleIso(endD)}`);
         ics.push(`RRULE:FREQ=WEEKLY;BYDAY=${icsDay}`);
-        ics.push(`SUMMARY:🎓 ${escapeIcs(cls.subject)}`);
+        ics.push(`SUMMARY:${escapeIcs(cls.subject)}`);
         ics.push(`LOCATION:${escapeIcs(cls.venue || 'Lecture Hall')}`);
         ics.push(`DESCRIPTION:Recurring weekly lecture on ${cls.day}`);
         ics.push('STATUS:CONFIRMED');
@@ -2829,7 +2829,7 @@ function getCategoryColor(cat) {
 
 function getCategoryBadgeText(cat) {
     const found = CATEGORIES.find(c => c.key === (cat || '').toLowerCase());
-    return found ? found.label : '⏱️ Study';
+    return found ? found.label : 'Study';
 }
 
 // Auto-initialize when DOM is ready

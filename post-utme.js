@@ -63,7 +63,7 @@ function renderUniversityCards() {
         card.onclick = () => selectUni(school, card);
 
         card.innerHTML = `
-            <div class="uni-icon">🏫</div>
+            <div class="uni-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10l7-5 7 5v11"></path><path d="M9 21v-6h6v6"></path><circle cx="12" cy="10" r="1"></circle></svg></div>
             <div class="uni-info">
                 <h3>${school}</h3>
                 <p>${school} Post-UTME Vault</p>

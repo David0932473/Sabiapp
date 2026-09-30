@@ -23,10 +23,10 @@ function updateJAMBCountdown() {
   if (display) {
     const badge = display.closest('.streak-badge') || display.parentElement;
     if (days > 0) {
-      display.innerHTML = `⏳ ${days} Days to JAMB`;
+      display.innerHTML = `<svg style="display:inline-block;vertical-align:-2px;margin-right:5px;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${days} DAYS TO JAMB`;
       if (badge) badge.style.display = 'inline-flex';
     } else if (days === 0) {
-      display.innerHTML = `🔥 EXAM IS TODAY!`;
+      display.innerHTML = `<svg style="display:inline-block;vertical-align:-2px;margin-right:5px;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>EXAM IS TODAY!`;
       if (badge) {
         badge.style.display = 'inline-flex';
         badge.style.background = 'rgba(239, 68, 68, 0.2)'; // Turns red for urgency

@@ -158,8 +158,8 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
     console.log(`\n======================================================`);
-    console.log(`🚀 Sabi OS Server is running at http://localhost:${PORT}`);
-    console.log(`⚡ Live NVIDIA AI Proxy enabled on http://localhost:${PORT}/api/chat`);
-    console.log(`🔑 NVIDIA Key loaded: ${NVIDIA_KEY ? 'Active (verified)' : 'Missing'}`);
+    console.log(`[SERVER] Sabi OS Server is running at http://localhost:${PORT}`);
+    console.log(`[AI PROXY] Live NVIDIA AI Proxy enabled on http://localhost:${PORT}/api/chat`);
+    console.log(`[AUTH] NVIDIA Key loaded: ${NVIDIA_KEY ? 'Active (verified)' : 'Missing'}`);
     console.log(`======================================================\n`);
 });

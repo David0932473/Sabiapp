@@ -137,25 +137,34 @@
         
         <div class="bento-card span-2 card-jamb" onclick="triggerJambFlow()">
             <span class="badge">15+ YRS</span>
-            <div class="exam-icon">🟢</div>
+            <div class="exam-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
             <h3 class="bento-title">JAMB UTME</h3>
             <p class="bento-desc">Standard CBT Prep Engine with Live Sabi Explanations.</p>
         </div>
 
         <div class="bento-card card-waec" onclick="openSheet('WAEC', 'Select Subject & Year')">
             <span class="badge">10+ YRS</span>
-            <div class="exam-icon">🔵</div>
+            <div class="exam-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D8EFF" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </div>
             <h3 class="bento-title">WAEC</h3>
             <p class="bento-desc">WASSCE O-Level</p>
         </div>
 
         <div class="bento-card card-neco" onclick="openSheet('NECO', 'Select Subject & Year')">
-            <div class="exam-icon">🟣</div>
+            <div class="exam-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
             <h3 class="bento-title">NECO</h3>
             <p class="bento-desc">National Exam</p>
         </div>
 
-<div class="bento-card card-post" onclick="window.location.href='post-utme.html'"> <div class="exam-icon">📝</div>
+<div class="bento-card card-post" onclick="window.location.href='post-utme.html'">
+    <div class="exam-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    </div>
     <div class="card-content">
         <h3 class="bento-title">Post-UTME</h3> 
         <p class="bento-desc">Pratice Post-Utme Questions</p>
@@ -164,14 +173,18 @@
 
 
         <div class="bento-card" onclick="openSheet('JUPEB', 'Select Subject & Year')">
-            <div class="exam-icon">🟠</div>
+            <div class="exam-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
             <h3 class="bento-title">JUPEB</h3>
             <p class="bento-desc">A-Level Library</p>
         </div>
         <div class="bento-card span-2 card-ican" onclick="window.location.href='pq-setup.html'" style="cursor: pointer;">
             <span class="badge">PRO</span>
             <div style="display: flex; align-items: center;">
-                <div class="exam-icon">🏛️</div>
+                <div class="exam-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EC4899" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                </div>
                 <div>
                     <h3 class="bento-title">ICAN Library</h3>
                     <p class="bento-desc">ATS & Professional Exams</p>
@@ -201,7 +214,9 @@
 
         <div class="mode-options">
             <div class="mode-box demo" onclick="selectMode('demo')">
-                <div class="mode-icon">🎓</div>
+                <div class="mode-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                </div>
                 <div class="mode-info">
                     <h3>Demo Mode</h3>
                     <p>Instant feedback, hints enabled, no timer pressure.</p>
@@ -210,7 +225,9 @@
             </div>
 
             <div class="mode-box real" onclick="selectMode('real')">
-                <div class="mode-icon">⏱️</div>
+                <div class="mode-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
                 <div class="mode-info">
                     <h3>Real Mode</h3>
                     <p>Strict exam timing, no feedback until submission.</p>

@@ -1,20 +1,24 @@
-- **Goal (incl. success criteria)**: Remove Sabi Mentor / Sabi AI elements from the home page (`index.html`) so that AI functionality is exclusively consolidated in the dedicated Study Calendar / Academic Copilot Studio.
+- **Goal (incl. success criteria)**: Completely eliminate all Unicode emojis across the entire Sabi web application and replace them with clean, crisp, production-grade vector icons (SVG) or minimal typographic labels (0 emojis total).
 - **Constraints/Assumptions**:
-  - Home page (`index.html`) retains clean Bento grid navigation (Library, PQ Engine, Study Calendar, Recent session).
-  - All calendar & AI functionality in `calendar.html` remains 100% operational.
+  - Zero external CDN icon dependencies (FontAwesome, Lucide font) to avoid network latency and layout shift; use lightweight inline SVGs.
+  - Zero functional regressions across navigation, modals, exam engines, scoring flows, calendar management, and ICAN catalog.
 - **Key decisions**:
-  - Removed `Sabi AI` button from the top header of `index.html`.
-  - Removed the `Sabi AI Study Buddy` / `⚡ Sabi AI Mentor` Bento card from the home page grid.
-  - Removed the floating action button (`sabi-chat-fab`) and chat drawer modal overlay from `index.html`.
-  - Removed unneeded heavy scripts (`tesseract.min.js`, `env.js`, `calendar.js`) from `index.html` to speed up initial page load.
+  - Replaced all emojis in core views:
+    - [index.html](file:///c:/Users/dave/.gemini/sabi/index.html): Navigation Bento cards, theme toggles, modal close triggers, and toast notifications.
+    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html) & [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Command deck badges, Bento matrix cards, intake selector pills, category badges, agenda icons, and copilot launchpad.
+    - [library.html](file:///c:/Users/dave/.gemini/sabi/library.html) & [library.js](file:///c:/Users/dave/.gemini/sabi/library.js): Search input, empty states, textbook cover icons, and professional discipline cards.
+    - [pq.html](file:///c:/Users/dave/.gemini/sabi/pq.html), [pq-setup.html](file:///c:/Users/dave/.gemini/sabi/pq-setup.html), [jamb-setup.js](file:///c:/Users/dave/.gemini/sabi/jamb-setup.js): Exam mode selector icons, subject lock indicators, and catalog cards.
+    - [ican.html](file:///c:/Users/dave/.gemini/sabi/ican.html) & [ican.js](file:///c:/Users/dave/.gemini/sabi/ican.js): All 23 ATSWA and Professional subject covers, syllabus cards, and search feedback.
+    - [post-utme.html](file:///c:/Users/dave/.gemini/sabi/post-utme.html) & [post-utme.js](file:///c:/Users/dave/.gemini/sabi/post-utme.js): Universal mix globe and university campus icons.
+    - [results.html](file:///c:/Users/dave/.gemini/sabi/results.html) & [results.js](file:///c:/Users/dave/.gemini/sabi/results.js): Score tier badges (Trophy, Scholar Medal, On Track Trend, Alert) and review corrections button.
+    - [test-room.js](file:///c:/Users/dave/.gemini/sabi/test-room.js): Crash report alert vector.
+    - [app.js](file:///c:/Users/dave/.gemini/sabi/app.js): Countdown timer and streak icons.
 - **State**:
   - Done:
-    - [index.html](file:///c:/Users/dave/.gemini/sabi/index.html): Completely removed all Sabi AI / Sabi Mentor widgets, triggers, and drawer.
+    - Workspace-wide regex scan confirmed: 0 unicode emojis remain in `.html`, `.js`, and `.css` files.
+    - Node syntax validation passed (`node -c`) for all modified scripts.
   - Now: Committing and pushing changes to GitHub.
   - Next: User confirmation.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
-  - [index.html](file:///c:/Users/dave/.gemini/sabi/index.html)
-  - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
-  - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css)
-  - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)
+  - `app.js`, `calendar.html`, `calendar.js`, `ican.html`, `ican.js`, `index.html`, `jamb-setup.js`, `library.html`, `library.js`, `post-utme.html`, `post-utme.js`, `pq-setup.html`, `pq.html`, `results.html`, `results.js`, `server.js`, `test-room.js`, `vault.js`

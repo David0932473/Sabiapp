@@ -92,7 +92,9 @@ function performSmartSearch() {
     // Render with Highlighting
     resultsList.innerHTML = scoredData.slice(0, 15).map(item => `
         <div class="book-card" onclick="openSabiReader('${item.url}')">
-          <div class="book-cover">📗</div>
+          <div class="book-cover">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </div>
           <div class="book-info">
             <span class="noun-tag">${highlightMatch(item.code, query)}</span>
             <div class="book-title" style="color:white; font-weight:700;">

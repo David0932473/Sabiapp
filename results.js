@@ -85,19 +85,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (overallPercentage >= 75) {
         badgeBox.style.background = "rgba(16, 185, 129, 0.1)"; badgeBox.style.borderColor = "rgba(16, 185, 129, 0.3)";
-        badgeText.style.color = "#10B981"; badgeIcon.innerText = "🏆"; badgeText.innerText = "Sabi Legend";
+        badgeText.style.color = "#10B981";
+        badgeIcon.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>`;
+        badgeText.innerText = "Sabi Legend";
         adviceText.innerText = "Exceptional performance. You are in the top percentile. Medicine or Law? You're ready.";
     } else if (overallPercentage >= 60) {
         badgeBox.style.background = "rgba(61, 142, 255, 0.1)"; badgeBox.style.borderColor = "rgba(61, 142, 255, 0.3)";
-        badgeText.style.color = "#3D8EFF"; badgeIcon.innerText = "🥇"; badgeText.innerText = "Scholar";
+        badgeText.style.color = "#3D8EFF";
+        badgeIcon.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3D8EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>`;
+        badgeText.innerText = "Scholar";
         adviceText.innerText = `Solid outing. You've comfortably crossed the 240+ threshold. Keep fine-tuning.`;
     } else if (overallPercentage >= 45) {
         badgeBox.style.background = "rgba(245, 158, 11, 0.1)"; badgeBox.style.borderColor = "rgba(245, 158, 11, 0.3)";
-        badgeText.style.color = "#F59E0B"; badgeIcon.innerText = "📈"; badgeText.innerText = "On Track";
+        badgeText.style.color = "#F59E0B";
+        badgeIcon.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`;
+        badgeText.innerText = "On Track";
         adviceText.innerText = "You survived, but the cutoff mark is breathing down your neck. Review your mistakes.";
     } else {
         badgeBox.style.background = "rgba(239, 68, 68, 0.1)"; badgeBox.style.borderColor = "rgba(239, 68, 68, 0.3)";
-        badgeText.style.color = "#EF4444"; badgeIcon.innerText = "⚠️"; badgeText.innerText = "Keep Pushing";
+        badgeText.style.color = "#EF4444";
+        badgeIcon.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+        badgeText.innerText = "Keep Pushing";
         adviceText.innerText = "Rough day at the office. Don't panic, just head to the Review Room and study the Sabi Explanations.";
     }
 });

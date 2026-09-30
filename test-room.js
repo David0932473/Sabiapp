@@ -95,7 +95,7 @@ async function prepareQuestions(jumpToLast = false) {
         if (qTextDisplay) {
             qTextDisplay.innerHTML = `
                 <div style="background:rgba(239,68,68,0.1); padding:20px; border-radius:10px; border-left:4px solid #EF4444; margin-top:20px;">
-                    <h4 style="color:#EF4444; margin:0 0 10px 0;">⚠️ SABI CRASH REPORT</h4>
+                    <h4 style="color:#EF4444; margin:0 0 10px 0; display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> SABI CRASH REPORT</h4>
                     <p style="color:white; font-family:monospace; font-size:14px; margin:0;">${err.message}</p>
                 </div>`;
         }
