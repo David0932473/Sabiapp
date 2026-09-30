@@ -241,10 +241,27 @@ function serveFile(targetPath, res) {
     stream.pipe(res);
 }
 
-server.listen(PORT, () => {
+const os = require('os');
+function getNetworkIp() {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+        for (const iface of interfaces[name]) {
+            if (iface.family === 'IPv4' && !iface.internal) {
+                return iface.address;
+            }
+        }
+    }
+    return '127.0.0.1';
+}
+
+const NETWORK_IP = getNetworkIp();
+
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`\n======================================================`);
-    console.log(`[SERVER] Sabi OS Server is running at http://localhost:${PORT}`);
-    console.log(`[AI PROXY] Live NVIDIA AI Proxy enabled on http://localhost:${PORT}/api/chat`);
+    console.log(`[SERVER] Sabi OS Server is running:`);
+    console.log(`         • This PC:       http://localhost:${PORT}`);
+    console.log(`         • Other Devices: http://${NETWORK_IP}:${PORT}`);
+    console.log(`[AI PROXY] Live NVIDIA AI Proxy enabled on /api/chat`);
     console.log(`[AUTH] NVIDIA Key loaded: ${NVIDIA_KEY ? 'Active (verified)' : 'Missing'}`);
     console.log(`======================================================\n`);
 });
