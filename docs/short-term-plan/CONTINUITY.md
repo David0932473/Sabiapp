@@ -1,31 +1,20 @@
-- **Goal (incl. success criteria)**: Redesign calendar menu & AI interface, and ensure zero internal AI model/provider names (e.g. NVIDIA, NIM, LLaMA 3.2, Gemini) are exposed in user-facing badges or AI chat messages.
+- **Goal (incl. success criteria)**: Remove Sabi Mentor / Sabi AI elements from the home page (`index.html`) so that AI functionality is exclusively consolidated in the dedicated Study Calendar / Academic Copilot Studio.
 - **Constraints/Assumptions**:
-  - Full operational backward-compatibility: all functions (`openSabiAiChat`, `openAddSessionModal`, `togglePlannerMenu`, `handleSendChatMessage`, etc.) preserved.
-  - Zero generic components or "AI slop" aesthetics. Architectural obsidian glass, electric sapphire gradients, luminous status indicators, and tactical micro-interactions.
-  - Strict model anonymity: Consumer-facing "⚡ AI Active" badges instead of vendor/model tags. AI system prompt forbids mentioning internal model architecture or provider names.
-  - Strict brevity standard: Maximum 2-3 sentences per AI conversational response, strictly preventing syllabus/topic tutoring and directing 100% of questions toward timetable inputs.
+  - Home page (`index.html`) retains clean Bento grid navigation (Library, PQ Engine, Study Calendar, Recent session).
+  - All calendar & AI functionality in `calendar.html` remains 100% operational.
 - **Key decisions**:
-  - **Model Anonymity & Clean UI Badges**:
-    - Replaced `⚡ NVIDIA NIM Active` and `⚡ NVIDIA LLaMA 3.2` with clean, branded `⚡ AI Active` chips in Command Hub and Copilot Studio.
-    - Updated runtime status handlers in `calendar.js` (`openSabiAiChat`, success callbacks) to display `⚡ AI Active`.
-    - Added `STRICT IDENTITY & ANONYMITY RULE` to `BUDDY_SYSTEM_PROMPT` instructing the agent to identify exclusively as "Sabi AI Copilot" and never mention underlying models.
-  - **Calendar Navigation & Menu Redesign**:
-    - Replaced the basic top bar with the **Sabi Academic Command Deck** (`.cal-command-deck`), featuring a branded navigation capsule (`[← Sabi OS • Timetable Cockpit]`), an active AI Copilot Beacon with pulsating double-ring energy aura, and a tactile `+ New` pill.
-    - Replaced the simple vertical dropdown with an **Architectural Bento Matrix Hub** (`.planner-dropdown-menu` -> `.command-hub-bento-grid`).
-  - **Chat AI Interface Complete Redesign**:
-    - Transformed the slide-up drawer into the **Sabi AI Academic Copilot Studio** (`.copilot-studio-window`), an immersive floating glass cockpit with top ambient aurora glow.
-    - Added **Studio Tactical Mode Bar** with 3 distinct operational modes (`🗓️ Timetable Architect`, `📷 Outline Vision`, `🎯 Exam Crunch`).
-    - Added **Copilot Launchpad Hero** and **Holographic Timetable Transmission Cards**.
+  - Removed `Sabi AI` button from the top header of `index.html`.
+  - Removed the `Sabi AI Study Buddy` / `⚡ Sabi AI Mentor` Bento card from the home page grid.
+  - Removed the floating action button (`sabi-chat-fab`) and chat drawer modal overlay from `index.html`.
+  - Removed unneeded heavy scripts (`tesseract.min.js`, `env.js`, `calendar.js`) from `index.html` to speed up initial page load.
 - **State**:
   - Done:
-    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Replaced all model vendor badges (`⚡ NVIDIA NIM Active`, `⚡ NVIDIA LLaMA 3.2`) with `⚡ AI Active`.
-    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Cleaned badge update logic and fortified system prompt against model name leakage.
-    - Syntax validation passed with `node -c calendar.js`.
-  - Now: Ready to commit and push changes to git repository.
+    - [index.html](file:///c:/Users/dave/.gemini/sabi/index.html): Completely removed all Sabi AI / Sabi Mentor widgets, triggers, and drawer.
+  - Now: Committing and pushing changes to GitHub.
   - Next: User confirmation.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
+  - [index.html](file:///c:/Users/dave/.gemini/sabi/index.html)
   - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html)
   - [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css)
   - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js)
-  - [server.js](file:///c:/Users/dave/.gemini/sabi/server.js)
