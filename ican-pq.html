@@ -8,6 +8,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
+            --bg: #F4F6FB;
+            --card-bg: #FFFFFF;
+            --input-bg: #F1F5F9;
+            --border: #E2E8F0;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --sabi-blue: #2563EB;
+            --success: #10B981;
+            --error: #EF4444;
+        }
+
+        [data-theme="dark"] {
             --bg: #000000;
             --card-bg: #0A0A0b;
             --input-bg: #161617;
@@ -19,43 +31,43 @@
             --error: #EF4444;
         }
 
-        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { margin: 0; background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; display: flex; justify-content: center; }
+        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; font-family: 'Poppins', sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text-main); font-family: 'Poppins', sans-serif; display: flex; justify-content: center; }
         
         .arena-container { width: 100%; max-width: 500px; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; }
 
         /* HEADER */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-top: 10px; }
         .subject-title { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
-        .progress-pill { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); padding: 6px 14px; border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; }
+        .progress-pill { background: var(--input-bg); color: var(--text-muted); padding: 6px 14px; border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; border: 1px solid var(--border); }
 
         /* TABS */
         .tabs { display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 5px; }
         .tab { 
             padding: 10px 18px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border); 
-            color: var(--text-muted); font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; transition: 0.2s;
+            color: var(--text-muted); font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; transition: 0.2s; font-family: 'Poppins', sans-serif;
         }
-        .tab.active { background: rgba(59, 130, 246, 0.15); color: var(--sabi-blue); border-color: var(--sabi-blue); }
+        .tab.active { background: rgba(37, 99, 235, 0.12); color: var(--sabi-blue); border-color: var(--sabi-blue); }
 
         /* QUESTION CARD */
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 25px; flex: 1; display: flex; flex-direction: column; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 25px; flex: 1; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         #q-meta { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px; }
-        #q-text { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 600; line-height: 1.5; margin-bottom: 30px; white-space: pre-wrap; color: #fff; }
+        #q-text { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 600; line-height: 1.5; margin-bottom: 30px; white-space: pre-wrap; color: var(--text-main); }
 
         /* INTERACTION ELEMENTS */
         .options { display: flex; flex-direction: column; gap: 12px; }
         .opt-btn { 
             padding: 18px 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; 
-            color: #fff; text-align: left; font-size: 15px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.2s; 
+            color: var(--text-main); text-align: left; font-size: 15px; font-weight: 500; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; 
         }
         .opt-btn:active:not(:disabled) { transform: scale(0.98); }
         .opt-btn.correct { background: rgba(16, 185, 129, 0.1) !important; border-color: var(--success) !important; color: var(--success) !important; font-weight: 600; }
         .opt-btn.wrong { background: rgba(239, 68, 68, 0.1) !important; border-color: var(--error) !important; color: var(--error) !important; }
 
-        .text-input { width: 100%; padding: 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; margin-bottom: 20px; outline: none; font-family: inherit; }
+        .text-input { width: 100%; padding: 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; color: var(--text-main); font-size: 15px; margin-bottom: 20px; outline: none; font-family: 'Poppins', sans-serif; }
         .text-input:focus { border-color: var(--sabi-blue); }
         
-        .action-btn { width: 100%; padding: 18px; background: #fff; color: #000; border: none; border-radius: 16px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .action-btn { width: 100%; padding: 18px; background: var(--sabi-blue); color: #FFFFFF; border: none; border-radius: 16px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s; }
         .action-btn:active { transform: scale(0.98); }
 
         /* FEEDBACK */
@@ -98,7 +110,7 @@
         <div class="controls" id="arena-controls"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    <script src="global.js"></script>
     <script src="ican-pq.js"></script>
 </body>
 </html>

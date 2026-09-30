@@ -1,6 +1,30 @@
 /* =========================================
-   SABI OS: OLED MIDNIGHT THEME
+   SABI OS: CBT ENGINE (test-room.css)
 ========================================= */
+
+:root {
+    --bg: #F4F6FB;
+    --surface: #FFFFFF;
+    --surface-light: #F1F5F9;
+    --border: #E2E8F0;
+    --accent: #2563EB;
+    --accent-glow: rgba(37, 99, 235, 0.15);
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+    --text-sub: #475569;
+}
+
+[data-theme="dark"] {
+    --bg: #000000;
+    --surface: #0A0A0A;
+    --surface-light: #18181B;
+    --border: #27272A;
+    --accent: #3D8EFF;
+    --accent-glow: rgba(61, 142, 255, 0.25);
+    --text-main: #FAFAFA;
+    --text-muted: #A1A1AA;
+    --text-sub: #71717A;
+}
 
 * {
     margin: 0;
@@ -10,8 +34,8 @@
 }
 
 body {
-    background-color: #000000; /* Pure OLED Black */
-    color: #FAFAFA; /* Crisp white text */
+    background-color: var(--bg);
+    color: var(--text-main);
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -20,12 +44,12 @@ body {
 
 /* --- HEADER --- */
 .exam-header {
-    background: #0A0A0A; /* Near-black panel */
+    background: var(--surface);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    border-bottom: 1px solid #27272A;
+    border-bottom: 1px solid var(--border);
     z-index: 10;
 }
 
@@ -36,9 +60,9 @@ body {
 }
 
 .exit-btn {
-    background: #18181B;
-    color: #E4E4E7;
-    border: 1px solid #27272A;
+    background: var(--surface-light);
+    color: var(--text-main);
+    border: 1px solid var(--border);
     padding: 8px 15px;
     border-radius: 8px;
     font-weight: 700;
@@ -49,13 +73,13 @@ body {
 .divider {
     width: 2px;
     height: 20px;
-    background: #27272A;
+    background: var(--border);
 }
 
 .subject-indicator {
     font-weight: 700;
     font-size: 16px;
-    color: #FAFAFA;
+    color: var(--text-main);
 }
 
 /* NEW: Header Right for Timer & Submit */
@@ -73,13 +97,13 @@ body {
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 1px;
-    color: #A1A1AA;
+    color: var(--text-muted);
 }
 
 .timer-countdown {
     font-size: 20px;
     font-weight: 800;
-    color: #FAFAFA;
+    color: var(--text-main);
 }
 
 /* The Top Submit Button */
@@ -102,11 +126,11 @@ body {
 /* --- SUBJECT TABS --- */
 .subject-tabs {
     display: flex;
-    background: #0A0A0A;
+    background: var(--surface);
     padding: 0 20px;
     gap: 20px;
     overflow-x: auto;
-    border-bottom: 1px solid #27272A;
+    border-bottom: 1px solid var(--border);
     scrollbar-width: none; 
 }
 .subject-tabs::-webkit-scrollbar {
@@ -117,7 +141,7 @@ body {
     padding: 15px 5px;
     font-weight: 600;
     font-size: 14px;
-    color: #71717A; /* Dimmer inactive text */
+    color: var(--text-muted);
     cursor: pointer;
     white-space: nowrap;
     border-bottom: 3px solid transparent;
@@ -125,8 +149,8 @@ body {
 }
 
 .sub-tab.active {
-    color: #3D8EFF;
-    border-bottom: 3px solid #3D8EFF;
+    color: var(--accent);
+    border-bottom: 3px solid var(--accent);
 }
 
 /* --- QUESTION AREA --- */
@@ -146,23 +170,23 @@ body {
 .q-number {
     font-size: 18px;
     font-weight: 800;
-    color: #FFFFFF;
+    color: var(--text-main);
 }
 
 .q-points {
     font-size: 14px;
     font-weight: 600;
-    color: #A1A1AA;
-    background: #18181B;
+    color: var(--text-muted);
+    background: var(--surface-light);
     padding: 4px 10px;
     border-radius: 20px;
-    border: 1px solid #27272A;
+    border: 1px solid var(--border);
 }
 
 .q-text {
     font-size: 18px;
     line-height: 1.6;
-    color: #E4E4E7;
+    color: var(--text-main);
     margin-bottom: 25px;
     font-weight: 500;
 }
@@ -176,8 +200,8 @@ body {
 }
 
 .option-card {
-    background: #0A0A0A;
-    border: 2px solid #27272A;
+    background: var(--surface);
+    border: 2px solid var(--border);
     border-radius: 12px;
     padding: 15px;
     display: flex;
@@ -185,41 +209,42 @@ body {
     gap: 15px;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
 .option-card:hover {
-    border-color: #52525B;
+    border-color: var(--accent);
 }
 
 .opt-circle {
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    background: #18181B;
+    background: var(--surface-light);
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 700;
-    color: #FAFAFA;
+    color: var(--text-main);
     flex-shrink: 0;
-    border: 1px solid #27272A;
+    border: 1px solid var(--border);
 }
 
 .opt-text {
     font-size: 16px;
     font-weight: 500;
-    color: #E4E4E7;
+    color: var(--text-main);
 }
 
 /* Answer States */
 .option-card.selected {
-    border-color: #3D8EFF;
-    background: rgba(61, 142, 255, 0.08);
+    border-color: var(--accent);
+    background: rgba(37, 99, 235, 0.08);
 }
 .option-card.selected .opt-circle {
-    background: #3D8EFF;
+    background: var(--accent);
     color: white;
-    border-color: #3D8EFF;
+    border-color: var(--accent);
 }
 .option-card.correct {
     border-color: #10B981;
@@ -242,11 +267,11 @@ body {
 
 /* --- EXPLANATION BOX (Demo Mode) --- */
 .explanation-box {
-    background: #0A0A0A;
+    background: var(--surface-light);
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid #27272A;
-    border-left: 4px solid #3D8EFF;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
     margin-top: 10px;
 }
 .explanation-box.hidden {
@@ -255,14 +280,14 @@ body {
 .exp-header h4 {
     font-size: 12px;
     font-weight: 800;
-    color: #A1A1AA;
+    color: var(--text-muted);
     margin-bottom: 8px;
     letter-spacing: 1px;
 }
 #explanation-text {
     font-size: 15px;
     line-height: 1.6;
-    color: #D4D4D8;
+    color: var(--text-main);
 }
 
 /* --- BOTTOM NAVIGATION --- */
@@ -271,13 +296,14 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #0A0A0A;
+    background: var(--surface);
     padding: 15px 20px;
-    border-top: 1px solid #27272A;
+    border-top: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 50;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
 }
 
 .nav-btn {
@@ -294,14 +320,14 @@ body {
 }
 
 .nav-btn.secondary {
-    background: #18181B;
-    color: #E4E4E7;
-    border: 1px solid #27272A;
+    background: var(--surface-light);
+    color: var(--text-main);
+    border: 1px solid var(--border);
 }
 
 /* Make NEXT pop more since it's the main action */
 .nav-btn.primary {
-    background: #3D8EFF;
+    background: var(--accent);
     color: #FAFAFA;
 }
 
@@ -313,7 +339,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 2px;
-    color: #A1A1AA;
+    color: var(--text-muted);
     padding: 5px 15px;
     border: none;
     cursor: pointer;
@@ -326,7 +352,7 @@ body {
 /* --- UI UPGRADES: Slide-up Bottom Sheet --- */
 .grid-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8); z-index: 99;
+    background: rgba(0,0,0,0.5); z-index: 99;
 }
 .grid-overlay.hidden {
     display: none;
@@ -334,9 +360,10 @@ body {
 
 .grid-bottom-sheet {
     position: fixed; bottom: 0; left: 0; width: 100%;
-    background: #0A0A0A; border-radius: 20px 20px 0 0;
+    background: var(--surface); border-radius: 20px 20px 0 0;
     z-index: 100; padding: 20px; 
-    border-top: 1px solid #27272A;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
     max-height: 70vh; display: flex; flex-direction: column;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -346,11 +373,11 @@ body {
 
 .grid-sheet-header {
     display: flex; justify-content: space-between; align-items: center; 
-    margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #27272A;
+    margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
 }
-.grid-sheet-header h3 { font-size: 16px; margin: 0; color: #FAFAFA; }
+.grid-sheet-header h3 { font-size: 16px; margin: 0; color: var(--text-main); }
 .close-grid {
-    background: none; border: none; font-size: 28px; cursor: pointer; color: #71717A;
+    background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-muted);
 }
 
 /* The Bubble Grid */
@@ -362,12 +389,12 @@ body {
 .q-bubble {
     width: 40px; height: 40px; border-radius: 50%;
     display: flex; justify-content: center; align-items: center;
-    font-weight: 600; font-size: 14px; border: 2px solid #27272A;
-    background: #18181B; color: #A1A1AA; cursor: pointer;
+    font-weight: 600; font-size: 14px; border: 2px solid var(--border);
+    background: var(--surface-light); color: var(--text-muted); cursor: pointer;
     transition: all 0.2s ease;
 }
 
 /* Bubble States */
-.q-bubble.answered { background: #3D8EFF; color: #fff; border-color: #3D8EFF; }
-.q-bubble.active { border-color: #10B981; border-width: 3px; color: #10B981; transform: scale(1.1); background: #0A0A0A; }
-.q-bubble.answered.active { background: #3D8EFF; border-color: #10B981; color: #fff; }
+.q-bubble.answered { background: var(--accent); color: #fff; border-color: var(--accent); }
+.q-bubble.active { border-color: #10B981; border-width: 3px; color: #10B981; transform: scale(1.1); background: var(--surface); }
+.q-bubble.answered.active { background: var(--accent); border-color: #10B981; color: #fff; }

@@ -1,6 +1,22 @@
-/* =========================================
-   SABI OS: REVIEW ROOM STYLES
-========================================= */
+:root {
+    --bg: #F4F6FB;
+    --surface: #FFFFFF;
+    --surface-light: #F1F5F9;
+    --border: #E2E8F0;
+    --accent: #2563EB;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+}
+
+[data-theme="dark"] {
+    --bg: #000000;
+    --surface: #0A0A0A;
+    --surface-light: #18181B;
+    --border: #27272A;
+    --accent: #3D8EFF;
+    --text-main: #FAFAFA;
+    --text-muted: #A1A1AA;
+}
 
 * {
     margin: 0;
@@ -10,8 +26,8 @@
 }
 
 body {
-    background-color: #000000;
-    color: #FAFAFA;
+    background-color: var(--bg);
+    color: var(--text-main);
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -19,11 +35,11 @@ body {
 
 /* Reusing your exact Header styles */
 .exam-header {
-    background: #0A0A0A;
+    background: var(--surface);
     display: flex;
     align-items: center;
     padding: 15px 20px;
-    border-bottom: 1px solid #27272A;
+    border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -31,11 +47,11 @@ body {
 
 .header-left { display: flex; align-items: center; gap: 15px; }
 .exit-btn {
-    background: #18181B; color: #E4E4E4; border: 1px solid #27272A;
+    background: var(--surface-light); color: var(--text-main); border: 1px solid var(--border);
     padding: 8px 15px; border-radius: 8px; font-weight: 700; cursor: pointer;
 }
-.divider { width: 2px; height: 20px; background: #27272A; }
-.subject-indicator { font-weight: 700; color: #3D8EFF; }
+.divider { width: 2px; height: 20px; background: var(--border); }
+.subject-indicator { font-weight: 700; color: var(--accent); }
 
 /* The Scrolling List */
 .review-container {
@@ -48,17 +64,18 @@ body {
 }
 
 .review-item {
-    background: #0A0A0A;
-    border: 1px solid #27272A;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
 .review-meta {
     font-size: 11px;
     font-weight: 800;
-    color: #3D8EFF;
+    color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 10px;
     letter-spacing: 1px;
@@ -80,46 +97,49 @@ body {
     line-height: 1.6;
     margin-bottom: 20px;
     font-weight: 600;
+    color: var(--text-main);
 }
 
 /* Reusing your Option Card styles */
 .options-grid { display: flex; flex-direction: column; gap: 10px; }
 .option-card {
-    background: #18181B;
-    border: 1px solid #27272A;
+    background: var(--surface-light);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 12px 15px;
     display: flex;
     align-items: center;
     gap: 12px;
+    color: var(--text-main);
 }
 
 .opt-circle {
     width: 28px; height: 28px; border-radius: 50%;
-    background: #0A0A0A; border: 1px solid #27272A;
+    background: var(--surface); border: 1px solid var(--border);
     display: flex; justify-content: center; align-items: center;
     font-weight: 700; font-size: 12px; flex-shrink: 0;
+    color: var(--text-main);
 }
 
-.option-card.correct { border-color: #10B981; background: rgba(16, 185, 129, 0.05); }
-.option-card.correct .opt-circle { background: #10B981; color: white; }
+.option-card.correct { border-color: #10B981; background: rgba(16, 185, 129, 0.08); }
+.option-card.correct .opt-circle { background: #10B981; color: white; border-color: #10B981; }
 
-.option-card.wrong { border-color: #EF4444; background: rgba(239, 68, 68, 0.05); }
-.option-card.wrong .opt-circle { background: #EF4444; color: white; }
+.option-card.wrong { border-color: #EF4444; background: rgba(239, 68, 68, 0.08); }
+.option-card.wrong .opt-circle { background: #EF4444; color: white; border-color: #EF4444; }
 
 /* Explanation Box */
 .explanation-box {
     margin-top: 20px;
     padding: 15px;
-    background: rgba(61, 142, 255, 0.05);
+    background: rgba(37, 99, 235, 0.06);
     border-radius: 10px;
-    border-left: 4px solid #3D8EFF;
+    border-left: 4px solid var(--accent);
 }
 .explanation-box h4 {
     font-size: 11px;
     font-weight: 800;
-    color: #A1A1AA;
+    color: var(--text-muted);
     margin-bottom: 8px;
     letter-spacing: 1px;
 }
-.explanation-box p { font-size: 14px; line-height: 1.5; color: #D4D4D8; }
+.explanation-box p { font-size: 14px; line-height: 1.5; color: var(--text-main); }

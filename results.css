@@ -1,32 +1,55 @@
-﻿* {
+:root {
+    --bg: #F4F6FB;
+    --surface: #FFFFFF;
+    --surface-light: #F1F5F9;
+    --border: #E2E8F0;
+    --accent: #2563EB;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+}
+
+[data-theme="dark"] {
+    --bg: #000000;
+    --surface: #0A0A0A;
+    --surface-light: #18181B;
+    --border: #27272A;
+    --accent: #3D8EFF;
+    --text-main: #FAFAFA;
+    --text-muted: #A1A1AA;
+}
+
+* {
     margin: 0; padding: 0; box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: #000000; color: #FAFAFA;
+    background-color: var(--bg); color: var(--text-main);
     display: flex; flex-direction: column; min-height: 100vh;
 }
 
 /* Header */
 .results-header {
-    background: #0A0A0A; display: flex; justify-content: space-between;
-    align-items: center; padding: 20px; border-bottom: 1px solid #27272A;
+    background: var(--surface); display: flex; justify-content: space-between;
+    align-items: center; padding: 20px; border-bottom: 1px solid var(--border);
 }
-.results-header h2 { font-size: 18px; font-weight: 900; letter-spacing: 2px; color: #3D8EFF; }
-.home-btn { background: #18181B; color: #E4E4E7; border: 1px solid #27272A; padding: 8px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.results-header h2 { font-size: 18px; font-weight: 900; letter-spacing: 2px; color: var(--accent); }
+.home-btn { background: var(--surface-light); color: var(--text-main); border: 1px solid var(--border); padding: 8px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; }
 
 .dashboard-container { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
 
 /* Score Card */
 .score-card {
-    background: #0A0A0A; border: 1px solid #27272A; border-radius: 16px;
-    padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.04);
 }
-.score-title { font-size: 12px; font-weight: 800; color: #A1A1AA; letter-spacing: 1.5px; margin-bottom: 10px; }
+[data-theme="dark"] .score-card {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.score-title { font-size: 12px; font-weight: 800; color: var(--text-muted); letter-spacing: 1.5px; margin-bottom: 10px; }
 .score-display { display: flex; justify-content: center; align-items: baseline; gap: 5px; margin-bottom: 15px; }
-.score-number { font-size: 64px; font-weight: 900; color: #FAFAFA; line-height: 1; }
-.score-max { font-size: 24px; font-weight: 700; color: #71717A; }
+.score-number { font-size: 64px; font-weight: 900; color: var(--text-main); line-height: 1; }
+.score-max { font-size: 24px; font-weight: 700; color: var(--text-muted); }
 
 .badge-box {
     display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.1);
@@ -35,33 +58,33 @@ body {
 .badge-icon { font-size: 18px; }
 .badge-text { font-size: 14px; font-weight: 700; color: #10B981; }
 
-.sabi-advice { font-size: 14px; color: #A1A1AA; font-weight: 500; line-height: 1.5; }
+.sabi-advice { font-size: 14px; color: var(--text-muted); font-weight: 500; line-height: 1.5; }
 
 /* Stats Row */
 .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.stat-box { background: #0A0A0A; border: 1px solid #27272A; border-radius: 12px; padding: 15px; text-align: center; }
-.stat-label { display: block; font-size: 10px; font-weight: 800; color: #71717A; letter-spacing: 1px; margin-bottom: 5px; }
-.stat-value { font-size: 20px; font-weight: 800; color: #E4E4E7; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+.stat-label { display: block; font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 5px; }
+.stat-value { font-size: 20px; font-weight: 800; color: var(--text-main); }
 
 /* Breakdown */
-.section-title { font-size: 14px; font-weight: 800; color: #FAFAFA; letter-spacing: 1px; margin-top: 10px; }
+.section-title { font-size: 14px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; margin-top: 10px; }
 .breakdown-grid { display: flex; flex-direction: column; gap: 10px; }
 .sub-card {
-    background: #0A0A0A; border: 1px solid #27272A; border-radius: 12px;
-    padding: 15px; display: flex; justify-content: space-between; align-items: center;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
-.sub-name { font-size: 15px; font-weight: 600; color: #E4E4E7; }
-.sub-score { font-size: 18px; font-weight: 800; color: #3D8EFF; }
+.sub-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
+.sub-score { font-size: 18px; font-weight: 800; color: var(--accent); }
 
 /* Action Buttons */
 .action-row { display: flex; gap: 15px; margin-top: 20px; margin-bottom: 30px; }
 .action-btn { flex: 1; padding: 15px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; border: none; text-align: center; }
-.secondary { background: #18181B; color: #E4E4E7; border: 1px solid #27272A; }
-.primary { background: #3D8EFF; color: #FFFFFF; }
+.secondary { background: var(--surface-light); color: var(--text-main); border: 1px solid var(--border); }
+.primary { background: var(--accent); color: #FFFFFF; }
 .review-btn {
-    background: rgba(61, 142, 255, 0.1); /* Subtle Sabi Blue Glow */
-    color: #3D8EFF;
-    border: 1px solid rgba(61, 142, 255, 0.4);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--accent);
+    border: 1px solid rgba(37, 99, 235, 0.3);
     padding: 14px 24px;
     border-radius: 12px;
     font-weight: 800;
@@ -71,21 +94,17 @@ body {
     align-items: center;
     gap: 10px;
     transition: all 0.2s ease;
-    width: 100%; /* Mobile friendly */
+    width: 100%;
     justify-content: center;
     margin-top: 15px;
 }
-
 .review-btn:hover {
-    background: rgba(61, 142, 255, 0.2);
+    background: rgba(37, 99, 235, 0.15);
     transform: translateY(-2px);
 }
-
-.review-btn .icon {
-    font-size: 18px;
-}
+.review-btn .icon { font-size: 18px; }
 .nav-btn.primary {
-    background: #3D8EFF;
+    background: var(--accent);
     color: white;
     border: none;
     padding: 14px 24px;
@@ -94,8 +113,5 @@ body {
     cursor: pointer;
     transition: transform 0.1s ease;
 }
-
-.nav-btn.primary:active {
-    transform: scale(0.95);
-}
+.nav-btn.primary:active { transform: scale(0.95); }
 

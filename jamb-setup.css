@@ -1,13 +1,23 @@
-﻿/* =========================================
+/* =========================================
    SABI OS: JAMB SETUP (jamb-setup.css)
 ========================================= */
 
 :root {
+    --bg: #F4F6FB;
+    --surface: #FFFFFF;
+    --surface-light: #F1F5F9;
+    --surface-border: #E2E8F0;
+    --accent: #2563EB;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+}
+
+[data-theme="dark"] {
     --bg: #07090D;
     --surface: #10141D;
     --surface-light: #1A2130;
     --surface-border: rgba(255,255,255,0.05);
-    --accent: #3D8EFF; /* Sabi Blue */
+    --accent: #3D8EFF;
     --text-main: #FFFFFF;
     --text-muted: #8E96A4;
 }
@@ -22,11 +32,12 @@ body { background-color: var(--bg); color: var(--text-main); font-family: 'Poppi
 .back-btn { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; }
 .back-btn:active { color: var(--text-main); }
 
-.mode-badge { background: rgba(61, 142, 255, 0.05); color: var(--accent); font-size: 10px; font-weight: 700; padding: 6px 12px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(61, 142, 255, 0.2); }
+.mode-badge { background: rgba(37, 99, 235, 0.08); color: var(--accent); font-size: 10px; font-weight: 700; padding: 6px 12px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(37, 99, 235, 0.2); }
 
 .header-titles { margin-bottom: 30px; }
 .header-titles h1 { font-size: 30px; font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; }
-.blue-text { color: var(--accent); text-shadow: 0 0 15px rgba(61, 142, 255, 0.3); }
+.green-text { color: #10B981; }
+.blue-text { color: var(--accent); text-shadow: 0 0 15px rgba(37, 99, 235, 0.3); }
 .header-titles p { color: var(--text-muted); font-size: 13px; font-weight: 500; }
 
 /* --- SUBJECT GRID --- */
@@ -38,23 +49,24 @@ body { background-color: var(--bg); color: var(--text-main); font-family: 'Poppi
     border-radius: 16px; padding: 18px 15px;
     display: flex; flex-direction: column; align-items: flex-start;
     transition: 0.2s; cursor: pointer; position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 
 .subject-card:active { transform: scale(0.96); }
 
-.subject-card h3 { font-size: 14px; font-weight: 600; color: #fff; line-height: 1.3; transition: 0.2s;}
+.subject-card h3 { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.3; transition: 0.2s;}
 
 /* States */
 .subject-card.selected {
-    background: rgba(61, 142, 255, 0.05);
+    background: rgba(37, 99, 235, 0.05);
     border-color: var(--accent);
-    box-shadow: 0 4px 20px rgba(61, 142, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
 }
 .subject-card.selected h3 { color: var(--accent); }
 
 /* Compulsory State (Locked Use of English) */
 .subject-card.locked {
-    background: rgba(61, 142, 255, 0.08);
+    background: rgba(37, 99, 235, 0.08);
     border-color: var(--accent);
     cursor: not-allowed; opacity: 0.9;
 }
@@ -64,21 +76,25 @@ body { background-color: var(--bg); color: var(--text-main); font-family: 'Poppi
 /* --- BOTTOM ACTION BAR --- */
 .bottom-action-bar {
     position: fixed; bottom: 0; left: 0; width: 100%;
-    background: rgba(10, 13, 20, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--surface-border);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
     display: flex; justify-content: space-between; align-items: center;
     padding: 20px; z-index: 100;
 }
+[data-theme="dark"] .bottom-action-bar {
+    background: rgba(10, 13, 20, 0.95);
+}
 
 .selection-info { display: flex; flex-direction: column; }
-#counter { font-size: 20px; font-weight: 800; color: #fff; transition: 0.3s;}
+#counter { font-size: 20px; font-weight: 800; color: var(--text-main); transition: 0.3s;}
 .info-text { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
 
 .start-btn {
     background: var(--accent); color: #fff;
     border: none; padding: 14px 24px; border-radius: 14px;
     font-weight: 800; font-size: 13px; font-family: 'Poppins', sans-serif;
-    cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(61, 142, 255, 0.4);
+    cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
 }
 .start-btn:active { transform: scale(0.95); }
 
@@ -86,4 +102,5 @@ body { background-color: var(--bg); color: var(--text-main); font-family: 'Poppi
     background: var(--surface-light); color: var(--text-muted);
     box-shadow: none; cursor: not-allowed; opacity: 0.5;
 }
+
 

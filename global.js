@@ -31,11 +31,7 @@ window.addEventListener('resize', initSabiDock);
 // Theme Initialization & Sync
 function applySabiTheme(themeName) {
     const theme = themeName || localStorage.getItem('sabi_theme') || 'light';
-    if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-    }
+    document.documentElement.setAttribute('data-theme', theme);
 }
 
 // Immediate execution to prevent flash of wrong theme

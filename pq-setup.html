@@ -8,6 +8,26 @@
     
     <style>
         :root {
+            --bg: #F4F6FB;
+            --card-bg: #FFFFFF;
+            --card-border: #E2E8F0;
+            --icon-bg: #F1F5F9;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --badge-ats: rgba(16, 185, 129, 0.15);
+            --text-ats: #059669;
+            --badge-foundation: rgba(37, 99, 235, 0.15);
+            --text-foundation: #2563EB;
+            --badge-skills: rgba(245, 158, 11, 0.15);
+            --text-skills: #D97706;
+            --badge-pro: rgba(139, 92, 246, 0.15);
+            --text-pro: #7C3AED;
+            --toggle-active: #FFFFFF;
+            --toggle-inactive: transparent;
+            --blue: #2563EB;
+        }
+
+        [data-theme="dark"] {
             --bg: #000000;
             --card-bg: #0d0d0d;
             --card-border: #1a1a1a;
@@ -104,7 +124,7 @@
         /* TOGGLE NAVIGATION */
         .toggle-nav {
             display: flex;
-            background: #0a0a0a;
+            background: var(--icon-bg);
             border-radius: 12px;
             padding: 4px;
             margin-bottom: 28px;
@@ -711,5 +731,6 @@
             window.location.href = url;
         }
     </script>
+    <script src="global.js"></script>
 </body>
 </html>

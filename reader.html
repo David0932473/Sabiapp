@@ -8,6 +8,17 @@
 
 <style>
   :root { 
+    --bg: #F4F6FB; 
+    --surface: rgba(255, 255, 255, 0.95);
+    --accent: #0D9488;
+    --accent-glow: rgba(13, 148, 136, 0.15);
+    --text: #0F172A; 
+    --text-muted: #64748B;
+    --border: rgba(0, 0, 0, 0.08);
+    --error: #EF4444;
+  }
+
+  [data-theme="dark"] { 
     --bg: #000000; 
     --surface: rgba(24, 24, 27, 0.75);
     --accent: #2DD4BF;
@@ -22,6 +33,7 @@
     margin: 0; padding: 0; background: var(--bg); 
     font-family: 'Poppins', sans-serif; height: 100vh; 
     overflow: hidden; display: flex; flex-direction: column; 
+    color: var(--text);
   }
 
   .reader-header {
@@ -155,12 +167,15 @@
       frame.onload = () => {
         document.getElementById('sabi-loader').style.display = 'none';
         frame.classList.add('loaded');
-        // Apply night mode after PDF loads (inverts colors for dark reading)
-        document.body.classList.add('night-mode');
+        // Only apply night mode if user preference is dark
+        if (localStorage.getItem('sabi_theme') === 'dark') {
+          document.body.classList.add('night-mode');
+        }
       };
     } else {
       goBack();
     }
   </script>
+  <script src="global.js"></script>
 </body>
 </html>

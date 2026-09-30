@@ -1,5 +1,15 @@
-﻿/* --- RAZOR SHARP TRUE BLACK THEME --- */
+/* --- SABI ARENA & POST-UTME THEME --- */
 :root {
+    --bg-outside: #F4F6FB;
+    --bg-app: #F8FAFC;
+    --card-bg: #FFFFFF;
+    --accent-blue: #2563EB;
+    --text-white: #0F172A;
+    --text-dim: #64748B;
+    --border: #E2E8F0;
+}
+
+[data-theme="dark"] {
     --bg-outside: #000000;
     --bg-app: #000000;         /* Pure Black */
     --card-bg: #111111;        /* Deep Charcoal */
@@ -85,7 +95,7 @@ body {
     width: 100%;
     background: var(--card-bg);
     border: 1px solid var(--border);
-    color: white;
+    color: var(--text-white);
     padding: 18px;
     border-radius: 14px;
     font-size: 1rem;
@@ -115,7 +125,7 @@ body {
 
 .uni-card.active {
     border-color: var(--accent-blue);
-    background: rgba(59, 130, 246, 0.05);
+    background: rgba(37, 99, 235, 0.05);
 }
 
 .uni-icon {
@@ -141,7 +151,7 @@ body {
     transform: translateX(-50%);
     width: 100%;
     max-width: 420px;
-    background: rgba(0, 0, 0, 0.95);
+    background: var(--card-bg);
     backdrop-filter: blur(10px);
     padding: 20px;
     border-top: 1px solid var(--border);
@@ -149,6 +159,10 @@ body {
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
+}
+
+[data-theme="dark"] .action-footer {
+    background: rgba(0, 0, 0, 0.95);
 }
 
 /* Fix for desktop phone border-radius */
@@ -231,7 +245,7 @@ body {
 .option-btn {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    color: white;
+    color: var(--text-white);
     padding: 18px;
     border-radius: 15px;
     text-align: left;
@@ -261,4 +275,5 @@ body {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
 

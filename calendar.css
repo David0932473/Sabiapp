@@ -4,28 +4,7 @@
    Theme: Pure OLED Dark / Clean Light Mode
    ========================================================= */
 
-:root {
-    --bg: #000000;
-    --surface: #0A0A0A;
-    --surface-light: #121212;
-    --surface-card: #18181B;
-    --border: #27272A;
-    --border-light: #3F3F46;
-    --accent: #3D8EFF;
-    --accent-glow: rgba(61, 142, 255, 0.25);
-    --text-main: #FAFAFA;
-    --text-muted: #A1A1AA;
-    --text-sub: #71717A;
-    
-    /* Category Colors */
-    --cat-jamb: #10B981;
-    --cat-waec: #3D8EFF;
-    --cat-neco: #8B5CF6;
-    --cat-noun: #0EA5E9;
-    --cat-ican: #F59E0B;
-    --cat-study: #EC4899;
-}
-
+:root,
 [data-theme="light"] {
     --bg: #F4F6FB;
     --surface: #FFFFFF;
@@ -38,6 +17,28 @@
     --text-main: #0F172A;
     --text-muted: #64748B;
     --text-sub: #475569;
+    
+    /* Category Colors */
+    --cat-jamb: #10B981;
+    --cat-waec: #3D8EFF;
+    --cat-neco: #8B5CF6;
+    --cat-noun: #0EA5E9;
+    --cat-ican: #F59E0B;
+    --cat-study: #EC4899;
+}
+
+[data-theme="dark"] {
+    --bg: #000000;
+    --surface: #0A0A0A;
+    --surface-light: #121212;
+    --surface-card: #18181B;
+    --border: #27272A;
+    --border-light: #3F3F46;
+    --accent: #3D8EFF;
+    --accent-glow: rgba(61, 142, 255, 0.25);
+    --text-main: #FAFAFA;
+    --text-muted: #A1A1AA;
+    --text-sub: #71717A;
 }
 
 * {
