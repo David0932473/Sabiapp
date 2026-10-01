@@ -17,194 +17,227 @@
 
     <!-- REDESIGNED ACADEMIC COMMAND DECK (TOP NAVIGATION) -->
     <header class="cal-command-deck">
-        <div class="deck-brand-capsule">
-            <a href="index.html" class="deck-back-btn" aria-label="Return to Dashboard" title="Dashboard">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
+        <div class="cal-header-left">
+            <button type="button" class="deck-btn-icon" id="btn-header-menu" onclick="togglePlannerMenu(event)" aria-label="Academic Operations Hub" title="Academic Operations Hub">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="7" x2="20" y2="7"></line>
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <line x1="4" y1="17" x2="20" y2="17"></line>
                 </svg>
-            </a>
-            <div class="deck-brand-info">
-                <div class="deck-brand-title-row">
-                    <span class="deck-brand-name">Sabi</span>
-                </div>
-            </div>
+            </button>
+            <h1 class="cal-deck-month-title" id="cal-deck-month-title">October 2026</h1>
         </div>
 
-        <div class="deck-controls-matrix">
+        <!-- Desktop View Segmented Pills -->
+        <div class="cal-desktop-view-tabs" id="desktop-view-tabs">
+            <button type="button" class="desktop-view-tab" data-view="agenda" onclick="switchViewMode('agenda')">Schedule</button>
+            <button type="button" class="desktop-view-tab active" data-view="day" onclick="switchViewMode('day')">Day</button>
+            <button type="button" class="desktop-view-tab" data-view="week" onclick="switchViewMode('week')">Week</button>
+            <button type="button" class="desktop-view-tab" data-view="month" onclick="switchViewMode('month')">Month</button>
+        </div>
+
+        <div class="cal-header-right">
+            <!-- Search Button -->
+            <button type="button" class="deck-btn-icon" id="btn-cal-search" onclick="toggleCalendarSearch()" aria-label="Search Events" title="Search Events">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+
+            <!-- View Switcher Dropdown Trigger (Mobile & Desktop) -->
+            <div class="cal-view-dropdown-wrapper">
+                <button type="button" class="deck-btn-view-toggle" id="btn-view-selector-toggle" onclick="toggleViewDropdown(event)" aria-label="Change Calendar View">
+                    <span id="current-view-label">Day</span>
+                    <svg class="dropdown-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+
+                <!-- Floating View Dropdown (Matching Mockup) -->
+                <div class="cal-view-popover hidden" id="cal-view-popover">
+                    <button type="button" class="view-popover-item" data-view="agenda" onclick="selectViewFromDropdown('agenda')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                        <span>Schedule</span>
+                    </button>
+                    <button type="button" class="view-popover-item active" data-view="day" onclick="selectViewFromDropdown('day')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Day</span>
+                    </button>
+                    <button type="button" class="view-popover-item" data-view="week" onclick="selectViewFromDropdown('week')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"></rect><rect x="14" y="3" width="7" height="18" rx="1"></rect></svg>
+                        <span>Week</span>
+                    </button>
+                    <button type="button" class="view-popover-item" data-view="month" onclick="selectViewFromDropdown('month')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="5"></rect><rect x="10" y="3" width="5" height="5"></rect><rect x="17" y="3" width="5" height="5"></rect><rect x="3" y="10" width="5" height="5"></rect><rect x="10" y="10" width="5" height="5"></rect><rect x="17" y="10" width="5" height="5"></rect><rect x="3" y="17" width="5" height="5"></rect><rect x="10" y="17" width="5" height="5"></rect><rect x="17" y="17" width="5" height="5"></rect></svg>
+                        <span>Month</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Quick Add Action -->
             <button type="button" class="deck-btn-add" onclick="openAddSessionModal()" title="Add Session or Class">
                 <span class="deck-add-plus">+</span>
                 <span class="deck-add-label">New</span>
             </button>
 
-            <!-- Command Hub Matrix Trigger -->
-            <div class="cal-more-menu-wrapper">
-                <button type="button" class="deck-btn-hub" id="btn-planner-menu" onclick="togglePlannerMenu(event)" aria-label="Academic Command Hub" title="Academic Command Hub">
-                    <span class="hub-grid-dots">
-                        <i></i><i></i>
-                        <i></i><i></i>
-                    </span>
-                </button>
-
-                <!-- ARCHITECTURAL COMMAND HUB (BENTO MATRIX OVERLAY) -->
-                <div class="planner-dropdown-menu hidden" id="planner-dropdown-menu">
-                    <!-- Hub Header -->
-                    <div class="command-hub-header">
-                        <div class="hub-header-title-row">
-                            <span class="hub-header-badge">COMMAND HUB</span>
-                            <span class="hub-engine-status"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> AI Active</span>
-                        </div>
-                        <h4 class="hub-header-heading">Academic Operations</h4>
+            <!-- ARCHITECTURAL COMMAND HUB (BENTO MATRIX OVERLAY) -->
+            <div class="planner-dropdown-menu hidden" id="planner-dropdown-menu">
+                <div class="command-hub-header">
+                    <div class="hub-header-title-row">
+                        <span class="hub-header-badge">COMMAND HUB</span>
+                        <span class="hub-engine-status"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> AI Active</span>
                     </div>
-
-                    <!-- Bento Grid Actions -->
-                    <div class="command-hub-bento-grid">
-                        <!-- Bento 1: Featured AI Copilot Studio (Spans full width) -->
-                        <div class="bento-tile bento-hero-ai" onclick="openSabiAiChat()">
-                            <div class="bento-hero-glow"></div>
-                            <div class="bento-hero-left">
-                                <div class="bento-hero-avatar">
-                                    <img src="avatars/notion-steady.svg" alt="Steady" />
-                                    <span class="bento-avatar-sparkle"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18.5 21.5 12 18 5.5 21.5 7 14.5 2 9.5 9 8.5 12 2"></polygon></svg></span>
+                    <h4 class="hub-header-heading">Academic Operations</h4>
+                </div>
+                <div class="command-hub-bento-grid">
+                    <div class="bento-tile bento-hero-ai" onclick="openSabiAiChat()">
+                        <div class="bento-hero-glow"></div>
+                        <div class="bento-hero-left">
+                            <div class="bento-hero-avatar">
+                                <img src="avatars/notion-steady.svg" alt="Steady" />
+                                <span class="bento-avatar-sparkle"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18.5 21.5 12 18 5.5 21.5 7 14.5 2 9.5 9 8.5 12 2"></polygon></svg></span>
+                            </div>
+                            <div class="bento-hero-meta">
+                                <div class="bento-hero-title-row">
+                                    <span class="bento-hero-title">Steady AI Studio</span>
+                                    <span class="bento-badge-live">Live</span>
                                 </div>
-                                <div class="bento-hero-meta">
-                                    <div class="bento-hero-title-row">
-                                        <span class="bento-hero-title">Steady AI Studio</span>
-                                        <span class="bento-badge-live">Live</span>
-                                    </div>
-                                    <p class="bento-hero-desc">Interactive timetable architect, course outline OCR & clash solver.</p>
-                                </div>
-                            </div>
-                            <div class="bento-hero-action">
-                                <span>Launch Studio</span>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                <p class="bento-hero-desc">Interactive timetable architect & clash solver.</p>
                             </div>
                         </div>
-
-                        <!-- Bento 2: Academic Setup Wizard -->
-                        <div class="bento-tile bento-tile-setup" onclick="openFirstTimePopup()">
-                            <div class="bento-tile-icon-box">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                            </div>
-                            <div class="bento-tile-text">
-                                <span class="bento-tile-title">Academic Setup</span>
-                                <span class="bento-tile-sub">Exams, weak courses & goals</span>
-                            </div>
-                        </div>
-
-                        <!-- Bento 3: Weekly Rebalance Engine -->
-                        <div class="bento-tile bento-tile-rebalance" onclick="triggerRegeneratePlan()">
-                            <div class="bento-tile-icon-box">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            </div>
-                            <div class="bento-tile-text">
-                                <span class="bento-tile-title">Auto-Rebalance</span>
-                                <span class="bento-tile-sub">Recalculate remaining days</span>
-                            </div>
-                        </div>
-
-                        <!-- Bento 4: Add Recurring Class -->
-                        <div class="bento-tile bento-tile-class" onclick="openAddSessionModal('class')">
-                            <div class="bento-tile-icon-box">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                            </div>
-                            <div class="bento-tile-text">
-                                <span class="bento-tile-title">Recurring Class</span>
-                                <span class="bento-tile-sub">Fixed lectures & lecture hall</span>
-                            </div>
-                        </div>
-
-                        <!-- Bento 5: Add Study Session -->
-                        <div class="bento-tile bento-tile-study" onclick="openAddSessionModal('study')">
-                            <div class="bento-tile-icon-box">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <div class="bento-tile-text">
-                                <span class="bento-tile-title">Study Session</span>
-                                <span class="bento-tile-sub">Focused revision blocks</span>
-                            </div>
-                        </div>
-
-                        <!-- Bento 6: Google Calendar Live Sync -->
-                        <div class="bento-tile bento-tile-gcal" onclick="openGoogleSyncModal()">
-                            <div class="bento-tile-icon-box" style="background: rgba(66, 133, 244, 0.12); color: #4285F4;">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                    <circle cx="12" cy="15" r="2" fill="currentColor"></circle>
-                                </svg>
-                            </div>
-                            <div class="bento-tile-text">
-                                <span class="bento-tile-title" style="display: flex; align-items: center; gap: 6px;">
-                                    Google Calendar
-                                    <span id="gcal-hub-badge" class="gcal-mini-badge not-connected">Live</span>
-                                </span>
-                                <span class="bento-tile-sub" id="gcal-hub-subtext">Automatic 2-way sync</span>
-                            </div>
-                        </div>
-
-                        <!-- Bento 7: Export (.ics) Calendar -->
-                        <div class="bento-tile bento-tile-export" onclick="exportToIcs()">
-                            <div class="bento-tile-icon-box">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            </div>
-                            <div class="bento-tile-text">
-                                <span class="bento-tile-title">Export Calendar</span>
-                                <span class="bento-tile-sub">Sync to Google / Apple .ics</span>
-                            </div>
-                        </div>
-
-                        <!-- Bento 7: Print Timetable PDF -->
-                        <div class="bento-tile bento-tile-print" onclick="triggerPrintTimetable()">
-                            <div class="bento-tile-icon-box">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                            </div>
-                            <div class="bento-tile-text">
-                                <span class="bento-tile-title">Print Timetable</span>
-                                <span class="bento-tile-sub">Clean paper & PDF view</span>
-                            </div>
+                        <div class="bento-hero-action">
+                            <span>Launch Studio</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </div>
                     </div>
-
-                    <!-- Hub Footer / Danger Zone -->
-                    <div class="command-hub-footer">
-                        <button type="button" class="btn-hub-danger" onclick="promptClearAllEvents()">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                            <span>Clear Timetable Data</span>
-                        </button>
+                    <div class="bento-tile bento-tile-setup" onclick="openFirstTimePopup()">
+                        <div class="bento-tile-icon-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                        </div>
+                        <div class="bento-tile-text">
+                            <span class="bento-tile-title">Academic Setup</span>
+                            <span class="bento-tile-sub">Exams, weak courses & goals</span>
+                        </div>
                     </div>
+                    <div class="bento-tile bento-tile-rebalance" onclick="triggerRegeneratePlan()">
+                        <div class="bento-tile-icon-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <div class="bento-tile-text">
+                            <span class="bento-tile-title">Auto-Rebalance</span>
+                            <span class="bento-tile-sub">Recalculate remaining days</span>
+                        </div>
+                    </div>
+                    <div class="bento-tile bento-tile-class" onclick="openAddSessionModal('class')">
+                        <div class="bento-tile-icon-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        </div>
+                        <div class="bento-tile-text">
+                            <span class="bento-tile-title">Recurring Class</span>
+                            <span class="bento-tile-sub">Fixed lectures & lecture hall</span>
+                        </div>
+                    </div>
+                    <div class="bento-tile bento-tile-study" onclick="openAddSessionModal('study')">
+                        <div class="bento-tile-icon-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div class="bento-tile-text">
+                            <span class="bento-tile-title">Study Session</span>
+                            <span class="bento-tile-sub">Focused revision blocks</span>
+                        </div>
+                    </div>
+                    <div class="bento-tile bento-tile-gcal" onclick="openGoogleSyncModal()">
+                        <div class="bento-tile-icon-box" style="background: rgba(66, 133, 244, 0.12); color: #4285F4;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><circle cx="12" cy="15" r="2" fill="currentColor"></circle></svg>
+                        </div>
+                        <div class="bento-tile-text">
+                            <span class="bento-tile-title">Google Calendar</span>
+                            <span class="bento-tile-sub">Automatic 2-way sync</span>
+                        </div>
+                    </div>
+                    <div class="bento-tile bento-tile-export" onclick="exportToIcs()">
+                        <div class="bento-tile-icon-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </div>
+                        <div class="bento-tile-text">
+                            <span class="bento-tile-title">Export Calendar</span>
+                            <span class="bento-tile-sub">Sync to Google / Apple .ics</span>
+                        </div>
+                    </div>
+                    <div class="bento-tile bento-tile-print" onclick="triggerPrintTimetable()">
+                        <div class="bento-tile-icon-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        </div>
+                        <div class="bento-tile-text">
+                            <span class="bento-tile-title">Print Timetable</span>
+                            <span class="bento-tile-sub">Clean paper & PDF view</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="command-hub-footer">
+                    <button type="button" class="btn-hub-danger" onclick="promptClearAllEvents()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span>Clear Timetable Data</span>
+                    </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- VIEW TABS -->
-    <div class="filter-tabs">
-        <button type="button" class="tab active" id="btn-view-agenda" onclick="switchViewMode('agenda')">Schedule</button>
-        <button type="button" class="tab" id="btn-view-week" onclick="switchViewMode('week')">Week Grid</button>
+    <!-- SEARCH OVERLAY BAR -->
+    <div class="cal-search-bar hidden" id="cal-search-bar">
+        <div class="cal-search-input-wrapper">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="cal-search-input" placeholder="Search lectures, study sessions, courses..." autocomplete="off" oninput="handleCalendarSearch(this.value)" />
+            <button type="button" class="btn-search-clear" onclick="toggleCalendarSearch(false)">✕</button>
+        </div>
     </div>
 
-    <!-- VIEW 1: AGENDA SCHEDULE -->
-    <div id="view-agenda-container" class="calendar-view-pane active">
-
-        <!-- SLEEK 7-DAY WEEK STRIP -->
-        <div class="week-strip-card">
-            <div class="week-strip-header">
-                <span class="strip-month-title" id="strip-month-label">September 2026</span>
-                <div class="strip-nav-arrows">
-                    <button type="button" class="strip-arrow-btn" onclick="changeStripWeek(-1)" aria-label="Previous week">‹</button>
-                    <button type="button" class="strip-today-btn" onclick="goToToday()">Today</button>
-                    <button type="button" class="strip-arrow-btn" onclick="changeStripWeek(1)" aria-label="Next week">›</button>
-                </div>
-            </div>
-            <div class="week-strip-days" id="mini-cal-days">
-                <!-- Dynamically populated with 7 clean day buttons -->
+    <!-- 7-DAY HORIZONTAL WEEK STRIP (MATCHING MOCKUP: SUN - SAT) -->
+    <div class="week-strip-card" id="week-strip-card">
+        <div class="week-strip-header">
+            <span class="strip-month-title" id="strip-month-label">October 2026</span>
+            <div class="strip-nav-arrows">
+                <button type="button" class="strip-arrow-btn" onclick="changeStripWeek(-1)" aria-label="Previous week">‹</button>
+                <button type="button" class="strip-today-btn" onclick="goToToday()">Today</button>
+                <button type="button" class="strip-arrow-btn" onclick="changeStripWeek(1)" aria-label="Next week">›</button>
             </div>
         </div>
+        <div class="week-strip-days" id="mini-cal-days">
+            <!-- Dynamically populated with 7 clean day buttons (Sun to Sat with royal blue circle for active date) -->
+        </div>
+    </div>
 
+    <!-- ========================================================== -->
+    <!-- VIEW 1: DAY TIMELINE / HOURLY VIEW (PRIMARY MOBILE MOCKUP) -->
+    <!-- ========================================================== -->
+    <div id="view-day-container" class="calendar-view-pane active">
+        <div class="day-timeline-scroll" id="day-timeline-scroll">
+            <div class="day-timeline-wrapper" id="day-timeline-wrapper">
+                <!-- Current Time Marker (e.g. Noon ▶) -->
+                <div class="timeline-current-time-marker hidden" id="timeline-current-time-marker">
+                    <span class="current-time-tag" id="current-time-tag">Noon ▶</span>
+                    <div class="current-time-line"></div>
+                </div>
+
+                <!-- 16 Hour Rows (07:00 to 22:00) -->
+                <div class="timeline-hours-column" id="timeline-hours-column">
+                    <!-- Populated dynamically with hours 7:00 am to 10:00 pm -->
+                </div>
+
+                <!-- Event Cards Overlay -->
+                <div class="timeline-events-canvas" id="timeline-events-canvas">
+                    <!-- Populated dynamically with rounded pastel cards -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- VIEW 2: SCHEDULE (AGENDA LIST) VIEW -->
+    <!-- ========================================================== -->
+    <div id="view-agenda-container" class="calendar-view-pane hidden">
         <!-- STEADY AI BANNER -->
         <div class="ai-study-buddy-banner" id="ai-study-buddy-banner" onclick="openSabiAiChat()">
             <div class="buddy-banner-left">
@@ -250,12 +283,13 @@
 
         <!-- AGENDA TIMELINE LIST -->
         <div class="agenda-timeline-list" id="agenda-timeline-list">
-            <!-- Dynamically populated with clean, elegant session cards -->
+            <!-- Dynamically populated with session cards -->
         </div>
-
     </div>
 
-    <!-- VIEW 2: WEEK TIMETABLE VIEW (Classes + Study Sessions) -->
+    <!-- ========================================================== -->
+    <!-- VIEW 3: WEEK TIMETABLE VIEW (Classes + Study Sessions) -->
+    <!-- ========================================================== -->
     <div id="view-week-container" class="calendar-view-pane hidden">
         <div class="week-view-toolbar">
             <div class="week-nav-group">
@@ -273,7 +307,6 @@
             </div>
         </div>
 
-        <!-- Print Document Header (Visible in print mode) -->
         <div class="print-doc-header">
             <div class="print-brand-row">
                 <h1 class="print-doc-title">Sabi Academic Timetable & Study Schedule</h1>
@@ -282,20 +315,38 @@
             <p class="print-doc-sub" id="print-doc-sub">Week of Monday, Sep 28 – Sunday, Oct 4, 2026</p>
         </div>
 
-        <!-- 7-Day Columns Timetable Canvas -->
         <div class="week-grid-canvas" id="week-grid-canvas">
-            <!-- Populated dynamically with 7 day columns (Mon-Sun) containing classes and study sessions -->
+            <!-- Populated dynamically with 7 day columns (Mon-Sun) -->
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- VIEW 4: MONTH CALENDAR GRID VIEW -->
+    <!-- ========================================================== -->
+    <div id="view-month-container" class="calendar-view-pane hidden">
+        <div class="month-view-card">
+            <div class="month-view-toolbar">
+                <button type="button" class="btn-month-nav" onclick="changeMonthOffset(-1)" aria-label="Previous Month">‹</button>
+                <span class="month-range-label" id="month-range-label">October 2026</span>
+                <button type="button" class="btn-month-nav" onclick="changeMonthOffset(1)" aria-label="Next Month">›</button>
+            </div>
+            <div class="month-weekdays-header">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="month-grid-canvas" id="month-grid-canvas">
+                <!-- Dynamically populated with 35-42 days -->
+            </div>
         </div>
     </div>
 
 </div>
 
-<!-- FLOATING ACTION BUTTON FOR STEADY -->
-<button type="button" class="sabi-chat-fab" onclick="openSabiAiChat()" aria-label="Chat with Steady" title="Chat with Steady">
-    <span class="fab-avatar-badge">
-        <img src="avatars/notion-steady.svg" alt="Steady" />
-    </span>
-    <span class="fab-text">Steady</span>
+<!-- FLOATING STEADY NOTION AVATAR (REPLACES POPUP SPEED-DIAL) -->
+<button type="button" class="steady-fab-avatar" id="steady-fab-avatar" onclick="openSabiAiChat()" aria-label="Open Steady AI Timetable Studio" title="Chat with Steady">
+    <div class="steady-fab-avatar-inner">
+        <img src="avatars/notion-steady.svg" alt="Steady" class="steady-fab-avatar-img" />
+        <span class="steady-fab-online-dot"></span>
+    </div>
 </button>
 
 <!-- BOTTOM FLOATING DOCK -->
@@ -779,21 +830,7 @@
             </div>
         </div>
 
-        <!-- Studio Tactical Mode Bar -->
-        <div class="studio-mode-bar" id="studio-mode-bar">
-            <button type="button" class="studio-mode-pill active" data-mode="planner" onclick="setStudioMode('planner')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <span>Timetable Planner</span>
-            </button>
-            <button type="button" class="studio-mode-pill" data-mode="tutor" onclick="setStudioMode('tutor')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                <span>Concept Tutor & Math</span>
-            </button>
-            <button type="button" class="studio-mode-pill" data-mode="drill" onclick="setStudioMode('drill')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-                <span>Exam Drill & Recall</span>
-            </button>
-        </div>
+
 
         <!-- Studio Message Stream Canvas -->
         <main class="studio-messages-canvas" id="chat-messages-container">

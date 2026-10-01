@@ -94,15 +94,18 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
 // --- RENDER ALL VIEWS --- (central re-render)
 // ==========================================
 function renderAllViews() {
+    updateCalendarHeaderTitle();
     if (document.getElementById('mini-cal-days')) {
         renderMiniCalendarStrip();
     }
-    if (document.getElementById('view-week-container')) {
-        if (currentViewMode === 'week') {
-            renderWeekTimetable();
-        } else {
-            renderAgendaTimeline();
-        }
+    if (currentViewMode === 'day') {
+        renderDayTimeline();
+    } else if (currentViewMode === 'week') {
+        renderWeekTimetable();
+    } else if (currentViewMode === 'month') {
+        renderMonthCalendar();
+    } else {
+        renderAgendaTimeline();
     }
 }
 window.renderAllViews = renderAllViews;
@@ -121,6 +124,17 @@ function getFutureDateString(offsetDays = 0) {
 
 function getTodayStr() {
     return getFutureDateString(0);
+}
+
+function getSundayOfWeek(d = new Date()) {
+    const date = new Date(d);
+    const day = date.getDay(); // 0 is Sunday
+    const diff = date.getDate() - day;
+    const sunday = new Date(date.setDate(diff));
+    const year = sunday.getFullYear();
+    const month = String(sunday.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(sunday.getDate()).padStart(2, '0');
+    return `${year}-${month}-${dayStr}`;
 }
 
 function getMondayOfWeek(d = new Date()) {
@@ -222,7 +236,7 @@ const CATEGORIES = [
 let calendarEvents = [];
 let storedClasses = [];
 let selectedDate = getTodayStr();
-let currentViewMode = 'agenda'; // 'agenda' or 'week'
+let currentViewMode = 'day'; // 'day', 'agenda', 'week', or 'month'
 let stripWeekOffset = 0;
 let plannerWeekOffset = 0;
 let agendaFilter = 'all'; // 'all', 'class', 'study'
@@ -486,36 +500,158 @@ window.submitPopupQuickSetup = submitPopupQuickSetup;
 window.submitIntakeAndGenerateTimetable = submitPopupQuickSetup;
 
 // ==========================================
+// --- CALENDAR HEADER & VIEW CONTROLS ---
+// ==========================================
+function updateCalendarHeaderTitle() {
+    const titleEl = document.getElementById('cal-deck-month-title');
+    const stripMonthLabel = document.getElementById('strip-month-label');
+    
+    // Format month and year based on selectedDate
+    const d = new Date(selectedDate + 'T00:00:00');
+    const monthYear = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
+    if (titleEl) titleEl.textContent = monthYear;
+    if (stripMonthLabel) stripMonthLabel.textContent = monthYear;
+}
+window.updateCalendarHeaderTitle = updateCalendarHeaderTitle;
+
+function toggleViewDropdown(event) {
+    if (event) event.stopPropagation();
+    const popover = document.getElementById('cal-view-popover');
+    if (popover) {
+        popover.classList.toggle('hidden');
+    }
+}
+window.toggleViewDropdown = toggleViewDropdown;
+
+function selectViewFromDropdown(mode) {
+    switchViewMode(mode);
+    const popover = document.getElementById('cal-view-popover');
+    if (popover) popover.classList.add('hidden');
+}
+window.selectViewFromDropdown = selectViewFromDropdown;
+
+function toggleCalendarSearch(force) {
+    const bar = document.getElementById('cal-search-bar');
+    const input = document.getElementById('cal-search-input');
+    if (!bar) return;
+
+    const willShow = typeof force === 'boolean' ? force : bar.classList.contains('hidden');
+    if (willShow) {
+        bar.classList.remove('hidden');
+        if (input) {
+            input.focus();
+            input.select();
+        }
+    } else {
+        bar.classList.add('hidden');
+        if (input) input.value = '';
+        renderAllViews();
+    }
+}
+window.toggleCalendarSearch = toggleCalendarSearch;
+
+function handleCalendarSearch(query) {
+    const q = (query || '').trim().toLowerCase();
+    if (!q) {
+        renderAllViews();
+        return;
+    }
+
+    if (currentViewMode === 'day') {
+        const cards = document.querySelectorAll('.day-event-card');
+        cards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(q) ? 'flex' : 'none';
+        });
+    } else if (currentViewMode === 'agenda') {
+        const rows = document.querySelectorAll('.agenda-event-card');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(q) ? 'flex' : 'none';
+        });
+    }
+}
+window.handleCalendarSearch = handleCalendarSearch;
+
+// Close popovers on click outside
+document.addEventListener('click', (e) => {
+    const popover = document.getElementById('cal-view-popover');
+    const toggleBtn = document.getElementById('btn-view-selector-toggle');
+    if (popover && !popover.classList.contains('hidden')) {
+        if (!popover.contains(e.target) && (!toggleBtn || !toggleBtn.contains(e.target))) {
+            popover.classList.add('hidden');
+        }
+    }
+});
+
+// Format 24h string ('14:00') into 12h ('2:00 pm')
+function formatTime12h(timeStr) {
+    if (!timeStr) return '';
+    const [hStr, mStr] = timeStr.split(':');
+    const h = parseInt(hStr, 10);
+    const m = parseInt(mStr, 10) || 0;
+    const suffix = h >= 12 ? 'pm' : 'am';
+    const hour12 = h % 12 || 12;
+    return `${hour12}:${String(m).padStart(2, '0')} ${suffix}`;
+}
+
+// ==========================================
 // --- VIEW SWITCHING ---
 // ==========================================
 function switchViewMode(mode) {
+    if (!['day', 'agenda', 'week', 'month'].includes(mode)) mode = 'day';
     currentViewMode = mode;
-    
-    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.calendar-view-pane').forEach(p => {
-        p.classList.add('hidden');
-        p.classList.remove('active');
+
+    // 1. Update Dropdown Label and active states
+    const labelEl = document.getElementById('current-view-label');
+    const labelMap = {
+        day: 'Day',
+        agenda: 'Schedule',
+        week: 'Week',
+        month: 'Month'
+    };
+    if (labelEl) labelEl.textContent = labelMap[mode] || 'Day';
+
+    document.querySelectorAll('.view-popover-item').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-view') === mode);
     });
 
-    const activeTab = document.getElementById(`btn-view-${mode}`);
-    const activePane = document.getElementById(`view-${mode}-container`);
+    // 2. Update Desktop segmented tabs
+    document.querySelectorAll('.desktop-view-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-view') === mode);
+    });
 
-    if (activeTab) activeTab.classList.add('active');
-    if (activePane) {
-        activePane.classList.remove('hidden');
-        activePane.classList.add('active');
-    }
+    // 3. Show/hide view panes
+    const panes = ['day', 'agenda', 'week', 'month'];
+    panes.forEach(p => {
+        const paneEl = document.getElementById(`view-${p}-container`);
+        if (paneEl) {
+            if (p === mode) {
+                paneEl.classList.remove('hidden');
+                paneEl.classList.add('active');
+            } else {
+                paneEl.classList.add('hidden');
+                paneEl.classList.remove('active');
+            }
+        }
+    });
 
-    if (mode === 'agenda') {
+    // 4. Render active view
+    if (mode === 'day') {
+        renderDayTimeline();
+    } else if (mode === 'agenda') {
         renderAgendaTimeline();
-    } else {
+    } else if (mode === 'week') {
         renderWeekTimetable();
+    } else if (mode === 'month') {
+        renderMonthCalendar();
     }
 }
 window.switchViewMode = switchViewMode;
 
 // ==========================================
-// --- 7-DAY MINI CALENDAR STRIP ---
+// --- 7-DAY MINI CALENDAR STRIP (SUN - SAT) ---
 // ==========================================
 function changeStripWeek(direction) {
     stripWeekOffset += direction;
@@ -525,7 +661,9 @@ window.changeStripWeek = changeStripWeek;
 
 function goToToday() {
     stripWeekOffset = 0;
+    monthViewOffset = 0;
     selectedDate = getTodayStr();
+    updateCalendarHeaderTitle();
     renderMiniCalendarStrip();
     renderAllViews();
 }
@@ -533,8 +671,13 @@ window.goToToday = goToToday;
 
 function onSelectDate(dateStr) {
     selectedDate = dateStr;
+    updateCalendarHeaderTitle();
     renderMiniCalendarStrip();
-    renderAgendaTimeline();
+    if (currentViewMode === 'day') {
+        renderDayTimeline();
+    } else if (currentViewMode === 'agenda') {
+        renderAgendaTimeline();
+    }
 }
 window.onSelectDate = onSelectDate;
 
@@ -543,21 +686,22 @@ function renderMiniCalendarStrip() {
     const label = document.getElementById('strip-month-label');
     if (!container) return;
 
-    const baseMonday = getMondayOfWeek(new Date());
-    const weekMondayStr = addDaysToDate(baseMonday, stripWeekOffset * 7);
-    const weekMonDate = new Date(weekMondayStr + 'T00:00:00');
+    // Start week on Sunday (Sun to Sat) to match native calendar mockup!
+    const baseSunday = getSundayOfWeek(new Date(selectedDate + 'T00:00:00'));
+    const weekSundayStr = addDaysToDate(baseSunday, stripWeekOffset * 7);
+    const weekSunDate = new Date(weekSundayStr + 'T00:00:00');
 
     if (label) {
-        label.textContent = weekMonDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        label.textContent = weekSunDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     }
 
     const todayStr = getTodayStr();
-    const dayShortNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const fullDayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const dayShortNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const fullDayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     let html = '';
     for (let i = 0; i < 7; i++) {
-        const currentDateStr = addDaysToDate(weekMondayStr, i);
+        const currentDateStr = addDaysToDate(weekSundayStr, i);
         const curDateObj = new Date(currentDateStr + 'T00:00:00');
         const dayNum = curDateObj.getDate();
         const isSelected = selectedDate === currentDateStr;
@@ -578,6 +722,212 @@ function renderMiniCalendarStrip() {
     }
 
     container.innerHTML = html;
+}
+
+// ==========================================================
+// --- VIEW 1: DAY TIMELINE / HOURLY VIEW (PRIMARY MOCKUP) ---
+// ==========================================================
+function renderDayTimeline() {
+    const hoursCol = document.getElementById('timeline-hours-column');
+    const eventsCanvas = document.getElementById('timeline-events-canvas');
+    const marker = document.getElementById('timeline-current-time-marker');
+    const markerTag = document.getElementById('current-time-tag');
+    if (!hoursCol || !eventsCanvas) return;
+
+    // 1. Build Hour Rows (07:00 to 22:00)
+    let hoursHtml = '';
+    for (let h = 7; h <= 22; h++) {
+        let label = '';
+        if (h === 12) {
+            label = 'Noon';
+        } else if (h < 12) {
+            label = `${h}:00 am`;
+        } else {
+            label = `${h - 12}:00 pm`;
+        }
+        const hStr = String(h).padStart(2, '0') + ':00';
+        hoursHtml += `
+            <div class="timeline-hour-row" data-hour="${h}">
+                <div class="timeline-hour-label">${label}</div>
+                <div class="timeline-hour-slot" onclick="openAddSessionModal('study', '${hStr}')"></div>
+            </div>
+        `;
+    }
+    hoursCol.innerHTML = hoursHtml;
+
+    // 2. Position Current Time Indicator if viewing Today
+    if (marker && markerTag) {
+        const isToday = selectedDate === getTodayStr();
+        if (isToday) {
+            const now = new Date();
+            const curH = now.getHours();
+            const curM = now.getMinutes();
+            if (curH >= 7 && curH <= 22) {
+                const topPx = (curH - 7 + curM / 60) * 68;
+                marker.style.top = `${topPx}px`;
+                marker.classList.remove('hidden');
+                let timeText = '';
+                if (curH === 12 && curM === 0) {
+                    timeText = 'Noon ▶';
+                } else {
+                    const formatted = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+                    timeText = `${formatted} ▶`;
+                }
+                markerTag.textContent = timeText;
+            } else {
+                marker.classList.add('hidden');
+            }
+        } else {
+            marker.classList.add('hidden');
+        }
+    }
+
+    // 3. Collect Events for Selected Date
+    const dayOfWeekName = getDayNameFromDate(selectedDate);
+    
+    // Recurring classes on this weekday
+    const dayClasses = storedClasses.filter(c => (c.day || '').toLowerCase() === dayOfWeekName.toLowerCase()).map(c => ({
+        id: c.id,
+        title: c.subject,
+        start_time: c.start_time || '09:00',
+        end_time: c.end_time || '11:00',
+        venue: c.venue || 'Lecture Hall',
+        isClass: true,
+        category: 'class'
+    }));
+
+    // Specific study/exam events on this date
+    const daySessions = calendarEvents.filter(e => e.date === selectedDate).map(e => ({
+        id: e.id,
+        title: e.title,
+        start_time: e.time || '14:00',
+        end_time: e.end_time || getEndTime(e.time || '14:00', e.duration || 1.5),
+        venue: e.notes || '',
+        completed: !!e.completed,
+        isClass: false,
+        category: e.category || 'study'
+    }));
+
+    const allEvents = [...dayClasses, ...daySessions].sort((a, b) => {
+        return (a.start_time || '00:00').localeCompare(b.start_time || '00:00');
+    });
+
+    if (allEvents.length === 0) {
+        eventsCanvas.innerHTML = `
+            <div class="day-timeline-empty-notice">
+                <span>No classes or study sessions scheduled for today. Tap any hour slot to add.</span>
+            </div>
+        `;
+        return;
+    }
+
+    const pastelPalettes = ['day-card-pink', 'day-card-blue', 'day-card-lavender', 'day-card-mint', 'day-card-amber'];
+
+    let eventsHtml = '';
+    allEvents.forEach((ev, idx) => {
+        const [sH, sM] = (ev.start_time || '09:00').split(':').map(Number);
+        const [eH, eM] = (ev.end_time || '10:30').split(':').map(Number);
+
+        // Clamp to 7:00 - 23:00 timeline boundary
+        const startFraction = Math.max(0, (sH - 7) + (sM || 0) / 60);
+        const endFraction = Math.min(16, (eH - 7) + (eM || 0) / 60);
+        const durationFraction = Math.max(0.65, endFraction - startFraction);
+
+        const topPx = startFraction * 68 + 2;
+        const heightPx = Math.max(durationFraction * 68 - 4, 46);
+
+        // Pick distinct pastel theme
+        let themeClass = pastelPalettes[idx % pastelPalettes.length];
+        if (ev.isClass) {
+            themeClass = 'day-card-blue';
+        } else if (ev.title.toLowerCase().includes('research') || ev.title.toLowerCase().includes('project')) {
+            themeClass = 'day-card-pink';
+        } else if (ev.title.toLowerCase().includes('break') || ev.title.toLowerCase().includes('lunch')) {
+            themeClass = 'day-card-mint';
+        } else if (ev.category === 'exam' || ev.title.toLowerCase().includes('exam') || ev.title.toLowerCase().includes('test')) {
+            themeClass = 'day-card-amber';
+        }
+
+        const safeTitle = escapeHtml(ev.title || 'Session');
+        const safeVenue = ev.venue ? escapeHtml(ev.venue) : '';
+        const timeRangeStr = `${formatTime12h(ev.start_time)} - ${formatTime12h(ev.end_time)}`;
+
+        eventsHtml += `
+            <div class="day-event-card ${themeClass}" style="top: ${topPx}px; height: ${heightPx}px;" onclick="openEventDetailModal('${ev.id}', ${ev.isClass})">
+                <div class="day-event-card-inner">
+                    <div class="day-event-top-row">
+                        <strong class="day-event-title">${safeTitle}</strong>
+                        <span class="day-event-check ${ev.completed ? 'checked' : ''}" onclick="event.stopPropagation(); toggleEventCompleted('${ev.id}')">
+                            ${ev.completed ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+                        </span>
+                    </div>
+                    <div class="day-event-meta-row">
+                        <span class="day-event-time">${timeRangeStr}</span>
+                        ${safeVenue ? `<span class="day-event-venue">• ${safeVenue}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    eventsCanvas.innerHTML = eventsHtml;
+}
+
+// ==========================================
+// --- VIEW 4: MONTH CALENDAR GRID VIEW ---
+// ==========================================
+let monthViewOffset = 0;
+function changeMonthOffset(dir) {
+    monthViewOffset += dir;
+    renderMonthCalendar();
+}
+window.changeMonthOffset = changeMonthOffset;
+
+function renderMonthCalendar() {
+    const gridEl = document.getElementById('month-grid-canvas');
+    const labelEl = document.getElementById('month-range-label');
+    if (!gridEl) return;
+
+    const baseDate = new Date();
+    baseDate.setMonth(baseDate.getMonth() + monthViewOffset);
+    const year = baseDate.getFullYear();
+    const month = baseDate.getMonth();
+
+    if (labelEl) {
+        labelEl.textContent = baseDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    const firstDayIndex = new Date(year, month, 1).getDay(); // 0 is Sunday
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = getTodayStr();
+
+    let cellsHtml = '';
+
+    // Empty cells before first day
+    for (let i = 0; i < firstDayIndex; i++) {
+        cellsHtml += `<div class="month-day-cell empty"></div>`;
+    }
+
+    // Days of month
+    for (let d = 1; d <= daysInMonth; d++) {
+        const curDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const dayOfWeek = getDayNameFromDate(curDateStr);
+        const isToday = curDateStr === todayStr;
+        const isSelected = curDateStr === selectedDate;
+
+        const classCount = storedClasses.filter(c => (c.day || '').toLowerCase() === dayOfWeek.toLowerCase()).length;
+        const sessionCount = calendarEvents.filter(e => e.date === curDateStr).length;
+        const totalEvents = classCount + sessionCount;
+
+        cellsHtml += `
+            <div class="month-day-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" onclick="onSelectDate('${curDateStr}'); switchViewMode('day');">
+                <span class="month-cell-num">${d}</span>
+                ${totalEvents > 0 ? `<div class="month-event-dots"><span class="m-dot"></span>${totalEvents > 1 ? '<span class="m-dot"></span>' : ''}</div>` : ''}
+            </div>
+        `;
+    }
+
+    gridEl.innerHTML = cellsHtml;
 }
 
 // ==========================================
@@ -2201,61 +2551,16 @@ const STUDIO_MODE_CHIPS = {
         "Lock in 2 hours study every evening",
         "Maths & Physics need extra study blocks",
         "Keep Sundays completely free for rest"
-    ],
-    tutor: [
-        "Explain eigenvalues & eigenvectors with simple examples",
-        "Derive the quadratic formula step-by-step",
-        "Break down Keynesian vs Classical economics",
-        "How does the nervous system transmit action potentials?",
-        "Give me a mnemonic to remember the Krebs cycle"
-    ],
-    drill: [
-        "Prepping for JAMB in 6 weeks: quiz me on Physics",
-        "WAEC / SSCE revision timetable and drill",
-        "Finals in 3 weeks: drill high-yield topics",
-        "Intensive 3-hour daily drill mode",
-        "Test me on 5 rapid-fire questions from my active courses"
-    ],
-    vision: [
-        "Upload Timetable Screenshot",
-        "Upload Course Outline / Syllabus",
-        "Extract recurring lectures from photo",
-        "Identify tough topics from outline",
-        "Re-scan uploaded image"
-    ],
-    exam: [
-        "Prepping for JAMB in 6 weeks",
-        "WAEC / SSCE revision timetable",
-        "Finals in 3 weeks: ECO375 & MTH101",
-        "Intensive 3-hour daily drill mode",
-        "Build spaced repetition schedule"
     ]
 };
 
 function setStudioMode(mode) {
-    if (!STUDIO_MODE_CHIPS[mode]) mode = 'planner';
-    currentStudioMode = mode;
-
-    const pills = document.querySelectorAll('.studio-mode-pill');
-    pills.forEach(pill => {
-        if (pill.getAttribute('data-mode') === mode || pill.id === `mode-pill-${mode}`) {
-            pill.classList.add('active');
-        } else {
-            pill.classList.remove('active');
-        }
-    });
-
+    currentStudioMode = 'planner';
     renderChatQuickChips();
 
     const input = document.getElementById('chat-user-input');
     if (input && (!input.value.trim() || input.value.startsWith('Message Steady'))) {
-        if (mode === 'tutor') {
-            input.placeholder = "Ask any math, science, or concept question...";
-        } else if (mode === 'drill') {
-            input.placeholder = "Tell Steady what topic to quiz or drill you on...";
-        } else {
-            input.placeholder = "Message Steady, plan timetable, or dictate...";
-        }
+        input.placeholder = "Message Steady, plan timetable, or dictate...";
     }
 }
 window.setStudioMode = setStudioMode;
@@ -2402,7 +2707,7 @@ function renderChatMessages() {
                     </div>
 
                     <!-- Bento 2: Personalized Recommendations -->
-                    <div class="va-bento-card va-card-recommend" onclick="handleQuickChipClick('Analyze my enrolled courses and recommend a personalized study routine')">
+                    <div class="va-bento-card va-card-recommend" onclick="handleQuickChipClick('Analyze my enrolled courses and build a complete semester timetable')">
                         <div class="va-bento-icon va-icon-lavender">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="3" width="7" height="7"></rect>
@@ -2411,27 +2716,26 @@ function renderChatMessages() {
                                 <rect x="3" y="14" width="7" height="7"></rect>
                             </svg>
                         </div>
-                        <span class="va-bento-title">Personalized Recommendations</span>
-                        <span class="va-bento-desc">Suggest books, study plans, or weak-topic drills.</span>
+                        <span class="va-bento-title">Timetable Architect</span>
+                        <span class="va-bento-desc">Build personalized study sessions and lecture schedules.</span>
                         <div class="va-bento-link">
-                            <span>Discover yours now</span>
+                            <span>Build timetable</span>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </div>
                     </div>
 
-                    <!-- Bento 3: Fun & Games -->
-                    <div class="va-bento-card va-card-games" onclick="setStudioMode('drill'); handleQuickChipClick('Quiz me with 5 quick recall questions on my hardest course')">
+                    <!-- Bento 3: Clash Solver & Balance -->
+                    <div class="va-bento-card va-card-games" onclick="handleQuickChipClick('Check my schedule for lecture clashes and optimize my study blocks')">
                         <div class="va-bento-icon va-icon-purple">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="6" y1="12" x2="10" y2="12"></line>
-                                <line x1="8" y1="10" x2="8" y2="14"></line>
-                                <line x1="15" y1="13" x2="15.01" y2="13"></line>
-                                <line x1="18" y1="11" x2="18.01" y2="11"></line>
-                                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
                         </div>
-                        <span class="va-bento-title">Fun &amp; Games</span>
-                        <span class="va-bento-desc">Play text-based games, quizzes, or riddles.</span>
+                        <span class="va-bento-title">Clash Solver &amp; Balance</span>
+                        <span class="va-bento-desc">Resolve lecture clashes and balance daily study workload.</span>
                     </div>
 
                     <!-- Bento 4: Start temporary chat / Outline scan -->
