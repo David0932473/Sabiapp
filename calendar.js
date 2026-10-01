@@ -1430,6 +1430,8 @@ function renderChatHistoryList() {
 }
 window.renderChatHistoryList = renderChatHistoryList;
 
+let studioVisualViewportHandler = null;
+
 function openSabiAiChat() {
     const hubMenu = document.getElementById('planner-dropdown-menu');
     if (hubMenu) hubMenu.classList.add('hidden');
@@ -1439,6 +1441,25 @@ function openSabiAiChat() {
         drawer.classList.remove('hidden');
         if (window.innerWidth < 1024) {
             document.body.style.overflow = 'hidden';
+
+            // Synchronize with mobile on-screen keyboard using visualViewport
+            if (window.visualViewport) {
+                if (studioVisualViewportHandler) {
+                    window.visualViewport.removeEventListener('resize', studioVisualViewportHandler);
+                    window.visualViewport.removeEventListener('scroll', studioVisualViewportHandler);
+                }
+                studioVisualViewportHandler = () => {
+                    if (!drawer.classList.contains('hidden')) {
+                        const h = window.visualViewport.height;
+                        drawer.style.height = `${h}px`;
+                        const container = document.getElementById('chat-messages-container');
+                        if (container) container.scrollTop = container.scrollHeight;
+                    }
+                };
+                studioVisualViewportHandler();
+                window.visualViewport.addEventListener('resize', studioVisualViewportHandler);
+                window.visualViewport.addEventListener('scroll', studioVisualViewportHandler);
+            }
         }
     }
 
@@ -1470,7 +1491,12 @@ function closeSabiAiChat(e) {
     const drawer = document.getElementById('sabi-ai-chat-drawer');
     if (drawer) {
         drawer.classList.add('hidden');
+        drawer.style.height = '';
         document.body.style.overflow = '';
+    }
+    if (window.visualViewport && studioVisualViewportHandler) {
+        window.visualViewport.removeEventListener('resize', studioVisualViewportHandler);
+        window.visualViewport.removeEventListener('scroll', studioVisualViewportHandler);
     }
 }
 window.closeSabiAiChat = closeSabiAiChat;
@@ -1590,6 +1616,50 @@ function fallbackCopy(text, btn) {
     document.body.removeChild(ta);
 }
 window.copyCodeSnippet = copyCodeSnippet;
+
+function toggleMsgFavorite(btn) {
+    if (!btn) return;
+    const isActive = btn.classList.toggle('active');
+    btn.style.color = isActive ? '#EC4899' : '';
+    showToast(isActive ? 'Saved to favorites' : 'Removed from favorites');
+}
+window.toggleMsgFavorite = toggleMsgFavorite;
+
+function shareMsgContent(btn) {
+    if (!btn) return;
+    const bubble = btn.closest('.studio-msg-row')?.querySelector('.studio-bubble');
+    if (!bubble) return;
+    const text = bubble.innerText.trim();
+    if (navigator.share) {
+        navigator.share({
+            title: 'Steady Academic Advice',
+            text: text
+        }).catch(() => {});
+    } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Response copied for sharing');
+        });
+    }
+}
+window.shareMsgContent = shareMsgContent;
+
+function copyMsgContent(btn) {
+    if (!btn) return;
+    const bubble = btn.closest('.studio-msg-row')?.querySelector('.studio-bubble');
+    if (!bubble) return;
+    const text = bubble.innerText.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Message copied to clipboard');
+        }).catch(() => {
+            showToast('Copied to clipboard');
+        });
+    } else {
+        fallbackCopy(text, btn);
+        showToast('Message copied to clipboard');
+    }
+}
+window.copyMsgContent = copyMsgContent;
 
 function clearChatHistory() {
     if (confirm('Restart session with Steady?')) {
@@ -2306,33 +2376,77 @@ function renderChatMessages() {
 
     let heroHtml = '';
     if (isInitialState) {
+        const student = typeof getStudentAiContext === 'function' ? getStudentAiContext() : {};
+        const hour = new Date().getHours();
+        const greetingTime = hour < 12 ? 'Good Morning' : (hour < 17 ? 'Good Afternoon' : 'Good Evening');
+        const studentName = student.firstName || 'Scholar';
+
         heroHtml = `
-            <div class="copilot-launchpad-hero">
-                <div class="launchpad-header">
-                    <span class="launchpad-badge">STEADY AI STUDIO</span>
-                    <h3 class="launchpad-heading">What are we planning today?</h3>
-                    <p class="launchpad-sub">Scan a course outline photo, lock in lecture times, or build a personalized revision routine.</p>
+            <div class="va-launchpad-hero">
+                <div class="va-hero-greeting-box">
+                    <span class="va-hero-time-greeting">${escapeHtml(greetingTime)}, ${escapeHtml(studentName)}</span>
+                    <h2 class="va-hero-heading">What can i help today?</h2>
                 </div>
-                <div class="launchpad-grid">
-                    <div class="launchpad-tile" onclick="triggerChatMediaUpload()">
-                        <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
-                        <span class="launchpad-tile-title">Scan Course Outline</span>
-                        <span class="launchpad-tile-desc">Upload timetable photo for instant Vision OCR</span>
+                <div class="va-bento-grid">
+                    <!-- Bento 1: Productivity Tips -->
+                    <div class="va-bento-card va-card-productivity" onclick="handleQuickChipClick('Give me actionable productivity tips and timetable strategies for this semester')">
+                        <div class="va-bento-icon va-icon-amber">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="9" y1="18" x2="15" y2="18"></line>
+                                <line x1="10" y1="22" x2="14" y2="22"></line>
+                                <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path>
+                            </svg>
+                        </div>
+                        <span class="va-bento-title">Productivity Tips</span>
+                        <span class="va-bento-desc">Help with time management, goal setting, and organization.</span>
                     </div>
-                    <div class="launchpad-tile" onclick="handleQuickChipClick('I want to auto-balance my weekly study sessions around my lectures')">
-                        <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-                        <span class="launchpad-tile-title">Auto-Balance Week</span>
-                        <span class="launchpad-tile-desc">Distribute study blocks without clashes</span>
+
+                    <!-- Bento 2: Personalized Recommendations -->
+                    <div class="va-bento-card va-card-recommend" onclick="handleQuickChipClick('Analyze my enrolled courses and recommend a personalized study routine')">
+                        <div class="va-bento-icon va-icon-lavender">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </div>
+                        <span class="va-bento-title">Personalized Recommendations</span>
+                        <span class="va-bento-desc">Suggest books, study plans, or weak-topic drills.</span>
+                        <div class="va-bento-link">
+                            <span>Discover yours now</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
                     </div>
-                    <div class="launchpad-tile" onclick="setStudioMode('drill'); handleQuickChipClick('Prepping for exams in 6 weeks, help me build a timetable')">
-                        <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
-                        <span class="launchpad-tile-title">Exam Crunch Mode</span>
-                        <span class="launchpad-tile-desc">Prioritize tough subjects with spaced review</span>
+
+                    <!-- Bento 3: Fun & Games -->
+                    <div class="va-bento-card va-card-games" onclick="setStudioMode('drill'); handleQuickChipClick('Quiz me with 5 quick recall questions on my hardest course')">
+                        <div class="va-bento-icon va-icon-purple">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="6" y1="12" x2="10" y2="12"></line>
+                                <line x1="8" y1="10" x2="8" y2="14"></line>
+                                <line x1="15" y1="13" x2="15.01" y2="13"></line>
+                                <line x1="18" y1="11" x2="18.01" y2="11"></line>
+                                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            </svg>
+                        </div>
+                        <span class="va-bento-title">Fun &amp; Games</span>
+                        <span class="va-bento-desc">Play text-based games, quizzes, or riddles.</span>
                     </div>
-                    <div class="launchpad-tile" onclick="handleQuickChipClick('Schedule 2 hours of focused evening study (7pm - 9pm) every weekday')">
-                        <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
-                        <span class="launchpad-tile-title">Evening Deep Work</span>
-                        <span class="launchpad-tile-desc">Lock in daily 7pm - 9pm distraction-free study</span>
+
+                    <!-- Bento 4: Start temporary chat / Outline scan -->
+                    <div class="va-bento-card va-card-temp" onclick="triggerChatMediaUpload()">
+                        <div class="va-temp-illustration">
+                            <div class="va-bubble-ill-1"></div>
+                            <div class="va-bubble-ill-2"></div>
+                            <svg class="va-dash-trail" width="60" height="30" viewBox="0 0 60 30" fill="none">
+                                <path d="M5 25 C 20 5, 40 5, 55 25" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 3"/>
+                            </svg>
+                        </div>
+                        <div class="va-temp-btn">
+                            <span>Start temporary chat</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2444,15 +2558,29 @@ function renderChatMessages() {
             ? `<div>${escapeHtml(msg.content)}</div>`
             : `<div>${renderMarkdownLite(msg.content)}</div>`;
 
+        const actionsHtml = !isUser ? `
+            <div class="va-msg-actions">
+                <button type="button" class="va-msg-action-btn" onclick="toggleMsgFavorite(this)" title="Like response" aria-label="Like response">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+                <button type="button" class="va-msg-action-btn" onclick="shareMsgContent(this)" title="Share response" aria-label="Share response">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                </button>
+                <button type="button" class="va-msg-action-btn" onclick="copyMsgContent(this)" title="Copy text" aria-label="Copy text">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+            </div>
+        ` : '';
+
         return `
             <div class="studio-msg-row chat-msg-row ${isUser ? 'user' : 'bot'}">
-                ${!isUser ? `<img src="avatars/notion-scholar.svg" alt="Steady" class="studio-msg-avatar chat-msg-avatar" />` : ''}
                 <div class="studio-bubble chat-bubble">
                     ${mediaHtml}
                     ${contentHtml}
                     ${scheduleCardHtml}
                     ${actionCardHtml}
                 </div>
+                ${actionsHtml}
             </div>
         `;
     }).join('');
@@ -2816,7 +2944,11 @@ TIMETABLE & CALENDAR CAPABILITIES:
   ]
 }
 \`\`\`
-- Only output the JSON block when scheduling or modifying events. For general questions, explanations, tutoring, or advice, do not output the JSON block.
+- Only output the JSON block when scheduling or modifying events. For general conceptual tutoring or explanations, do not output the JSON block.
+
+GOAL-TO-SCHEDULE & OUTLINE DIRECT ACTION RULES:
+- When a student states a goal (e.g. "5.00 goal", "5.0 CGPA", "first class target", "pass JAMB with 320", "score 75+ in MTH101"), NEVER output long generic motivational lectures or self-help fluff. Instead, briefly acknowledge their ambition in 1-2 concise sentences, calculate the optimal weekly study distribution across their enrolled subjects, and immediately generate their personalized timetable routine using the UPDATE_TIMETABLE JSON block so they can add it to their calendar in one tap!
+- When a student uploads a course outline, syllabus, or timetable image/document, automatically extract all lecture times and propose the complete schedule using the UPDATE_TIMETABLE JSON block.
 
 MULTIMODAL & VISION:
 - You can analyze screenshots of course outlines, syllabi, notes, and timetable photos. Accurately identify courses, codes, lecture times, and exam dates when images or OCR data are provided.
@@ -3111,13 +3243,24 @@ function parseAiReplyAndApply(replyText) {
     let cleanMessage = replyText;
     let actionData = null;
 
-    // Extract JSON block if present
+    // 1. Extract JSON block if inside markdown code fences
     const jsonMatch = replyText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
     if (jsonMatch) {
         try {
             actionData = JSON.parse(jsonMatch[1]);
             cleanMessage = replyText.replace(jsonMatch[0], '').trim();
         } catch (e) {}
+    }
+
+    // 2. Fallback: Check if raw JSON was returned without code fences
+    if (!actionData) {
+        const rawJsonMatch = replyText.match(/\{[\s\r\n]*"action"[\s\r\n]*:[\s\r\n]*"UPDATE_TIMETABLE"[\s\S]*?\}/);
+        if (rawJsonMatch) {
+            try {
+                actionData = JSON.parse(rawJsonMatch[0]);
+                cleanMessage = replyText.replace(rawJsonMatch[0], '').trim();
+            } catch (e) {}
+        }
     }
 
     let scheduleProposal = null;
@@ -3232,6 +3375,42 @@ function generateOfflineBuddyReply(userText, media, history) {
             role: 'bot',
             content: `My apologies for the confusion! Could you type your actual courses (e.g. ECO 301, ECO 375), and I will update your schedule immediately?`,
             actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 2b. Direct Academic Goal: 5.00 GPA, 5.0 goal, target CGPA
+    if (/\b(5\.00?|5\.0|4\.5|first class|target gpa|cgpa|gpa goal|score 300|jamb goal)\b/i.test(lower)) {
+        const student = typeof getStudentAiContext === 'function' ? getStudentAiContext() : {};
+        const courses = (student.activeSubjects && student.activeSubjects.length > 0)
+            ? student.activeSubjects
+            : ['Core Course 1', 'Core Course 2', 'Elective / Lab', 'General Studies'];
+        
+        const sessions = [];
+        courses.slice(0, 4).forEach((c, idx) => {
+            sessions.push({
+                date: getTodayStr(),
+                time: (16 + idx) + ':00',
+                duration: 2,
+                title: `${c} High-Yield Mastery`,
+                category: 'study',
+                notes: 'Active recall & past question practice for 5.0 target'
+            });
+        });
+
+        const proposal = {
+            cardId: 'prop-goal-' + Date.now(),
+            summary: '5.00 CGPA Intensive Revision Routine',
+            classes: [],
+            studySessions: sessions,
+            accepted: false
+        };
+
+        return {
+            role: 'bot',
+            content: `Targeting a **5.00 CGPA** is a formidable academic commitment! To hit that level, the golden rule is **2 hours of active revision for every 1 lecture hour**, prioritized around spaced testing rather than passive rereading.\n\nI have structured a high-yield study routine across your subjects below. Tap **Accept & Add to Timetable** to lock it in!`,
+            scheduleProposal: proposal,
+            actionCard: { details: 'Generated 5.00 GPA target study routine' },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }

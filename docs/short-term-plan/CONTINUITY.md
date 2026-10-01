@@ -1,27 +1,26 @@
 - **Goal (incl. success criteria)**: 
-  - Complete frontend and backend redesign of the Sabi AI ("Steady") interface following user feedback, grill-me requirements, and frontend-design principles.
-  - Optimize the chat studio specifically for mobile devices (full viewport responsiveness, dynamic safe-area-inset padding, no awkward sizing).
-  - Enhance text input contrast, readability, and sizing (16px to prevent iOS auto-zoom).
-  - Clean header: Remove "Academic Architect • Powered by Steady" and "AI Active" badge.
-  - Replace refresh button with two dedicated actions: "Start New Conversation" and "Previous Conversations" with a 3-day auto-prune policy for untouched chats.
+  - Redesign the Sabi AI ("Steady") chat interface to match the user's reference mockup (ai.va pastel glassmorphism aesthetic).
+  - Fix mobile responsiveness so mobile users never need to toggle "Desktop site" mode in their browser.
+  - Implement dynamic visualViewport keyboard height synchronization.
+  - Prevent AI from straying into 40-line motivational lectures by enforcing direct timetable generation (via UPDATE_TIMETABLE JSON) on goal statements (e.g., "5.00 goal") and course outline uploads.
 - **Constraints/Assumptions**:
   - Strict 0 Unicode emojis rule: All icons are SVG vectors.
   - Preserve Steady academic identity and direct student context injection (`getStudentAiContext`).
   - Google Calendar auto-sync hooks run seamlessly upon schedule card acceptance.
 - **Key decisions**:
-  - Removed "Academic Architect" subtitle and "AI Active" badge for a clean, minimalist header.
-  - Added multi-session conversation architecture (`sabi_chat_sessions_v2`) with automatic 3-day (72-hour) retention pruning (`CHAT_RETENTION_MS`).
-  - Added slide-down history drawer `#studio-history-panel` with session switching, relative timestamps, and one-tap conversation deletion.
-  - Text input upgraded to 16px font-size (stops iOS Safari zoom), higher contrast background (`rgba(18, 25, 41, 0.96)`), and `#94A3B8` placeholder.
-  - Mobile bottom drawer upgraded to `94dvh` with `max(16px, env(safe-area-inset-bottom))` padding.
+  - Adopted ai.va aesthetic: minimalist centered lowercase `steady` brand gradient header, hamburger menu on the left for session history, circular new-session action on the right.
+  - Hero Launchpad (Empty State): Centered time-aware greeting ("Good Afternoon, [Name] / What can i help today?") with 4 pastel frosted bento suggestion cards (Productivity Tips, Personalized Recommendations, Fun & Games, Temporary chat/Scan outline).
+  - Chat Bubbles: Soft lavender/lilac tinted pill for user messages (`#EDE4F7`), pure frosted glass card for bot messages with action strip (favorite, share, copy).
+  - Floating Bottom Capsule Dock: Frosted pill container with `+` upload on left, `Ask something here...` text field, voice mic, and iridescent circular gradient send button (`linear-gradient(135deg, #EC4899, #8B5CF6)`).
+  - Mobile Viewport Fix: Full-screen `100dvh` layout with `window.visualViewport` resize listener ensuring the floating dock stays pinned above the virtual keyboard without clipping.
 - **State**:
   - Done:
-    - Mobile layout & input contrast optimized in `calendar.css`.
-    - Header cleaned & history panel added in `calendar.html`.
-    - Multi-session manager with 3-day retention auto-pruning in `calendar.js`.
-    - Zero syntax errors validated with `node -c calendar.js`.
-  - Now: Ready for commit and push.
-  - Next: User validation.
+    - Updated `calendar.html` with new ai.va header, floating pill capsule input dock.
+    - Updated `calendar.css` with ambient pastel glassmorphism, mobile `100dvh` fix, bento cards, and iridescent send button.
+    - Updated `calendar.js` with launchpad renderer, message action handlers, `visualViewport` listener, goal-to-timetable prompt enforcement, and raw JSON fallback.
+    - Validated with `node -c calendar.js` (0 syntax errors) and verified 0 Unicode emojis.
+  - Now: Ready to commit and push to git.
+  - Next: User testing on mobile.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - `calendar.html`, `calendar.css`, `calendar.js`, `docs/short-term-plan/CONTINUITY.md`
