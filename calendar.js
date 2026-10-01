@@ -2774,7 +2774,7 @@ async function handleSendChatMessage(e) {
                     activeBotRow.className = 'studio-msg-row chat-msg-row bot';
                     activeBotRow.id = 'streaming-active-row';
                     activeBotRow.innerHTML = `
-                        <img src="avatars/notion-scholar.svg" alt="Steady" class="studio-msg-avatar chat-msg-avatar" />
+                        <img src="avatars/notion-steady.svg" alt="Steady" class="studio-msg-avatar chat-msg-avatar" />
                         <div class="studio-bubble chat-bubble">
                             <div class="streaming-content-wrapper"></div>
                             <span class="streaming-cursor"></span>
@@ -2836,7 +2836,7 @@ function showTypingIndicator() {
     typingEl.id = 'chat-typing-indicator';
     typingEl.className = 'studio-msg-row chat-msg-row bot';
     typingEl.innerHTML = `
-        <img src="avatars/notion-scholar.svg" alt="Steady" class="studio-msg-avatar chat-msg-avatar" />
+        <img src="avatars/notion-steady.svg" alt="Steady" class="studio-msg-avatar chat-msg-avatar" />
         <div class="studio-bubble chat-bubble">
             <div class="typing-dots">
                 <span></span><span></span><span></span>

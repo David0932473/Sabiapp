@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" shape-rendering="geometricPrecision">
+  <metadata>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <rdf:Description>
+        <dc:title>Steady - Sabi Academic Mentor (Notion Style)</dc:title>
+        <dc:creator>Sabi OS</dc:creator>
+      </rdf:Description>
+    </rdf:RDF>
+  </metadata>
+
+  <defs>
+    <clipPath id="circleClip">
+      <circle cx="256" cy="256" r="250" />
+    </clipPath>
+  </defs>
+
+  <!-- Clean Canvas Background -->
+  <circle cx="256" cy="256" r="256" fill="#FFFFFF" />
+
+  <g id="character">
+    <!-- SHOULDERS & CLOTHING -->
+    <!-- Inner Shirt / Turtleneck Base -->
+    <path d="M190 355 C190 330, 322 330, 322 355 L322 410 C322 420, 190 420, 190 410 Z" fill="#FFFFFF" stroke="#000000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Turtleneck collar horizontal ribs -->
+    <line x1="202" y1="368" x2="310" y2="368" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+    <line x1="206" y1="382" x2="306" y2="382" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+    <line x1="214" y1="396" x2="298" y2="396" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+
+    <!-- Mentor Jacket / Blazer -->
+    <!-- Left Shoulder / Blazer -->
+    <path d="M60 512 L60 480 C60 425, 120 375, 194 362 L225 460 L140 512 Z" fill="#000000" />
+    <path d="M194 362 C160 370, 95 410, 80 470 L80 512" stroke="#000000" stroke-width="6" stroke-linecap="round" />
+
+    <!-- Right Shoulder / Blazer -->
+    <path d="M452 512 L452 480 C452 425, 392 375, 318 362 L287 460 L372 512 Z" fill="#000000" />
+    <path d="M318 362 C352 370, 417 410, 432 470 L432 512" stroke="#000000" stroke-width="6" stroke-linecap="round" />
+
+    <!-- Blazer Lapel Lines & Details -->
+    <path d="M194 362 L228 450 L195 512" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M318 362 L284 450 L317 512" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- NECK -->
+    <path d="M210 290 L210 360 C210 372, 302 372, 302 360 L302 290 Z" fill="#FFFFFF" stroke="#000000" stroke-width="6" stroke-linejoin="round" />
+    <!-- Neck shadow / Adam's apple curve -->
+    <path d="M246 324 Q256 332 266 324" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+
+    <!-- EARS -->
+    <!-- Left Ear -->
+    <path d="M162 216 C140 216, 140 262, 162 268" fill="#FFFFFF" stroke="#000000" stroke-width="6" stroke-linecap="round" />
+    <path d="M158 232 C150 234, 150 250, 160 252" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+    <!-- Right Ear -->
+    <path d="M350 216 C372 216, 372 262, 350 268" fill="#FFFFFF" stroke="#000000" stroke-width="6" stroke-linecap="round" />
+    <path d="M354 232 C362 234, 362 250, 352 252" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+
+    <!-- HEAD BASE & JAW (Distinguished middle-aged structure) -->
+    <path d="M162 200 C162 140, 200 110, 256 110 C312 110, 350 140, 350 200 C350 260, 335 316, 256 316 C177 316, 162 260, 162 200 Z" fill="#FFFFFF" stroke="#000000" stroke-width="6" stroke-linejoin="round" />
+
+    <!-- SHORT TEXTURED AFRO / CLOSE-CUT HAIR (Classic Notion Style) -->
+    <!-- Hair Base Volume -->
+    <path d="M156 195 C148 160, 160 115, 192 90 C224 66, 288 66, 320 90 C352 115, 364 160, 356 195 C348 152, 336 128, 302 120 C274 114, 238 114, 210 120 C176 128, 164 152, 156 195 Z" fill="#000000" stroke="#000000" stroke-width="5" stroke-linejoin="round" />
+    
+    <!-- Textured Hair Curls / Notion Stippled Contour -->
+    <path d="M168 150 C160 135, 172 118, 186 114 C194 98, 212 85, 230 82 C246 72, 266 72, 282 82 C300 85, 318 98, 326 114 C340 118, 352 135, 344 150 C352 165, 348 182, 340 192 C342 165, 330 140, 305 130 C278 122, 234 122, 207 130 C182 140, 170 165, 172 192 C164 182, 160 165, 168 150 Z" fill="#000000" />
+    <!-- Fine curl ripples -->
+    <path d="M190 102 C196 96, 206 96, 210 102" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+    <path d="M224 88 C232 82, 244 82, 252 88" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+    <path d="M264 88 C272 82, 284 82, 292 88" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+    <path d="M304 102 C310 96, 320 96, 324 102" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Subtle mature temple hairline recession / definition -->
+    <path d="M164 186 C172 172, 185 165, 202 165" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+    <path d="M348 186 C340 172, 327 165, 310 165" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+
+    <!-- FOREHEAD / MATURE EXPRESSION LINES (Middle-Aged Character Wisdom) -->
+    <path d="M228 142 Q256 138 284 142" fill="none" stroke="#000000" stroke-width="3.5" stroke-linecap="round" />
+    <path d="M236 152 Q256 148 276 152" fill="none" stroke="#000000" stroke-width="3" stroke-linecap="round" />
+
+    <!-- EYEBROWS (Thick, mature, well-defined) -->
+    <!-- Left Eyebrow -->
+    <path d="M195 186 Q220 176 235 184" fill="none" stroke="#000000" stroke-width="7" stroke-linecap="round" />
+    <!-- Right Eyebrow -->
+    <path d="M277 184 Q292 176 317 186" fill="none" stroke="#000000" stroke-width="7" stroke-linecap="round" />
+
+    <!-- INTELLECTUAL SCHOLAR GLASSES (Iconic for Steady) -->
+    <!-- Left Frame -->
+    <circle cx="216" cy="214" r="26" fill="#FFFFFF" stroke="#000000" stroke-width="5.5" />
+    <!-- Right Frame -->
+    <circle cx="296" cy="214" r="26" fill="#FFFFFF" stroke="#000000" stroke-width="5.5" />
+    <!-- Glasses Bridge -->
+    <path d="M242 210 Q256 205 270 210" fill="none" stroke="#000000" stroke-width="5.5" stroke-linecap="round" />
+    <!-- Left Temple arm to ear -->
+    <line x1="190" y1="212" x2="162" y2="220" stroke="#000000" stroke-width="4.5" stroke-linecap="round" />
+    <!-- Right Temple arm to ear -->
+    <line x1="322" y1="212" x2="350" y2="220" stroke="#000000" stroke-width="4.5" stroke-linecap="round" />
+
+    <!-- EYES (Warm, intelligent gaze behind glasses) -->
+    <!-- Left Eye -->
+    <ellipse cx="216" cy="214" rx="7" ry="8" fill="#000000" />
+    <circle cx="214" cy="212" r="2.5" fill="#FFFFFF" />
+    <!-- Right Eye -->
+    <ellipse cx="296" cy="214" rx="7" ry="8" fill="#000000" />
+    <circle cx="294" cy="212" r="2.5" fill="#FFFFFF" />
+
+    <!-- CROW'S FEET & SMILE WRINKLES (Middle-Aged Warmth) -->
+    <!-- Left eye crow's feet -->
+    <path d="M184 212 L176 208" stroke="#000000" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M183 218 L175 220" stroke="#000000" stroke-width="2.5" stroke-linecap="round" />
+    <!-- Right eye crow's feet -->
+    <path d="M328 212 L336 208" stroke="#000000" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M329 218 L337 220" stroke="#000000" stroke-width="2.5" stroke-linecap="round" />
+    <!-- Under-eye character lines -->
+    <path d="M204 228 Q216 233 228 228" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M284 228 Q296 233 308 228" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- NOSE (Dignified, broad, classic Notion line style) -->
+    <path d="M256 195 L252 238 L244 246 Q256 250 268 246 L260 238" fill="none" stroke="#000000" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Nostril curves -->
+    <path d="M240 244 Q244 249 250 248" fill="none" stroke="#000000" stroke-width="3.5" stroke-linecap="round" />
+    <path d="M272 244 Q268 249 262 248" fill="none" stroke="#000000" stroke-width="3.5" stroke-linecap="round" />
+
+    <!-- NASOLABIAL SMILE FOLDS (Defining middle-aged feature) -->
+    <path d="M228 246 C220 260, 220 274, 226 288" fill="none" stroke="#000000" stroke-width="3" stroke-linecap="round" />
+    <path d="M284 246 C292 260, 292 274, 286 288" fill="none" stroke="#000000" stroke-width="3" stroke-linecap="round" />
+
+    <!-- MUSTACHE & BEARD (Neat, distinguished middle-aged beard) -->
+    <!-- Trimmed Mustache -->
+    <path d="M234 264 C244 260, 252 260, 256 264 C260 260, 268 260, 278 264 C286 268, 276 276, 256 274 C236 276, 226 268, 234 264 Z" fill="#000000" />
+
+    <!-- WARM REASSURING SMILE -->
+    <path d="M238 274 Q256 288 274 274" fill="#FFFFFF" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+    <path d="M244 276 Q256 284 268 276" fill="#000000" />
+
+    <!-- TRIMMED BOXED BEARD & GOATEE (Full lower jaw beard) -->
+    <!-- Beard boundary hugging jawline -->
+    <path d="M174 240 C174 290, 206 322, 256 322 C306 322, 338 290, 338 240 C338 260, 326 295, 298 304 C285 308, 270 306, 256 308 C242 306, 227 308, 214 304 C186 295, 174 260, 174 240 Z" fill="#000000" stroke="#000000" stroke-width="2" />
+    
+    <!-- Chin beard texture / Soul patch connecting mouth to chin -->
+    <path d="M250 286 L262 286 L259 298 L253 298 Z" fill="#000000" />
+    <!-- Beard highlight / texture flecks indicating distinguished salt-and-pepper / depth -->
+    <path d="M236 302 Q246 306 256 306 Q266 306 276 302" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M244 312 Q256 315 268 312" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+  </g>
+</svg>
