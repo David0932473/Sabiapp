@@ -910,13 +910,16 @@ function handleSaveSession(e) {
             return;
         }
 
+        let savedClass = null;
         if (editId) {
             const idx = storedClasses.findIndex(c => c.id === editId);
             if (idx !== -1) {
-                storedClasses[idx] = { id: editId, subject, day, start_time: start, end_time: end, venue, isRecurring: true };
+                const prev = storedClasses[idx];
+                storedClasses[idx] = { ...prev, id: editId, subject, day, start_time: start, end_time: end, venue, isRecurring: true };
+                savedClass = storedClasses[idx];
             }
         } else {
-            storedClasses.push({
+            savedClass = {
                 id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
                 subject,
                 day,
@@ -924,10 +927,14 @@ function handleSaveSession(e) {
                 end_time: end,
                 venue,
                 isRecurring: true
-            });
+            };
+            storedClasses.push(savedClass);
         }
         saveStoredClasses(storedClasses);
         showToast(editId ? 'Class updated!' : 'Recurring class added to timetable!');
+        if (savedClass && typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
+            syncClassToGoogle(savedClass, true);
+        }
     } else {
         const title = document.getElementById('modal-session-title')?.value.trim();
         const category = document.getElementById('modal-session-category')?.value || 'study';
@@ -975,8 +982,12 @@ function handleSaveSession(e) {
         saveEvents();
         showToast(editId ? 'Study session updated!' : 'Study session scheduled!');
 
-        if (syncGcal && savedEvent) {
-            window.open(createGoogleCalendarUrl(savedEvent), '_blank');
+        if (savedEvent) {
+            if (typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
+                syncSingleEventToGoogle(savedEvent, false);
+            } else if (syncGcal) {
+                window.open(createGoogleCalendarUrl(savedEvent), '_blank');
+            }
         }
     }
 
@@ -1106,9 +1117,17 @@ function deleteCurrentDetailEvent() {
 
     if (confirm(msg)) {
         if (isClass) {
+            const toDel = storedClasses.find(c => c.id === selectedDetailEventId);
+            if (toDel?.gcalEventId && typeof deleteClassFromGoogle === 'function') {
+                deleteClassFromGoogle(toDel.gcalEventId);
+            }
             storedClasses = storedClasses.filter(c => c.id !== selectedDetailEventId);
             saveStoredClasses(storedClasses);
         } else {
+            const toDel = calendarEvents.find(e => e.id === selectedDetailEventId);
+            if (toDel?.gcalEventId && typeof deleteEventFromGoogle === 'function') {
+                deleteEventFromGoogle(toDel.gcalEventId);
+            }
             calendarEvents = calendarEvents.filter(e => e.id !== selectedDetailEventId);
             saveEvents();
         }
@@ -1126,6 +1145,9 @@ function toggleEventComplete(id) {
     saveEvents();
     renderAllViews();
     showToast(ev.completed ? 'Session completed!' : 'Marked pending.');
+    if (ev.gcalEventId && typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
+        syncSingleEventToGoogle(ev, true);
+    }
 }
 window.toggleEventComplete = toggleEventComplete;
 
@@ -1972,14 +1994,76 @@ function hideTypingIndicator() {
     if (el) el.remove();
 }
 
+// Retrieves rich student context and profile from local storage and session
+function getStudentAiContext() {
+    let profile = {};
+    try {
+        profile = JSON.parse(localStorage.getItem('sabi_user_profile') || '{}') || {};
+    } catch (e) {
+        profile = {};
+    }
+
+    const fullName = profile.full_name || localStorage.getItem('sabi_user_name') || 'Scholar';
+    const firstName = fullName.trim().split(/\s+/)[0] || 'Scholar';
+    const studyMode = profile.study_mode || localStorage.getItem('sabi_academic_track') || 'university';
+    const university = profile.university || '';
+    const course = profile.course || '';
+    const level = profile.level || localStorage.getItem('sabi_academic_level') || '';
+    const targetGpa = profile.target_gpa || null;
+    const projectedGradYear = profile.projected_grad_year || null;
+
+    let aiMemory = null;
+    try {
+        aiMemory = JSON.parse(localStorage.getItem('sabi_ai_memory') || 'null');
+    } catch (e) {}
+
+    // Extract all distinct subject/course names currently scheduled in timetable
+    const activeSubjects = Array.from(new Set(
+        (storedClasses || [])
+            .map(c => c.subject || c.course_code || c.name)
+            .filter(Boolean)
+    ));
+
+    return {
+        fullName,
+        firstName,
+        studyMode,
+        university,
+        course,
+        level,
+        targetGpa,
+        projectedGradYear,
+        activeSubjects,
+        aiMemory
+    };
+}
+
+// Saves custom AI memory / learning preferences for the student
+function saveStudentAiMemory(memoryData) {
+    try {
+        const existing = JSON.parse(localStorage.getItem('sabi_ai_memory') || '{}');
+        const updated = Object.assign({}, existing, memoryData);
+        localStorage.setItem('sabi_ai_memory', JSON.stringify(updated));
+        return updated;
+    } catch (e) {
+        console.warn('Failed to save AI memory:', e);
+        return null;
+    }
+}
+
+// Expose context helpers globally
+window.getStudentAiContext = getStudentAiContext;
+window.saveStudentAiMemory = saveStudentAiMemory;
+
 // Highly intelligent, contextual, and responsive system prompt for Steady
 const BUDDY_SYSTEM_PROMPT = `You are "Steady", an elite academic mentor, tutor, and timetable architect for students (University, Polytechnic, JAMB, WAEC, NOUN, ICAN).
 
-CRITICAL DIRECT-RESPONSE RULE:
+CRITICAL DIRECT-RESPONSE & PERSONALIZATION RULES:
 - ALWAYS DIRECTLY, SPECIFICALLY, AND THOUGHTFULLY ADDRESS WHAT THE USER ASKS OR STATES.
-- Never give generic, unrelated, or canned responses that ignore the user's specific words, questions, academic subjects, or goals.
-- If the user asks a question (conceptual, academic, study technique, or motivational), answer it thoroughly, clearly, and directly with high intellect and warmth.
-- If the user mentions their courses, challenges, or preferences, tailor your response specifically around those exact subjects and details.
+- ADDRESS THE STUDENT NATURALLY: Use their first name when greeting or encouraging them.
+- GROUND ADVICE IN THEIR ACADEMIC REALITY: Use their specified institution, department/course, academic level, and enrolled subjects in explanations and timetable recommendations.
+- If the user asks a question (conceptual, academic, study technique, or motivational), answer it thoroughly, clearly, and directly with high intellect, practical examples, and warmth.
+- If the student mentions their courses, challenges, or preferences, tailor your response specifically around those exact subjects and details.
 
 TIMETABLE & CALENDAR CAPABILITIES:
 - You have the power to create and update their academic calendar.
@@ -2013,8 +2097,20 @@ async function processBuddyConversation(userText, history, media) {
 
     const todayStr = getTodayStr();
     const mondayStr = getMondayOfWeek(new Date());
+    const student = getStudentAiContext();
 
     const contextPayload = {
+        student: {
+            name: student.fullName,
+            first_name: student.firstName,
+            institution: student.university || 'General / Not specified',
+            course: student.course || 'Undergraduate',
+            level: student.level || 'Undergraduate',
+            target_gpa: student.targetGpa,
+            study_mode: student.studyMode,
+            active_enrolled_courses: student.activeSubjects,
+            learning_memory: student.aiMemory
+        },
         today: todayStr,
         week_start: mondayStr,
         existing_classes: storedClasses,
@@ -2054,7 +2150,26 @@ async function processBuddyConversation(userText, history, media) {
         };
     });
 
-    const systemContent = BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`;
+    const systemContent = BUDDY_SYSTEM_PROMPT + `\n\n` +
+        `========================================\n` +
+        `ACTIVE STUDENT PROFILE & CONTEXT:\n` +
+        `========================================\n` +
+        `- Student Name: ${student.fullName} (Preferred call name: "${student.firstName}")\n` +
+        `- Institution / University: ${student.university || 'Not specified'}\n` +
+        `- Course / Department: ${student.course || 'General'}\n` +
+        `- Academic Level: ${student.level || 'Undergraduate'}\n` +
+        (student.targetGpa ? `- Target GPA: ${student.targetGpa}\n` : '') +
+        `- Study Mode: ${student.studyMode}\n` +
+        (student.activeSubjects.length > 0 ? `- Enrolled Subjects in Timetable: ${student.activeSubjects.join(', ')}\n` : '') +
+        (student.aiMemory ? `- Personalized Study Preferences & Weak Topics: ${JSON.stringify(student.aiMemory)}\n` : '') +
+        `\nSCHEDULE & CALENDAR STATE:\n` +
+        `${JSON.stringify({
+            today: contextPayload.today,
+            week_start: contextPayload.week_start,
+            classes: contextPayload.existing_classes,
+            recent_study_sessions: contextPayload.existing_study_sessions,
+            uploaded_media: contextPayload.uploaded_media
+        })}`;
 
     // 0. OpenRouter Frontier AI (DeepSeek V3 & LLaMA 3.3 70B - Native Browser CORS, Zero Server Needed)
     if (openRouterKey && openRouterKey.startsWith('sk-or-')) {
@@ -2152,7 +2267,6 @@ async function processBuddyConversation(userText, history, media) {
         }
     }
 
-
     // 1. Anthropic Claude (Only if key starts with sk-ant-)
     if (claudeKey && claudeKey.startsWith('sk-ant-')) {
         try {
@@ -2167,7 +2281,7 @@ async function processBuddyConversation(userText, history, media) {
                 body: JSON.stringify({
                     model: 'claude-3-5-sonnet-20241022',
                     max_tokens: 2048,
-                    system: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}`,
+                    system: systemContent,
                     messages: messagesPayload
                 })
             }, 5000);
@@ -2194,7 +2308,7 @@ async function processBuddyConversation(userText, history, media) {
                         role: m.role === 'assistant' ? 'model' : 'user',
                         parts: [{ text: typeof m.content === 'string' ? m.content : JSON.stringify(m.content) }]
                     })),
-                    systemInstruction: { parts: [{ text: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}` }] }
+                    systemInstruction: { parts: [{ text: systemContent }] }
                 })
             }, 15000);
 
@@ -2228,7 +2342,7 @@ async function processBuddyConversation(userText, history, media) {
                 body: JSON.stringify({
                     model: 'gpt-4o',
                     messages: [
-                        { role: 'system', content: BUDDY_SYSTEM_PROMPT + `\nCurrent user context: ${JSON.stringify(contextPayload)}` },
+                        { role: 'system', content: systemContent },
                         ...messagesPayload
                     ]
                 })
@@ -2296,6 +2410,9 @@ function parseAiReplyAndApply(replyText) {
         }
 
         showToast('Timetable updated by Sabi!');
+        if (typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
+            syncAllEventsToGoogle(true);
+        }
     }
 
     return {
@@ -2464,9 +2581,12 @@ Which specific course or exam are you working on right now? Tell me, and I can a
 
     // 7. Conversational: Greetings & Capabilities
     if (/^(hi|hello|hey|yo|good morning|good afternoon|good evening|howdy|sup)\b/i.test(lower) || /\b(who are you|what can you do|how does this work|capabilities)\b/i.test(lower)) {
+        const student = getStudentAiContext();
+        const introGreeting = student.firstName !== 'Scholar' ? `Hey ${student.firstName}!` : `Hey!`;
+        const academicInfo = student.course ? ` I see you're studying ${student.course}${student.university ? ` at ${student.university}` : ''}.` : '';
         return {
             role: 'bot',
-            content: `Hey! I'm Steady, your academic mentor and study partner. What degree, courses, or exam are you focusing on this semester?`,
+            content: `${introGreeting} I'm Steady, your academic mentor and study partner.${academicInfo} What would you like to review, practice, or schedule today?`,
             actionCard: null,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -2884,6 +3004,460 @@ function promptClearAllEvents() {
 }
 window.promptClearAllEvents = promptClearAllEvents;
 
+// ==========================================
+// --- GOOGLE CALENDAR REAL-TIME SYNC ENGINE ---
+// ==========================================
+let gcalTokenClient = null;
+
+function getGoogleClientId() {
+    return (window.ENV && window.ENV.GOOGLE_CLIENT_ID) ||
+           localStorage.getItem('sabi_gcal_client_id') ||
+           '';
+}
+
+function saveGoogleClientIdFromInput() {
+    const input = document.getElementById('gcal-client-id-input');
+    if (!input) return;
+    const val = input.value.trim();
+    if (val) {
+        localStorage.setItem('sabi_gcal_client_id', val);
+        showToast('Google Client ID saved.');
+        updateGcalUiState();
+    } else {
+        localStorage.removeItem('sabi_gcal_client_id');
+        showToast('Client ID cleared.');
+        updateGcalUiState();
+    }
+}
+window.saveGoogleClientIdFromInput = saveGoogleClientIdFromInput;
+
+function isGcalConnected() {
+    const connectedFlag = localStorage.getItem('sabi_gcal_connected') === 'true';
+    const token = sessionStorage.getItem('sabi_gcal_token');
+    const expiresAt = parseInt(sessionStorage.getItem('sabi_gcal_token_expires_at') || '0', 10);
+    return connectedFlag && !!token && Date.now() < expiresAt;
+}
+window.isGcalConnected = isGcalConnected;
+
+function isGcalAutoSyncEnabled() {
+    return localStorage.getItem('sabi_gcal_auto_sync') !== 'false';
+}
+window.isGcalAutoSyncEnabled = isGcalAutoSyncEnabled;
+
+function setGcalAutoSyncEnabled(enabled) {
+    localStorage.setItem('sabi_gcal_auto_sync', enabled ? 'true' : 'false');
+    updateGcalUiState();
+    showToast(enabled ? 'Google Auto-Sync enabled.' : 'Google Auto-Sync disabled.');
+}
+window.setGcalAutoSyncEnabled = setGcalAutoSyncEnabled;
+
+function getGcalToken() {
+    if (!isGcalConnected()) return null;
+    return sessionStorage.getItem('sabi_gcal_token');
+}
+
+function openGoogleSyncModal() {
+    const menu = document.getElementById('planner-dropdown-menu');
+    if (menu) menu.classList.add('hidden');
+
+    const modal = document.getElementById('google-sync-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        updateGcalUiState();
+    }
+}
+window.openGoogleSyncModal = openGoogleSyncModal;
+
+function closeGoogleSyncModal(e) {
+    if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('sheet-close-btn') && !e.target.classList.contains('modal-overlay')) return;
+    const modal = document.getElementById('google-sync-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+}
+window.closeGoogleSyncModal = closeGoogleSyncModal;
+
+function updateGcalUiState() {
+    const connected = isGcalConnected();
+    const autoSync = isGcalAutoSyncEnabled();
+    const clientId = getGoogleClientId();
+
+    // 1. Hub badge & subtext
+    const hubBadge = document.getElementById('gcal-hub-badge');
+    const hubSubtext = document.getElementById('gcal-hub-subtext');
+    if (hubBadge) {
+        hubBadge.className = `gcal-mini-badge ${connected ? 'connected' : 'not-connected'}`;
+        hubBadge.textContent = connected ? 'Synced' : 'Live';
+    }
+    if (hubSubtext) {
+        hubSubtext.textContent = connected 
+            ? (autoSync ? 'Auto-sync active' : 'Connected (Manual)')
+            : 'Automatic 2-way sync';
+    }
+
+    // 2. Client ID input
+    const input = document.getElementById('gcal-client-id-input');
+    if (input && !input.value) {
+        input.value = clientId;
+    }
+
+    // 3. Status card in modal
+    const card = document.getElementById('gcal-status-card');
+    const btnConnect = document.getElementById('btn-gcal-connect');
+    const btnSyncAll = document.getElementById('btn-gcal-sync-all');
+    const btnDisconnect = document.getElementById('btn-gcal-disconnect');
+    const btnConnectText = document.getElementById('btn-gcal-connect-text');
+
+    const lastSyncStr = localStorage.getItem('sabi_gcal_last_sync');
+
+    if (card) {
+        if (connected) {
+            card.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="gcal-pulsing-dot active"></span>
+                        <strong style="font-size: 14px; color: var(--text-main);">Google Calendar Connected</strong>
+                    </div>
+                    <span style="font-size: 11px; background: rgba(16, 185, 129, 0.15); color: #10B981; padding: 2px 8px; border-radius: 999px; font-weight: 700;">ACTIVE</span>
+                </div>
+                <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px;">
+                    <div>Target Calendar: <strong style="color: var(--text-main);">Sabi Study Timetable</strong></div>
+                    ${lastSyncStr ? `<div>Last Synced: <span style="color: var(--text-main);">${new Date(lastSyncStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}</span></div>` : ''}
+                </div>
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; user-select: none; border-top: 1px solid var(--border); padding-top: 10px;">
+                    <input type="checkbox" id="gcal-auto-sync-toggle" ${autoSync ? 'checked' : ''} onchange="setGcalAutoSyncEnabled(this.checked)" />
+                    <span>Auto-sync when classes & sessions are added or changed</span>
+                </label>
+            `;
+            if (btnConnect) btnConnect.classList.add('hidden');
+            if (btnSyncAll) btnSyncAll.classList.remove('hidden');
+            if (btnDisconnect) btnDisconnect.classList.remove('hidden');
+        } else {
+            card.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span class="gcal-pulsing-dot inactive"></span>
+                    <strong style="font-size: 14px; color: var(--text-main);">Not Connected</strong>
+                </div>
+                <p style="font-size: 12.5px; color: var(--text-muted); margin: 0; line-height: 1.5;">
+                    Connect your Google account so that whenever you schedule classes or Steady adds study sessions, they automatically sync straight to your Google Calendar on your phone & laptop.
+                </p>
+            `;
+            if (btnConnect) {
+                btnConnect.classList.remove('hidden');
+                if (btnConnectText) btnConnectText.textContent = 'Connect Google Calendar';
+            }
+            if (btnSyncAll) btnSyncAll.classList.add('hidden');
+            if (btnDisconnect) btnDisconnect.classList.add('hidden');
+        }
+    }
+}
+window.updateGcalUiState = updateGcalUiState;
+
+function handleGoogleConnectClick() {
+    const clientId = getGoogleClientId();
+    if (!clientId) {
+        const entered = prompt('Please enter your Google OAuth 2.0 Web Client ID:');
+        if (entered && entered.trim()) {
+            localStorage.setItem('sabi_gcal_client_id', entered.trim());
+            updateGcalUiState();
+        } else {
+            return;
+        }
+    }
+
+    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+        showToast('Google Services is still loading. Please check internet connection.');
+        return;
+    }
+
+    const currentClientId = getGoogleClientId();
+    gcalTokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: currentClientId,
+        scope: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar',
+        callback: async (tokenResponse) => {
+            if (tokenResponse.error) {
+                console.error('Google OAuth error:', tokenResponse);
+                showToast('Sign-in cancelled or failed: ' + tokenResponse.error);
+                return;
+            }
+            await onGcalTokenReceived(tokenResponse);
+        }
+    });
+
+    gcalTokenClient.requestAccessToken({ prompt: 'consent' });
+}
+window.handleGoogleConnectClick = handleGoogleConnectClick;
+
+async function onGcalTokenReceived(tokenResponse) {
+    const token = tokenResponse.access_token;
+    const expiresIn = parseInt(tokenResponse.expires_in || '3600', 10);
+    const expiresAt = Date.now() + (expiresIn * 1000) - 60000; // 1 min buffer
+
+    sessionStorage.setItem('sabi_gcal_token', token);
+    sessionStorage.setItem('sabi_gcal_token_expires_at', expiresAt.toString());
+    localStorage.setItem('sabi_gcal_connected', 'true');
+
+    showToast('Initializing Sabi Google Calendar...');
+    try {
+        await ensureSabiGoogleCalendar(token);
+        updateGcalUiState();
+        showToast('Google Calendar connected! Syncing timetable...');
+        await syncAllEventsToGoogle(true);
+        updateGcalUiState();
+    } catch (e) {
+        console.error('Failed to setup calendar:', e);
+        showToast('Connected, but could not create secondary calendar: ' + e.message);
+        updateGcalUiState();
+    }
+}
+
+function disconnectGoogleCalendar() {
+    if (confirm('Disconnect Google Calendar sync? Your existing Google Calendar events will remain, but automatic sync will stop.')) {
+        const token = sessionStorage.getItem('sabi_gcal_token');
+        if (token && typeof google !== 'undefined' && google.accounts?.oauth2) {
+            try {
+                google.accounts.oauth2.revoke(token, () => {});
+            } catch (e) {}
+        }
+        sessionStorage.removeItem('sabi_gcal_token');
+        sessionStorage.removeItem('sabi_gcal_token_expires_at');
+        localStorage.removeItem('sabi_gcal_connected');
+        localStorage.removeItem('sabi_gcal_calendar_id');
+        localStorage.removeItem('sabi_gcal_last_sync');
+        updateGcalUiState();
+        showToast('Google Calendar disconnected.');
+    }
+}
+window.disconnectGoogleCalendar = disconnectGoogleCalendar;
+
+async function ensureSabiGoogleCalendar(token) {
+    let calId = localStorage.getItem('sabi_gcal_calendar_id');
+    const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    };
+
+    // 1. If we have a cached calendar ID, verify it still exists
+    if (calId) {
+        try {
+            const checkRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}`, { headers });
+            if (checkRes.ok) return calId;
+        } catch (e) {}
+    }
+
+    // 2. Search calendar list for "Sabi Study Timetable"
+    try {
+        const listRes = await fetch('https://www.googleapis.com/calendar/v3/users/me/calendarList', { headers });
+        if (listRes.ok) {
+            const listData = await listRes.json();
+            const existing = (listData.items || []).find(c => c.summary === 'Sabi Study Timetable');
+            if (existing) {
+                localStorage.setItem('sabi_gcal_calendar_id', existing.id);
+                return existing.id;
+            }
+        }
+    } catch (e) {}
+
+    // 3. Create a dedicated secondary calendar
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Africa/Lagos';
+    const createRes = await fetch('https://www.googleapis.com/calendar/v3/calendars', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+            summary: 'Sabi Study Timetable',
+            description: 'Automatic sync of study sessions, revision blocks, and lectures from Sabi Academic OS',
+            timeZone: timeZone
+        })
+    });
+
+    if (createRes.ok) {
+        const newCal = await createRes.json();
+        localStorage.setItem('sabi_gcal_calendar_id', newCal.id);
+        return newCal.id;
+    }
+
+    // Fallback to primary if secondary creation is restricted
+    return 'primary';
+}
+
+async function syncSingleEventToGoogle(event, quiet = false) {
+    const token = getGcalToken();
+    if (!token) return;
+
+    const calId = localStorage.getItem('sabi_gcal_calendar_id') || 'primary';
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Africa/Lagos';
+
+    const startD = new Date(`${event.date}T${event.time || '17:00'}:00`);
+    const durationHours = parseFloat(event.duration || 1.5);
+    const endD = new Date(startD.getTime() + durationHours * 60 * 60 * 1000);
+
+    const body = {
+        summary: event.title,
+        description: (event.notes ? `${event.notes}\n\n` : '') +
+                     `Category: ${(event.category || 'STUDY').toUpperCase()}\n` +
+                     (event.completed ? `Status: COMPLETED\n` : '') +
+                     `Managed with Sabi Academic OS`,
+        location: event.location || 'Sabi Prep Room',
+        start: { dateTime: startD.toISOString(), timeZone },
+        end: { dateTime: endD.toISOString(), timeZone }
+    };
+
+    const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    };
+
+    try {
+        let res;
+        if (event.gcalEventId) {
+            // Update existing
+            res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events/${encodeURIComponent(event.gcalEventId)}`, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify(body)
+            });
+        } else {
+            // Create new
+            res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(body)
+            });
+        }
+
+        if (res.ok) {
+            const data = await res.json();
+            event.gcalEventId = data.id;
+            saveEvents();
+            localStorage.setItem('sabi_gcal_last_sync', new Date().toISOString());
+            if (!quiet) showToast('Synced to Google Calendar!');
+        } else if (res.status === 401) {
+            sessionStorage.removeItem('sabi_gcal_token');
+            updateGcalUiState();
+        }
+    } catch (err) {
+        console.warn('Google event sync error:', err);
+    }
+}
+window.syncSingleEventToGoogle = syncSingleEventToGoogle;
+
+async function deleteEventFromGoogle(gcalEventId) {
+    if (!gcalEventId) return;
+    const token = getGcalToken();
+    if (!token) return;
+
+    const calId = localStorage.getItem('sabi_gcal_calendar_id') || 'primary';
+    try {
+        await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events/${encodeURIComponent(gcalEventId)}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+    } catch (e) {
+        console.warn('Failed to delete Google event:', e);
+    }
+}
+window.deleteEventFromGoogle = deleteEventFromGoogle;
+
+async function syncClassToGoogle(cls, quiet = false) {
+    const token = getGcalToken();
+    if (!token) return;
+
+    const calId = localStorage.getItem('sabi_gcal_calendar_id') || 'primary';
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Africa/Lagos';
+
+    const dayToIcsMap = {
+        'Monday': 'MO', 'Tuesday': 'TU', 'Wednesday': 'WE',
+        'Thursday': 'TH', 'Friday': 'FR', 'Saturday': 'SA', 'Sunday': 'SU'
+    };
+
+    const mondayDate = getMondayOfWeek(new Date());
+    const startD = new Date(`${mondayDate}T${cls.start_time || '09:00'}:00`);
+    const duration = calculateDuration(cls.start_time, cls.end_time);
+    const endD = new Date(startD.getTime() + duration * 60 * 60 * 1000);
+
+    const body = {
+        summary: `${cls.subject} (Lecture)`,
+        description: `Weekly recurring lecture on ${cls.day}.\nVenue: ${cls.venue || 'Lecture Hall'}\nManaged with Sabi Academic OS`,
+        location: cls.venue || 'Lecture Hall',
+        start: { dateTime: startD.toISOString(), timeZone },
+        end: { dateTime: endD.toISOString(), timeZone },
+        recurrence: [
+            `RRULE:FREQ=WEEKLY;BYDAY=${dayToIcsMap[cls.day] || 'MO'}`
+        ]
+    };
+
+    const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    };
+
+    try {
+        let res;
+        if (cls.gcalEventId) {
+            res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events/${encodeURIComponent(cls.gcalEventId)}`, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify(body)
+            });
+        } else {
+            res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(body)
+            });
+        }
+
+        if (res.ok) {
+            const data = await res.json();
+            cls.gcalEventId = data.id;
+            saveStoredClasses(storedClasses);
+            localStorage.setItem('sabi_gcal_last_sync', new Date().toISOString());
+            if (!quiet) showToast('Class synced to Google Calendar!');
+        }
+    } catch (e) {
+        console.warn('Failed to sync class to Google:', e);
+    }
+}
+window.syncClassToGoogle = syncClassToGoogle;
+
+async function deleteClassFromGoogle(gcalEventId) {
+    return deleteEventFromGoogle(gcalEventId);
+}
+window.deleteClassFromGoogle = deleteClassFromGoogle;
+
+async function syncAllEventsToGoogle(quiet = false) {
+    if (!isGcalConnected()) {
+        if (!quiet) showToast('Please connect Google Calendar first.');
+        openGoogleSyncModal();
+        return;
+    }
+
+    const total = calendarEvents.length + storedClasses.length;
+    if (total === 0) {
+        if (!quiet) showToast('No events or classes to sync.');
+        return;
+    }
+
+    if (!quiet) showToast(`Syncing ${total} timetable items to Google Calendar...`);
+
+    // Sync recurring classes
+    for (const cls of storedClasses) {
+        await syncClassToGoogle(cls, true);
+    }
+
+    // Sync study sessions
+    for (const ev of calendarEvents) {
+        await syncSingleEventToGoogle(ev, true);
+    }
+
+    localStorage.setItem('sabi_gcal_last_sync', new Date().toISOString());
+    updateGcalUiState();
+    if (!quiet) showToast(`Successfully synced ${total} items to Google Calendar!`);
+}
+window.syncAllEventsToGoogle = syncAllEventsToGoogle;
+
 // Category Badge Color & Text Helpers
 function getCategoryColor(cat) {
     const found = CATEGORIES.find(c => c.key === (cat || '').toLowerCase());
@@ -2899,6 +3473,9 @@ function getCategoryBadgeText(cat) {
 if (typeof document !== 'undefined') {
     function onCalendarReady() {
         initCalendarApp();
+        if (typeof updateGcalUiState === 'function') {
+            updateGcalUiState();
+        }
         if (typeof window !== 'undefined') {
             const hasChatParam = (window.location?.search || '').includes('chat=1') || window.location?.hash === '#chat';
             if (hasChatParam) {

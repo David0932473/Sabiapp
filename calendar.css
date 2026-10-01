@@ -3911,5 +3911,60 @@ body {
     transform: scale(0.98);
 }
 
+/* ==========================================
+   GOOGLE CALENDAR LIVE SYNC STYLES
+   ========================================== */
+.gcal-mini-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    transition: all 0.2s ease;
+}
+
+.gcal-mini-badge.connected {
+    background: rgba(16, 185, 129, 0.18);
+    color: #34D399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.gcal-mini-badge.not-connected {
+    background: rgba(66, 133, 244, 0.12);
+    color: #60A5FA;
+    border: 1px solid rgba(66, 133, 244, 0.2);
+}
+
+.gcal-pulsing-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+}
+
+.gcal-pulsing-dot.active {
+    background: #10B981;
+    box-shadow: 0 0 10px #10B981;
+    animation: gcalPulse 2s infinite;
+}
+
+.gcal-pulsing-dot.inactive {
+    background: #94A3B8;
+}
+
+@keyframes gcalPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
 
 
