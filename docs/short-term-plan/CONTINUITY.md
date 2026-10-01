@@ -1,23 +1,27 @@
 - **Goal (incl. success criteria)**: 
-  - Integrated OpenRouter (DeepSeek V3 & LLaMA 3.3 70B) for zero-server, high-intelligence direct browser AI execution.
-  - Consistently renamed the AI Study Companion across the entire codebase to **"Steady"**.
-  - Pushed all changes cleanly to Git `origin/main`.
+  - Complete frontend and backend redesign of the Sabi AI ("Steady") interface following the grill-me requirements and frontend-design principles.
+  - Enable real-time Server-Sent Events (SSE) token streaming via `/api/chat` and OpenRouter fallback.
+  - Deliver desktop right-side dock / split-pane studio allowing concurrent calendar interaction, alongside mobile bottom drawer.
+  - Support voice dictation (Web Speech API), rich markdown with copyable code blocks & LaTeX math blocks, and interactive conflict-checked schedule cards with one-click injection and Google Calendar sync.
+  - Hybrid chat persistence with fast localStorage caching and Supabase profile synchronization.
 - **Constraints/Assumptions**:
-  - Keep master app branding as Sabi Academic OS, while the study assistant is consistently branded as Steady.
-  - Never commit raw API keys to tracked git files; keys are read from `env.js` and `.env` (gitignored).
+  - Strict 0 Unicode emojis rule: All icons are SVG vectors.
+  - Preserve Steady academic identity and direct student context injection (`getStudentAiContext`).
+  - Google Calendar auto-sync hooks run seamlessly upon schedule card acceptance.
 - **Key decisions**:
-  - Renamed Study AI to "Steady" in all UI touchpoints:
-    - [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html): Bento Studio card ("Steady AI Studio"), Timetable Planning banner, Floating Action Button ("Steady"), AI Studio Modal header ("Steady • Powered by Steady"), Chat input dock placeholder ("Message Steady..."), and Onboarding quick action cards ("Chat with Steady").
-    - [calendar.js](file:///c:/Users/dave/.gemini/sabi/calendar.js): Default greeting, identity prompts, typing indicator avatars, offline fallback greetings, and global window helper `openSteadyChat`.
-    - [server.js](file:///c:/Users/dave/.gemini/sabi/server.js): OpenRouter headers set to `Steady - Sabi Academic OS`.
-    - [package.json](file:///c:/Users/dave/.gemini/sabi/package.json): Updated description and keywords for Steady.
+  - Backend streaming pipe-through implemented in `api/chat.js` and `server.js` with `text/event-stream`.
+  - Frontend studio rebuilt in `calendar.html` and `calendar.css` with ambient obsidian aurora styling, expandable desktop docking (`.studio-expanded`), and tactical mode bar (`planner`, `tutor`, `drill`).
+  - Client-side streaming engine with live `streaming-cursor` and simulated token stream for offline fallback in `calendar.js`.
+  - Interactive schedule cards replace silent timetable mutation: cards display lecture/study blocks, clash checks, and one-click "Accept & Add to Timetable".
 - **State**:
   - Done:
-    - All occurrences of Sabi Copilot / Study Buddy updated to Steady.
-    - Zero syntax errors validated with `node -c calendar.js server.js`.
-    - Committed `27ce697` and pushed to `origin/main`.
-  - Now: Ready and active.
-  - Next: User testing and next requested feature.
+    - Phase 1: Streaming backend proxy in `api/chat.js` and `server.js`.
+    - Phase 2 & 3: HTML studio structure in `calendar.html` and cyber-academic CSS in `calendar.css`.
+    - Phase 4: Client-side streaming, voice dictation, math/code formatter, schedule cards, and hybrid persistence in `calendar.js`.
+    - Zero syntax errors validated with `node -c calendar.js api/chat.js server.js`.
+    - Committed `000f301` and pushed to `origin/main`.
+  - Now: Redesign deployed and live on branch `main`.
+  - Next: User testing of voice dictation, streaming tokens, and timetable card flows.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
-  - `calendar.html`, `calendar.js`, `server.js`, `package.json`, `docs/short-term-plan/CONTINUITY.md`
+  - `api/chat.js`, `server.js`, `calendar.html`, `calendar.css`, `calendar.js`, `docs/short-term-plan/CONTINUITY.md`
