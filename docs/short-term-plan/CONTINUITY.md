@@ -1,27 +1,27 @@
 - **Goal (incl. success criteria)**: 
-  - Complete frontend and backend redesign of the Sabi AI ("Steady") interface following the grill-me requirements and frontend-design principles.
-  - Enable real-time Server-Sent Events (SSE) token streaming via `/api/chat` and OpenRouter fallback.
-  - Deliver desktop right-side dock / split-pane studio allowing concurrent calendar interaction, alongside mobile bottom drawer.
-  - Support voice dictation (Web Speech API), rich markdown with copyable code blocks & LaTeX math blocks, and interactive conflict-checked schedule cards with one-click injection and Google Calendar sync.
-  - Hybrid chat persistence with fast localStorage caching and Supabase profile synchronization.
+  - Complete frontend and backend redesign of the Sabi AI ("Steady") interface following user feedback, grill-me requirements, and frontend-design principles.
+  - Optimize the chat studio specifically for mobile devices (full viewport responsiveness, dynamic safe-area-inset padding, no awkward sizing).
+  - Enhance text input contrast, readability, and sizing (16px to prevent iOS auto-zoom).
+  - Clean header: Remove "Academic Architect • Powered by Steady" and "AI Active" badge.
+  - Replace refresh button with two dedicated actions: "Start New Conversation" and "Previous Conversations" with a 3-day auto-prune policy for untouched chats.
 - **Constraints/Assumptions**:
   - Strict 0 Unicode emojis rule: All icons are SVG vectors.
   - Preserve Steady academic identity and direct student context injection (`getStudentAiContext`).
   - Google Calendar auto-sync hooks run seamlessly upon schedule card acceptance.
 - **Key decisions**:
-  - Backend streaming pipe-through implemented in `api/chat.js` and `server.js` with `text/event-stream`.
-  - Frontend studio rebuilt in `calendar.html` and `calendar.css` with ambient obsidian aurora styling, expandable desktop docking (`.studio-expanded`), and tactical mode bar (`planner`, `tutor`, `drill`).
-  - Client-side streaming engine with live `streaming-cursor` and simulated token stream for offline fallback in `calendar.js`.
-  - Interactive schedule cards replace silent timetable mutation: cards display lecture/study blocks, clash checks, and one-click "Accept & Add to Timetable".
+  - Removed "Academic Architect" subtitle and "AI Active" badge for a clean, minimalist header.
+  - Added multi-session conversation architecture (`sabi_chat_sessions_v2`) with automatic 3-day (72-hour) retention pruning (`CHAT_RETENTION_MS`).
+  - Added slide-down history drawer `#studio-history-panel` with session switching, relative timestamps, and one-tap conversation deletion.
+  - Text input upgraded to 16px font-size (stops iOS Safari zoom), higher contrast background (`rgba(18, 25, 41, 0.96)`), and `#94A3B8` placeholder.
+  - Mobile bottom drawer upgraded to `94dvh` with `max(16px, env(safe-area-inset-bottom))` padding.
 - **State**:
   - Done:
-    - Phase 1: Streaming backend proxy in `api/chat.js` and `server.js`.
-    - Phase 2 & 3: HTML studio structure in `calendar.html` and cyber-academic CSS in `calendar.css`.
-    - Phase 4: Client-side streaming, voice dictation, math/code formatter, schedule cards, and hybrid persistence in `calendar.js`.
-    - Zero syntax errors validated with `node -c calendar.js api/chat.js server.js`.
-    - Committed `000f301` and pushed to `origin/main`.
-  - Now: Redesign deployed and live on branch `main`.
-  - Next: User testing of voice dictation, streaming tokens, and timetable card flows.
+    - Mobile layout & input contrast optimized in `calendar.css`.
+    - Header cleaned & history panel added in `calendar.html`.
+    - Multi-session manager with 3-day retention auto-pruning in `calendar.js`.
+    - Zero syntax errors validated with `node -c calendar.js`.
+  - Now: Ready for commit and push.
+  - Next: User validation.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
-  - `api/chat.js`, `server.js`, `calendar.html`, `calendar.css`, `calendar.js`, `docs/short-term-plan/CONTINUITY.md`
+  - `calendar.html`, `calendar.css`, `calendar.js`, `docs/short-term-plan/CONTINUITY.md`

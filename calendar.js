@@ -1169,15 +1169,95 @@ const DEFAULT_CHAT_GREETING = {
     timestamp: 'Just now'
 };
 
-function getChatHistory() {
+// 3-Day Conversation Storage Policy (Untouched conversations deleted after 72 hours)
+const CHAT_RETENTION_MS = 3 * 24 * 60 * 60 * 1000;
+
+function createNewSessionData(title) {
+    const now = Date.now();
+    return {
+        id: 'sess-' + now + '-' + Math.random().toString(36).substr(2, 5),
+        title: title || 'New Conversation',
+        createdAt: now,
+        lastUpdated: now,
+        messages: [DEFAULT_CHAT_GREETING]
+    };
+}
+
+function pruneOldChatSessions(sessions) {
+    const now = Date.now();
+    return (sessions || []).filter(s => {
+        const lastTouch = s.lastUpdated || s.createdAt || now;
+        return (now - lastTouch) < CHAT_RETENTION_MS;
+    });
+}
+
+function getAllChatSessions() {
+    let sessions = [];
     try {
-        const stored = localStorage.getItem('sabi_chat_history_v4');
+        const stored = localStorage.getItem('sabi_chat_sessions_v2');
         if (stored) {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            sessions = JSON.parse(stored) || [];
+        } else {
+            // Migrate legacy single-history storage
+            const legacy = localStorage.getItem('sabi_chat_history_v4');
+            if (legacy) {
+                const parsed = JSON.parse(legacy);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    const migrated = createNewSessionData('Previous Session');
+                    migrated.messages = parsed;
+                    sessions = [migrated];
+                }
+            }
         }
-    } catch (e) {}
-    return [DEFAULT_CHAT_GREETING];
+    } catch (e) {
+        sessions = [];
+    }
+
+    // Auto-prune sessions untouched for over 3 days
+    const pruned = pruneOldChatSessions(sessions);
+    if (pruned.length !== sessions.length) {
+        try {
+            localStorage.setItem('sabi_chat_sessions_v2', JSON.stringify(pruned));
+        } catch (e) {}
+    }
+
+    if (pruned.length === 0) {
+        const fresh = createNewSessionData('New Conversation');
+        pruned.push(fresh);
+        try {
+            localStorage.setItem('sabi_chat_sessions_v2', JSON.stringify(pruned));
+            localStorage.setItem('sabi_active_session_id', fresh.id);
+        } catch (e) {}
+    }
+
+    return pruned;
+}
+
+function saveAllChatSessions(sessions) {
+    try {
+        const pruned = pruneOldChatSessions(sessions);
+        localStorage.setItem('sabi_chat_sessions_v2', JSON.stringify(pruned));
+    } catch (e) {
+        console.warn('Failed to save chat sessions:', e);
+    }
+}
+
+function getActiveSession() {
+    const sessions = getAllChatSessions();
+    const activeId = localStorage.getItem('sabi_active_session_id');
+    let session = sessions.find(s => s.id === activeId);
+    if (!session) {
+        session = sessions[0] || createNewSessionData('New Conversation');
+        localStorage.setItem('sabi_active_session_id', session.id);
+    }
+    return session;
+}
+
+function getChatHistory() {
+    const session = getActiveSession();
+    return Array.isArray(session.messages) && session.messages.length > 0
+        ? session.messages
+        : [DEFAULT_CHAT_GREETING];
 }
 
 function saveChatHistory(history) {
@@ -1185,7 +1265,6 @@ function saveChatHistory(history) {
         const sanitized = (history || []).slice(-35).map(msg => {
             if (!msg.media) return msg;
             const cleanMedia = { ...msg.media };
-            // Strip large base64 dataUrl before saving to localStorage to prevent QuotaExceededError
             if (cleanMedia.dataUrl && cleanMedia.dataUrl.length > 2500) {
                 cleanMedia.dataUrl = null;
             }
@@ -1194,20 +1273,162 @@ function saveChatHistory(history) {
                 media: cleanMedia
             };
         });
-        localStorage.setItem('sabi_chat_history_v4', JSON.stringify(sanitized));
+
+        const sessions = getAllChatSessions();
+        const activeId = localStorage.getItem('sabi_active_session_id');
+        let session = sessions.find(s => s.id === activeId);
+
+        if (!session) {
+            session = createNewSessionData('New Conversation');
+            sessions.unshift(session);
+            localStorage.setItem('sabi_active_session_id', session.id);
+        }
+
+        session.messages = sanitized;
+        session.lastUpdated = Date.now();
+
+        // Auto-generate title from the first user message if default
+        if (session.title === 'New Conversation' || session.title.startsWith('New Conv')) {
+            const firstUserMsg = sanitized.find(m => m.role === 'user');
+            if (firstUserMsg && firstUserMsg.content) {
+                const clean = firstUserMsg.content.replace(/[^\w\s-]/g, '').trim();
+                session.title = clean.length > 30 ? clean.slice(0, 30) + '...' : clean || 'Study Session';
+            }
+        }
+
+        saveAllChatSessions(sessions);
     } catch (e) {
-        console.warn('Failed to save chat history to localStorage:', e);
-        try {
-            const minimal = (history || []).slice(-10).map(m => ({
-                role: m.role,
-                content: m.content,
-                actionCard: m.actionCard,
-                timestamp: m.timestamp
-            }));
-            localStorage.setItem('sabi_chat_history_v4', JSON.stringify(minimal));
-        } catch (e2) {}
+        console.warn('Failed to save chat history:', e);
     }
 }
+
+function startNewChatSession() {
+    const sessions = getAllChatSessions();
+    const newSession = createNewSessionData('New Conversation');
+    sessions.unshift(newSession);
+    localStorage.setItem('sabi_active_session_id', newSession.id);
+    saveAllChatSessions(sessions);
+
+    toggleChatHistoryDrawer(false);
+    removePendingChatMedia();
+
+    const input = document.getElementById('chat-user-input');
+    if (input) input.value = '';
+
+    renderChatMessages();
+    renderChatQuickChips();
+    showToast('Started new conversation');
+}
+window.startNewChatSession = startNewChatSession;
+
+function switchChatSession(sessionId) {
+    const sessions = getAllChatSessions();
+    const target = sessions.find(s => s.id === sessionId);
+    if (target) {
+        target.lastUpdated = Date.now();
+        localStorage.setItem('sabi_active_session_id', sessionId);
+        saveAllChatSessions(sessions);
+        toggleChatHistoryDrawer(false);
+        removePendingChatMedia();
+        renderChatMessages();
+        renderChatQuickChips();
+        showToast('Switched conversation');
+    }
+}
+window.switchChatSession = switchChatSession;
+
+function deleteChatSession(sessionId, e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    let sessions = getAllChatSessions();
+    sessions = sessions.filter(s => s.id !== sessionId);
+
+    if (sessions.length === 0) {
+        const fresh = createNewSessionData('New Conversation');
+        sessions = [fresh];
+        localStorage.setItem('sabi_active_session_id', fresh.id);
+    } else {
+        const currentActive = localStorage.getItem('sabi_active_session_id');
+        if (currentActive === sessionId) {
+            localStorage.setItem('sabi_active_session_id', sessions[0].id);
+        }
+    }
+
+    saveAllChatSessions(sessions);
+    renderChatHistoryList();
+    renderChatMessages();
+    showToast('Conversation deleted');
+}
+window.deleteChatSession = deleteChatSession;
+
+function toggleChatHistoryDrawer(forceState) {
+    const panel = document.getElementById('studio-history-panel');
+    if (!panel) return;
+
+    const willShow = typeof forceState === 'boolean' ? forceState : panel.classList.contains('hidden');
+    if (willShow) {
+        renderChatHistoryList();
+        panel.classList.remove('hidden');
+    } else {
+        panel.classList.add('hidden');
+    }
+}
+window.toggleChatHistoryDrawer = toggleChatHistoryDrawer;
+
+function formatRelativeTime(timestamp) {
+    if (!timestamp) return 'Recently';
+    const diff = Date.now() - timestamp;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days === 1) return 'Yesterday';
+    return `${days}d ago`;
+}
+
+function renderChatHistoryList() {
+    const container = document.getElementById('studio-history-list');
+    if (!container) return;
+
+    const sessions = getAllChatSessions();
+    const activeId = localStorage.getItem('sabi_active_session_id');
+
+    if (sessions.length === 0) {
+        container.innerHTML = `
+            <div class="studio-history-empty">
+                No previous conversations found.<br>Tap "New" to start a new chat.
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = sessions.map(sess => {
+        const isActive = sess.id === activeId;
+        const msgCount = Array.isArray(sess.messages) ? sess.messages.length : 0;
+        const relativeTime = formatRelativeTime(sess.lastUpdated);
+
+        return `
+            <div class="studio-history-item ${isActive ? 'active' : ''}" onclick="switchChatSession('${escapeHtml(sess.id)}')">
+                <div class="studio-history-item-info">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="studio-history-item-title">${escapeHtml(sess.title || 'Conversation')}</span>
+                        ${isActive ? '<span class="studio-history-badge-active">Active</span>' : ''}
+                    </div>
+                    <div class="studio-history-item-meta">
+                        <span>${relativeTime}</span>
+                        <span>•</span>
+                        <span>${msgCount} msg${msgCount === 1 ? '' : 's'}</span>
+                    </div>
+                </div>
+                <button type="button" class="studio-history-item-del" onclick="deleteChatSession('${escapeHtml(sess.id)}', event)" title="Delete Conversation" aria-label="Delete Conversation">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+window.renderChatHistoryList = renderChatHistoryList;
 
 function openSabiAiChat() {
     const hubMenu = document.getElementById('planner-dropdown-menu');
@@ -1220,15 +1441,9 @@ function openSabiAiChat() {
             document.body.style.overflow = 'hidden';
         }
     }
-    const badge = document.getElementById('chat-live-ai-badge');
-    const statusText = document.getElementById('chat-header-status-text');
-    if (badge) {
-        badge.textContent = 'AI Active';
-        badge.style.display = 'inline-flex';
-    }
-    if (statusText) {
-        statusText.textContent = 'Academic Architect • Powered by Steady';
-    }
+
+    // Close history drawer by default on open
+    toggleChatHistoryDrawer(false);
 
     // Restore expanded sidebar preference
     const isExpanded = localStorage.getItem('sabi_studio_expanded') === 'true';
