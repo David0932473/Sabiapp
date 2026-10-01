@@ -105,7 +105,9 @@ function proxyChat(req, res, bodyData) {
         }, (orRes) => {
             if (orRes.statusCode >= 200 && orRes.statusCode < 300) {
                 res.writeHead(orRes.statusCode, {
-                    'Content-Type': 'application/json',
+                    'Content-Type': orRes.headers['content-type'] || 'application/json',
+                    'Cache-Control': 'no-cache, no-transform',
+                    'Connection': 'keep-alive',
                     'Access-Control-Allow-Origin': '*'
                 });
                 return orRes.pipe(res);
@@ -138,7 +140,9 @@ function proxyNvidiaChat(req, res, bodyData) {
         }
     }, (nvidiaRes) => {
         res.writeHead(nvidiaRes.statusCode, {
-            'Content-Type': 'application/json',
+            'Content-Type': nvidiaRes.headers['content-type'] || 'application/json',
+            'Cache-Control': 'no-cache, no-transform',
+            'Connection': 'keep-alive',
             'Access-Control-Allow-Origin': '*'
         });
         nvidiaRes.pipe(res);

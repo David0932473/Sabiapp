@@ -730,6 +730,14 @@
 
             <!-- Studio Modes & Controls -->
             <div class="studio-header-actions">
+                <button type="button" class="studio-action-btn" id="studio-toggle-expand" onclick="toggleStudioExpand()" title="Toggle Split-Screen / Expand" aria-label="Toggle Split Screen">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <polyline points="9 21 3 21 3 15"></polyline>
+                        <line x1="21" y1="3" x2="14" y2="10"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                </button>
                 <button type="button" class="studio-action-btn" onclick="clearChatHistory()" title="Restart Studio Session" aria-label="Restart Studio Session">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="23 4 23 10 17 10"></polyline>
@@ -746,7 +754,21 @@
             </div>
         </header>
 
-
+        <!-- Studio Tactical Mode Bar -->
+        <div class="studio-mode-bar" id="studio-mode-bar">
+            <button type="button" class="studio-mode-pill active" data-mode="planner" onclick="setStudioMode('planner')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>Timetable Planner</span>
+            </button>
+            <button type="button" class="studio-mode-pill" data-mode="tutor" onclick="setStudioMode('tutor')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <span>Concept Tutor & Math</span>
+            </button>
+            <button type="button" class="studio-mode-pill" data-mode="drill" onclick="setStudioMode('drill')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                <span>Exam Drill & Recall</span>
+            </button>
+        </div>
 
         <!-- Studio Message Stream Canvas -->
         <main class="studio-messages-canvas" id="chat-messages-container">
@@ -790,8 +812,17 @@
                     </svg>
                 </button>
 
+                <button type="button" id="btn-voice-dictate" class="studio-btn-voice" onclick="toggleVoiceDictation()" title="Voice Dictation (Speech to Text)" aria-label="Voice Dictation">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+
                 <div class="studio-input-field-wrapper">
-                    <input type="text" id="chat-user-input" class="studio-text-input" placeholder="Message Steady, paste outline, or ask to schedule..." autocomplete="off" />
+                    <input type="text" id="chat-user-input" class="studio-text-input" placeholder="Message Steady, plan timetable, or dictate..." autocomplete="off" />
                     <button type="button" class="studio-btn-scan-shortcut" onclick="triggerChatMediaUpload()" title="Scan Timetable Photo (Vision)">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                     </button>

@@ -12,24 +12,15 @@ function getKey(req, envVar) {
     return '';
 }
 
-function proxyOpenRouter(bodyData, apiKey) {
+function streamOpenRouter(req, res, payload, apiKey) {
     return new Promise((resolve, reject) => {
-        if (!apiKey) {
-            return reject(new Error('Missing OpenRouter API key'));
-        }
-
-        let payload = {};
-        try {
-            payload = typeof bodyData === 'string' ? JSON.parse(bodyData) : bodyData;
-        } catch (e) {
-            payload = bodyData;
-        }
+        if (!apiKey) return reject(new Error('Missing OpenRouter API key'));
 
         if (!payload.model || payload.model.includes('llama-3.2-11b')) {
             payload.model = 'deepseek/deepseek-chat';
         }
 
-        const req = https.request({
+        const orReq = https.request({
             hostname: 'openrouter.ai',
             path: '/api/v1/chat/completions',
             method: 'POST',
@@ -37,47 +28,43 @@ function proxyOpenRouter(bodyData, apiKey) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${apiKey}`,
                 'HTTP-Referer': 'https://sabiapp.vercel.app',
-                'X-Title': 'Steady - Sabi'
+                'X-Title': 'Steady - Sabi Academic OS'
             }
-        }, (res) => {
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => {
-                if (res.statusCode >= 200 && res.statusCode < 300) {
-                    resolve({ status: res.statusCode, data });
-                } else {
-                    reject(new Error(`OpenRouter returned status ${res.statusCode}: ${data}`));
-                }
-            });
+        }, (orRes) => {
+            if (orRes.statusCode >= 200 && orRes.statusCode < 300) {
+                res.writeHead(orRes.statusCode, {
+                    'Content-Type': orRes.headers['content-type'] || (payload.stream ? 'text/event-stream' : 'application/json'),
+                    'Cache-Control': 'no-cache, no-transform',
+                    'Connection': 'keep-alive',
+                    'Access-Control-Allow-Origin': '*'
+                });
+                orRes.pipe(res);
+                orRes.on('end', () => resolve());
+            } else {
+                let errData = '';
+                orRes.on('data', chunk => errData += chunk);
+                orRes.on('end', () => reject(new Error(`OpenRouter returned status ${orRes.statusCode}: ${errData}`)));
+            }
         });
 
-        req.on('error', (err) => reject(err));
-        req.setTimeout(15000, () => {
-            req.destroy();
-            reject(new Error('OpenRouter timeout'));
+        orReq.on('error', (err) => reject(err));
+        orReq.setTimeout(25000, () => {
+            orReq.destroy();
+            reject(new Error('OpenRouter connection timeout'));
         });
 
-        req.write(typeof payload === 'string' ? payload : JSON.stringify(payload));
-        req.end();
+        orReq.write(typeof payload === 'string' ? payload : JSON.stringify(payload));
+        orReq.end();
     });
 }
 
-function proxyNvidia(bodyData, apiKey) {
+function streamNvidia(req, res, payload, apiKey) {
     return new Promise((resolve, reject) => {
-        if (!apiKey) {
-            return reject(new Error('Missing NVIDIA API key'));
-        }
-
-        let payload = {};
-        try {
-            payload = typeof bodyData === 'string' ? JSON.parse(bodyData) : bodyData;
-        } catch (e) {
-            payload = bodyData;
-        }
+        if (!apiKey) return reject(new Error('Missing NVIDIA API key'));
 
         payload.model = 'meta/llama-3.2-11b-vision-instruct';
 
-        const req = https.request({
+        const nvReq = https.request({
             hostname: 'integrate.api.nvidia.com',
             path: '/v1/chat/completions',
             method: 'POST',
@@ -85,22 +72,25 @@ function proxyNvidia(bodyData, apiKey) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${apiKey}`
             }
-        }, (res) => {
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => {
-                resolve({ status: res.statusCode, data });
+        }, (nvRes) => {
+            res.writeHead(nvRes.statusCode, {
+                'Content-Type': nvRes.headers['content-type'] || (payload.stream ? 'text/event-stream' : 'application/json'),
+                'Cache-Control': 'no-cache, no-transform',
+                'Connection': 'keep-alive',
+                'Access-Control-Allow-Origin': '*'
             });
+            nvRes.pipe(res);
+            nvRes.on('end', () => resolve());
         });
 
-        req.on('error', (err) => reject(err));
-        req.setTimeout(15000, () => {
-            req.destroy();
+        nvReq.on('error', (err) => reject(err));
+        nvReq.setTimeout(25000, () => {
+            nvReq.destroy();
             reject(new Error('NVIDIA API timeout'));
         });
 
-        req.write(typeof payload === 'string' ? payload : JSON.stringify(payload));
-        req.end();
+        nvReq.write(typeof payload === 'string' ? payload : JSON.stringify(payload));
+        nvReq.end();
     });
 }
 
@@ -118,33 +108,39 @@ module.exports = async (req, res) => {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    const bodyData = req.body;
+    let payload = req.body;
+    try {
+        if (typeof payload === 'string') payload = JSON.parse(payload);
+    } catch (e) {}
+
     const openRouterKey = getKey(req, 'OPENROUTER_API_KEY');
     const nvidiaKey = getKey(req, 'NVIDIA_API_KEY');
 
-    // 1. Try OpenRouter if key is present
+    // 1. Try OpenRouter (supports streaming SSE token-by-token)
     if (openRouterKey && openRouterKey.startsWith('sk-or-')) {
         try {
-            const result = await proxyOpenRouter(bodyData, openRouterKey);
-            return res.status(result.status).setHeader('Content-Type', 'application/json').send(result.data);
+            await streamOpenRouter(req, res, payload, openRouterKey);
+            return;
         } catch (err) {
             console.warn('OpenRouter request failed, checking NVIDIA fallback:', err.message);
         }
     }
 
-    // 2. Try NVIDIA if key is present
+    // 2. Try NVIDIA fallback
     if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
         try {
-            const result = await proxyNvidia(bodyData, nvidiaKey);
-            return res.status(result.status).setHeader('Content-Type', 'application/json').send(result.data);
+            await streamNvidia(req, res, payload, nvidiaKey);
+            return;
         } catch (err) {
             console.error('NVIDIA request failed:', err.message);
         }
     }
 
     // Fallback: If no provider succeeded or keys are missing
-    return res.status(502).json({
-        error: 'AI service unavailable',
-        message: 'No active AI key available. Please check environment configuration.'
-    });
+    if (!res.headersSent) {
+        return res.status(502).json({
+            error: 'AI service unavailable',
+            message: 'No active AI key available. Please check environment configuration.'
+        });
+    }
 };

@@ -1216,7 +1216,9 @@ function openSabiAiChat() {
     const drawer = document.getElementById('sabi-ai-chat-drawer');
     if (drawer) {
         drawer.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        if (window.innerWidth < 1024) {
+            document.body.style.overflow = 'hidden';
+        }
     }
     const badge = document.getElementById('chat-live-ai-badge');
     const statusText = document.getElementById('chat-header-status-text');
@@ -1226,6 +1228,15 @@ function openSabiAiChat() {
     }
     if (statusText) {
         statusText.textContent = 'Academic Architect • Powered by Steady';
+    }
+
+    // Restore expanded sidebar preference
+    const isExpanded = localStorage.getItem('sabi_studio_expanded') === 'true';
+    const windowEl = document.querySelector('.copilot-studio-window');
+    const expandBtn = document.getElementById('studio-toggle-expand');
+    if (windowEl && isExpanded) {
+        windowEl.classList.add('studio-expanded');
+        if (expandBtn) expandBtn.classList.add('active');
     }
 
     setStudioMode(currentStudioMode || 'planner');
@@ -1249,6 +1260,121 @@ function closeSabiAiChat(e) {
 }
 window.closeSabiAiChat = closeSabiAiChat;
 window.closeSteadyChat = closeSabiAiChat;
+
+function toggleStudioExpand() {
+    const windowEl = document.querySelector('.copilot-studio-window');
+    const btn = document.getElementById('studio-toggle-expand');
+    if (!windowEl) return;
+    const isExpanded = windowEl.classList.toggle('studio-expanded');
+    try {
+        localStorage.setItem('sabi_studio_expanded', isExpanded ? 'true' : 'false');
+    } catch (e) {}
+    if (btn) {
+        btn.classList.toggle('active', isExpanded);
+        btn.title = isExpanded ? 'Restore Sidebar Size' : 'Expand Split-Screen Studio';
+    }
+}
+window.toggleStudioExpand = toggleStudioExpand;
+
+let speechRecognitionInstance = null;
+let isVoiceDictating = false;
+
+function toggleVoiceDictation() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const btn = document.getElementById('btn-voice-dictate');
+    const input = document.getElementById('chat-user-input');
+
+    if (!SpeechRecognition) {
+        showToast('Voice dictation is not supported in this browser. Try Chrome, Edge, or Safari.');
+        return;
+    }
+
+    if (isVoiceDictating && speechRecognitionInstance) {
+        try { speechRecognitionInstance.stop(); } catch (e) {}
+        isVoiceDictating = false;
+        if (btn) btn.classList.remove('listening');
+        return;
+    }
+
+    try {
+        speechRecognitionInstance = new SpeechRecognition();
+        speechRecognitionInstance.continuous = false;
+        speechRecognitionInstance.interimResults = true;
+        speechRecognitionInstance.lang = 'en-US';
+
+        speechRecognitionInstance.onstart = () => {
+            isVoiceDictating = true;
+            if (btn) btn.classList.add('listening');
+            showToast('Listening... Speak your prompt or schedule');
+        };
+
+        speechRecognitionInstance.onresult = (event) => {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                transcript += event.results[i][0].transcript;
+            }
+            if (input) {
+                input.value = transcript;
+            }
+        };
+
+        speechRecognitionInstance.onerror = (event) => {
+            console.warn('Speech recognition error:', event.error);
+            isVoiceDictating = false;
+            if (btn) btn.classList.remove('listening');
+            if (event.error !== 'no-speech') {
+                showToast('Voice recognition error: ' + event.error);
+            }
+        };
+
+        speechRecognitionInstance.onend = () => {
+            isVoiceDictating = false;
+            if (btn) btn.classList.remove('listening');
+        };
+
+        speechRecognitionInstance.start();
+    } catch (err) {
+        console.error('Failed to start speech recognition:', err);
+        isVoiceDictating = false;
+        if (btn) btn.classList.remove('listening');
+    }
+}
+window.toggleVoiceDictation = toggleVoiceDictation;
+
+function copyCodeSnippet(btn) {
+    if (!btn) return;
+    const block = btn.closest('.steady-code-block');
+    if (!block) return;
+    const codeEl = block.querySelector('code');
+    if (!codeEl) return;
+    const textToCopy = codeEl.innerText || codeEl.textContent || '';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.textContent = originalText; }, 1800);
+        }).catch(() => {
+            fallbackCopy(textToCopy, btn);
+        });
+    } else {
+        fallbackCopy(textToCopy, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+        document.execCommand('copy');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 1800);
+    } catch (e) {}
+    document.body.removeChild(ta);
+}
+window.copyCodeSnippet = copyCodeSnippet;
 
 function clearChatHistory() {
     if (confirm('Restart session with Steady?')) {
@@ -1707,19 +1833,77 @@ function removePendingChatMedia() {
 }
 window.removePendingChatMedia = removePendingChatMedia;
 
-// Render markdown-lite: bold (**text**), italic (*text*), newlines
+// Render rich markdown: Code blocks with copy, LaTeX math ($$...$$ and $...$), bold, italic, lists, and newlines
 function renderMarkdownLite(text) {
     if (!text) return '';
-    // Escape HTML first, then apply markdown patterns
-    let safe = escapeHtml(text);
-    // Bold: **text**
+
+    const codeBlocks = [];
+    const mathBlocks = [];
+
+    // 1. Extract fenced code blocks (```lang ... ```)
+    let processed = text.replace(/```([a-zA-Z0-9_\-\+]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+        const idx = codeBlocks.length;
+        const safeCode = escapeHtml(code.trim());
+        const displayLang = escapeHtml(lang || 'code');
+        codeBlocks.push(`
+            <div class="steady-code-block">
+                <div class="steady-code-header">
+                    <span>${displayLang}</span>
+                    <button type="button" class="steady-copy-code-btn" onclick="copyCodeSnippet(this)">Copy</button>
+                </div>
+                <pre class="steady-code-content"><code>${safeCode}</code></pre>
+            </div>
+        `);
+        return `%%CODE_BLOCK_${idx}%%`;
+    });
+
+    // 2. Extract display math ($$...$$)
+    processed = processed.replace(/\$\$([\s\S]+?)\$\$/g, (match, math) => {
+        const idx = mathBlocks.length;
+        const safeMath = escapeHtml(math.trim());
+        mathBlocks.push(`<div class="steady-math-block">${safeMath}</div>`);
+        return `%%MATH_BLOCK_${idx}%%`;
+    });
+
+    // 3. Extract inline math ($...$) - ignore plain currencies like $50 or $10.99
+    processed = processed.replace(/(?<!\w)\$([^\$\n]+?)\$(?!\w)/g, (match, math) => {
+        if (/^\d+(\.\d{1,2})?$/.test(math.trim())) return match;
+        const idx = mathBlocks.length;
+        const safeMath = escapeHtml(math.trim());
+        mathBlocks.push(`<span class="steady-math-block" style="display:inline-block; padding:1px 6px; margin:0 2px; font-size:0.92em; border-radius:4px;">${safeMath}</span>`);
+        return `%%MATH_BLOCK_${idx}%%`;
+    });
+
+    // 4. Escape general HTML content
+    let safe = escapeHtml(processed);
+
+    // 5. Headings
+    safe = safe.replace(/^### (.*)$/gm, '<h4 style="margin:8px 0 4px 0; color:var(--text-main); font-size:13px; font-weight:700;">$1</h4>');
+    safe = safe.replace(/^## (.*)$/gm, '<h3 style="margin:10px 0 5px 0; color:var(--text-main); font-size:14px; font-weight:800;">$1</h3>');
+    safe = safe.replace(/^# (.*)$/gm, '<h2 style="margin:12px 0 6px 0; color:var(--text-main); font-size:15px; font-weight:800;">$1</h2>');
+
+    // 6. Bold & Italic
     safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    // Italic: *text* (not preceded by another *)
     safe = safe.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
-    // Bullet lines starting with • or -
-    safe = safe.replace(/^([•\-]) (.+)$/gm, '<span class="chat-bullet">$1 $2</span>');
-    // Newlines to <br>
+
+    // 7. Inline code (`code`)
+    safe = safe.replace(/`([^`\n]+)`/g, '<code style="background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:4px; font-family:monospace; font-size:0.9em;">$1</code>');
+
+    // 8. Bullets & numbered lists
+    safe = safe.replace(/^([•\-\*]) (.+)$/gm, '<div class="chat-bullet-row" style="display:flex; gap:6px; margin:2px 0;"><span style="color:var(--accent); font-weight:bold;">•</span><span>$2</span></div>');
+    safe = safe.replace(/^(\d+)\. (.+)$/gm, '<div class="chat-bullet-row" style="display:flex; gap:6px; margin:2px 0;"><span style="color:var(--accent); font-weight:bold;">$1.</span><span>$2</span></div>');
+
+    // 9. Newlines to <br>
     safe = safe.replace(/\n/g, '<br>');
+
+    // 10. Restore code blocks and math blocks
+    codeBlocks.forEach((blockHtml, i) => {
+        safe = safe.replace(`%%CODE_BLOCK_${i}%%`, blockHtml);
+    });
+    mathBlocks.forEach((mathHtml, i) => {
+        safe = safe.replace(`%%MATH_BLOCK_${i}%%`, mathHtml);
+    });
+
     return safe;
 }
 
@@ -1732,6 +1916,20 @@ const STUDIO_MODE_CHIPS = {
         "Lock in 2 hours study every evening",
         "Maths & Physics need extra study blocks",
         "Keep Sundays completely free for rest"
+    ],
+    tutor: [
+        "Explain eigenvalues & eigenvectors with simple examples",
+        "Derive the quadratic formula step-by-step",
+        "Break down Keynesian vs Classical economics",
+        "How does the nervous system transmit action potentials?",
+        "Give me a mnemonic to remember the Krebs cycle"
+    ],
+    drill: [
+        "Prepping for JAMB in 6 weeks: quiz me on Physics",
+        "WAEC / SSCE revision timetable and drill",
+        "Finals in 3 weeks: drill high-yield topics",
+        "Intensive 3-hour daily drill mode",
+        "Test me on 5 rapid-fire questions from my active courses"
     ],
     vision: [
         "Upload Timetable Screenshot",
@@ -1753,24 +1951,136 @@ function setStudioMode(mode) {
     if (!STUDIO_MODE_CHIPS[mode]) mode = 'planner';
     currentStudioMode = mode;
 
-    ['planner', 'vision', 'exam'].forEach(m => {
-        const pill = document.getElementById(`mode-pill-${m}`);
-        if (pill) {
-            if (m === mode) pill.classList.add('active');
-            else pill.classList.remove('active');
+    const pills = document.querySelectorAll('.studio-mode-pill');
+    pills.forEach(pill => {
+        if (pill.getAttribute('data-mode') === mode || pill.id === `mode-pill-${mode}`) {
+            pill.classList.add('active');
+        } else {
+            pill.classList.remove('active');
         }
     });
 
     renderChatQuickChips();
 
-    if (mode === 'vision') {
-        const input = document.getElementById('chat-user-input');
-        if (input && !input.value.trim() && !pendingChatMedia) {
-            input.placeholder = "Upload or paste course outline photo for Vision OCR...";
+    const input = document.getElementById('chat-user-input');
+    if (input && (!input.value.trim() || input.value.startsWith('Message Steady'))) {
+        if (mode === 'tutor') {
+            input.placeholder = "Ask any math, science, or concept question...";
+        } else if (mode === 'drill') {
+            input.placeholder = "Tell Steady what topic to quiz or drill you on...";
+        } else {
+            input.placeholder = "Message Steady, plan timetable, or dictate...";
         }
     }
 }
 window.setStudioMode = setStudioMode;
+
+// Conflict detection for proposed schedules
+function checkScheduleConflicts(proposal) {
+    const conflicts = [];
+    if (!proposal || !Array.isArray(proposal.classes)) return conflicts;
+
+    proposal.classes.forEach(c => {
+        const day = c.day;
+        const start = c.start_time || '09:00';
+        const end = c.end_time || '11:00';
+        const clash = (storedClasses || []).find(existing => {
+            if (existing.day !== day) return false;
+            const eStart = existing.start_time || '09:00';
+            const eEnd = existing.end_time || '11:00';
+            return (start < eEnd && end > eStart);
+        });
+        if (clash) {
+            conflicts.push(`${c.subject || 'Class'} overlaps with ${clash.subject || 'existing class'} on ${day} (${clash.start_time || ''}-${clash.end_time || ''})`);
+        }
+    });
+
+    return conflicts;
+}
+
+// Interactive acceptance of proposed schedules with one-click injection and Google Calendar sync
+function applyProposedSchedule(cardId, btn) {
+    const history = getChatHistory();
+    let targetProposal = null;
+
+    for (const msg of history) {
+        if (msg.scheduleProposal && (msg.scheduleProposal.cardId === cardId || msg.scheduleProposal.id === cardId)) {
+            targetProposal = msg.scheduleProposal;
+            msg.scheduleProposal.accepted = true;
+            break;
+        }
+    }
+
+    if (!targetProposal) {
+        const card = document.getElementById(cardId) || (btn && btn.closest('.steady-schedule-card'));
+        if (card && card.dataset.proposalJson) {
+            try {
+                targetProposal = JSON.parse(decodeURIComponent(card.dataset.proposalJson));
+            } catch (e) {}
+        }
+    }
+
+    if (!targetProposal) {
+        showToast('Schedule proposal details not found.');
+        return;
+    }
+
+    let addedCount = 0;
+
+    // 1. Add classes
+    if (Array.isArray(targetProposal.classes) && targetProposal.classes.length > 0) {
+        targetProposal.classes.forEach(cls => {
+            storedClasses.push({
+                id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+                subject: cls.subject,
+                day: cls.day,
+                start_time: cls.start_time || '09:00',
+                end_time: cls.end_time || '11:00',
+                venue: cls.venue || 'Lecture Hall',
+                isRecurring: true
+            });
+            addedCount++;
+        });
+        saveStoredClasses(storedClasses);
+    }
+
+    // 2. Add study sessions
+    if (Array.isArray(targetProposal.studySessions) && targetProposal.studySessions.length > 0) {
+        targetProposal.studySessions.forEach(sess => {
+            calendarEvents.push({
+                id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+                title: sess.title,
+                category: sess.category || 'study',
+                date: sess.date || getTodayStr(),
+                time: sess.time || '17:00',
+                duration: sess.duration || 1.5,
+                location: 'Sabi Prep Room',
+                notes: sess.notes || '',
+                completed: false,
+                isAiGenerated: true
+            });
+            addedCount++;
+        });
+        saveEvents();
+    }
+
+    saveChatHistory(history);
+    renderAllViews();
+
+    if (btn) {
+        btn.classList.add('accepted');
+        btn.disabled = true;
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Added to Calendar & Timetable`;
+    }
+
+    showToast(`Added ${addedCount} event(s) to your timetable!`);
+
+    // Automatic Google Calendar sync trigger
+    if (typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
+        syncAllEventsToGoogle(true);
+    }
+}
+window.applyProposedSchedule = applyProposedSchedule;
 
 function renderChatMessages() {
     const container = document.getElementById('chat-messages-container');
@@ -1799,7 +2109,7 @@ function renderChatMessages() {
                         <span class="launchpad-tile-title">Auto-Balance Week</span>
                         <span class="launchpad-tile-desc">Distribute study blocks without clashes</span>
                     </div>
-                    <div class="launchpad-tile" onclick="setStudioMode('exam'); handleQuickChipClick('Prepping for exams in 6 weeks, help me build a timetable')">
+                    <div class="launchpad-tile" onclick="setStudioMode('drill'); handleQuickChipClick('Prepping for exams in 6 weeks, help me build a timetable')">
                         <span class="launchpad-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
                         <span class="launchpad-tile-title">Exam Crunch Mode</span>
                         <span class="launchpad-tile-desc">Prioritize tough subjects with spaced review</span>
@@ -1816,8 +2126,71 @@ function renderChatMessages() {
 
     const messagesHtml = history.map(msg => {
         const isUser = msg.role === 'user';
+
+        // 1. Interactive Schedule Proposal Card
+        let scheduleCardHtml = '';
+        const proposal = msg.scheduleProposal;
+        if (proposal) {
+            const cardId = proposal.cardId || ('prop-' + (msg.timestamp || Date.now()));
+            const conflicts = checkScheduleConflicts(proposal);
+            const isConflict = conflicts.length > 0;
+            const badgeText = proposal.accepted
+                ? 'Synced to Calendar'
+                : (isConflict ? `${conflicts.length} Clash Detected` : 'Conflict-Free');
+            const badgeClass = proposal.accepted ? 'synced' : (isConflict ? 'clash' : 'free');
+
+            let classItems = '';
+            if (Array.isArray(proposal.classes) && proposal.classes.length > 0) {
+                classItems = proposal.classes.map(c => `
+                    <div class="steady-event-item">
+                        <div class="steady-item-info">
+                            <span class="steady-item-subject">${escapeHtml(c.subject || 'Lecture')}</span>
+                            <span class="steady-item-time">${escapeHtml(c.day || 'Day')} • ${escapeHtml(c.start_time || '09:00')} - ${escapeHtml(c.end_time || '11:00')}${c.venue ? ' (' + escapeHtml(c.venue) + ')' : ''}</span>
+                        </div>
+                        <span class="steady-card-badge" style="background:rgba(59,130,246,0.15); color:#60A5FA; border-color:rgba(59,130,246,0.3);">Lecture</span>
+                    </div>
+                `).join('');
+            }
+
+            let studyItems = '';
+            if (Array.isArray(proposal.studySessions) && proposal.studySessions.length > 0) {
+                studyItems = proposal.studySessions.map(s => `
+                    <div class="steady-event-item">
+                        <div class="steady-item-info">
+                            <span class="steady-item-subject">${escapeHtml(s.title || 'Study Block')}</span>
+                            <span class="steady-item-time">${escapeHtml(s.date || 'Today')} at ${escapeHtml(s.time || '17:00')} (${escapeHtml(String(s.duration || 1.5))}h)</span>
+                        </div>
+                        <span class="steady-card-badge" style="background:rgba(168,85,247,0.15); color:#C084FC; border-color:rgba(168,85,247,0.3);">Study</span>
+                    </div>
+                `).join('');
+            }
+
+            scheduleCardHtml = `
+                <div class="steady-schedule-card" id="${escapeHtml(cardId)}" data-proposal-json="${encodeURIComponent(JSON.stringify(proposal))}">
+                    <div class="steady-card-header">
+                        <div class="steady-card-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span>${escapeHtml(proposal.summary || 'Proposed Timetable')}</span>
+                        </div>
+                        <span class="steady-card-badge ${badgeClass}">${escapeHtml(badgeText)}</span>
+                    </div>
+                    <div class="steady-event-list">
+                        ${classItems}
+                        ${studyItems}
+                    </div>
+                    ${isConflict && !proposal.accepted ? `<div style="font-size:11px; color:#F87171; margin-bottom:10px; line-height:1.4;">${conflicts.map(c => `• ${escapeHtml(c)}`).join('<br>')}</div>` : ''}
+                    <button type="button" class="btn-accept-schedule ${proposal.accepted ? 'accepted' : ''}" onclick="applyProposedSchedule('${escapeHtml(cardId)}', this)" ${proposal.accepted ? 'disabled' : ''}>
+                        ${proposal.accepted
+                            ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Added to Calendar & Timetable`
+                            : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Accept & Add to Timetable`}
+                    </button>
+                </div>
+            `;
+        }
+
+        // 2. Legacy Action Card fallback
         let actionCardHtml = '';
-        if (msg.actionCard) {
+        if (msg.actionCard && !scheduleCardHtml) {
             actionCardHtml = `
                 <div class="studio-transmission-card">
                     <div class="transmission-header">
@@ -1851,7 +2224,7 @@ function renderChatMessages() {
             }
         }
 
-        // Bot messages get markdown rendering; user messages stay plain
+        // Bot messages get rich markdown rendering; user messages stay plain
         const contentHtml = isUser
             ? `<div>${escapeHtml(msg.content)}</div>`
             : `<div>${renderMarkdownLite(msg.content)}</div>`;
@@ -1862,6 +2235,7 @@ function renderChatMessages() {
                 <div class="studio-bubble chat-bubble">
                     ${mediaHtml}
                     ${contentHtml}
+                    ${scheduleCardHtml}
                     ${actionCardHtml}
                 </div>
             </div>
@@ -1905,6 +2279,107 @@ function handleQuickChipClick(chipText) {
 }
 window.handleQuickChipClick = handleQuickChipClick;
 
+// Supabase cloud chat snapshot synchronizer (hybrid persistence)
+async function syncChatToSupabase(message) {
+    try {
+        let userId = null;
+        if (window.SabiAuth && typeof window.SabiAuth.getUser === 'function') {
+            const user = await window.SabiAuth.getUser();
+            userId = user?.id;
+        }
+        if (!userId) {
+            try {
+                const profile = JSON.parse(localStorage.getItem('sabi_user_profile') || '{}');
+                userId = profile.id || profile.user_id || null;
+            } catch (e) {}
+        }
+        if (!userId) return;
+
+        const client = window.sabiDb || (window.SabiAuth && typeof window.SabiAuth.getClient === 'function' ? window.SabiAuth.getClient() : null);
+        if (!client) return;
+
+        const history = getChatHistory();
+        const sanitized = history.slice(-25).map(m => ({
+            role: m.role,
+            content: m.content,
+            timestamp: m.timestamp,
+            hasProposal: !!m.scheduleProposal
+        }));
+
+        await client.from('profiles').update({
+            ai_chat_snapshot: sanitized,
+            updated_at: new Date().toISOString()
+        }).eq('id', userId);
+    } catch (e) {
+        console.debug('Cloud chat sync notice:', e.message || e);
+    }
+}
+
+// Server-Sent Events stream reader for real-time word-by-word streaming
+async function readSseStream(res, onToken) {
+    if (!res.body || typeof res.body.getReader !== 'function') {
+        const data = await res.json();
+        const text = data.choices?.[0]?.message?.content || data.choices?.[0]?.delta?.content || '';
+        if (text && typeof onToken === 'function') onToken(text, text);
+        return text;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let buffer = '';
+    let accumulatedText = '';
+
+    try {
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            const lines = buffer.split('\n');
+            buffer = lines.pop();
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith(':')) continue;
+                if (trimmed === 'data: [DONE]') continue;
+                if (trimmed.startsWith('data: ')) {
+                    try {
+                        const json = JSON.parse(trimmed.slice(6));
+                        const token = json.choices?.[0]?.delta?.content || json.choices?.[0]?.text || '';
+                        if (token) {
+                            accumulatedText += token;
+                            if (typeof onToken === 'function') {
+                                onToken(accumulatedText, token);
+                            }
+                        }
+                    } catch (e) {
+                        // ignore unparseable or partial stream fragments
+                    }
+                }
+            }
+        }
+    } catch (readErr) {
+        console.warn('Stream reader notice:', readErr);
+    }
+
+    return accumulatedText.trim();
+}
+
+// Simulated token streaming for instant smooth offline replies
+async function simulateTokenStream(replyObj, onToken) {
+    if (!onToken || !replyObj || !replyObj.content) return replyObj;
+    const words = replyObj.content.split(' ');
+    let current = '';
+    for (let i = 0; i < words.length; i++) {
+        current += (i === 0 ? '' : ' ') + words[i];
+        onToken(current, words[i]);
+        if (i % 3 === 0) {
+            await new Promise(r => setTimeout(r, 16));
+        }
+    }
+    return replyObj;
+}
+
 let isProcessingChat = false;
 
 async function handleSendChatMessage(e) {
@@ -1939,25 +2414,65 @@ async function handleSendChatMessage(e) {
     saveChatHistory(history);
     renderChatMessages();
 
-    // Show typing indicator
+    // Show initial typing indicator
     showTypingIndicator();
 
     try {
-        const botReply = await processBuddyConversation(textToSend, history, mediaSnapshot);
+        let activeBotRow = null;
+        let activeBotContent = null;
+        let streamedText = '';
+
+        const onToken = (fullText) => {
+            if (!activeBotRow) {
+                hideTypingIndicator();
+                const container = document.getElementById('chat-messages-container');
+                if (container) {
+                    activeBotRow = document.createElement('div');
+                    activeBotRow.className = 'studio-msg-row chat-msg-row bot';
+                    activeBotRow.id = 'streaming-active-row';
+                    activeBotRow.innerHTML = `
+                        <img src="avatars/notion-scholar.svg" alt="Steady" class="studio-msg-avatar chat-msg-avatar" />
+                        <div class="studio-bubble chat-bubble">
+                            <div class="streaming-content-wrapper"></div>
+                            <span class="streaming-cursor"></span>
+                        </div>
+                    `;
+                    container.appendChild(activeBotRow);
+                    activeBotContent = activeBotRow.querySelector('.streaming-content-wrapper');
+                }
+            }
+
+            streamedText = fullText;
+            if (activeBotContent) {
+                activeBotContent.innerHTML = renderMarkdownLite(streamedText);
+                const container = document.getElementById('chat-messages-container');
+                if (container) container.scrollTop = container.scrollHeight;
+            }
+        };
+
+        const botReply = await processBuddyConversation(textToSend, history, mediaSnapshot, onToken);
         hideTypingIndicator();
+
+        const activeRow = document.getElementById('streaming-active-row');
+        if (activeRow) activeRow.remove();
 
         history.push(botReply);
         saveChatHistory(history);
+        syncChatToSupabase(botReply);
         renderChatMessages();
 
-        // Refresh views if new timetable items were added
+        // Refresh views if schedule changed
         renderAllViews();
     } catch (err) {
         hideTypingIndicator();
+        const activeRow = document.getElementById('streaming-active-row');
+        if (activeRow) activeRow.remove();
         console.error('Chat processing error:', err);
+
         const fallback = generateOfflineBuddyReply(textToSend, mediaSnapshot, history);
         history.push(fallback);
         saveChatHistory(history);
+        syncChatToSupabase(fallback);
         renderChatMessages();
         renderAllViews();
     } finally {
@@ -2065,9 +2580,15 @@ CRITICAL DIRECT-RESPONSE & PERSONALIZATION RULES:
 - If the user asks a question (conceptual, academic, study technique, or motivational), answer it thoroughly, clearly, and directly with high intellect, practical examples, and warmth.
 - If the student mentions their courses, challenges, or preferences, tailor your response specifically around those exact subjects and details.
 
+FORMATTING & RICH RENDERING:
+- Use LaTeX Math notation ($$...$$ for display math, $...$ for inline math) for formulas, algebra, calculus, physics equations, and chemical equations.
+- Put code, algorithms, and SQL in markdown code blocks with language identifiers (e.g. \`\`\`python, \`\`\`sql).
+- Organize study advice and steps with clean bullet points and bold highlights.
+- STRICT 0 EMOJI RULE: NEVER output Unicode emojis; use clean punctuation, markdown, and words.
+
 TIMETABLE & CALENDAR CAPABILITIES:
 - You have the power to create and update their academic calendar.
-- When the student asks to schedule, plan, create, or update their timetable or classes (or agrees to a proposed schedule), include the following JSON block at the very end of your response to automatically inject it into their calendar:
+- When the student asks to schedule, plan, create, or update their timetable or classes (or agrees to a proposed schedule), include the following JSON block at the very end of your response to automatically generate their visual schedule card:
 \`\`\`json
 {
   "action": "UPDATE_TIMETABLE",
@@ -2088,7 +2609,7 @@ MULTIMODAL & VISION:
 IDENTITY:
 - You are strictly "Steady". Never disclose underlying LLM models or vendors. Speak with authority, warmth, and academic excellence.`;
 
-async function processBuddyConversation(userText, history, media) {
+async function processBuddyConversation(userText, history, media, onToken) {
     const openRouterKey = getOpenRouterKey();
     const nvidiaKey = getNvidiaKey();
     const claudeKey = getAnthropicKey();
@@ -2171,13 +2692,72 @@ async function processBuddyConversation(userText, history, media) {
             uploaded_media: contextPayload.uploaded_media
         })}`;
 
-    // 0. OpenRouter Frontier AI (DeepSeek V3 & LLaMA 3.3 70B - Native Browser CORS, Zero Server Needed)
+    // Helper to update active AI badge
+    const setAiBadgeActive = () => {
+        const badge = document.getElementById('chat-live-ai-badge');
+        if (badge) {
+            badge.textContent = 'AI Active';
+            badge.style.background = 'rgba(16, 185, 129, 0.2)';
+            badge.style.color = '#34D399';
+        }
+    };
+
+    // 0. Primary Sabi Cloud / Local Stream Endpoint (/api/chat)
+    const apiEndpoints = ['/api/chat'];
+    if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+        apiEndpoints.push('http://localhost:3000/api/chat');
+    }
+
+    const authKey = openRouterKey || nvidiaKey || '';
+    const reqHeaders = { 'Content-Type': 'application/json' };
+    if (authKey) reqHeaders['Authorization'] = `Bearer ${authKey}`;
+
+    for (const endpoint of apiEndpoints) {
+        try {
+            console.log(`Connecting to Sabi streaming AI endpoint: ${endpoint}...`);
+            const res = await fetchWithTimeout(endpoint, {
+                method: 'POST',
+                headers: reqHeaders,
+                body: JSON.stringify({
+                    model: 'deepseek/deepseek-chat',
+                    messages: [
+                        { role: 'system', content: systemContent },
+                        ...messagesPayload
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 1500,
+                    stream: true
+                })
+            }, 25000);
+
+            if (res.ok) {
+                const isStream = (res.headers.get('content-type') || '').includes('text/event-stream');
+                let replyText = '';
+                if (isStream) {
+                    replyText = await readSseStream(res, onToken);
+                } else {
+                    const data = await res.json();
+                    replyText = data.choices?.[0]?.message?.content || '';
+                    if (replyText && typeof onToken === 'function') onToken(replyText, replyText);
+                }
+
+                if (replyText) {
+                    setAiBadgeActive();
+                    return parseAiReplyAndApply(replyText);
+                }
+            }
+        } catch (e) {
+            console.warn(`Streaming AI endpoint ${endpoint} failed, checking alternatives:`, e.message || e);
+        }
+    }
+
+    // 1. Direct OpenRouter Frontier AI (Native Browser CORS, Stream SSE)
     if (openRouterKey && openRouterKey.startsWith('sk-or-')) {
         const openRouterModels = ['deepseek/deepseek-chat', 'meta-llama/llama-3.3-70b-instruct'];
 
         for (const modelName of openRouterModels) {
             try {
-                console.log(`Connecting to OpenRouter (${modelName})...`);
+                console.log(`Connecting to direct OpenRouter (${modelName})...`);
                 const res = await fetchWithTimeout('https://openrouter.ai/api/v1/chat/completions', {
                     method: 'POST',
                     headers: {
@@ -2193,81 +2773,25 @@ async function processBuddyConversation(userText, history, media) {
                             ...messagesPayload
                         ],
                         temperature: 0.7,
-                        max_tokens: 1500
+                        max_tokens: 1500,
+                        stream: true
                     })
-                }, 15000);
+                }, 25000);
 
                 if (res.ok) {
-                    const data = await res.json();
-                    const replyText = data.choices?.[0]?.message?.content;
+                    const replyText = await readSseStream(res, onToken);
                     if (replyText) {
-                        const badge = document.getElementById('chat-live-ai-badge');
-                        if (badge) {
-                            badge.textContent = 'AI Active';
-                            badge.style.background = 'rgba(16, 185, 129, 0.2)';
-                            badge.style.color = '#34D399';
-                        }
+                        setAiBadgeActive();
                         return parseAiReplyAndApply(replyText);
                     }
                 }
             } catch (err) {
-                console.warn(`OpenRouter model ${modelName} error, falling back:`, err.message || err);
+                console.warn(`OpenRouter direct model ${modelName} notice:`, err.message || err);
             }
         }
     }
 
-    // 1. NVIDIA NIM Live AI (Verified Working High-Performance LLM with Vision via Proxy & Direct)
-    if (nvidiaKey && nvidiaKey.startsWith('nvapi-')) {
-        const chatPayload = {
-            model: 'meta/llama-3.2-11b-vision-instruct',
-            messages: [
-                { role: 'system', content: systemContent },
-                ...messagesPayload
-            ],
-            temperature: 0.7,
-            max_tokens: 1500
-        };
-
-        // Use current domain's /api/chat (works on localhost, mobile, Vercel, and custom domains)
-        const endpoints = ['/api/chat'];
-        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-            endpoints.push('http://localhost:3000/api/chat');
-        }
-
-        for (const endpoint of endpoints) {
-            try {
-                const authKey = nvidiaKey || openRouterKey || '';
-                const reqHeaders = { 'Content-Type': 'application/json' };
-                if (authKey) {
-                    reqHeaders['Authorization'] = `Bearer ${authKey}`;
-                }
-
-                const res = await fetchWithTimeout(endpoint, {
-                    method: 'POST',
-                    headers: reqHeaders,
-                    body: JSON.stringify(chatPayload)
-                }, 15000);
-
-                if (res.ok) {
-                    const data = await res.json();
-                    const replyText = data.choices?.[0]?.message?.content;
-                    if (replyText) {
-                        const badge = document.getElementById('chat-live-ai-badge');
-                        if (badge) {
-                            badge.textContent = 'AI Active';
-                            badge.style.background = 'rgba(16, 185, 129, 0.2)';
-                            badge.style.color = '#34D399';
-                        }
-                        return parseAiReplyAndApply(replyText);
-                    }
-                }
-            } catch (e) {
-                console.warn(`Connection to AI endpoint ${endpoint} failed:`, e.message || e);
-            }
-        }
-    }
-
-    // 1. Anthropic Claude (Only if key starts with sk-ant-)
+    // 2. Direct Anthropic Claude (if key starts with sk-ant-)
     if (claudeKey && claudeKey.startsWith('sk-ant-')) {
         try {
             const res = await fetchWithTimeout('https://api.anthropic.com/v1/messages', {
@@ -2284,19 +2808,23 @@ async function processBuddyConversation(userText, history, media) {
                     system: systemContent,
                     messages: messagesPayload
                 })
-            }, 5000);
+            }, 12000);
 
             if (res.ok) {
                 const data = await res.json();
                 const replyText = data.content?.[0]?.text;
-                if (replyText) return parseAiReplyAndApply(replyText);
+                if (replyText) {
+                    if (typeof onToken === 'function') onToken(replyText, replyText);
+                    setAiBadgeActive();
+                    return parseAiReplyAndApply(replyText);
+                }
             }
         } catch (e) {
             console.warn('Claude API error, falling back:', e.message || e);
         }
     }
 
-    // 2. Google Gemini (Native browser CORS support)
+    // 3. Direct Google Gemini
     if (geminiKey && geminiKey.length > 15) {
         try {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
@@ -2316,12 +2844,8 @@ async function processBuddyConversation(userText, history, media) {
                 const data = await res.json();
                 const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (replyText) {
-                    const badge = document.getElementById('chat-live-ai-badge');
-                    if (badge) {
-                        badge.textContent = 'AI Active';
-                        badge.style.background = 'rgba(16, 185, 129, 0.2)';
-                        badge.style.color = '#34D399';
-                    }
+                    if (typeof onToken === 'function') onToken(replyText, replyText);
+                    setAiBadgeActive();
                     return parseAiReplyAndApply(replyText);
                 }
             }
@@ -2330,7 +2854,7 @@ async function processBuddyConversation(userText, history, media) {
         }
     }
 
-    // 3. OpenAI GPT (Only if key starts with sk-)
+    // 4. Direct OpenAI GPT
     if (openAiKey && openAiKey.startsWith('sk-')) {
         try {
             const res = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
@@ -2346,20 +2870,26 @@ async function processBuddyConversation(userText, history, media) {
                         ...messagesPayload
                     ]
                 })
-            }, 5000);
+            }, 12000);
 
             if (res.ok) {
                 const data = await res.json();
                 const replyText = data.choices?.[0]?.message?.content;
-                if (replyText) return parseAiReplyAndApply(replyText);
+                if (replyText) {
+                    if (typeof onToken === 'function') onToken(replyText, replyText);
+                    setAiBadgeActive();
+                    return parseAiReplyAndApply(replyText);
+                }
             }
         } catch (e) {
             console.warn('OpenAI API error, falling back:', e.message || e);
         }
     }
 
-    // 4. Sabi High-Fidelity Conversational Assistant (Instant, intelligent, zero lag)
-    return generateOfflineBuddyReply(userText, media, history);
+    // 5. Intelligent Sabi Offline Assistant with simulated streaming
+    const offlineReply = generateOfflineBuddyReply(userText, media, history);
+    await simulateTokenStream(offlineReply, onToken);
+    return offlineReply;
 }
 
 function parseAiReplyAndApply(replyText) {
@@ -2375,50 +2905,22 @@ function parseAiReplyAndApply(replyText) {
         } catch (e) {}
     }
 
+    let scheduleProposal = null;
     if (actionData && actionData.action === 'UPDATE_TIMETABLE') {
-        if (Array.isArray(actionData.classes) && actionData.classes.length > 0) {
-            actionData.classes.forEach(cls => {
-                storedClasses.push({
-                    id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-                    subject: cls.subject,
-                    day: cls.day,
-                    start_time: cls.start_time || '09:00',
-                    end_time: cls.end_time || '11:00',
-                    venue: cls.venue || 'Lecture Hall',
-                    isRecurring: true
-                });
-            });
-            saveStoredClasses(storedClasses);
-        }
-
-        if (Array.isArray(actionData.studySessions) && actionData.studySessions.length > 0) {
-            actionData.studySessions.forEach(sess => {
-                calendarEvents.push({
-                    id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-                    title: sess.title,
-                    category: sess.category || 'study',
-                    date: sess.date || getTodayStr(),
-                    time: sess.time || '17:00',
-                    duration: sess.duration || 1.5,
-                    location: 'Sabi Prep Room',
-                    notes: sess.notes || '',
-                    completed: false,
-                    isAiGenerated: true
-                });
-            });
-            saveEvents();
-        }
-
-        showToast('Timetable updated by Sabi!');
-        if (typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
-            syncAllEventsToGoogle(true);
-        }
+        scheduleProposal = {
+            cardId: 'prop-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+            summary: actionData.summary || 'Proposed Timetable Schedule',
+            classes: actionData.classes || [],
+            studySessions: actionData.studySessions || [],
+            accepted: false
+        };
     }
 
     return {
         role: 'bot',
         content: cleanMessage,
-        actionCard: actionData ? { details: actionData.summary || 'Added classes & study sessions to your timetable.' } : null,
+        scheduleProposal: scheduleProposal,
+        actionCard: scheduleProposal ? { details: scheduleProposal.summary } : null,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 }
