@@ -313,6 +313,22 @@ function initCalendarApp() {
         renderAllViews();
     }
 
+    // Setup textarea auto-expand and Enter-to-send for chat input
+    const chatInput = document.getElementById('chat-user-input');
+    if (chatInput && !chatInput._hasAutoExpandListener) {
+        chatInput._hasAutoExpandListener = true;
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendChatMessage(e);
+            }
+        });
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+        });
+    }
+
     // Close planner dropdown on outside click
     document.addEventListener('click', (e) => {
         const menu = document.getElementById('planner-dropdown-menu');
@@ -3044,6 +3060,7 @@ async function handleSendChatMessage(e) {
 
     const textToSend = userText || (pendingChatMedia ? `Uploaded course outline: ${pendingChatMedia.name}` : '');
     input.value = '';
+    input.style.height = 'auto';
 
     const history = getChatHistory();
     const userMsgObj = {

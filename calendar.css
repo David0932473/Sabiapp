@@ -2639,8 +2639,7 @@ body {
         bottom: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        height: 100dvh !important;
-        max-height: 100dvh !important;
+        max-height: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
         align-items: stretch !important;
@@ -2658,8 +2657,7 @@ body {
         margin: 0 !important;
         border-radius: 0 !important;
         height: 100% !important;
-        height: 100dvh !important;
-        max-height: 100dvh !important;
+        max-height: 100% !important;
         width: 100% !important;
         max-width: 100% !important;
         border: none !important;
@@ -3543,20 +3541,23 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 54px;
-    border-radius: 999px;
-    padding: 5px 6px 5px 14px;
-    background: rgba(255, 255, 255, 0.88);
+    min-height: 52px;
+    height: auto;
+    max-height: 140px;
+    border-radius: 28px;
+    padding: 6px 8px 6px 14px;
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(220, 215, 238, 0.85);
     box-shadow: 0 10px 30px rgba(139, 92, 246, 0.08);
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
 }
 
 [data-theme="dark"] .studio-pill-capsule {
-    background: rgba(22, 18, 32, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(22, 18, 32, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
 }
 
@@ -3566,8 +3567,8 @@ body {
 }
 
 .studio-pill-btn-add {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: transparent;
     border: none;
@@ -3589,20 +3590,30 @@ body {
 .studio-pill-input {
     flex: 1;
     min-width: 0;
+    height: auto;
+    min-height: 38px;
+    max-height: 110px;
+    line-height: 1.45;
     background: transparent;
     border: none;
     outline: none;
-    font-size: 16px; /* Crucial: Prevents iOS auto-zoom */
-    font-family: inherit;
+    font-size: 15.5px;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text-main);
     font-weight: 500;
-    padding: 0 4px;
+    padding: 8px 4px;
+    box-sizing: border-box;
+    display: block;
+    resize: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .studio-pill-input::placeholder {
     color: #94A3B8;
     font-size: 14.5px;
     font-weight: 400;
+    line-height: normal;
 }
 
 .studio-pill-btn-mic {
