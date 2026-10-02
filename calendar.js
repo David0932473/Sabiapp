@@ -163,6 +163,67 @@ function getDayNameFromDate(dateStr) {
     return days[d.getDay()];
 }
 
+function normalizeDayName(dayStr) {
+    if (!dayStr) return 'Monday';
+    const s = String(dayStr).trim().toLowerCase();
+    if (s.startsWith('sun')) return 'Sunday';
+    if (s.startsWith('mon')) return 'Monday';
+    if (s.startsWith('tue')) return 'Tuesday';
+    if (s.startsWith('wed')) return 'Wednesday';
+    if (s.startsWith('thu')) return 'Thursday';
+    if (s.startsWith('fri')) return 'Friday';
+    if (s.startsWith('sat')) return 'Saturday';
+    return 'Monday';
+}
+
+function parseTime12or24(src) {
+    if (!src) return null;
+    const str = String(src).trim();
+    const m = str.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i) || str.match(/\b(\d{1,2}):(\d{2})\b/);
+    if (!m) return null;
+    let h = parseInt(m[1], 10);
+    const min = m[2] || '00';
+    const ampm = m[3] ? m[3].toLowerCase() : null;
+    if (ampm === 'pm' && h < 12) h += 12;
+    if (ampm === 'am' && h === 12) h = 0;
+    return String(h).padStart(2, '0') + ':' + min;
+}
+
+function resolveScheduleDate(rawDate, rawDay, defaultOffsetDays = 0) {
+    const todayStr = getTodayStr();
+    const todayYear = new Date().getFullYear();
+    const sundayStr = getSundayOfWeek(new Date());
+
+    // 1. If day is specified (e.g. "Monday", "Tue", "Friday")
+    const dayStr = rawDay || (typeof rawDate === 'string' && !rawDate.includes('-') && !/\d{4}/.test(rawDate) ? rawDate : null);
+    if (dayStr) {
+        const norm = normalizeDayName(dayStr);
+        const dayOffsets = { 'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6 };
+        if (norm in dayOffsets) {
+            return addDaysToDate(sundayStr, dayOffsets[norm]);
+        }
+    }
+
+    // 2. If valid YYYY-MM-DD string is provided
+    if (rawDate && typeof rawDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(rawDate.trim())) {
+        const parts = rawDate.trim().split('-');
+        const year = parseInt(parts[0], 10);
+        // If year is older than current year (e.g. 2023 / 2024 from AI templates)
+        if (year < todayYear) {
+            const pastDayName = getDayNameFromDate(rawDate.trim());
+            const dayOffsets = { 'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6 };
+            return addDaysToDate(sundayStr, dayOffsets[pastDayName] || 0);
+        }
+        return rawDate.trim();
+    }
+
+    // 3. Fallback: offset from today
+    if (defaultOffsetDays > 0) {
+        return addDaysToDate(todayStr, defaultOffsetDays);
+    }
+    return todayStr;
+}
+
 function calculateEndTime(startTime, durationHours = 1) {
     if (!startTime || !startTime.includes(':')) return '18:00';
     const [h, m] = startTime.split(':').map(Number);
@@ -724,7 +785,7 @@ function renderMiniCalendarStrip() {
 
         // Check if there are sessions or classes on this day
         const daySessionsCount = calendarEvents.filter(ev => ev.date === currentDateStr).length;
-        const dayClassesCount = storedClasses.filter(cls => (cls.day || '').toLowerCase() === fullDayNames[i].toLowerCase()).length;
+        const dayClassesCount = storedClasses.filter(cls => normalizeDayName(cls.day) === fullDayNames[i]).length;
         const totalCount = daySessionsCount + dayClassesCount;
 
         html += `
@@ -801,7 +862,7 @@ function renderDayTimeline() {
     const dayOfWeekName = getDayNameFromDate(selectedDate);
     
     // Recurring classes on this weekday
-    const dayClasses = storedClasses.filter(c => (c.day || '').toLowerCase() === dayOfWeekName.toLowerCase()).map(c => ({
+    const dayClasses = storedClasses.filter(c => normalizeDayName(c.day) === dayOfWeekName).map(c => ({
         id: c.id,
         title: c.subject,
         start_time: c.start_time || '09:00',
@@ -1112,9 +1173,7 @@ function renderWeekTimetable() {
         }));
 
         // 2. Recurring classes for this day
-        const dayClasses = storedClasses.filter(cls => {
-            return (cls.day || '').toLowerCase() === dayName.toLowerCase();
-        }).map(cls => ({
+        const dayClasses = storedClasses.filter(cls => normalizeDayName(cls.day) === dayName).map(cls => ({
             id: cls.id,
             title: cls.subject,
             time: cls.start_time,
@@ -2603,7 +2662,100 @@ function checkScheduleConflicts(proposal) {
     return conflicts;
 }
 
-// Interactive acceptance of proposed schedules with one-click injection and Google Calendar sync
+// Interactive acceptance and injection of proposed schedules with one-click injection and Google Calendar sync
+function injectScheduleProposal(proposal, autoAccept = true) {
+    if (!proposal) return { addedCount: 0 };
+
+    let addedCount = 0;
+
+    // 1. Add classes
+    if (Array.isArray(proposal.classes) && proposal.classes.length > 0) {
+        proposal.classes.forEach(cls => {
+            const subject = String(cls.subject || cls.title || 'Lecture').trim();
+            const day = normalizeDayName(cls.day);
+            const startTime = parseTime12or24(cls.start_time || cls.startTime || cls.time) || '09:00';
+            const endTime = parseTime12or24(cls.end_time || cls.endTime) || calculateEndTime(startTime, 2);
+            const venue = cls.venue || cls.location || 'Lecture Hall';
+
+            // Avoid duplicate identical classes
+            const exists = storedClasses.some(c =>
+                c.subject.toLowerCase() === subject.toLowerCase() &&
+                normalizeDayName(c.day) === day &&
+                c.start_time === startTime
+            );
+
+            if (!exists) {
+                storedClasses.push({
+                    id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+                    subject: subject,
+                    day: day,
+                    start_time: startTime,
+                    end_time: endTime,
+                    venue: venue,
+                    isRecurring: true
+                });
+                addedCount++;
+            }
+        });
+        saveStoredClasses(storedClasses);
+    }
+
+    // 2. Add study sessions
+    if (Array.isArray(proposal.studySessions) && proposal.studySessions.length > 0) {
+        proposal.studySessions.forEach((sess, idx) => {
+            const title = String(sess.title || sess.subject || 'Study Session').trim();
+            const category = sess.category || 'study';
+            const date = resolveScheduleDate(sess.date, sess.day, idx);
+            const time = parseTime12or24(sess.time || sess.start_time || sess.startTime) || '17:00';
+            const duration = parseFloat(sess.duration) || 1.5;
+            const location = sess.location || 'Sabi Prep Room';
+            const notes = sess.notes || '';
+
+            // Avoid duplicate identical events
+            const exists = calendarEvents.some(e =>
+                e.title.toLowerCase() === title.toLowerCase() &&
+                e.date === date &&
+                e.time === time
+            );
+
+            if (!exists) {
+                calendarEvents.push({
+                    id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+                    title: title,
+                    category: category,
+                    date: date,
+                    time: time,
+                    duration: duration,
+                    location: location,
+                    notes: notes,
+                    completed: false,
+                    isAiGenerated: true
+                });
+                addedCount++;
+            }
+        });
+        saveEvents();
+    }
+
+    if (autoAccept) {
+        proposal.accepted = true;
+    }
+    proposal._injected = true;
+
+    renderAllViews();
+
+    if (addedCount > 0) {
+        showToast(`Added ${addedCount} item(s) directly to your calendar!`);
+        // Automatic Google Calendar sync trigger
+        if (typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
+            syncAllEventsToGoogle(true);
+        }
+    }
+
+    return { addedCount };
+}
+window.injectScheduleProposal = injectScheduleProposal;
+
 function applyProposedSchedule(cardId, btn) {
     const history = getChatHistory();
     let targetProposal = null;
@@ -2611,7 +2763,6 @@ function applyProposedSchedule(cardId, btn) {
     for (const msg of history) {
         if (msg.scheduleProposal && (msg.scheduleProposal.cardId === cardId || msg.scheduleProposal.id === cardId)) {
             targetProposal = msg.scheduleProposal;
-            msg.scheduleProposal.accepted = true;
             break;
         }
     }
@@ -2630,47 +2781,8 @@ function applyProposedSchedule(cardId, btn) {
         return;
     }
 
-    let addedCount = 0;
-
-    // 1. Add classes
-    if (Array.isArray(targetProposal.classes) && targetProposal.classes.length > 0) {
-        targetProposal.classes.forEach(cls => {
-            storedClasses.push({
-                id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-                subject: cls.subject,
-                day: cls.day,
-                start_time: cls.start_time || '09:00',
-                end_time: cls.end_time || '11:00',
-                venue: cls.venue || 'Lecture Hall',
-                isRecurring: true
-            });
-            addedCount++;
-        });
-        saveStoredClasses(storedClasses);
-    }
-
-    // 2. Add study sessions
-    if (Array.isArray(targetProposal.studySessions) && targetProposal.studySessions.length > 0) {
-        targetProposal.studySessions.forEach(sess => {
-            calendarEvents.push({
-                id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-                title: sess.title,
-                category: sess.category || 'study',
-                date: sess.date || getTodayStr(),
-                time: sess.time || '17:00',
-                duration: sess.duration || 1.5,
-                location: 'Sabi Prep Room',
-                notes: sess.notes || '',
-                completed: false,
-                isAiGenerated: true
-            });
-            addedCount++;
-        });
-        saveEvents();
-    }
-
+    const { addedCount } = injectScheduleProposal(targetProposal, true);
     saveChatHistory(history);
-    renderAllViews();
 
     if (btn) {
         btn.classList.add('accepted');
@@ -2679,11 +2791,6 @@ function applyProposedSchedule(cardId, btn) {
     }
 
     showToast(`Added ${addedCount} event(s) to your timetable!`);
-
-    // Automatic Google Calendar sync trigger
-    if (typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
-        syncAllEventsToGoogle(true);
-    }
 }
 window.applyProposedSchedule = applyProposedSchedule;
 
@@ -3119,6 +3226,11 @@ async function handleSendChatMessage(e) {
         const activeRow = document.getElementById('streaming-active-row');
         if (activeRow) activeRow.remove();
 
+        // Ensure any proposal in botReply is fully injected and synchronized
+        if (botReply && botReply.scheduleProposal && !botReply.scheduleProposal._injected) {
+            injectScheduleProposal(botReply.scheduleProposal, true);
+        }
+
         history.push(botReply);
         saveChatHistory(history);
         syncChatToSupabase(botReply);
@@ -3133,6 +3245,9 @@ async function handleSendChatMessage(e) {
         console.error('Chat processing error:', err);
 
         const fallback = generateOfflineBuddyReply(textToSend, mediaSnapshot, history);
+        if (fallback && fallback.scheduleProposal && !fallback.scheduleProposal._injected) {
+            injectScheduleProposal(fallback.scheduleProposal, true);
+        }
         history.push(fallback);
         saveChatHistory(history);
         syncChatToSupabase(fallback);
@@ -3559,6 +3674,97 @@ async function processBuddyConversation(userText, history, media, onToken) {
     return offlineReply;
 }
 
+function parseScheduleFromPlainText(text) {
+    if (!text || typeof text !== 'string') return null;
+
+    const daysRegex = /\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i;
+    const timeRegex = /\b(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\b/i;
+
+    if (!daysRegex.test(text) || !timeRegex.test(text)) {
+        return null;
+    }
+
+    const lines = text.split('\n');
+    const classes = [];
+    const studySessions = [];
+
+    for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line || line.startsWith('#') || line.startsWith('|-') || line.startsWith('==')) continue;
+
+        const dayMatch = line.match(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i);
+        if (!dayMatch) continue;
+
+        const dayName = normalizeDayName(dayMatch[1]);
+
+        const timeRangeMatch = line.match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*(?:-|to|–)\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
+        const singleTimeMatch = line.match(/(?:at|from|time:?)?\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
+
+        let startTime = '09:00';
+        let endTime = '11:00';
+
+        if (timeRangeMatch) {
+            startTime = parseTime12or24(timeRangeMatch[1]) || '09:00';
+            endTime = parseTime12or24(timeRangeMatch[2]) || calculateEndTime(startTime, 2);
+        } else if (singleTimeMatch) {
+            startTime = parseTime12or24(singleTimeMatch[1]) || '09:00';
+            endTime = calculateEndTime(startTime, 1.5);
+        }
+
+        let cleaned = line
+            .replace(/\|/g, ' ')
+            .replace(/^[-*•\d.)\s]+/, '')
+            .replace(new RegExp('\\b' + dayMatch[0] + '\\b', 'i'), '')
+            .replace(/(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*(?:-|to|–)\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/gi, '')
+            .replace(/(?:at|from|time:?)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm)?/gi, '')
+            .replace(/\b(lecture|hall|room|am|pm|hrs?|hours?)\b/gi, '')
+            .replace(/[()\[\]]/g, ' ')
+            .replace(/[:\-–—]/g, ' ')
+            .trim();
+
+        let subject = cleaned.replace(/\s+/g, ' ').trim();
+        if (!subject || subject.length < 2) {
+            subject = 'Study Session';
+        }
+        if (subject.length > 40) {
+            subject = subject.substring(0, 40).trim();
+        }
+
+        const isLecture = /\b(lecture|class|prof|hall|campus)\b/i.test(line);
+        if (isLecture) {
+            classes.push({
+                subject: subject,
+                day: dayName,
+                start_time: startTime,
+                end_time: endTime,
+                venue: 'Campus'
+            });
+        } else {
+            const sundayStr = getSundayOfWeek(new Date());
+            const dayOffsets = { 'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6 };
+            const date = addDaysToDate(sundayStr, dayOffsets[dayName] || 1);
+            studySessions.push({
+                title: subject,
+                category: 'study',
+                date: date,
+                time: startTime,
+                duration: 1.5,
+                location: 'Sabi Prep Room'
+            });
+        }
+    }
+
+    if (classes.length === 0 && studySessions.length === 0) return null;
+
+    return {
+        cardId: 'prop-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        summary: `Generated Schedule (${classes.length + studySessions.length} sessions)`,
+        classes: classes,
+        studySessions: studySessions,
+        accepted: true
+    };
+}
+
 function parseAiReplyAndApply(replyText) {
     let cleanMessage = replyText;
     let actionData = null;
@@ -3590,15 +3796,23 @@ function parseAiReplyAndApply(replyText) {
             summary: actionData.summary || 'Proposed Timetable Schedule',
             classes: actionData.classes || [],
             studySessions: actionData.studySessions || [],
-            accepted: false
+            accepted: true
         };
+    } else {
+        // Fallback: Check if plain text contains a structured schedule
+        scheduleProposal = parseScheduleFromPlainText(replyText);
+    }
+
+    // Auto-inject immediately into calendar and timetable
+    if (scheduleProposal) {
+        injectScheduleProposal(scheduleProposal, true);
     }
 
     return {
         role: 'bot',
         content: cleanMessage,
         scheduleProposal: scheduleProposal,
-        actionCard: scheduleProposal ? { details: scheduleProposal.summary } : null,
+        actionCard: scheduleProposal ? { details: scheduleProposal.summary + ' (Added to calendar)' } : null,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 }
@@ -3723,14 +3937,17 @@ function generateOfflineBuddyReply(userText, media, history) {
             summary: '5.00 CGPA Intensive Revision Routine',
             classes: [],
             studySessions: sessions,
-            accepted: false
+            accepted: true,
+            _injected: true
         };
+
+        injectScheduleProposal(proposal, true);
 
         return {
             role: 'bot',
-            content: `Targeting a **5.00 CGPA** is a formidable academic commitment! To hit that level, the golden rule is **2 hours of active revision for every 1 lecture hour**, prioritized around spaced testing rather than passive rereading.\n\nI have structured a high-yield study routine across your subjects below. Tap **Accept & Add to Timetable** to lock it in!`,
+            content: `Targeting a **5.00 CGPA** is a formidable academic commitment! To hit that level, the golden rule is **2 hours of active revision for every 1 lecture hour**, prioritized around spaced testing rather than passive rereading.\n\nI have structured a high-yield study routine across your subjects below and added it directly to your calendar!`,
             scheduleProposal: proposal,
-            actionCard: { details: 'Generated 5.00 GPA target study routine' },
+            actionCard: { details: 'Generated and added 5.00 GPA study routine' },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
@@ -3749,7 +3966,7 @@ function generateOfflineBuddyReply(userText, media, history) {
     }
 
     // 3. Conversational: Study Advice, Time Management & Techniques
-    if (/\b(time|time management|study tips|study advice|how to study|how should i study|best way to study|study techniques|feynman|pomodoro|schedule|plan my day|productive|productivity|focus)\b/i.test(lower)) {
+    if (/\b(time management|study tips|study advice|how to study|how should i study|best way to study|study techniques|feynman|pomodoro|productivity tips|how to focus)\b/i.test(lower)) {
         return {
             role: 'bot',
             content: `To make the best use of your time:
@@ -3900,7 +4117,7 @@ Which specific course or exam are you working on right now? Tell me, and I can a
 
     // 12. GENERATE TIMETABLE COMMAND
     const hasScheduleInfo = hasExplicitNoClasses || allMentionedDays.length > 0 || storedClasses.length > 0;
-    const wantsGenerate = /\b(generate|build|create|let's go|lets go|proceed|do it|ready|make timetable|set up|setup|start|go ahead|build it|make it)\b/i.test(lower)
+    const wantsGenerate = /\b(generate|build|create|schedule|timetable|plan my day|plan my week|plan schedule|add to calendar|let's go|lets go|proceed|do it|ready|make timetable|set up|setup|start|go ahead|build it|make it)\b/i.test(lower)
         || (/\b(yes|yep|yeah|sure|ok|okay|go|done)\b/i.test(lower) && (extractedSubjects.length > 0 || hasScheduleInfo));
 
     if (wantsGenerate) {
@@ -3920,28 +4137,36 @@ Which specific course or exam are you working on right now? Tell me, and I can a
         const times = timeMap[studyWindow || 'evening'];
 
         const sessionCount = Math.min(6, Math.max(4, subjects.length));
+        const generatedSessions = [];
         for (let i = 0; i < sessionCount; i++) {
             const sub = subjects[i % subjects.length];
-            calendarEvents.push({
-                id: 'ev-' + Date.now() + '-' + i,
+            generatedSessions.push({
                 title: `${sub} Speed Drill`,
                 category: examCategory,
                 date: addDaysToDate(mondayStr, i),
                 time: times[i % times.length],
                 duration: 1.5,
                 location: 'Sabi Prep Room',
-                notes: `Targeted practice for ${sub}. Active recall & past questions.`,
-                completed: false,
-                isAiGenerated: true
+                notes: `Targeted practice for ${sub}. Active recall & past questions.`
             });
         }
-        saveEvents();
-        renderAllViews();
+
+        const proposal = {
+            cardId: 'prop-gen-' + Date.now(),
+            summary: `Generated Study Schedule (${sessionCount} sessions)`,
+            classes: [],
+            studySessions: generatedSessions,
+            accepted: true,
+            _injected: true
+        };
+
+        injectScheduleProposal(proposal, true);
 
         const winLabel = studyWindow ? `${studyWindow} window` : 'evening slots';
         return {
             role: 'bot',
-            content: `**Your personalised timetable is live!**\n\n• **Subjects**: ${subjects.slice(0, 4).join(', ')}${subjects.length > 4 ? ' + more' : ''}\n• **Study Window**: Scheduled in your ${winLabel}\n• **Strategy**: Spaced repetition with high-yield drills\n• **Rest Day**: Sunday kept free for rest and catch-up\n\nCheck the **Schedule** tab or switch to **Week Grid** to view your complete week!`,
+            content: `**Your personalised timetable is live!**\n\n• **Subjects**: ${subjects.slice(0, 4).join(', ')}${subjects.length > 4 ? ' + more' : ''}\n• **Study Window**: Scheduled in your ${winLabel}\n• **Strategy**: Spaced repetition with high-yield drills\n• **Rest Day**: Sunday kept free for rest and catch-up\n\nAll sessions have been added to your calendar. Check the **Schedule** tab or switch to **Week Grid** to view your complete week!`,
+            scheduleProposal: proposal,
             actionCard: { details: `Generated ${sessionCount} study sessions for ${subjects.slice(0, 3).join(', ')}` },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
