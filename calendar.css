@@ -2566,8 +2566,17 @@ body {
     box-shadow: 0 -20px 50px rgba(139, 92, 246, 0.08) !important;
 }
 
+/* Global guarantee that #sabi-ai-chat-drawer respects the hidden class */
+#sabi-ai-chat-drawer.hidden,
+.modal-overlay.hidden,
+[hidden] {
+    display: none !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+
 @media (min-width: 1024px) {
-    #sabi-ai-chat-drawer {
+    #sabi-ai-chat-drawer:not(.hidden) {
         background: transparent !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
@@ -2616,7 +2625,13 @@ body {
 }
 
 @media (max-width: 1023px) {
-    #sabi-ai-chat-drawer {
+    #sabi-ai-chat-drawer.hidden {
+        display: none !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+    }
+
+    #sabi-ai-chat-drawer:not(.hidden) {
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;

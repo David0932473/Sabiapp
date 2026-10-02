@@ -311,7 +311,6 @@ function initCalendarApp() {
     if (document.getElementById('mini-cal-days')) {
         renderMiniCalendarStrip();
         renderAllViews();
-        checkAndShowFirstTimePopup();
     }
 
     // Close planner dropdown on outside click
