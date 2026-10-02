@@ -257,6 +257,7 @@ function escapeIcs(str) {
 }
 
 function showToast(message) {
+    if (!message) return;
     let toast = document.getElementById('calendar-toast');
     if (!toast) {
         toast = document.createElement('div');
@@ -264,11 +265,16 @@ function showToast(message) {
         toast.className = 'calendar-toast';
         document.body.appendChild(toast);
     }
-    toast.textContent = message;
+    if (toast._timer) {
+        clearTimeout(toast._timer);
+    }
+    toast.innerHTML = `<span class="calendar-toast-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span class="calendar-toast-text">${escapeHtml(message)}</span>`;
+    toast.classList.remove('show');
+    void toast.offsetWidth;
     toast.classList.add('show');
-    setTimeout(() => {
+    toast._timer = setTimeout(() => {
         toast.classList.remove('show');
-    }, 2800);
+    }, 2400);
 }
 
 // ==========================================

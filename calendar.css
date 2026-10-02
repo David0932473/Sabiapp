@@ -5670,3 +5670,71 @@ body.nav-is-hidden .steady-fab-avatar {
         font-size: 12px;
     }
 }
+
+/* ==========================================
+   --- CALENDAR TOAST NOTIFICATIONS ---
+   ========================================== */
+.calendar-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(24px) scale(0.96);
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: #F8FAFC;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    padding: 10px 20px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 999999;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.28s;
+    white-space: nowrap;
+    max-width: 90vw;
+}
+
+.calendar-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.calendar-toast-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #34D399;
+    flex-shrink: 0;
+}
+
+[data-theme="light"] .calendar-toast {
+    background: rgba(255, 255, 255, 0.96);
+    color: #0F172A;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .calendar-toast-icon {
+    color: #059669;
+}
+
+@media (max-width: 768px) {
+    .calendar-toast {
+        bottom: 84px; /* Float safely above mobile bottom nav */
+        font-size: 12.5px;
+        padding: 9px 18px;
+    }
+}
+
