@@ -2540,9 +2540,6 @@ body {
 
 .copilot-studio-window {
     background: #0A0A0A;
-    background: radial-gradient(circle at 15% 0%, rgba(61, 142, 255, 0.12) 0%, rgba(10, 10, 10, 0.98) 75%), #0A0A0A;
-    backdrop-filter: blur(36px) saturate(180%);
-    -webkit-backdrop-filter: blur(36px) saturate(180%);
     border: 1px solid #27272A;
     border-radius: 28px 28px 0 0;
     width: 100%;
@@ -2553,7 +2550,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 -24px 64px rgba(0, 0, 0, 0.85);
+    box-shadow: 0 -24px 64px rgba(0, 0, 0, 0.95);
     animation: studioSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     z-index: 1000;
@@ -2705,20 +2702,21 @@ body {
     }
 }
 
-/* Ambient Cosmic Top Glow */
+/* Ambient Cosmic Top Glow (Only active in light mode) */
 .studio-ambient-glow {
+    display: none;
+}
+
+[data-theme="light"] .studio-ambient-glow {
+    display: block;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 160px;
-    background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+    background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
     pointer-events: none;
     z-index: 1;
-}
-
-[data-theme="light"] .studio-ambient-glow {
-    background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
 }
 
 /* Tactile Mobile Drag Handle */
