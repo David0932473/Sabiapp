@@ -5822,6 +5822,316 @@ body.nav-is-hidden .steady-fab-avatar {
         padding: 2px 7px;
         font-size: 10.5px;
     }
+
+/* =========================================================
+   ZERO-FRICTION GOOGLE CALENDAR PREVIEW CARD & CHAT WIDGET
+   Blueprint: AI Study Assistant + Google Calendar Integration
+   ========================================================= */
+
+.calendar-preview-card {
+    background: var(--surface-card, #18181B);
+    border: 1px solid var(--border, #27272A);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    transition: all 0.25s ease;
+    animation: fadeInSlideUp 0.3s ease-out;
+}
+
+[data-theme="light"] .calendar-preview-card {
+    background: #FFFFFF;
+    border-color: #E2E8F0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.calendar-preview-card.accepted {
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 4px 24px rgba(16, 185, 129, 0.12);
+}
+
+.calendar-preview-card .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border, #27272A);
+}
+
+[data-theme="light"] .calendar-preview-card .card-header {
+    border-bottom-color: #F1F5F9;
+}
+
+.calendar-preview-card .card-header .icon {
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(61, 142, 255, 0.12);
+}
+
+.calendar-preview-card .card-header h4 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text-main, #FAFAFA);
+    letter-spacing: -0.01em;
+}
+
+.calendar-preview-card .card-header .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818CF8;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    white-space: nowrap;
+}
+
+.calendar-preview-card .card-header .badge.synced {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34D399;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.calendar-preview-card .card-header .badge.clash {
+    background: rgba(239, 68, 68, 0.15);
+    color: #F87171;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.calendar-preview-card .event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.calendar-preview-card .event-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border-left: 3px solid #3D8EFF;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+[data-theme="light"] .calendar-preview-card .event-item {
+    background: #F8FAFC;
+    border-top-color: #E2E8F0;
+    border-right-color: #E2E8F0;
+    border-bottom-color: #E2E8F0;
+}
+
+.calendar-preview-card .event-item:hover {
+    transform: translateX(2px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] .calendar-preview-card .event-item:hover {
+    background: #F1F5F9;
+}
+
+.calendar-preview-card .event-item.study {
+    border-left-color: #3D8EFF; /* Blueberry/Sabi blue */
+}
+
+.calendar-preview-card .event-item.personal {
+    border-left-color: #10B981; /* Sage green */
+}
+
+.calendar-preview-card .event-item.class {
+    border-left-color: #8B5CF6; /* Purple lecture */
+}
+
+.calendar-preview-card .event-item strong {
+    font-size: 11.5px;
+    color: var(--text-muted, #A1A1AA);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.calendar-preview-card .event-item span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main, #FAFAFA);
+}
+
+.calendar-preview-card .card-conflict-warning {
+    font-size: 11.5px;
+    color: #F87171;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.calendar-preview-card .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.calendar-preview-card .btn-confirm {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    font-weight: 600;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.calendar-preview-card .btn-confirm:hover:not(:disabled) {
+    background: #1D4ED8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+}
+
+.calendar-preview-card .btn-confirm.accepted,
+.calendar-preview-card .btn-confirm:disabled {
+    background: rgba(16, 185, 129, 0.18);
+    color: #34D399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: none;
+    cursor: default;
+}
+
+.calendar-preview-card .btn-tweak {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-main, #FAFAFA);
+    border: 1px solid var(--border, #3F3F46);
+    font-weight: 500;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.calendar-preview-card .btn-tweak:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-muted, #71717A);
+}
+
+[data-theme="light"] .calendar-preview-card .btn-tweak:hover {
+    background: #F1F5F9;
+    border-color: #CBD5E1;
+}
+
+/* In-Chat Google Calendar 1-Click Connect Prompt */
+.steady-gcal-inchat-prompt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(99, 102, 241, 0.08) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin: 8px 0 14px;
+    animation: fadeInSlideUp 0.3s ease-out;
+}
+
+[data-theme="light"] .steady-gcal-inchat-prompt {
+    background: linear-gradient(135deg, #EFF6FF 0%, #EEF2FF 100%);
+    border-color: #BFDBFE;
+}
+
+.steady-gcal-inchat-prompt .gcal-inchat-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.steady-gcal-inchat-prompt .gcal-inchat-icon {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.steady-gcal-inchat-prompt .gcal-inchat-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main, #FAFAFA);
+    margin-bottom: 2px;
+}
+
+.steady-gcal-inchat-prompt .gcal-inchat-text p {
+    margin: 0;
+    font-size: 11.5px;
+    color: var(--text-muted, #A1A1AA);
+    line-height: 1.35;
+}
+
+.steady-gcal-inchat-prompt .btn-gcal-inchat-connect {
+    padding: 8px 14px;
+    border-radius: 9px;
+    background: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.steady-gcal-inchat-prompt .btn-gcal-inchat-connect:hover {
+    background: #1D4ED8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+}
+
+@media (max-width: 640px) {
+    .steady-gcal-inchat-prompt {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .steady-gcal-inchat-prompt .btn-gcal-inchat-connect {
+        width: 100%;
+        text-align: center;
+    }
+    .calendar-preview-card .card-actions {
+        flex-direction: column;
+    }
+    .calendar-preview-card .btn-confirm,
+    .calendar-preview-card .btn-tweak {
+        width: 100%;
+    }
 }
 
 

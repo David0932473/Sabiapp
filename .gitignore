@@ -8,3 +8,7 @@ env.js
 .DS_Store
 Thumbs.db
 node_modules/
+
+# Google OAuth Token Storage
+data/google-tokens.json
+*google-tokens.json
