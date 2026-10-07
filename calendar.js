@@ -232,6 +232,9 @@ function calculateEndTime(startTime, durationHours = 1) {
     const endM = String(totalMinutes % 60).padStart(2, '0');
     return `${endH}:${endM}`;
 }
+const getEndTime = calculateEndTime;
+window.getEndTime = calculateEndTime;
+window.calculateEndTime = calculateEndTime;
 
 function calculateDuration(startTime, endTime) {
     if (!startTime || !endTime || !startTime.includes(':') || !endTime.includes(':')) return 1;
@@ -1278,6 +1281,7 @@ function renderMiniCalendarStrip() {
 
     container.innerHTML = html;
 }
+window.renderMiniCalendarStrip = renderMiniCalendarStrip;
 
 // ==========================================================
 // --- VIEW 1: DAY TIMELINE / HOURLY VIEW (PRIMARY MOCKUP) ---
@@ -1356,7 +1360,7 @@ function renderDayTimeline() {
         id: e.id,
         title: e.title,
         start_time: e.time || '14:00',
-        end_time: e.end_time || getEndTime(e.time || '14:00', e.duration || 1.5),
+        end_time: e.end_time || calculateEndTime(e.time || '14:00', e.duration || 1.5),
         venue: e.notes || '',
         completed: !!e.completed,
         isClass: false,
@@ -1412,7 +1416,7 @@ function renderDayTimeline() {
                 <div class="day-event-card-inner">
                     <div class="day-event-top-row">
                         <strong class="day-event-title">${safeTitle}</strong>
-                        <span class="day-event-check ${ev.completed ? 'checked' : ''}" onclick="event.stopPropagation(); toggleEventCompleted('${ev.id}')">
+                        <span class="day-event-check ${ev.completed ? 'checked' : ''}" onclick="event.stopPropagation(); toggleEventComplete('${ev.id}')">
                             ${ev.completed ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
                         </span>
                     </div>
@@ -1427,6 +1431,7 @@ function renderDayTimeline() {
 
     eventsCanvas.innerHTML = eventsHtml;
 }
+window.renderDayTimeline = renderDayTimeline;
 
 // ==========================================
 // --- VIEW 4: MONTH CALENDAR GRID VIEW ---
@@ -1484,6 +1489,7 @@ function renderMonthCalendar() {
 
     gridEl.innerHTML = cellsHtml;
 }
+window.renderMonthCalendar = renderMonthCalendar;
 
 // ==========================================
 // --- AGENDA SCHEDULE VIEW ---
@@ -1607,6 +1613,7 @@ function renderAgendaTimeline() {
 
     container.innerHTML = html;
 }
+window.renderAgendaTimeline = renderAgendaTimeline;
 
 // ==========================================
 // --- WEEK TIMETABLE GRID VIEW ---
@@ -1711,6 +1718,7 @@ function renderWeekTimetable() {
         canvas.appendChild(col);
     });
 }
+window.renderWeekTimetable = renderWeekTimetable;
 
 // ==========================================
 // --- MANUAL ADD & EDIT MODAL ---
@@ -2053,6 +2061,7 @@ function toggleEventComplete(id) {
     }
 }
 window.toggleEventComplete = toggleEventComplete;
+window.toggleEventCompleted = toggleEventComplete;
 
 function toggleCurrentDetailComplete() {
     if (!selectedDetailEventId) return;
@@ -3278,34 +3287,65 @@ function injectScheduleProposal(proposal, autoAccept = true) {
             const startTime = parseTime12or24(ev.startTime || '14:00') || '14:00';
             const endTime = parseTime12or24(ev.endTime || '15:30') || calculateEndTime(startTime, 1.5);
             const duration = calculateDuration(startTime, endTime) || 1.5;
-            const isPersonal = summary.toLowerCase().includes('gym') || summary.toLowerCase().includes('workout');
+            const isPersonal = summary.toLowerCase().includes('gym') || summary.toLowerCase().includes('workout') || summary.toLowerCase().includes('dinner') || summary.toLowerCase().includes('sleep');
+            const isClass = summary.toLowerCase().includes('lecture') || summary.toLowerCase().includes('class') || summary.toLowerCase().includes('lab');
 
-            days.forEach((dCode) => {
-                const dayFull = dayCodeMap[dCode] || 'Monday';
-                const date = resolveScheduleDate(null, dayFull, 0);
+            if (isClass) {
+                days.forEach((dCode) => {
+                    const dayFull = dayCodeMap[dCode] || 'Monday';
+                    const exists = storedClasses.some(c =>
+                        c.subject.toLowerCase() === summary.toLowerCase() &&
+                        normalizeDayName(c.day) === dayFull &&
+                        c.start_time === startTime
+                    );
+                    if (!exists) {
+                        storedClasses.push({
+                            id: 'cls-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+                            subject: summary.replace(/\s*\((lecture|class|lab)\)/i, '').trim(),
+                            day: dayFull,
+                            start_time: startTime,
+                            end_time: endTime,
+                            venue: 'Lecture Hall',
+                            isRecurring: true
+                        });
+                        addedCount++;
+                    }
+                });
+                saveStoredClasses(storedClasses);
+            } else {
+                // Populate study & habit sessions across upcoming 4 weeks
+                days.forEach((dCode) => {
+                    const dayFull = dayCodeMap[dCode] || 'Monday';
+                    for (let weekOffset = 0; weekOffset < 4; weekOffset++) {
+                        const baseSunday = getSundayOfWeek(new Date());
+                        const targetSunday = addDaysToDate(baseSunday, weekOffset * 7);
+                        const dayOffsets = { 'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6 };
+                        const date = addDaysToDate(targetSunday, dayOffsets[dayFull] || 1);
 
-                const exists = calendarEvents.some(e =>
-                    e.title.toLowerCase() === summary.toLowerCase() &&
-                    e.date === date &&
-                    e.time === startTime
-                );
+                        const exists = calendarEvents.some(e =>
+                            e.title.toLowerCase() === summary.toLowerCase() &&
+                            e.date === date &&
+                            e.time === startTime
+                        );
 
-                if (!exists) {
-                    calendarEvents.push({
-                        id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-                        title: summary,
-                        category: isPersonal ? 'personal' : 'study',
-                        date: date,
-                        time: startTime,
-                        duration: duration,
-                        location: isPersonal ? 'Fitness Center' : 'Sabi Study Room',
-                        notes: 'Generated by Sabi Study Assistant',
-                        completed: false,
-                        isAiGenerated: true
-                    });
-                    addedCount++;
-                }
-            });
+                        if (!exists) {
+                            calendarEvents.push({
+                                id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5) + '-' + weekOffset,
+                                title: summary,
+                                category: isPersonal ? 'personal' : 'study',
+                                date: date,
+                                time: startTime,
+                                duration: duration,
+                                location: isPersonal ? 'Fitness Center' : 'Sabi Study Room',
+                                notes: 'Generated by Sabi Study Assistant',
+                                completed: false,
+                                isAiGenerated: true
+                            });
+                            addedCount++;
+                        }
+                    }
+                });
+            }
         });
         saveEvents();
     }
@@ -3318,7 +3358,7 @@ function injectScheduleProposal(proposal, autoAccept = true) {
     renderAllViews();
 
     if (addedCount > 0) {
-        showToast(`Added ${addedCount} item(s) directly to your calendar!`);
+        showToast(`Added ${addedCount} timetable item(s) to your calendar!`);
         // Automatic Google Calendar sync trigger
         if (typeof isGcalConnected === 'function' && isGcalConnected() && isGcalAutoSyncEnabled()) {
             syncAllEventsToGoogle(true);

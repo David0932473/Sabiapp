@@ -1,26 +1,24 @@
 - **Goal (incl. success criteria)**: 
-  - Redesign the Sabi AI ("Steady") chat interface to match the user's reference mockup (ai.va pastel glassmorphism aesthetic).
-  - Fix mobile responsiveness so mobile users never need to toggle "Desktop site" mode in their browser.
-  - Implement dynamic visualViewport keyboard height synchronization.
-  - Prevent AI from straying into 40-line motivational lectures by enforcing direct timetable generation (via UPDATE_TIMETABLE JSON) on goal statements (e.g., "5.00 goal") and course outline uploads.
+  - Provide a dedicated, distraction-free **Full-Screen** Steady Chat interface across both desktop and mobile viewports (`100vw` by `100dvh`).
+  - Eliminate glassmorphic blurs and translucent effects in favor of clean, solid, high-contrast surfaces.
+  - Maintain centered readable column width (`max-width: 860px`) for optimal ergonomics on ultra-wide desktop monitors.
+  - Preserve user-isolated account storage across chats, calendar events, classes, and study tasks.
 - **Constraints/Assumptions**:
   - Strict 0 Unicode emojis rule: All icons are SVG vectors.
-  - Preserve Steady academic identity and direct student context injection (`getStudentAiContext`).
-  - Google Calendar auto-sync hooks run seamlessly upon schedule card acceptance.
+  - Dedicated full-screen mode on both mobile and desktop.
+  - Solid backgrounds (`#0B0F17` dark, `#F8FAFC` light) with clean card borders and no backdrop blurs.
 - **Key decisions**:
-  - Adopted ai.va aesthetic: minimalist centered lowercase `steady` brand gradient header, hamburger menu on the left for session history, circular new-session action on the right.
-  - Hero Launchpad (Empty State): Centered time-aware greeting ("Good Afternoon, [Name] / What can i help today?") with 4 pastel frosted bento suggestion cards (Productivity Tips, Personalized Recommendations, Fun & Games, Temporary chat/Scan outline).
-  - Chat Bubbles: Soft lavender/lilac tinted pill for user messages (`#EDE4F7`), pure frosted glass card for bot messages with action strip (favorite, share, copy).
-  - Floating Bottom Capsule Dock: Frosted pill container with `+` upload on left, `Ask something here...` text field, voice mic, and iridescent circular gradient send button (`linear-gradient(135deg, #EC4899, #8B5CF6)`).
-  - Mobile Viewport Fix: Full-screen `100dvh` layout with `window.visualViewport` resize listener ensuring the floating dock stays pinned above the virtual keyboard without clipping.
+  - Replaced side-drawer (480px) and bottom modal popups with a true fixed full-screen layout (`#sabi-ai-chat-drawer` at `100vw` x `100dvh`, `z-index: 99999`).
+  - Switched from translucent glass to crisp, solid card surfaces for header, message canvas, bento cards, and the bottom floating capsule dock.
+  - Pushed commit `8be403f` to `main` branch on GitHub.
 - **State**:
   - Done:
-    - Updated `calendar.html` with new ai.va header, floating pill capsule input dock.
-    - Updated `calendar.css` with ambient pastel glassmorphism, mobile `100dvh` fix, bento cards, and iridescent send button.
-    - Updated `calendar.js` with launchpad renderer, message action handlers, `visualViewport` listener, goal-to-timetable prompt enforcement, and raw JSON fallback.
-    - Validated with `node -c calendar.js` (0 syntax errors) and verified 0 Unicode emojis.
-  - Now: Ready to commit and push to git.
-  - Next: User testing on mobile.
+    - Full-screen CSS layout implemented in [calendar.css](file:///c:/Users/dave/.gemini/sabi/calendar.css).
+    - Cache-busting version bumped in [calendar.html](file:///c:/Users/dave/.gemini/sabi/calendar.html).
+    - Changes committed (`8be403f`) and pushed to GitHub `origin/main`.
+  - Now: Ready for user verification.
+  - Next: Awaiting user testing and feedback.
 - **Open questions**: None.
 - **Working set (files/ids/commands)**:
   - `calendar.html`, `calendar.css`, `calendar.js`, `docs/short-term-plan/CONTINUITY.md`
+
