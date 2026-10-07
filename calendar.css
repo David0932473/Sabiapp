@@ -3582,9 +3582,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.15s;
+    transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                max-width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                margin 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.15s;
     flex-shrink: 0;
     padding: 0;
+    overflow: hidden;
+    will-change: width, opacity, transform, margin;
 }
 
 .studio-pill-btn-add:hover {
@@ -3596,22 +3603,23 @@ body {
     flex: 1;
     min-width: 0;
     height: auto;
-    min-height: 38px;
+    min-height: 36px;
     max-height: 110px;
-    line-height: 1.45;
+    line-height: 1.4;
     background: transparent;
     border: none;
     outline: none;
-    font-size: 15.5px;
+    font-size: 15px;
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text-main);
     font-weight: 500;
-    padding: 8px 4px;
+    padding: 7px 6px;
     box-sizing: border-box;
     display: block;
     resize: none;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    transition: padding 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .studio-pill-input::placeholder {
@@ -3619,6 +3627,9 @@ body {
     font-size: 14.5px;
     font-weight: 400;
     line-height: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .studio-pill-btn-mic {
@@ -3632,9 +3643,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.15s;
+    transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                max-width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                margin 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.15s;
     flex-shrink: 0;
     padding: 0;
+    overflow: hidden;
+    will-change: width, opacity, transform, margin;
 }
 
 .studio-pill-btn-mic:hover {
@@ -3642,9 +3660,37 @@ body {
     transform: scale(1.1);
 }
 
-.studio-pill-btn-mic.recording {
+.studio-pill-btn-mic.recording,
+.studio-pill-btn-mic.listening {
     color: #EF4444;
     animation: micPulse 1.2s infinite;
+}
+
+/* Typing Mode: Collapse Add (+) and Mic (🎙) buttons with smooth animation */
+.studio-pill-capsule.has-text .studio-pill-btn-add {
+    width: 0;
+    min-width: 0;
+    max-width: 0;
+    opacity: 0;
+    transform: scale(0.4);
+    margin-right: -8px;
+    padding: 0;
+    pointer-events: none;
+}
+
+.studio-pill-capsule.has-text .studio-pill-btn-mic {
+    width: 0;
+    min-width: 0;
+    max-width: 0;
+    opacity: 0;
+    transform: scale(0.4);
+    margin-left: -8px;
+    padding: 0;
+    pointer-events: none;
+}
+
+.studio-pill-capsule.has-text .studio-pill-input {
+    padding-left: 4px;
 }
 
 .studio-pill-btn-send {

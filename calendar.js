@@ -316,6 +316,396 @@ if (typeof window !== 'undefined') {
 }
 
 // ==========================================
+// --- CALENDAR UNDO & SNAPSHOT MANAGER ---
+// ==========================================
+const CALENDAR_UNDO_MAX = 20;
+let calendarUndoStack = [];
+
+function pushCalendarSnapshot(description = 'Schedule update') {
+    try {
+        const snapshot = {
+            classes: JSON.parse(JSON.stringify(storedClasses || [])),
+            events: JSON.parse(JSON.stringify(calendarEvents || [])),
+            description: String(description || 'Schedule update'),
+            timestamp: Date.now()
+        };
+        calendarUndoStack.push(snapshot);
+        if (calendarUndoStack.length > CALENDAR_UNDO_MAX) {
+            calendarUndoStack.shift();
+        }
+        try {
+            sessionStorage.setItem('sabi_cal_undo_stack', JSON.stringify(calendarUndoStack));
+        } catch (e) {}
+    } catch (err) {
+        console.warn('Failed to push calendar snapshot:', err);
+    }
+}
+window.pushCalendarSnapshot = pushCalendarSnapshot;
+
+function canUndoCalendarChange() {
+    if (Array.isArray(calendarUndoStack) && calendarUndoStack.length > 0) return true;
+    try {
+        const raw = sessionStorage.getItem('sabi_cal_undo_stack');
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) && parsed.length > 0;
+        }
+    } catch (e) {}
+    return false;
+}
+window.canUndoCalendarChange = canUndoCalendarChange;
+
+function revertLastCalendarChange() {
+    if (!canUndoCalendarChange()) {
+        showToast('No previous schedule changes to revert.');
+        return { success: false, error: 'No previous schedule changes to revert.' };
+    }
+
+    if (calendarUndoStack.length === 0) {
+        try {
+            const raw = sessionStorage.getItem('sabi_cal_undo_stack');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    calendarUndoStack = parsed;
+                }
+            }
+        } catch (e) {}
+    }
+
+    const snapshot = calendarUndoStack.pop();
+    try {
+        sessionStorage.setItem('sabi_cal_undo_stack', JSON.stringify(calendarUndoStack));
+    } catch (e) {}
+
+    storedClasses = Array.isArray(snapshot.classes) ? snapshot.classes : [];
+    calendarEvents = Array.isArray(snapshot.events) ? snapshot.events : [];
+
+    saveStoredClasses(storedClasses);
+    saveEvents();
+    renderAllViews();
+
+    const desc = snapshot.description || 'Previous schedule state';
+    showToast(`↩️ Reverted: ${desc}`);
+    return { success: true, description: desc };
+}
+window.revertLastCalendarChange = revertLastCalendarChange;
+
+// ==========================================
+// --- SCHEDULE OVERVIEW & FORMATTING (Full Schedule Visibility) ---
+// ==========================================
+function getFormattedScheduleOverview() {
+    const todayStr = getTodayStr();
+    const todayDate = new Date();
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const currentDayName = dayNames[todayDate.getDay()];
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    const tomorrowStr = getFutureDateString(1);
+    const tomorrowDayName = dayNames[tomorrowDate.getDay()];
+
+    const todayClasses = storedClasses.filter(c => normalizeDayName(c.day) === currentDayName);
+    const todaySessions = calendarEvents.filter(e => e.date === todayStr);
+
+    const tomorrowClasses = storedClasses.filter(c => normalizeDayName(c.day) === tomorrowDayName);
+    const tomorrowSessions = calendarEvents.filter(e => e.date === tomorrowStr);
+
+    let summary = `CURRENT SCHEDULE CONTEXT (Today is ${currentDayName}, ${todayStr}):\n\n`;
+
+    summary += `1. TODAY'S SCHEDULE (${currentDayName}, ${todayStr}):\n`;
+    if (todayClasses.length === 0 && todaySessions.length === 0) {
+        summary += `   - No classes or study sessions scheduled for today.\n`;
+    } else {
+        todayClasses.forEach(c => {
+            summary += `   - [CLASS] ${c.subject} (${c.start_time} - ${c.end_time}) at ${c.venue || 'Lecture Hall'}\n`;
+        });
+        todaySessions.forEach(s => {
+            summary += `   - [STUDY/ACTIVITY] ${s.title} (${s.time}, ${s.duration || 1.5} hrs) [Category: ${s.category || 'study'}]\n`;
+        });
+    }
+
+    summary += `\n2. TOMORROW'S SCHEDULE (${tomorrowDayName}, ${tomorrowStr}):\n`;
+    if (tomorrowClasses.length === 0 && tomorrowSessions.length === 0) {
+        summary += `   - Nothing scheduled for tomorrow.\n`;
+    } else {
+        tomorrowClasses.forEach(c => {
+            summary += `   - [CLASS] ${c.subject} (${c.start_time} - ${c.end_time}) at ${c.venue || 'Lecture Hall'}\n`;
+        });
+        tomorrowSessions.forEach(s => {
+            summary += `   - [STUDY/ACTIVITY] ${s.title} (${s.time}, ${s.duration || 1.5} hrs)\n`;
+        });
+    }
+
+    summary += `\n3. ALL RECURRING LECTURE CLASSES THIS SEMESTER (${storedClasses.length} total):\n`;
+    let hasClasses = false;
+    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].forEach(d => {
+        const clist = storedClasses.filter(c => normalizeDayName(c.day) === d);
+        if (clist.length > 0) {
+            hasClasses = true;
+            summary += `   * ${d}:\n`;
+            clist.forEach(c => {
+                summary += `     • ${c.subject} (${c.start_time} - ${c.end_time}) [${c.venue || 'Lecture Hall'}]\n`;
+            });
+        }
+    });
+    if (!hasClasses) summary += `   - No recurring classes recorded yet.\n`;
+
+    const upcomingSessions = calendarEvents
+        .filter(e => e.date >= todayStr)
+        .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
+        .slice(0, 20);
+
+    summary += `\n4. UPCOMING INDIVIDUAL SESSIONS (${upcomingSessions.length} listed):\n`;
+    if (upcomingSessions.length === 0) {
+        summary += `   - No individual study sessions scheduled ahead.\n`;
+    } else {
+        upcomingSessions.forEach(s => {
+            summary += `   - ${s.date} at ${s.time}: ${s.title} (${s.duration || 1.5} hrs)\n`;
+        });
+    }
+
+    return summary;
+}
+window.getFormattedScheduleOverview = getFormattedScheduleOverview;
+
+function formatScheduleQueryResponse(queryText) {
+    const raw = (queryText || '').toLowerCase();
+    const todayStr = getTodayStr();
+    const todayDate = new Date();
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const currentDayName = dayNames[todayDate.getDay()];
+
+    let targetDay = null;
+    let targetDateStr = null;
+
+    if (/\btoday\b/.test(raw)) {
+        targetDay = currentDayName;
+        targetDateStr = todayStr;
+    } else if (/\btomorrow\b/.test(raw)) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        targetDay = dayNames[tomorrow.getDay()];
+        targetDateStr = getFutureDateString(1);
+    } else {
+        const DAY_RE = /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i;
+        const m = raw.match(DAY_RE);
+        if (m) {
+            targetDay = normalizeDayName(m[1]);
+            targetDateStr = resolveScheduleDate(null, targetDay, 0);
+        }
+    }
+
+    if (targetDay) {
+        const dayClasses = storedClasses.filter(c => normalizeDayName(c.day) === targetDay);
+        const daySessions = calendarEvents.filter(e => {
+            if (targetDateStr && e.date === targetDateStr) return true;
+            const ed = new Date(e.date + 'T00:00:00');
+            return !isNaN(ed.getTime()) && dayNames[ed.getDay()] === targetDay;
+        });
+
+        if (dayClasses.length === 0 && daySessions.length === 0) {
+            return `You have **nothing scheduled for ${targetDay}**! Your day is completely open. Let me know if you would like me to schedule study sessions or revision blocks.`;
+        }
+
+        let resp = `Here is your schedule for **${targetDay}**${targetDateStr ? ` (${targetDateStr})` : ''}:\n\n`;
+        if (dayClasses.length > 0) {
+            resp += `**Recurring Classes:**\n`;
+            dayClasses.forEach(c => {
+                resp += `• **${c.subject}**: ${c.start_time} – ${c.end_time} [${c.venue || 'Lecture Hall'}]\n`;
+            });
+            resp += `\n`;
+        }
+        if (daySessions.length > 0) {
+            resp += `**Study & Personal Sessions:**\n`;
+            daySessions.forEach(s => {
+                resp += `• **${s.title}**: ${s.time} (${s.duration || 1.5} hrs) – *${s.category || 'Study'}*\n`;
+            });
+        }
+        return resp.trim();
+    }
+
+    const totalClasses = storedClasses.length;
+    const upcomingEvents = calendarEvents.filter(e => e.date >= todayStr).slice(0, 10);
+
+    if (totalClasses === 0 && upcomingEvents.length === 0) {
+        return `Your timetable is currently empty! Tell me your courses or lecture days (or upload a course outline), and I will build your schedule.`;
+    }
+
+    let resp = `Here is your current timetable overview:\n\n`;
+    resp += `**Weekly Lectures (${totalClasses}):**\n`;
+    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].forEach(day => {
+        const clist = storedClasses.filter(c => normalizeDayName(c.day) === day);
+        if (clist.length > 0) {
+            resp += `* **${day}**:\n`;
+            clist.forEach(c => {
+                resp += `  • ${c.subject} (${c.start_time} – ${c.end_time}) [${c.venue || 'Lecture Hall'}]\n`;
+            });
+        }
+    });
+
+    if (upcomingEvents.length > 0) {
+        resp += `\n**Upcoming Study Sessions:**\n`;
+        upcomingEvents.forEach(s => {
+            resp += `• **${s.date}** at ${s.time}: ${s.title} (${s.duration || 1.5} hrs)\n`;
+        });
+    }
+
+    return resp.trim();
+}
+window.formatScheduleQueryResponse = formatScheduleQueryResponse;
+
+// ==========================================
+// --- DIRECT SCHEDULE CLEARING & RESCHEDULING ACTIONS ---
+// ==========================================
+function clearScheduleForDay(dayOrDate, scope = 'all') {
+    if (!dayOrDate) dayOrDate = 'today';
+    const raw = String(dayOrDate).trim().toLowerCase();
+    const todayStr = getTodayStr();
+    const todayDate = new Date();
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const currentDayName = dayNames[todayDate.getDay()];
+
+    let targetDayName = null;
+    let targetDateStr = null;
+
+    if (raw === 'today') {
+        targetDayName = currentDayName;
+        targetDateStr = todayStr;
+    } else if (raw === 'tomorrow') {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        targetDayName = dayNames[tomorrow.getDay()];
+        targetDateStr = getFutureDateString(1);
+    } else if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        targetDateStr = raw;
+        const d = new Date(raw + 'T00:00:00');
+        if (!isNaN(d.getTime())) {
+            targetDayName = dayNames[d.getDay()];
+        }
+    } else {
+        targetDayName = normalizeDayName(raw);
+        targetDateStr = resolveScheduleDate(null, targetDayName, 0);
+    }
+
+    // Save snapshot before mutating
+    pushCalendarSnapshot(`Cleared schedule for ${targetDayName || targetDateStr || 'day'}`);
+
+    let removedClassesCount = 0;
+    let removedSessionsCount = 0;
+
+    // 1. Remove classes if scope is 'all' or 'classes'
+    if (scope === 'all' || scope === 'classes') {
+        if (targetDayName) {
+            const beforeLen = storedClasses.length;
+            const toDelete = storedClasses.filter(c => normalizeDayName(c.day) === targetDayName);
+            toDelete.forEach(c => {
+                if (c.gcalEventId && typeof deleteClassFromGoogle === 'function') {
+                    deleteClassFromGoogle(c.gcalEventId);
+                }
+            });
+            storedClasses = storedClasses.filter(c => normalizeDayName(c.day) !== targetDayName);
+            removedClassesCount = beforeLen - storedClasses.length;
+            saveStoredClasses(storedClasses);
+        }
+    }
+
+    // 2. Remove calendarEvents if scope is 'all' or 'study'
+    if (scope === 'all' || scope === 'study' || scope === 'sessions') {
+        const toDeleteEvents = calendarEvents.filter(e => {
+            if (targetDateStr && e.date === targetDateStr) return true;
+            if (targetDayName) {
+                const ed = new Date(e.date + 'T00:00:00');
+                if (!isNaN(ed.getTime()) && dayNames[ed.getDay()] === targetDayName) return true;
+            }
+            return false;
+        });
+
+        toDeleteEvents.forEach(e => {
+            if (e.gcalEventId && typeof deleteEventFromGoogle === 'function') {
+                deleteEventFromGoogle(e.gcalEventId);
+            }
+        });
+
+        const beforeEventsLen = calendarEvents.length;
+        calendarEvents = calendarEvents.filter(e => !toDeleteEvents.includes(e));
+        removedSessionsCount = beforeEventsLen - calendarEvents.length;
+        saveEvents();
+    }
+
+    renderAllViews();
+
+    const totalRemoved = removedClassesCount + removedSessionsCount;
+    showToast(`Cleared ${totalRemoved} item(s) from ${targetDayName || targetDateStr}.`);
+    return {
+        targetDayName,
+        targetDateStr,
+        removedClassesCount,
+        removedSessionsCount,
+        totalRemoved
+    };
+}
+window.clearScheduleForDay = clearScheduleForDay;
+
+function editOrRescheduleItem(options = {}) {
+    const search = String(options.search || options.title || options.subject || '').trim().toLowerCase();
+    if (!search) return { success: false, error: 'No item specified to edit' };
+
+    pushCalendarSnapshot(`Rescheduled ${options.search}`);
+
+    let edited = false;
+    let editSummary = '';
+
+    // 1. Try finding in storedClasses
+    const classIdx = storedClasses.findIndex(c =>
+        c.subject.toLowerCase().includes(search) ||
+        (options.targetDay && normalizeDayName(c.day) === normalizeDayName(options.targetDay))
+    );
+
+    if (classIdx !== -1) {
+        const cls = storedClasses[classIdx];
+        if (options.newDay) cls.day = normalizeDayName(options.newDay);
+        if (options.newStartTime) cls.start_time = parseTime12or24(options.newStartTime) || cls.start_time;
+        if (options.newEndTime) cls.end_time = parseTime12or24(options.newEndTime) || cls.end_time;
+        if (options.newVenue) cls.venue = options.newVenue;
+        if (options.newTitle) cls.subject = options.newTitle;
+        saveStoredClasses(storedClasses);
+        edited = true;
+        editSummary = `Updated class ${cls.subject} to ${cls.day} (${cls.start_time} - ${cls.end_time})`;
+    }
+
+    // 2. Try finding in calendarEvents
+    const eventIdx = calendarEvents.findIndex(e =>
+        e.title.toLowerCase().includes(search) ||
+        (options.targetDate && e.date === options.targetDate)
+    );
+
+    if (eventIdx !== -1) {
+        const ev = calendarEvents[eventIdx];
+        if (options.newDate) ev.date = options.newDate;
+        else if (options.newDay) ev.date = resolveScheduleDate(null, options.newDay, 0);
+        if (options.newStartTime) ev.time = parseTime12or24(options.newStartTime) || ev.time;
+        if (options.newEndTime && options.newStartTime) {
+            ev.duration = calculateDuration(ev.time, parseTime12or24(options.newEndTime)) || ev.duration;
+        } else if (options.duration) {
+            ev.duration = parseFloat(options.duration) || ev.duration;
+        }
+        if (options.newTitle) ev.title = options.newTitle;
+        saveEvents();
+        edited = true;
+        editSummary = `Updated session "${ev.title}" to ${ev.date} at ${ev.time}`;
+    }
+
+    if (edited) {
+        renderAllViews();
+        showToast(editSummary);
+        return { success: true, details: editSummary };
+    }
+
+    return { success: false, error: `Could not find an event or class matching "${options.search}"` };
+}
+window.editOrRescheduleItem = editOrRescheduleItem;
+
+// ==========================================
 // --- PERSISTENCE HELPERS ---
 // ==========================================
 function loadEvents() {
@@ -393,7 +783,9 @@ function initCalendarApp() {
         chatInput.addEventListener('input', () => {
             chatInput.style.height = 'auto';
             chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+            updateChatInputState();
         });
+        updateChatInputState();
     }
 
     // Close planner dropdown on outside click
@@ -406,6 +798,20 @@ function initCalendarApp() {
     });
 }
 window.initCalendarApp = initCalendarApp;
+
+function updateChatInputState() {
+    const chatInput = document.getElementById('chat-user-input');
+    const chatForm = document.getElementById('chat-input-form');
+    if (!chatInput || !chatForm) return;
+
+    const hasContent = chatInput.value.trim().length > 0;
+    if (hasContent && !isVoiceDictating) {
+        chatForm.classList.add('has-text');
+    } else {
+        chatForm.classList.remove('has-text');
+    }
+}
+window.updateChatInputState = updateChatInputState;
 
 // ========================================================
 // --- FIRST-TIME POPUP MENU MODAL --- (WITH PROMINENT SKIP BUTTON)
@@ -1744,6 +2150,7 @@ function startNewChatSession() {
 
     const input = document.getElementById('chat-user-input');
     if (input) input.value = '';
+    updateChatInputState();
 
     renderChatMessages();
     renderChatQuickChips();
@@ -1911,6 +2318,7 @@ function openSabiAiChat() {
     setTimeout(() => {
         const input = document.getElementById('chat-user-input');
         if (input) input.focus();
+        updateChatInputState();
     }, 200);
 }
 window.openSabiAiChat = openSabiAiChat;
@@ -1964,6 +2372,7 @@ function toggleVoiceDictation() {
         try { speechRecognitionInstance.stop(); } catch (e) {}
         isVoiceDictating = false;
         if (btn) btn.classList.remove('listening');
+        updateChatInputState();
         return;
     }
 
@@ -1986,6 +2395,7 @@ function toggleVoiceDictation() {
             }
             if (input) {
                 input.value = transcript;
+                updateChatInputState();
             }
         };
 
@@ -1993,6 +2403,7 @@ function toggleVoiceDictation() {
             console.warn('Speech recognition error:', event.error);
             isVoiceDictating = false;
             if (btn) btn.classList.remove('listening');
+            updateChatInputState();
             if (event.error !== 'no-speech') {
                 showToast('Voice recognition error: ' + event.error);
             }
@@ -2001,6 +2412,7 @@ function toggleVoiceDictation() {
         speechRecognitionInstance.onend = () => {
             isVoiceDictating = false;
             if (btn) btn.classList.remove('listening');
+            updateChatInputState();
         };
 
         speechRecognitionInstance.start();
@@ -2450,6 +2862,7 @@ function handleChatImageFile(file, label) {
                 } else {
                     input.value = `Here is my timetable screenshot (${pendingChatMedia.name})! Please extract my schedule.`;
                 }
+                updateChatInputState();
             }
         });
     };
@@ -2536,6 +2949,7 @@ function displayPendingMediaBar() {
     const input = document.getElementById('chat-user-input');
     if (input && !input.value.trim()) {
         input.value = `Here is my course outline / timetable (${pendingChatMedia.name}), please extract my schedule!`;
+        updateChatInputState();
     }
 }
 
@@ -2545,6 +2959,7 @@ function removePendingChatMedia() {
     if (bar) bar.classList.add('hidden');
     const fileInput = document.getElementById('chat-media-file-input');
     if (fileInput) fileInput.value = '';
+    updateChatInputState();
 }
 window.removePendingChatMedia = removePendingChatMedia;
 
@@ -2639,9 +3054,10 @@ function setStudioMode(mode) {
     renderChatQuickChips();
 
     const input = document.getElementById('chat-user-input');
-    if (input && (!input.value.trim() || input.value.startsWith('Message Steady'))) {
-        input.placeholder = "Message Steady, plan timetable, or dictate...";
+    if (input && (!input.value.trim() || input.value.startsWith('Message Steady') || input.value.startsWith('Plan with Steady'))) {
+        input.placeholder = "Plan with Steady...";
     }
+    updateChatInputState();
 }
 window.setStudioMode = setStudioMode;
 
@@ -2671,6 +3087,10 @@ function checkScheduleConflicts(proposal) {
 // Interactive acceptance and injection of proposed schedules with one-click injection and Google Calendar sync
 function injectScheduleProposal(proposal, autoAccept = true) {
     if (!proposal) return { addedCount: 0 };
+
+    if (autoAccept) {
+        pushCalendarSnapshot(proposal.summary || 'Added Timetable Proposal');
+    }
 
     let addedCount = 0;
 
@@ -2966,6 +3386,7 @@ function askAiToAdjust(cardId) {
     const input = document.getElementById('chat-user-input');
     if (input) {
         input.value = 'Steady, please adjust the proposed timetable: ';
+        updateChatInputState();
         input.focus();
         input.setSelectionRange(input.value.length, input.value.length);
     }
@@ -3147,6 +3568,11 @@ function renderChatMessages() {
                         <button type="button" class="btn-tweak" onclick="askAiToAdjust('${escapeHtml(cardId)}')">
                             ✏️ Adjust Times
                         </button>
+                        ${proposal.accepted ? `
+                        <button type="button" class="btn-tweak" onclick="revertLastCalendarChange()" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.4);" title="Revert this timetable">
+                            ↩️ Revert
+                        </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -3270,6 +3696,7 @@ function handleQuickChipClick(chipText) {
     const input = document.getElementById('chat-user-input');
     if (input) {
         input.value = chipText;
+        updateChatInputState();
         handleSendChatMessage(new Event('submit'));
     }
 }
@@ -3395,6 +3822,7 @@ async function handleSendChatMessage(e) {
     const textToSend = userText || (pendingChatMedia ? `Uploaded course outline: ${pendingChatMedia.name}` : '');
     input.value = '';
     input.style.height = 'auto';
+    updateChatInputState();
 
     const history = getChatHistory();
     const userMsgObj = {
@@ -3591,11 +4019,16 @@ FORMATTING & RICH RENDERING:
 - Organize study advice and steps with clean bullet points and bold highlights.
 - STRICT 0 EMOJI RULE: NEVER output Unicode emojis; use clean punctuation, markdown, and words.
 
-TIMETABLE & GOOGLE CALENDAR CAPABILITIES:
+FULL TIMETABLE VISIBILITY & CALENDAR ACTIONS:
+- COMPLETE LIVE VISIBILITY: You have direct real-time visibility into the student's actual schedule (provided in the LIVE SCHEDULE & CALENDAR STATE section below).
+- ANSWERING SCHEDULE INQUIRIES: When the student asks about their schedule ("What do I have today?", "What classes do I have on Wednesday?", "Show my timetable", "Am I free tomorrow?"), read their schedule context and answer clearly, accurately, and directly with course names, times, and lecture halls.
 - You are connected to a Zero-Friction Google Calendar integration.
 - CONVERSATIONAL INTERVIEW: When planning a student's timetable, ask about their daily routines: wake/sleep hours, gym/exercise times, personal habits, syllabus/courses, and target exam date.
 - CALENDAR-AWARE SCHEDULING: If existing Google Calendar commitments are provided in your context, analyze them to identify open gaps and student workload. Never schedule study blocks over existing classes, gym sessions, work, or appointments.
-- When proposing a routine or timetable, include a structured JSON block at the very end of your response so the UI renders the interactive Preview Card with one-click Google Calendar sync:
+
+STRUCTURED ACTIONS (Output JSON at the end of your response when modifying or managing the timetable):
+
+1. Propose / Add New Timetable:
 \`\`\`json
 {
   "action": "propose_timetable",
@@ -3620,8 +4053,53 @@ TIMETABLE & GOOGLE CALENDAR CAPABILITIES:
 }
 \`\`\`
 Note: Use colorId '9' (Blueberry) for study/academic sessions, '2' (Sage) for gym/personal habits, and '5' (Yellow) or '7' (Cyan) for classes.
-- You may also output the alternative "action": "UPDATE_TIMETABLE" with "classes" and "studySessions".
-- Only output the JSON block when proposing or modifying schedules. For general conceptual tutoring or answers, do not output the JSON block.
+You may also output the alternative "action": "UPDATE_TIMETABLE" with "classes" and "studySessions".
+
+2. Replace / Overhaul Timetable (clears old AI study sessions before applying new routine):
+\`\`\`json
+{
+  "action": "REPLACE_TIMETABLE",
+  "summary": "Updated Weekly Timetable",
+  "events": []
+}
+\`\`\`
+
+3. Clear Schedule for a Specific Day or Entire Timetable:
+- To clear a day:
+\`\`\`json
+{
+  "action": "CLEAR_DAY",
+  "day": "Tuesday",
+  "scope": "all"
+}
+\`\`\`
+(day can be "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "today", "tomorrow", or "YYYY-MM-DD". scope can be "all", "classes", or "study")
+- To clear the entire timetable:
+\`\`\`json
+{
+  "action": "CLEAR_TIMETABLE",
+  "scope": "all"
+}
+\`\`\`
+
+4. Edit or Reschedule an Event or Class:
+\`\`\`json
+{
+  "action": "EDIT_EVENT",
+  "search": "Calculus",
+  "newDay": "Wednesday",
+  "newStartTime": "11:00",
+  "newEndTime": "12:30"
+}
+\`\`\`
+
+5. Revert / Undo Changes:
+\`\`\`json
+{
+  "action": "REVERT_CHANGES"
+}
+\`\`\`
+- Only output the JSON block when proposing, clearing, editing, replacing, or reverting schedules. For general conceptual tutoring, advice, or simply answering "what is on my schedule", do NOT output the JSON block.
 
 GOAL-TO-SCHEDULE & OUTLINE DIRECT ACTION RULES:
 - When a student states a goal (e.g. "5.00 goal", "5.0 CGPA", "first class target", "pass JAMB with 320", "score 75+ in MTH101"), briefly acknowledge their ambition in 1-2 concise sentences, calculate the optimal weekly study distribution across their enrolled subjects, and immediately generate their personalized routine using the JSON block so they can sync it to their calendar in one tap!
@@ -3707,14 +4185,10 @@ async function processBuddyConversation(userText, history, media, onToken) {
         `- Study Mode: ${student.studyMode}\n` +
         (student.activeSubjects.length > 0 ? `- Enrolled Subjects in Timetable: ${student.activeSubjects.join(', ')}\n` : '') +
         (student.aiMemory ? `- Personalized Study Preferences & Weak Topics: ${JSON.stringify(student.aiMemory)}\n` : '') +
-        `\nSCHEDULE & CALENDAR STATE:\n` +
-        `${JSON.stringify({
-            today: contextPayload.today,
-            week_start: contextPayload.week_start,
-            classes: contextPayload.existing_classes,
-            recent_study_sessions: contextPayload.existing_study_sessions,
-            uploaded_media: contextPayload.uploaded_media
-        })}` +
+        `\n========================================\n` +
+        `LIVE SCHEDULE & CALENDAR STATE:\n` +
+        `========================================\n` +
+        getFormattedScheduleOverview() +
         (Array.isArray(cachedGoogleEvents) && cachedGoogleEvents.length > 0
             ? `\n\nEXISTING GOOGLE CALENDAR COMMITMENTS (Next 14 Days):\n` +
               cachedGoogleEvents.slice(0, 30).map(e => `- ${e.start} to ${e.end}: ${e.summary}${e.location ? ' (' + e.location + ')' : ''}`).join('\n') +
@@ -4037,32 +4511,93 @@ function parseAiReplyAndApply(replyText) {
     }
 
     let scheduleProposal = null;
-    if (actionData && (actionData.events || actionData.action === 'propose_timetable' || actionData.action === 'UPDATE_TIMETABLE')) {
-        const isExplicitUpdate = actionData.action === 'UPDATE_TIMETABLE';
-        scheduleProposal = {
-            cardId: 'prop-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
-            summary: actionData.summary || 'Proposed Weekly Timetable',
-            exam_date: actionData.exam_date || null,
-            events: actionData.events || [],
-            classes: actionData.classes || [],
-            studySessions: actionData.studySessions || [],
-            accepted: isExplicitUpdate
-        };
+    let actionResult = null;
+
+    if (actionData) {
+        const action = String(actionData.action || '').toUpperCase();
+
+        // 1. REVERT / UNDO CHANGES
+        if (action === 'REVERT_CHANGES' || action === 'UNDO') {
+            const revRes = revertLastCalendarChange();
+            actionResult = { details: revRes.success ? `Reverted: ${revRes.description}` : (revRes.error || 'No previous changes to revert') };
+        }
+        // 2. CLEAR DAY / CLEAR SCHEDULE
+        else if (action === 'CLEAR_DAY' || action === 'CLEAR_SCHEDULE' || action === 'CLEAR_TIMETABLE') {
+            if (action === 'CLEAR_TIMETABLE' || (actionData.scope === 'all' && !actionData.day && !actionData.date)) {
+                pushCalendarSnapshot('Cleared entire timetable');
+                calendarEvents = [];
+                storedClasses = [];
+                saveEvents();
+                saveStoredClasses(storedClasses);
+                renderAllViews();
+                actionResult = { details: 'Cleared entire timetable' };
+            } else {
+                const target = actionData.day || actionData.date || 'today';
+                const clrRes = clearScheduleForDay(target, actionData.scope || 'all');
+                actionResult = { details: `Cleared ${clrRes.totalRemoved} item(s) from ${clrRes.targetDayName || target}` };
+            }
+        }
+        // 3. EDIT EVENT / RESCHEDULE
+        else if (action === 'EDIT_EVENT' || action === 'RESCHEDULE') {
+            const editRes = editOrRescheduleItem(actionData);
+            actionResult = { details: editRes.success ? editRes.details : (editRes.error || 'Unable to find matching item to reschedule') };
+        }
+        // 4. REPLACE TIMETABLE
+        else if (action === 'REPLACE_TIMETABLE') {
+            pushCalendarSnapshot(actionData.summary || 'Replaced Timetable');
+            if (actionData.day) {
+                clearScheduleForDay(actionData.day, 'study');
+            } else {
+                calendarEvents = calendarEvents.filter(e => !e.isAiGenerated);
+                saveEvents();
+            }
+            scheduleProposal = {
+                cardId: 'prop-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                summary: actionData.summary || 'Updated Weekly Timetable',
+                exam_date: actionData.exam_date || null,
+                events: actionData.events || [],
+                classes: actionData.classes || [],
+                studySessions: actionData.studySessions || [],
+                accepted: true
+            };
+            injectScheduleProposal(scheduleProposal, true);
+        }
+        // 5. PROPOSE / UPDATE TIMETABLE
+        else if (actionData.events || action === 'PROPOSE_TIMETABLE' || action === 'UPDATE_TIMETABLE') {
+            const isExplicitUpdate = action === 'UPDATE_TIMETABLE';
+            scheduleProposal = {
+                cardId: 'prop-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                summary: actionData.summary || 'Proposed Weekly Timetable',
+                exam_date: actionData.exam_date || null,
+                events: actionData.events || [],
+                classes: actionData.classes || [],
+                studySessions: actionData.studySessions || [],
+                accepted: isExplicitUpdate
+            };
+            if (scheduleProposal.accepted) {
+                injectScheduleProposal(scheduleProposal, true);
+            }
+        }
     } else {
         // Fallback: Check if plain text contains a structured schedule
         scheduleProposal = parseScheduleFromPlainText(replyText);
+        if (scheduleProposal && scheduleProposal.accepted) {
+            injectScheduleProposal(scheduleProposal, true);
+        }
     }
 
-    // Auto-inject immediately into calendar and timetable only if accepted
-    if (scheduleProposal && scheduleProposal.accepted) {
-        injectScheduleProposal(scheduleProposal, true);
+    let actionCard = null;
+    if (scheduleProposal) {
+        actionCard = { details: scheduleProposal.summary + (scheduleProposal.accepted ? ' (Added to calendar)' : '') };
+    } else if (actionResult) {
+        actionCard = actionResult;
     }
 
     return {
         role: 'bot',
         content: cleanMessage,
         scheduleProposal: scheduleProposal,
-        actionCard: scheduleProposal ? { details: scheduleProposal.summary + (scheduleProposal.accepted ? ' (Added to calendar)' : '') } : null,
+        actionCard: actionCard,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 }
@@ -4202,17 +4737,80 @@ function generateOfflineBuddyReply(userText, media, history) {
         };
     }
 
-    // 3. Direct Command: Clear Timetable
+    // 3. Direct Command: Revert Changes / Undo
+    if (/\b(revert changes|revert timetable|undo last change|undo change|undo|rollback schedule|restore schedule|revert)\b/i.test(lower)) {
+        const res = revertLastCalendarChange();
+        return {
+            role: 'bot',
+            content: res.success
+                ? `↩️ Reverted your schedule! Restored timetable from before: **${res.description}**.`
+                : `There are no previous schedule changes to revert right now.`,
+            actionCard: { details: res.success ? `Reverted: ${res.description}` : 'No changes to revert' },
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 4. Direct Command: Clear Specific Day's Schedule
+    if (/\b(clear|delete|remove|wipe)\b.*\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|today|tomorrow)\b/i.test(lower)) {
+        const dayMatch = lower.match(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|today|tomorrow)\b/i);
+        const target = dayMatch ? dayMatch[1] : 'today';
+        const res = clearScheduleForDay(target, 'all');
+        return {
+            role: 'bot',
+            content: `Schedule cleared for **${res.targetDayName || target}**! Removed ${res.totalRemoved} event(s) and class(es). *(Say "undo" or "revert" anytime if you want to restore them)*`,
+            actionCard: { details: `Cleared ${res.totalRemoved} items from ${res.targetDayName || target}` },
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 5. Direct Command: Clear Entire Timetable
     if (/\b(clear timetable|delete all|clear schedule|reset timetable|reset schedule|wipe timetable)\b/i.test(lower)) {
-        calendarEvents.length = 0;
+        pushCalendarSnapshot('Cleared entire timetable');
+        calendarEvents = [];
+        storedClasses = [];
         saveEvents();
+        saveStoredClasses(storedClasses);
         renderAllViews();
         return {
             role: 'bot',
-            content: "Timetable cleared! All study sessions have been removed. Let me know whenever you'd like to build a fresh schedule.",
+            content: "Timetable cleared! All classes and study sessions have been removed. Let me know whenever you'd like to build a fresh schedule. *(Say 'undo' if you did this by accident!)*",
             actionCard: { details: 'Cleared all calendar events' },
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
+    }
+
+    // 6. Direct Command: View Schedule / What's on my timetable
+    if (/\b(what('s| is) my schedule|view schedule|show schedule|my timetable|what do i have|what class(es)? do i have|schedule for today|schedule for tomorrow|schedule today|schedule tomorrow|today('s)? schedule|tomorrow('s)? schedule|classes on|schedule on)\b/i.test(lower) || (/\b(schedule|timetable|classes)\b/i.test(lower) && /\b(show|view|see|check|display|tell me)\b/i.test(lower))) {
+        const scheduleText = formatScheduleQueryResponse(text);
+        return {
+            role: 'bot',
+            content: scheduleText,
+            actionCard: null,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+    }
+
+    // 7. Direct Command: Reschedule / Edit Item
+    if (/\b(reschedule|move class|move session|change time for|shift)\b/i.test(lower)) {
+        const dayMatch = lower.match(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|today|tomorrow)\b/i);
+        const timeMatch = text.match(/\b(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\b/i);
+        const subMatch = text.match(/([a-zA-Z]{2,4}\s*[-]?\s*\d{3}[a-zA-Z]?|physics|math|maths|chemistry|biology|economics|accounting|law|anatomy|data structures|computer science|gym|workout|calculus)/i);
+
+        if (subMatch && (dayMatch || timeMatch)) {
+            const res = editOrRescheduleItem({
+                search: subMatch[0],
+                newDay: dayMatch ? dayMatch[1] : null,
+                newStartTime: timeMatch ? timeMatch[1] : null
+            });
+            if (res.success) {
+                return {
+                    role: 'bot',
+                    content: `Done! ${res.details}. *(Type "undo" to revert)*`,
+                    actionCard: { details: res.details },
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+            }
+        }
     }
 
     // 3. Conversational: Study Advice, Time Management & Techniques
