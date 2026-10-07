@@ -738,15 +738,12 @@ function getClassesStorageKey() {
 // ==========================================
 function loadEvents() {
     const key = getCalendarEventsStorageKey();
-    const uid = getCurrentAuthUserId();
     try {
         let stored = localStorage.getItem(key);
-        if (!stored && uid !== 'guest') {
-            // Migrate legacy unpartitioned events once for this user
-            const legacy = localStorage.getItem('sabi_calendar_events_v5');
-            if (legacy) {
-                stored = legacy;
-                localStorage.setItem(key, legacy);
+        if (!stored || stored === '[]') {
+            const canonical = localStorage.getItem('sabi_calendar_events_v5');
+            if (canonical && canonical !== '[]') {
+                stored = canonical;
             }
         }
         calendarEvents = stored ? JSON.parse(stored) : [];
@@ -760,7 +757,9 @@ function loadEvents() {
 function saveEvents() {
     const key = getCalendarEventsStorageKey();
     try {
-        localStorage.setItem(key, JSON.stringify(calendarEvents));
+        const jsonStr = JSON.stringify(calendarEvents);
+        localStorage.setItem(key, jsonStr);
+        localStorage.setItem('sabi_calendar_events_v5', jsonStr);
     } catch (e) {
         console.error('Failed to save events', e);
     }
@@ -768,15 +767,12 @@ function saveEvents() {
 
 function loadStoredClasses() {
     const key = getClassesStorageKey();
-    const uid = getCurrentAuthUserId();
     try {
         let stored = localStorage.getItem(key);
-        if (!stored && uid !== 'guest') {
-            // Migrate legacy unpartitioned classes once for this user
-            const legacy = localStorage.getItem('sabi_classes_v5');
-            if (legacy) {
-                stored = legacy;
-                localStorage.setItem(key, legacy);
+        if (!stored || stored === '[]') {
+            const canonical = localStorage.getItem('sabi_classes_v5');
+            if (canonical && canonical !== '[]') {
+                stored = canonical;
             }
         }
         storedClasses = stored ? JSON.parse(stored) : [];
@@ -791,7 +787,9 @@ function saveStoredClasses(classes) {
     const key = getClassesStorageKey();
     try {
         storedClasses = classes || [];
-        localStorage.setItem(key, JSON.stringify(storedClasses));
+        const jsonStr = JSON.stringify(storedClasses);
+        localStorage.setItem(key, jsonStr);
+        localStorage.setItem('sabi_classes_v5', jsonStr);
     } catch (e) {
         console.error('Failed to save classes', e);
     }
@@ -4939,7 +4937,6 @@ function parseAiReplyAndApply(replyText) {
         }
         // 5. PROPOSE / UPDATE TIMETABLE
         else if (actionData.events || action === 'PROPOSE_TIMETABLE' || action === 'UPDATE_TIMETABLE') {
-            const isExplicitUpdate = action === 'UPDATE_TIMETABLE';
             scheduleProposal = {
                 cardId: 'prop-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
                 summary: actionData.summary || 'Proposed Weekly Timetable',
@@ -4947,11 +4944,9 @@ function parseAiReplyAndApply(replyText) {
                 events: actionData.events || [],
                 classes: actionData.classes || [],
                 studySessions: actionData.studySessions || [],
-                accepted: isExplicitUpdate
+                accepted: true
             };
-            if (scheduleProposal.accepted) {
-                injectScheduleProposal(scheduleProposal, true);
-            }
+            injectScheduleProposal(scheduleProposal, true);
         }
     } else {
         // Fallback: Check if plain text contains a structured schedule
@@ -6287,14 +6282,61 @@ async function syncAllEventsToGoogle(quiet = false) {
 
     if (!quiet) showToast(`Syncing ${total} timetable items to Google Calendar...`);
 
-    // Sync recurring classes
-    for (const cls of storedClasses) {
-        await syncClassToGoogle(cls, true);
-    }
+    const token = getGcalToken();
+    if (token) {
+        // 1. Client-side direct Google API sync
+        for (const cls of storedClasses) {
+            await syncClassToGoogle(cls, true);
+        }
+        for (const ev of calendarEvents) {
+            await syncSingleEventToGoogle(ev, true);
+        }
+    } else {
+        // 2. Server-side OAuth batch insert sync
+        const userId = typeof getActiveUserId === 'function' ? getActiveUserId() : 'default_user';
+        const dayToIcsMap = {
+            'Monday': 'MO', 'Tuesday': 'TU', 'Wednesday': 'WE',
+            'Thursday': 'TH', 'Friday': 'FR', 'Saturday': 'SA', 'Sunday': 'SU'
+        };
 
-    // Sync study sessions
-    for (const ev of calendarEvents) {
-        await syncSingleEventToGoogle(ev, true);
+        const eventsToInsert = [];
+        storedClasses.forEach(cls => {
+            eventsToInsert.push({
+                summary: `${cls.subject} (Lecture)`,
+                dayOfWeek: dayToIcsMap[cls.day] || 'MO',
+                startTime: cls.start_time || '09:00',
+                endTime: cls.end_time || calculateEndTime(cls.start_time || '09:00', 2),
+                colorId: '5'
+            });
+        });
+
+        calendarEvents.forEach(ev => {
+            const d = new Date(ev.date + 'T00:00:00');
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayName = !isNaN(d.getTime()) ? dayNames[d.getDay()] : 'Monday';
+
+            eventsToInsert.push({
+                summary: `${ev.title || 'Study Session'}`,
+                dayOfWeek: dayToIcsMap[dayName] || 'MO',
+                startTime: ev.time || '17:00',
+                endTime: calculateEndTime(ev.time || '17:00', ev.duration || 1.5),
+                colorId: '9'
+            });
+        });
+
+        try {
+            const res = await fetch('/api/calendar/batch-insert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, events: eventsToInsert })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                if (!quiet) showToast(`Synced ${total} items to Google Calendar!`);
+            }
+        } catch (e) {
+            console.warn('Server-side Google batch sync notice:', e);
+        }
     }
 
     localStorage.setItem('sabi_gcal_last_sync', new Date().toISOString());
