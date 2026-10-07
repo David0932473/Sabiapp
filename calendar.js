@@ -304,7 +304,7 @@ let calendarEvents = [];
 let storedClasses = [];
 let selectedDate = getTodayStr();
 let currentViewMode = 'day'; // 'day', 'agenda', 'week', or 'month'
-let stripWeekOffset = 0;
+let currentStripSunday = getSundayOfWeek(new Date(selectedDate + 'T00:00:00'));
 let plannerWeekOffset = 0;
 let agendaFilter = 'all'; // 'all', 'class', 'study'
 let selectedDetailEventId = null;
@@ -1142,15 +1142,31 @@ window.switchViewMode = switchViewMode;
 // --- 7-DAY MINI CALENDAR STRIP (SUN - SAT) ---
 // ==========================================
 function changeStripWeek(direction) {
-    stripWeekOffset += direction;
+    if (!currentStripSunday) {
+        currentStripSunday = getSundayOfWeek(new Date(selectedDate + 'T00:00:00'));
+    }
+    currentStripSunday = addDaysToDate(currentStripSunday, direction * 7);
+
+    // Keep active day on the matching day-of-week in the newly viewed week
+    const curSelObj = new Date(selectedDate + 'T00:00:00');
+    const dayOfWeek = curSelObj.getDay();
+    selectedDate = addDaysToDate(currentStripSunday, dayOfWeek);
+
+    updateCalendarHeaderTitle();
     renderMiniCalendarStrip();
+    if (currentViewMode === 'day') {
+        renderDayTimeline();
+    } else if (currentViewMode === 'agenda') {
+        renderAgendaTimeline();
+    }
 }
 window.changeStripWeek = changeStripWeek;
 
 function goToToday() {
-    stripWeekOffset = 0;
     monthViewOffset = 0;
+    plannerWeekOffset = 0;
     selectedDate = getTodayStr();
+    currentStripSunday = getSundayOfWeek(new Date(selectedDate + 'T00:00:00'));
     updateCalendarHeaderTitle();
     renderMiniCalendarStrip();
     renderAllViews();
@@ -1159,6 +1175,8 @@ window.goToToday = goToToday;
 
 function onSelectDate(dateStr) {
     selectedDate = dateStr;
+    // Keep currentStripSunday anchored to the week of the selected date so it never auto-skips
+    currentStripSunday = getSundayOfWeek(new Date(dateStr + 'T00:00:00'));
     updateCalendarHeaderTitle();
     renderMiniCalendarStrip();
     if (currentViewMode === 'day') {
@@ -1174,13 +1192,19 @@ function renderMiniCalendarStrip() {
     const label = document.getElementById('strip-month-label');
     if (!container) return;
 
-    // Start week on Sunday (Sun to Sat) to match native calendar mockup!
-    const baseSunday = getSundayOfWeek(new Date(selectedDate + 'T00:00:00'));
-    const weekSundayStr = addDaysToDate(baseSunday, stripWeekOffset * 7);
-    const weekSunDate = new Date(weekSundayStr + 'T00:00:00');
+    if (!currentStripSunday) {
+        currentStripSunday = getSundayOfWeek(new Date(selectedDate + 'T00:00:00'));
+    }
+
+    const weekSunDate = new Date(currentStripSunday + 'T00:00:00');
+    const weekSatDate = new Date(addDaysToDate(currentStripSunday, 6) + 'T00:00:00');
 
     if (label) {
-        label.textContent = weekSunDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        if (weekSunDate.getMonth() === weekSatDate.getMonth()) {
+            label.textContent = weekSunDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        } else {
+            label.textContent = `${weekSunDate.toLocaleDateString('en-US', { month: 'short' })} – ${weekSatDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+        }
     }
 
     const todayStr = getTodayStr();
@@ -1189,19 +1213,19 @@ function renderMiniCalendarStrip() {
 
     let html = '';
     for (let i = 0; i < 7; i++) {
-        const currentDateStr = addDaysToDate(weekSundayStr, i);
+        const currentDateStr = addDaysToDate(currentStripSunday, i);
         const curDateObj = new Date(currentDateStr + 'T00:00:00');
         const dayNum = curDateObj.getDate();
         const isSelected = selectedDate === currentDateStr;
         const isToday = todayStr === currentDateStr;
 
         // Check if there are sessions or classes on this day
-        const daySessionsCount = calendarEvents.filter(ev => ev.date === currentDateStr).length;
-        const dayClassesCount = storedClasses.filter(cls => normalizeDayName(cls.day) === fullDayNames[i]).length;
+        const daySessionsCount = (calendarEvents || []).filter(ev => ev.date === currentDateStr).length;
+        const dayClassesCount = (storedClasses || []).filter(cls => normalizeDayName(cls.day) === fullDayNames[i]).length;
         const totalCount = daySessionsCount + dayClassesCount;
 
         html += `
-            <button type="button" class="strip-day-btn ${isSelected ? 'active' : ''} ${isToday ? 'today' : ''}" onclick="onSelectDate('${currentDateStr}')">
+            <button type="button" class="strip-day-btn ${isSelected ? 'active' : ''} ${isToday ? 'today' : ''}" onclick="onSelectDate('${currentDateStr}')" aria-label="${dayShortNames[i]}, ${curDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}">
                 <span class="strip-day-name">${dayShortNames[i]}</span>
                 <span class="strip-day-num">${dayNum}</span>
                 ${totalCount > 0 ? `<span class="strip-dot-badge">${totalCount}</span>` : '<span class="strip-dot-badge empty"></span>'}
@@ -3565,6 +3589,9 @@ function renderChatMessages() {
                         <button type="button" class="btn-confirm ${proposal.accepted ? 'accepted' : ''}" onclick="confirmGoogleTimetable('${escapeHtml(cardId)}', this)" ${proposal.accepted ? 'disabled' : ''}>
                             ${proposal.accepted ? '✅ Added to Google Calendar' : '✅ Add to Google Calendar'}
                         </button>
+                        <button type="button" class="btn-tweak btn-export-phone-ics" onclick="exportToIcs('${escapeHtml(cardId)}')" title="Export all events to your phone calendar (.ics) with zero login required">
+                            📲 Add to Phone (.ics)
+                        </button>
                         <button type="button" class="btn-tweak" onclick="askAiToAdjust('${escapeHtml(cardId)}')">
                             ✏️ Adjust Times
                         </button>
@@ -4542,6 +4569,11 @@ function parseAiReplyAndApply(replyText) {
             const editRes = editOrRescheduleItem(actionData);
             actionResult = { details: editRes.success ? editRes.details : (editRes.error || 'Unable to find matching item to reschedule') };
         }
+        // 4. EXPORT ICS
+        else if (action === 'EXPORT_ICS') {
+            exportToIcs(actionData.cardId || 'all');
+            actionResult = { details: 'Exported timetable to .ics calendar file' };
+        }
         // 4. REPLACE TIMETABLE
         else if (action === 'REPLACE_TIMETABLE') {
             pushCalendarSnapshot(actionData.summary || 'Replaced Timetable');
@@ -4811,6 +4843,17 @@ function generateOfflineBuddyReply(userText, media, history) {
                 };
             }
         }
+    }
+
+    // 8. Direct Command: Export / Download .ICS for phone calendar
+    if (/\b(export|download)\b.*\b(ics|calendar|phone|apple calendar|outlook)\b/i.test(lower) || /\b(add to phone|save to phone|export to phone)\b/i.test(lower)) {
+        exportToIcs();
+        return {
+            role: 'bot',
+            content: `I've prepared and downloaded your complete timetable as an **.ics calendar file**! Tap or open the downloaded file on your phone or laptop to import all your classes and study sessions into **Apple Calendar, Google Calendar, or Outlook** with zero credentials needed.`,
+            actionCard: { details: 'Exported timetable to .ics calendar file' },
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
     }
 
     // 3. Conversational: Study Advice, Time Management & Techniques
@@ -5172,27 +5215,65 @@ function createGoogleCalendarUrl(event) {
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}`;
 }
 
-function exportToIcs() {
-    const totalItems = calendarEvents.length + storedClasses.length;
+function exportToIcs(targetCardOrProposal) {
+    let proposalData = null;
+
+    if (typeof targetCardOrProposal === 'string') {
+        const cardId = targetCardOrProposal;
+        const history = getChatHistory();
+        for (const msg of history) {
+            if (msg.scheduleProposal && (msg.scheduleProposal.cardId === cardId || msg.scheduleProposal.id === cardId)) {
+                proposalData = msg.scheduleProposal;
+                break;
+            }
+        }
+        if (!proposalData) {
+            const card = document.getElementById(cardId);
+            if (card && card.dataset.proposalJson) {
+                try {
+                    proposalData = JSON.parse(decodeURIComponent(card.dataset.proposalJson));
+                } catch (e) {}
+            }
+        }
+    } else if (targetCardOrProposal && typeof targetCardOrProposal === 'object') {
+        proposalData = targetCardOrProposal;
+    }
+
+    // Determine items to export
+    let classesToExport = storedClasses;
+    let sessionsToExport = calendarEvents;
+    let blueprintEventsToExport = [];
+
+    if (proposalData) {
+        classesToExport = Array.isArray(proposalData.classes) ? proposalData.classes : [];
+        sessionsToExport = Array.isArray(proposalData.studySessions) ? proposalData.studySessions : [];
+        blueprintEventsToExport = Array.isArray(proposalData.events) ? proposalData.events : [];
+
+        // If proposal hasn't been injected into local calendar yet, inject it so it persists in app too!
+        if (!proposalData.accepted && typeof injectScheduleProposal === 'function') {
+            injectScheduleProposal(proposalData, true);
+        }
+    }
+
+    const totalItems = classesToExport.length + sessionsToExport.length + blueprintEventsToExport.length;
     if (totalItems === 0) {
-        alert('No events or classes to export. Add some first!');
+        showToast('No events or classes to export. Add some first!');
         return;
     }
 
     const dayToIcsMap = {
-        'Monday': 'MO',
-        'Tuesday': 'TU',
-        'Wednesday': 'WE',
-        'Thursday': 'TH',
-        'Friday': 'FR',
-        'Saturday': 'SA',
-        'Sunday': 'SU'
+        'Monday': 'MO', 'Tuesday': 'TU', 'Wednesday': 'WE',
+        'Thursday': 'TH', 'Friday': 'FR', 'Saturday': 'SA', 'Sunday': 'SU'
+    };
+    const dayCodeToNameMap = {
+        'MO': 'Monday', 'TU': 'Tuesday', 'WE': 'Wednesday',
+        'TH': 'Thursday', 'FR': 'Friday', 'SA': 'Saturday', 'SU': 'Sunday'
     };
 
     let ics = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
-        'PRODID:-//Sabi App//Academic Timetable//EN',
+        'PRODID:-//Sabi//Steady AI Academic OS//EN',
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'X-WR-CALNAME:Sabi Academic & Study Timetable',
@@ -5202,20 +5283,22 @@ function exportToIcs() {
     const dtstamp = formatGoogleIso(new Date());
 
     // 1. Recurring Classes
-    storedClasses.forEach(cls => {
-        const icsDay = dayToIcsMap[cls.day] || 'MO';
-        const dummyDate = getMondayOfWeek(new Date());
-        const startD = new Date(`${dummyDate}T${cls.start_time || '09:00'}:00`);
-        const duration = calculateDuration(cls.start_time, cls.end_time);
+    classesToExport.forEach((cls, idx) => {
+        const normDay = normalizeDayName(cls.day);
+        const icsDay = dayToIcsMap[normDay] || 'MO';
+        const dummyDate = resolveScheduleDate(null, normDay, 0);
+        const startTime = parseTime12or24(cls.start_time || '09:00') || '09:00';
+        const startD = new Date(`${dummyDate}T${startTime}:00`);
+        const duration = calculateDuration(cls.start_time, cls.end_time) || 2;
         const endD = new Date(startD.getTime() + duration * 60 * 60 * 1000);
 
         ics.push('BEGIN:VEVENT');
-        ics.push(`UID:${cls.id}@sabiapp.ng`);
+        ics.push(`UID:cls-${Date.now()}-${idx}@sabiapp.ng`);
         ics.push(`DTSTAMP:${dtstamp}`);
         ics.push(`DTSTART:${formatGoogleIso(startD)}`);
         ics.push(`DTEND:${formatGoogleIso(endD)}`);
         ics.push(`RRULE:FREQ=WEEKLY;BYDAY=${icsDay}`);
-        ics.push(`SUMMARY:${escapeIcs(cls.subject)}`);
+        ics.push(`SUMMARY:${escapeIcs(cls.subject || 'Lecture')}`);
         ics.push(`LOCATION:${escapeIcs(cls.venue || 'Lecture Hall')}`);
         ics.push(`DESCRIPTION:Recurring weekly lecture on ${cls.day}`);
         ics.push('STATUS:CONFIRMED');
@@ -5223,19 +5306,47 @@ function exportToIcs() {
     });
 
     // 2. Study Sessions
-    calendarEvents.forEach(ev => {
-        const startD = new Date(`${ev.date}T${ev.time || '17:00'}:00`);
+    sessionsToExport.forEach((ev, idx) => {
+        const eventDate = ev.date || resolveScheduleDate(null, ev.day, idx);
+        const eventTime = parseTime12or24(ev.time || ev.start_time || '17:00') || '17:00';
+        const startD = new Date(`${eventDate}T${eventTime}:00`);
         const duration = parseFloat(ev.duration || 1.5);
         const endD = new Date(startD.getTime() + duration * 60 * 60 * 1000);
 
         ics.push('BEGIN:VEVENT');
-        ics.push(`UID:${ev.id}@sabiapp.ng`);
+        ics.push(`UID:ev-${Date.now()}-${idx}@sabiapp.ng`);
         ics.push(`DTSTAMP:${dtstamp}`);
         ics.push(`DTSTART:${formatGoogleIso(startD)}`);
         ics.push(`DTEND:${formatGoogleIso(endD)}`);
-        ics.push(`SUMMARY:${escapeIcs(ev.title)}`);
+        ics.push(`SUMMARY:${escapeIcs(ev.title || ev.subject || 'Study Session')}`);
         if (ev.notes) ics.push(`DESCRIPTION:${escapeIcs(ev.notes)}`);
         ics.push(`LOCATION:${escapeIcs(ev.location || 'Sabi Prep Room')}`);
+        ics.push('STATUS:CONFIRMED');
+        ics.push('END:VEVENT');
+    });
+
+    // 3. Blueprint format events (dayOfWeek: 'MO,WE')
+    blueprintEventsToExport.forEach((ev, idx) => {
+        const summary = ev.summary || 'Study Session';
+        const days = String(ev.dayOfWeek || 'MO').split(',').map(d => d.trim().toUpperCase());
+        const startTime = parseTime12or24(ev.startTime || '14:00') || '14:00';
+        const endTime = parseTime12or24(ev.endTime || '15:30') || calculateEndTime(startTime, 1.5);
+        const duration = calculateDuration(startTime, endTime) || 1.5;
+        const icsDays = days.filter(d => dayCodeToNameMap[d]).join(',');
+
+        const firstDayName = dayCodeToNameMap[days[0]] || 'Monday';
+        const eventDate = resolveScheduleDate(null, firstDayName, 0);
+        const startD = new Date(`${eventDate}T${startTime}:00`);
+        const endD = new Date(startD.getTime() + duration * 60 * 60 * 1000);
+
+        ics.push('BEGIN:VEVENT');
+        ics.push(`UID:bp-${Date.now()}-${idx}@sabiapp.ng`);
+        ics.push(`DTSTAMP:${dtstamp}`);
+        ics.push(`DTSTART:${formatGoogleIso(startD)}`);
+        ics.push(`DTEND:${formatGoogleIso(endD)}`);
+        if (icsDays) ics.push(`RRULE:FREQ=WEEKLY;BYDAY=${icsDays}`);
+        ics.push(`SUMMARY:${escapeIcs(summary)}`);
+        ics.push('DESCRIPTION:Scheduled by Steady AI Study Companion');
         ics.push('STATUS:CONFIRMED');
         ics.push('END:VEVENT');
     });
@@ -5245,12 +5356,12 @@ function exportToIcs() {
     const blob = new Blob([ics.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'sabi_academic_timetable.ics';
+    link.download = `sabi_timetable_${getTodayStr()}.ics`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    showToast('Downloaded .ICS! Ready to import to Apple / Google Calendar.');
+    showToast(`📲 Downloaded ${totalItems} event(s) (.ics)! Open the file to add all to your phone calendar.`);
 }
 window.exportToIcs = exportToIcs;
 

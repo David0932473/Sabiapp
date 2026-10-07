@@ -5055,12 +5055,26 @@ body {
     color: var(--accent);
 }
 
+.week-strip-card,
+.week-strip-header,
+.strip-month-title,
+.strip-today-btn,
+.strip-arrow-btn,
+.week-strip-days,
+.strip-day-btn,
+.strip-day-name,
+.strip-day-num,
+.strip-dot-badge {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
 .week-strip-days {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 2px;
+    gap: 4px;
     width: 100%;
     box-sizing: border-box;
+    padding: 0 2px;
 }
 
 .strip-day-btn {
@@ -5069,15 +5083,17 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 5px;
     cursor: pointer;
-    padding: 4px 0;
-    border-radius: 12px;
+    padding: 6px 2px;
+    border-radius: 14px;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     outline: none;
     min-width: 0;
     width: 100%;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .strip-day-name {
@@ -5089,19 +5105,21 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.2;
+    letter-spacing: -0.01em;
 }
 
 .strip-day-num {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     max-width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 600;
     color: var(--text-main);
+    letter-spacing: -0.02em;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     flex-shrink: 0;
 }
@@ -5808,21 +5826,21 @@ body.nav-is-hidden .steady-fab-avatar {
     }
 
     .week-strip-card {
-        padding: 10px 4px;
+        padding: 12px 6px;
     }
 
     .week-strip-days {
-        gap: 1px;
+        gap: 3px;
     }
 
     .strip-day-num {
-        width: 32px;
-        height: 32px;
-        font-size: 13.5px;
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
     }
 
     .strip-day-name {
-        font-size: 10.5px;
+        font-size: 11px;
     }
 
     .month-grid-canvas {
@@ -5847,17 +5865,21 @@ body.nav-is-hidden .steady-fab-avatar {
     }
 
     .week-strip-card {
-        padding: 8px 2px;
+        padding: 10px 4px;
+    }
+
+    .week-strip-days {
+        gap: 2px;
     }
 
     .strip-day-num {
-        width: 28px;
-        height: 28px;
-        font-size: 12.5px;
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
     }
 
     .strip-day-name {
-        font-size: 9.5px;
+        font-size: 10px;
     }
 
     .strip-month-title {
@@ -5868,6 +5890,7 @@ body.nav-is-hidden .steady-fab-avatar {
         padding: 2px 7px;
         font-size: 10.5px;
     }
+}
 
 /* =========================================================
    ZERO-FRICTION GOOGLE CALENDAR PREVIEW CARD & CHAT WIDGET
