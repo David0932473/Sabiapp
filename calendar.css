@@ -2758,12 +2758,14 @@ body {
 }
 
 /* Studio Command Header */
-/* Studio Command Header */
 .copilot-studio-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 12px 18px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     position: relative;
     z-index: 2;
@@ -2771,6 +2773,7 @@ body {
 }
 
 [data-theme="light"] .copilot-studio-header {
+    background: rgba(255, 255, 255, 0.4);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
