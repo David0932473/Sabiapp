@@ -1219,16 +1219,10 @@ function renderMiniCalendarStrip() {
         const isSelected = selectedDate === currentDateStr;
         const isToday = todayStr === currentDateStr;
 
-        // Check if there are sessions or classes on this day
-        const daySessionsCount = (calendarEvents || []).filter(ev => ev.date === currentDateStr).length;
-        const dayClassesCount = (storedClasses || []).filter(cls => normalizeDayName(cls.day) === fullDayNames[i]).length;
-        const totalCount = daySessionsCount + dayClassesCount;
-
         html += `
             <button type="button" class="strip-day-btn ${isSelected ? 'active' : ''} ${isToday ? 'today' : ''}" onclick="onSelectDate('${currentDateStr}')" aria-label="${dayShortNames[i]}, ${curDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}">
                 <span class="strip-day-name">${dayShortNames[i]}</span>
                 <span class="strip-day-num">${dayNum}</span>
-                ${totalCount > 0 ? `<span class="strip-dot-badge">${totalCount}</span>` : '<span class="strip-dot-badge empty"></span>'}
             </button>
         `;
     }
