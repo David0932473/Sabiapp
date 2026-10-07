@@ -3386,15 +3386,17 @@ body {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.09);
     padding: 6.5px 13px;
-    border-radius: 20px;
+    border-radius: 9999px;
     color: var(--text-muted);
     font-size: 11.5px;
     font-weight: 500;
-    font-family: inherit;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
     white-space: nowrap;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     flex-shrink: 0;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 [data-theme="light"] .studio-chip {
@@ -6052,82 +6054,217 @@ body.nav-is-hidden .steady-fab-avatar {
 
 .calendar-preview-card .card-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
     margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+[data-theme="light"] .calendar-preview-card .card-actions {
+    border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Synced Status Badge (ChatGPT/Linear style pill) */
+.calendar-preview-card .status-badge-synced {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    color: #10B981;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    user-select: none;
+}
+
+[data-theme="light"] .calendar-preview-card .status-badge-synced {
+    background: #ECFDF5;
+    border-color: #A7F3D0;
+    color: #047857;
+}
+
+.calendar-preview-card .synced-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
+    animation: pulseSyncedDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+[data-theme="light"] .calendar-preview-card .synced-pulse-dot {
+    background: #059669;
+    box-shadow: 0 0 8px #059669;
+}
+
+@keyframes pulseSyncedDot {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.45;
+        transform: scale(0.85);
+    }
+}
+
+/* Primary Confirm Action Button */
+.calendar-preview-card .btn-confirm-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-weight: 600;
+    font-size: 11.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.calendar-preview-card .btn-confirm-action:hover {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
+}
+
+.calendar-preview-card .btn-confirm-action:active {
+    transform: translateY(0) scale(0.97);
+}
+
+/* Secondary Action Chips Container */
+.calendar-preview-card .card-secondary-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Sleek Quick Action Chips */
+.calendar-preview-card .btn-chip-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-muted, #A1A1AA);
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+[data-theme="light"] .calendar-preview-card .btn-chip-action {
+    background: #F1F5F9;
+    border-color: #E2E8F0;
+    color: #475569;
+}
+
+.calendar-preview-card .btn-chip-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: var(--text-main, #FAFAFA);
+    transform: translateY(-1px);
+}
+
+[data-theme="light"] .calendar-preview-card .btn-chip-action:hover {
+    background: #E2E8F0;
+    border-color: #CBD5E1;
+    color: #0F172A;
+}
+
+.calendar-preview-card .btn-chip-action:active {
+    transform: scale(0.96);
+}
+
+/* Adjust times variant */
+.calendar-preview-card .btn-chip-adjust:hover {
+    color: #60A5FA;
+    border-color: rgba(96, 165, 250, 0.4);
+    background: rgba(96, 165, 250, 0.1);
+}
+
+/* Revert destructive/undo chip */
+.calendar-preview-card .btn-chip-revert {
+    color: #F87171;
+    border-color: rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.06);
+}
+
+[data-theme="light"] .calendar-preview-card .btn-chip-revert {
+    color: #DC2626;
+    border-color: #FCA5A5;
+    background: #FEF2F2;
+}
+
+.calendar-preview-card .btn-chip-revert:hover {
+    color: #EF4444;
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.14);
+}
+
+[data-theme="light"] .calendar-preview-card .btn-chip-revert:hover {
+    color: #B91C1C;
+    border-color: #F87171;
+    background: #FEE2E2;
+}
+
+/* ICS export chip */
+.calendar-preview-card .btn-chip-ics:hover {
+    color: #A78BFA;
+    border-color: rgba(167, 139, 250, 0.4);
+    background: rgba(167, 139, 250, 0.1);
+}
+
+/* Legacy fallback button support (if rendered anywhere) */
 .calendar-preview-card .btn-confirm {
     flex: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 10px 14px;
-    border-radius: 10px;
+    padding: 8px 14px;
+    border-radius: 9999px;
     background: #2563EB;
     color: #FFFFFF;
     border: none;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
     font-weight: 600;
-    font-size: 12.5px;
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
 }
 
-.calendar-preview-card .btn-confirm:hover:not(:disabled) {
-    background: #1D4ED8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
-}
-
 .calendar-preview-card .btn-confirm.accepted,
 .calendar-preview-card .btn-confirm:disabled {
-    background: rgba(16, 185, 129, 0.18);
+    background: rgba(16, 185, 129, 0.14);
     color: #10B981;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.28);
     box-shadow: none;
     cursor: default;
-}
-
-[data-theme="light"] .calendar-preview-card .btn-confirm.accepted,
-[data-theme="light"] .calendar-preview-card .btn-confirm:disabled {
-    background: rgba(16, 185, 129, 0.12);
-    color: #047857;
-    border: 1px solid rgba(16, 185, 129, 0.35);
-}
-
-.calendar-preview-card .btn-tweak {
-    flex: 1 1 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 9px 13px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--text-main, #FAFAFA);
-    border: 1px solid var(--border, #3F3F46);
-    font-weight: 500;
-    font-size: 12.5px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-
-.calendar-preview-card .btn-tweak:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: var(--text-muted, #71717A);
-}
-
-[data-theme="light"] .calendar-preview-card .btn-tweak {
-    background: #F8FAFC;
-    color: #1E293B;
-    border-color: #CBD5E1;
-}
-
-[data-theme="light"] .calendar-preview-card .btn-tweak:hover {
-    background: #F1F5F9;
-    border-color: #94A3B8;
 }
 
 /* In-Chat Google Calendar 1-Click Connect Prompt */
@@ -6210,11 +6347,21 @@ body.nav-is-hidden .steady-fab-avatar {
     }
     .calendar-preview-card .card-actions {
         flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
     }
-    .calendar-preview-card .btn-confirm,
-    .calendar-preview-card .btn-tweak {
+    .calendar-preview-card .status-badge-synced {
+        justify-content: center;
+        width: 100%;
+    }
+    .calendar-preview-card .btn-confirm-action {
+        width: 100%;
+    }
+    .calendar-preview-card .card-secondary-actions {
+        justify-content: flex-start;
         width: 100%;
     }
 }
+
 
 

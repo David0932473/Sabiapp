@@ -3580,20 +3580,34 @@ function renderChatMessages() {
                     ${isConflict && !proposal.accepted ? `<div class="card-conflict-warning">${conflicts.map(c => `• ${escapeHtml(c)}`).join('<br>')}</div>` : ''}
 
                     <div class="card-actions">
-                        <button type="button" class="btn-confirm ${proposal.accepted ? 'accepted' : ''}" onclick="confirmGoogleTimetable('${escapeHtml(cardId)}', this)" ${proposal.accepted ? 'disabled' : ''}>
-                            ${proposal.accepted ? '✅ Added to Google Calendar' : '✅ Add to Google Calendar'}
-                        </button>
-                        <button type="button" class="btn-tweak btn-export-phone-ics" onclick="exportToIcs('${escapeHtml(cardId)}')" title="Export all events to your phone calendar (.ics) with zero login required">
-                            📲 Add to Phone (.ics)
-                        </button>
-                        <button type="button" class="btn-tweak" onclick="askAiToAdjust('${escapeHtml(cardId)}')">
-                            ✏️ Adjust Times
-                        </button>
                         ${proposal.accepted ? `
-                        <button type="button" class="btn-tweak" onclick="revertLastCalendarChange()" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.4);" title="Revert this timetable">
-                            ↩️ Revert
-                        </button>
-                        ` : ''}
+                            <div class="status-badge-synced" title="Timetable is active in your schedule">
+                                <span class="synced-pulse-dot"></span>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span>Synced to Google Calendar</span>
+                            </div>
+                        ` : `
+                            <button type="button" class="btn-confirm-action" onclick="confirmGoogleTimetable('${escapeHtml(cardId)}', this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+                                <span>Add to Google Calendar</span>
+                            </button>
+                        `}
+                        <div class="card-secondary-actions">
+                            <button type="button" class="btn-chip-action btn-chip-adjust" onclick="askAiToAdjust('${escapeHtml(cardId)}')">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                <span>Adjust Times</span>
+                            </button>
+                            ${proposal.accepted ? `
+                            <button type="button" class="btn-chip-action btn-chip-revert" onclick="revertLastCalendarChange()" title="Revert this timetable">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                                <span>Revert</span>
+                            </button>
+                            ` : ''}
+                            <button type="button" class="btn-chip-action btn-chip-ics" onclick="exportToIcs('${escapeHtml(cardId)}')" title="Download calendar file (.ics)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                <span>Export .ics</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
