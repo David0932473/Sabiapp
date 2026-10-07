@@ -6365,3 +6365,180 @@ body.nav-is-hidden .steady-fab-avatar {
 
 
 
+
+/* ============================================================
+   SMART SCHEDULE BUILDER - In-Chat Wizard
+   ============================================================ */
+.steady-wizard-card {
+    background: rgba(16, 185, 129, 0.04);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 12px;
+    margin-bottom: 4px;
+}
+.steady-wizard-card .wizard-step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #10B981;
+    margin-bottom: 6px;
+}
+.steady-wizard-card .wizard-question {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #E5E7EB;
+    margin-bottom: 14px;
+    line-height: 1.45;
+}
+.steady-wizard-card .wizard-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+.steady-wizard-card .wizard-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: #9CA3AF;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.steady-wizard-card .wizard-chip:hover {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #D1D5DB;
+}
+.steady-wizard-card .wizard-chip.selected {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #10B981;
+    font-weight: 600;
+}
+.steady-wizard-card .wizard-chip .chip-radio {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+.steady-wizard-card .wizard-chip.selected .chip-radio {
+    border-color: #10B981;
+    background: #10B981;
+}
+.steady-wizard-card .wizard-chip.selected .chip-radio::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fff;
+}
+.steady-wizard-card .wizard-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    margin: 4px 0 18px 0;
+}
+.steady-wizard-card .wizard-submit-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+}
+.steady-wizard-card .btn-wizard-generate {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 22px;
+    border-radius: 100px;
+    border: none;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+.steady-wizard-card .btn-wizard-generate:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+}
+.steady-wizard-card .btn-wizard-generate:active {
+    transform: scale(0.97);
+}
+.steady-wizard-card .btn-wizard-generate:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+.steady-wizard-card .btn-wizard-generate svg {
+    flex-shrink: 0;
+}
+
+/* Wizard progress dots */
+.steady-wizard-card .wizard-progress {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+.steady-wizard-card .wizard-progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+.steady-wizard-card .wizard-progress-dot.active {
+    background: #10B981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+}
+.steady-wizard-card .wizard-progress-dot.done {
+    background: rgba(16, 185, 129, 0.5);
+}
+
+/* Light mode overrides */
+@media (prefers-color-scheme: light) {
+    .steady-wizard-card {
+        background: rgba(16, 185, 129, 0.04);
+        border-color: rgba(16, 185, 129, 0.2);
+    }
+    .steady-wizard-card .wizard-question {
+        color: #1F2937;
+    }
+    .steady-wizard-card .wizard-chip {
+        background: rgba(0, 0, 0, 0.03);
+        border-color: rgba(0, 0, 0, 0.1);
+        color: #6B7280;
+    }
+    .steady-wizard-card .wizard-chip:hover {
+        background: rgba(16, 185, 129, 0.06);
+        border-color: rgba(16, 185, 129, 0.3);
+        color: #374151;
+    }
+    .steady-wizard-card .wizard-chip.selected {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.4);
+        color: #059669;
+    }
+    .steady-wizard-card .wizard-chip .chip-radio {
+        border-color: rgba(0, 0, 0, 0.15);
+    }
+    .steady-wizard-card .wizard-divider {
+        background: rgba(0, 0, 0, 0.06);
+    }
+}

@@ -706,11 +706,49 @@ function editOrRescheduleItem(options = {}) {
 window.editOrRescheduleItem = editOrRescheduleItem;
 
 // ==========================================
+// --- USER IDENTIFIER & PERSISTENCE SCOPING ---
+// ==========================================
+function getCurrentAuthUserId() {
+    try {
+        if (window.SabiAuth && typeof window.SabiAuth.getUser === 'function') {
+            const user = window.sabiDb?.auth?.user?.() || window.SabiAuth.currentUser;
+            if (user?.id) return user.id;
+        }
+        const cachedId = localStorage.getItem('sabi_user_id');
+        if (cachedId) return cachedId;
+        const profile = JSON.parse(localStorage.getItem('sabi_user_profile') || '{}');
+        if (profile?.id) return profile.id;
+        if (profile?.user_id) return profile.user_id;
+    } catch (e) {}
+    return 'guest';
+}
+
+function getCalendarEventsStorageKey() {
+    const uid = getCurrentAuthUserId();
+    return `sabi_calendar_events_v5_${uid}`;
+}
+
+function getClassesStorageKey() {
+    const uid = getCurrentAuthUserId();
+    return `sabi_classes_v5_${uid}`;
+}
+
+// ==========================================
 // --- PERSISTENCE HELPERS ---
 // ==========================================
 function loadEvents() {
+    const key = getCalendarEventsStorageKey();
+    const uid = getCurrentAuthUserId();
     try {
-        const stored = localStorage.getItem('sabi_calendar_events_v5');
+        let stored = localStorage.getItem(key);
+        if (!stored && uid !== 'guest') {
+            // Migrate legacy unpartitioned events once for this user
+            const legacy = localStorage.getItem('sabi_calendar_events_v5');
+            if (legacy) {
+                stored = legacy;
+                localStorage.setItem(key, legacy);
+            }
+        }
         calendarEvents = stored ? JSON.parse(stored) : [];
         if (!Array.isArray(calendarEvents)) calendarEvents = [];
     } catch (e) {
@@ -720,16 +758,27 @@ function loadEvents() {
 }
 
 function saveEvents() {
+    const key = getCalendarEventsStorageKey();
     try {
-        localStorage.setItem('sabi_calendar_events_v5', JSON.stringify(calendarEvents));
+        localStorage.setItem(key, JSON.stringify(calendarEvents));
     } catch (e) {
         console.error('Failed to save events', e);
     }
 }
 
 function loadStoredClasses() {
+    const key = getClassesStorageKey();
+    const uid = getCurrentAuthUserId();
     try {
-        const stored = localStorage.getItem('sabi_classes_v5');
+        let stored = localStorage.getItem(key);
+        if (!stored && uid !== 'guest') {
+            // Migrate legacy unpartitioned classes once for this user
+            const legacy = localStorage.getItem('sabi_classes_v5');
+            if (legacy) {
+                stored = legacy;
+                localStorage.setItem(key, legacy);
+            }
+        }
         storedClasses = stored ? JSON.parse(stored) : [];
         if (!Array.isArray(storedClasses)) storedClasses = [];
     } catch (e) {
@@ -739,9 +788,10 @@ function loadStoredClasses() {
 }
 
 function saveStoredClasses(classes) {
+    const key = getClassesStorageKey();
     try {
         storedClasses = classes || [];
-        localStorage.setItem('sabi_classes_v5', JSON.stringify(storedClasses));
+        localStorage.setItem(key, JSON.stringify(storedClasses));
     } catch (e) {
         console.error('Failed to save classes', e);
     }
@@ -757,6 +807,7 @@ function getStoredClasses() {
 function initCalendarApp() {
     loadEvents();
     loadStoredClasses();
+    loadScheduleProfile();
 
     // Set initial date in modal
     const dateInput = document.getElementById('modal-session-date');
@@ -2037,6 +2088,16 @@ function createNewSessionData(title) {
     };
 }
 
+function getChatSessionsStorageKey() {
+    const uid = getCurrentAuthUserId();
+    return `sabi_chat_sessions_v2_${uid}`;
+}
+
+function getActiveSessionStorageKey() {
+    const uid = getCurrentAuthUserId();
+    return `sabi_active_session_id_${uid}`;
+}
+
 function pruneOldChatSessions(sessions) {
     const now = Date.now();
     return (sessions || []).filter(s => {
@@ -2047,19 +2108,37 @@ function pruneOldChatSessions(sessions) {
 
 function getAllChatSessions() {
     let sessions = [];
+    const storageKey = getChatSessionsStorageKey();
+    const activeKey = getActiveSessionStorageKey();
+    const currentUid = getCurrentAuthUserId();
+
     try {
-        const stored = localStorage.getItem('sabi_chat_sessions_v2');
+        const stored = localStorage.getItem(storageKey);
         if (stored) {
             sessions = JSON.parse(stored) || [];
-        } else {
-            // Migrate legacy single-history storage
-            const legacy = localStorage.getItem('sabi_chat_history_v4');
-            if (legacy) {
-                const parsed = JSON.parse(legacy);
+        } else if (currentUid !== 'guest') {
+            // Check if there is an unpartitioned legacy storage to migrate for this user
+            const legacyUnpartitioned = localStorage.getItem('sabi_chat_sessions_v2');
+            if (legacyUnpartitioned) {
+                const parsed = JSON.parse(legacyUnpartitioned);
                 if (Array.isArray(parsed) && parsed.length > 0) {
-                    const migrated = createNewSessionData('Previous Session');
-                    migrated.messages = parsed;
-                    sessions = [migrated];
+                    sessions = parsed;
+                    // Migrate active session id as well
+                    const legacyActiveId = localStorage.getItem('sabi_active_session_id');
+                    if (legacyActiveId) {
+                        localStorage.setItem(activeKey, legacyActiveId);
+                    }
+                    localStorage.setItem(storageKey, JSON.stringify(sessions));
+                }
+            } else {
+                const legacy = localStorage.getItem('sabi_chat_history_v4');
+                if (legacy) {
+                    const parsed = JSON.parse(legacy);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        const migrated = createNewSessionData('Previous Session');
+                        migrated.messages = parsed;
+                        sessions = [migrated];
+                    }
                 }
             }
         }
@@ -2071,7 +2150,7 @@ function getAllChatSessions() {
     const pruned = pruneOldChatSessions(sessions);
     if (pruned.length !== sessions.length) {
         try {
-            localStorage.setItem('sabi_chat_sessions_v2', JSON.stringify(pruned));
+            localStorage.setItem(storageKey, JSON.stringify(pruned));
         } catch (e) {}
     }
 
@@ -2079,8 +2158,8 @@ function getAllChatSessions() {
         const fresh = createNewSessionData('New Conversation');
         pruned.push(fresh);
         try {
-            localStorage.setItem('sabi_chat_sessions_v2', JSON.stringify(pruned));
-            localStorage.setItem('sabi_active_session_id', fresh.id);
+            localStorage.setItem(storageKey, JSON.stringify(pruned));
+            localStorage.setItem(activeKey, fresh.id);
         } catch (e) {}
     }
 
@@ -2090,7 +2169,8 @@ function getAllChatSessions() {
 function saveAllChatSessions(sessions) {
     try {
         const pruned = pruneOldChatSessions(sessions);
-        localStorage.setItem('sabi_chat_sessions_v2', JSON.stringify(pruned));
+        const storageKey = getChatSessionsStorageKey();
+        localStorage.setItem(storageKey, JSON.stringify(pruned));
     } catch (e) {
         console.warn('Failed to save chat sessions:', e);
     }
@@ -2098,11 +2178,12 @@ function saveAllChatSessions(sessions) {
 
 function getActiveSession() {
     const sessions = getAllChatSessions();
-    const activeId = localStorage.getItem('sabi_active_session_id');
+    const activeKey = getActiveSessionStorageKey();
+    const activeId = localStorage.getItem(activeKey);
     let session = sessions.find(s => s.id === activeId);
     if (!session) {
         session = sessions[0] || createNewSessionData('New Conversation');
-        localStorage.setItem('sabi_active_session_id', session.id);
+        localStorage.setItem(activeKey, session.id);
     }
     return session;
 }
@@ -2129,13 +2210,14 @@ function saveChatHistory(history) {
         });
 
         const sessions = getAllChatSessions();
-        const activeId = localStorage.getItem('sabi_active_session_id');
+        const activeKey = getActiveSessionStorageKey();
+        const activeId = localStorage.getItem(activeKey);
         let session = sessions.find(s => s.id === activeId);
 
         if (!session) {
             session = createNewSessionData('New Conversation');
             sessions.unshift(session);
-            localStorage.setItem('sabi_active_session_id', session.id);
+            localStorage.setItem(activeKey, session.id);
         }
 
         session.messages = sanitized;
@@ -2160,7 +2242,8 @@ function startNewChatSession() {
     const sessions = getAllChatSessions();
     const newSession = createNewSessionData('New Conversation');
     sessions.unshift(newSession);
-    localStorage.setItem('sabi_active_session_id', newSession.id);
+    const activeKey = getActiveSessionStorageKey();
+    localStorage.setItem(activeKey, newSession.id);
     saveAllChatSessions(sessions);
 
     toggleChatHistoryDrawer(false);
@@ -2181,7 +2264,8 @@ function switchChatSession(sessionId) {
     const target = sessions.find(s => s.id === sessionId);
     if (target) {
         target.lastUpdated = Date.now();
-        localStorage.setItem('sabi_active_session_id', sessionId);
+        const activeKey = getActiveSessionStorageKey();
+        localStorage.setItem(activeKey, sessionId);
         saveAllChatSessions(sessions);
         toggleChatHistoryDrawer(false);
         removePendingChatMedia();
@@ -2196,15 +2280,16 @@ function deleteChatSession(sessionId, e) {
     if (e && e.stopPropagation) e.stopPropagation();
     let sessions = getAllChatSessions();
     sessions = sessions.filter(s => s.id !== sessionId);
+    const activeKey = getActiveSessionStorageKey();
 
     if (sessions.length === 0) {
         const fresh = createNewSessionData('New Conversation');
         sessions = [fresh];
-        localStorage.setItem('sabi_active_session_id', fresh.id);
+        localStorage.setItem(activeKey, fresh.id);
     } else {
-        const currentActive = localStorage.getItem('sabi_active_session_id');
+        const currentActive = localStorage.getItem(activeKey);
         if (currentActive === sessionId) {
-            localStorage.setItem('sabi_active_session_id', sessions[0].id);
+            localStorage.setItem(activeKey, sessions[0].id);
         }
     }
 
@@ -2247,7 +2332,8 @@ function renderChatHistoryList() {
     if (!container) return;
 
     const sessions = getAllChatSessions();
-    const activeId = localStorage.getItem('sabi_active_session_id');
+    const activeKey = getActiveSessionStorageKey();
+    const activeId = localStorage.getItem(activeKey);
 
     if (sessions.length === 0) {
         container.innerHTML = `
@@ -3451,7 +3537,7 @@ function renderChatMessages() {
                     </div>
 
                     <!-- Bento 2: Personalized Recommendations -->
-                    <div class="va-bento-card va-card-recommend" onclick="handleQuickChipClick('Analyze my enrolled courses and build a complete semester timetable')">
+                    <div class="va-bento-card va-card-recommend" onclick="launchScheduleWizard()">
                         <div class="va-bento-icon va-icon-lavender">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="3" width="7" height="7"></rect>
@@ -3654,6 +3740,17 @@ function renderChatMessages() {
             ? `<div>${escapeHtml(msg.content)}</div>`
             : `<div>${renderMarkdownLite(msg.content)}</div>`;
 
+        // Wizard card (in-chat interactive schedule builder)
+        let wizardHtml = '';
+        if (msg.isWizard && msg.wizardType === 'schedule_builder' && !scheduleBuilderState.isSubmitted) {
+            wizardHtml = `<div class="steady-wizard-card" id="steady-schedule-wizard">${buildWizardInnerHtml()}</div>`;
+        } else if (msg.isWizard && scheduleBuilderState.isSubmitted) {
+            wizardHtml = `<div class="steady-wizard-card" style="opacity: 0.5; pointer-events: none; padding: 14px;">
+                <div class="wizard-step-label" style="color: #10B981;">Schedule Generated</div>
+                <div class="wizard-question" style="font-size: 13px;">Your preferences have been sent to Steady. Check the timetable proposal below.</div>
+            </div>`;
+        }
+
         const actionsHtml = !isUser ? `
             <div class="va-msg-actions">
                 <button type="button" class="va-msg-action-btn" onclick="toggleMsgFavorite(this)" title="Like response" aria-label="Like response">
@@ -3673,6 +3770,7 @@ function renderChatMessages() {
                 <div class="studio-bubble chat-bubble">
                     ${mediaHtml}
                     ${contentHtml}
+                    ${wizardHtml}
                     ${scheduleCardHtml}
                     ${actionCardHtml}
                 </div>
@@ -3997,7 +4095,9 @@ function getStudentAiContext() {
 
     let aiMemory = null;
     try {
-        aiMemory = JSON.parse(localStorage.getItem('sabi_ai_memory') || 'null');
+        const uid = getCurrentAuthUserId();
+        const memKey = `sabi_ai_memory_${uid}`;
+        aiMemory = JSON.parse(localStorage.getItem(memKey) || localStorage.getItem('sabi_ai_memory') || 'null');
     } catch (e) {}
 
     // Extract all distinct subject/course names currently scheduled in timetable
@@ -4024,9 +4124,11 @@ function getStudentAiContext() {
 // Saves custom AI memory / learning preferences for the student
 function saveStudentAiMemory(memoryData) {
     try {
-        const existing = JSON.parse(localStorage.getItem('sabi_ai_memory') || '{}');
+        const uid = getCurrentAuthUserId();
+        const memKey = `sabi_ai_memory_${uid}`;
+        const existing = JSON.parse(localStorage.getItem(memKey) || localStorage.getItem('sabi_ai_memory') || '{}');
         const updated = Object.assign({}, existing, memoryData);
-        localStorage.setItem('sabi_ai_memory', JSON.stringify(updated));
+        localStorage.setItem(memKey, JSON.stringify(updated));
         return updated;
     } catch (e) {
         console.warn('Failed to save AI memory:', e);
@@ -4037,6 +4139,238 @@ function saveStudentAiMemory(memoryData) {
 // Expose context helpers globally
 window.getStudentAiContext = getStudentAiContext;
 window.saveStudentAiMemory = saveStudentAiMemory;
+
+// ============================================================
+// --- SMART SCHEDULE BUILDER — In-Chat 3-Question Wizard ---
+// ============================================================
+
+// Persisted schedule profile preferences
+let scheduleBuilderState = {
+    target: null,     // 'jamb' | 'waec' | 'university' | 'professional'
+    rhythm: null,     // 'early_bird' | 'balanced' | 'night_owl'
+    commitment: null, // 'casual' | 'targeted' | 'intense'
+    isActive: false,
+    isSubmitted: false
+};
+
+function loadScheduleProfile() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('sabi_schedule_profile') || 'null');
+        if (saved) {
+            scheduleBuilderState.target = saved.target || null;
+            scheduleBuilderState.rhythm = saved.rhythm || null;
+            scheduleBuilderState.commitment = saved.commitment || null;
+        }
+    } catch (e) {}
+}
+
+function saveScheduleProfile() {
+    try {
+        localStorage.setItem('sabi_schedule_profile', JSON.stringify({
+            target: scheduleBuilderState.target,
+            rhythm: scheduleBuilderState.rhythm,
+            commitment: scheduleBuilderState.commitment,
+            updatedAt: new Date().toISOString()
+        }));
+    } catch (e) {}
+}
+
+// Launch the wizard by injecting it as a special bot message in chat
+function launchScheduleWizard() {
+    scheduleBuilderState.isActive = true;
+    scheduleBuilderState.isSubmitted = false;
+    // Reset selections for a fresh wizard
+    scheduleBuilderState.target = null;
+    scheduleBuilderState.rhythm = null;
+    scheduleBuilderState.commitment = null;
+
+    const history = getChatHistory();
+
+    // Add a user message indicating they want to build a schedule
+    history.push({
+        role: 'user',
+        content: 'Build me a perfect study schedule',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    });
+
+    // Add a bot message with the wizard flag
+    history.push({
+        role: 'bot',
+        content: 'Let me build your ideal study schedule. Just tap your answers below -- it takes 30 seconds.',
+        isWizard: true,
+        wizardType: 'schedule_builder',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    });
+
+    saveChatHistory(history);
+    renderChatMessages();
+}
+window.launchScheduleWizard = launchScheduleWizard;
+
+// Tap handler for wizard chip selections
+function selectWizardOption(question, value) {
+    if (scheduleBuilderState.isSubmitted) return;
+
+    if (question === 'target') scheduleBuilderState.target = value;
+    else if (question === 'rhythm') scheduleBuilderState.rhythm = value;
+    else if (question === 'commitment') scheduleBuilderState.commitment = value;
+
+    // Re-render the wizard card in-place
+    const wizardCard = document.getElementById('steady-schedule-wizard');
+    if (wizardCard) {
+        wizardCard.innerHTML = buildWizardInnerHtml();
+    }
+}
+window.selectWizardOption = selectWizardOption;
+
+// Build the wizard card inner HTML based on current state
+function buildWizardInnerHtml() {
+    const t = scheduleBuilderState.target;
+    const r = scheduleBuilderState.rhythm;
+    const c = scheduleBuilderState.commitment;
+    const answeredCount = (t ? 1 : 0) + (r ? 1 : 0) + (c ? 1 : 0);
+    const allAnswered = t && r && c;
+
+    const targetOptions = [
+        { key: 'jamb', label: 'JAMB / UTME' },
+        { key: 'waec', label: 'WAEC / SSCE' },
+        { key: 'university', label: 'University / Poly' },
+        { key: 'professional', label: 'Professional (ICAN, ACCA)' }
+    ];
+
+    const rhythmOptions = [
+        { key: 'early_bird', label: 'Early Bird (6 - 10 AM focus)' },
+        { key: 'balanced', label: 'Balanced (Spread through day)' },
+        { key: 'night_owl', label: 'Night Owl (7 PM - 12 AM focus)' }
+    ];
+
+    const commitmentOptions = [
+        { key: 'casual', label: 'Casual (8 - 10 hrs/week)' },
+        { key: 'targeted', label: 'Targeted (14 - 18 hrs/week)' },
+        { key: 'intense', label: 'Intense (22+ hrs/week)' }
+    ];
+
+    function renderChipGroup(questionKey, options, selectedValue) {
+        return options.map(opt => {
+            const sel = opt.key === selectedValue ? 'selected' : '';
+            return `<button type="button" class="wizard-chip ${sel}" onclick="selectWizardOption('${questionKey}', '${opt.key}')">
+                <span class="chip-radio"></span>
+                <span>${escapeHtml(opt.label)}</span>
+            </button>`;
+        }).join('');
+    }
+
+    // Progress dots
+    const dots = [0, 1, 2].map(i => {
+        const cls = i < answeredCount ? 'done' : (i === answeredCount ? 'active' : '');
+        return `<span class="wizard-progress-dot ${cls}"></span>`;
+    }).join('');
+
+    return `
+        <div class="wizard-progress">${dots}</div>
+
+        <div class="wizard-step-label">Step 1 of 3</div>
+        <div class="wizard-question">What are you preparing for?</div>
+        <div class="wizard-chip-group">
+            ${renderChipGroup('target', targetOptions, t)}
+        </div>
+
+        <div class="wizard-divider"></div>
+
+        <div class="wizard-step-label">Step 2 of 3</div>
+        <div class="wizard-question">When do you focus best?</div>
+        <div class="wizard-chip-group">
+            ${renderChipGroup('rhythm', rhythmOptions, r)}
+        </div>
+
+        <div class="wizard-divider"></div>
+
+        <div class="wizard-step-label">Step 3 of 3</div>
+        <div class="wizard-question">How much time can you commit weekly?</div>
+        <div class="wizard-chip-group">
+            ${renderChipGroup('commitment', commitmentOptions, c)}
+        </div>
+
+        <div class="wizard-submit-row">
+            <button type="button" class="btn-wizard-generate" ${allAnswered ? '' : 'disabled'} onclick="submitScheduleWizard()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Generate My Schedule</span>
+            </button>
+        </div>
+    `;
+}
+
+// Submit the wizard — construct an optimized prompt and send it to Steady
+async function submitScheduleWizard() {
+    if (scheduleBuilderState.isSubmitted) return;
+    if (!scheduleBuilderState.target || !scheduleBuilderState.rhythm || !scheduleBuilderState.commitment) return;
+
+    scheduleBuilderState.isSubmitted = true;
+    scheduleBuilderState.isActive = false;
+    saveScheduleProfile();
+
+    // Save into AI memory for future context
+    saveStudentAiMemory({
+        scheduleProfile: {
+            target: scheduleBuilderState.target,
+            rhythm: scheduleBuilderState.rhythm,
+            commitment: scheduleBuilderState.commitment
+        }
+    });
+
+    // Build the rich context-aware prompt
+    const student = getStudentAiContext();
+    const targetLabels = {
+        jamb: 'JAMB/UTME exam',
+        waec: 'WAEC/SSCE exam',
+        university: 'University/Polytechnic courses',
+        professional: 'Professional certification (ICAN/ACCA)'
+    };
+    const rhythmLabels = {
+        early_bird: 'Early Bird — I focus best between 6 AM and 10 AM',
+        balanced: 'Balanced — I can study at different times throughout the day',
+        night_owl: 'Night Owl — I focus best from 7 PM to midnight'
+    };
+    const commitLabels = {
+        casual: '8-10 hours per week (casual, steady pace)',
+        targeted: '14-18 hours per week (standard exam prep)',
+        intense: '22+ hours per week (intense countdown mode)'
+    };
+
+    // Auto-detect subjects from enrolled courses
+    const subjects = student.activeSubjects.length > 0
+        ? student.activeSubjects.join(', ')
+        : 'my enrolled subjects';
+
+    const wizardPrompt = [
+        `Build me a complete, optimized weekly study timetable.`,
+        ``,
+        `My preferences:`,
+        `- Target: ${targetLabels[scheduleBuilderState.target] || scheduleBuilderState.target}`,
+        `- Focus rhythm: ${rhythmLabels[scheduleBuilderState.rhythm] || scheduleBuilderState.rhythm}`,
+        `- Weekly commitment: ${commitLabels[scheduleBuilderState.commitment] || scheduleBuilderState.commitment}`,
+        `- Subjects: ${subjects}`,
+        ``,
+        `Requirements:`,
+        `- Use interleaved study blocks (do NOT cram one subject per day)`,
+        `- Match hard subjects (calculations, derivations) to my peak focus hours`,
+        `- Keep a 20% buffer — leave one catch-up slot for missed sessions`,
+        `- Include 10-minute active recall review at the start of each study block`,
+        `- Never schedule over my existing classes or commitments`,
+        `- Make it a repeatable weekly routine I can follow consistently`,
+        ``,
+        `Output the complete timetable as a structured JSON proposal so it syncs to my calendar immediately.`
+    ].join('\n');
+
+    // Inject the prompt as a user message and send to Steady
+    const input = document.getElementById('chat-user-input');
+    if (input) {
+        input.value = wizardPrompt;
+        updateChatInputState();
+        handleSendChatMessage(new Event('submit'));
+    }
+}
+window.submitScheduleWizard = submitScheduleWizard;
 
 // Highly intelligent, contextual, and responsive system prompt for Steady
 const BUDDY_SYSTEM_PROMPT = `You are "Steady", an elite academic mentor, tutor, and timetable architect for students (University, Polytechnic, JAMB, WAEC, NOUN, ICAN).
@@ -4220,6 +4554,7 @@ async function processBuddyConversation(userText, history, media, onToken) {
         `- Study Mode: ${student.studyMode}\n` +
         (student.activeSubjects.length > 0 ? `- Enrolled Subjects in Timetable: ${student.activeSubjects.join(', ')}\n` : '') +
         (student.aiMemory ? `- Personalized Study Preferences & Weak Topics: ${JSON.stringify(student.aiMemory)}\n` : '') +
+        (scheduleBuilderState.target ? `- Schedule Profile: Target=${scheduleBuilderState.target}, Rhythm=${scheduleBuilderState.rhythm || 'balanced'}, Commitment=${scheduleBuilderState.commitment || 'targeted'}\n` : '') +
         `\n========================================\n` +
         `LIVE SCHEDULE & CALENDAR STATE:\n` +
         `========================================\n` +

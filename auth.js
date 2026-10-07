@@ -156,6 +156,14 @@
                 localStorage.removeItem('sabi_user_profile');
                 localStorage.removeItem('sabi_academic_level');
                 sessionStorage.removeItem('sabi_auth_checked');
+
+                // Clear active session pointers and unpartitioned legacy caches
+                localStorage.removeItem('sabi_active_session_id');
+                localStorage.removeItem('sabi_chat_sessions_v2');
+                localStorage.removeItem('sabi_chat_history_v4');
+                sessionStorage.removeItem('sabi_gcal_token');
+                sessionStorage.removeItem('sabi_gcal_token_expires_at');
+
                 window.location.href = 'auth.html';
             }
         },
