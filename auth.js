@@ -103,11 +103,14 @@
         // Sign in with Google OAuth
         async signInWithGoogle() {
             const client = await ensureSupabaseLoaded();
-            const redirectTo = `${window.location.origin}/auth.html`;
+            const isNative = window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform();
+            const redirectTo = isNative ? 'com.sabi.app://auth' : `${window.location.origin}/auth.html`;
+
             const { data, error } = await client.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: redirectTo,
+                    skipBrowserRedirect: isNative,
                     queryParams: {
                         prompt: 'select_account'
                     }
@@ -115,6 +118,15 @@
             });
 
             if (error) throw error;
+
+            if (isNative && data && data.url) {
+                if (window.Capacitor?.Plugins?.Browser) {
+                    await window.Capacitor.Plugins.Browser.open({ url: data.url });
+                } else {
+                    window.location.href = data.url;
+                }
+            }
+
             return data;
         },
 
@@ -288,6 +300,86 @@
             return client.auth.onAuthStateChange(callback);
         }
     };
+
+    // --- NATIVE MOBILE DEEP LINK HANDLER (com.sabi.app://auth) ---
+    async function processOAuthCallbackUrl(rawUrl) {
+        if (!rawUrl || !rawUrl.startsWith('com.sabi.app://auth')) return;
+        console.log('[AUTH] Handling OAuth deep link callback:', rawUrl);
+
+        try {
+            if (window.Capacitor?.Plugins?.Browser) {
+                await window.Capacitor.Plugins.Browser.close().catch(() => {});
+            }
+
+            const client = await ensureSupabaseLoaded();
+            const hashIndex = rawUrl.indexOf('#');
+            const queryIndex = rawUrl.indexOf('?');
+
+            const hashStr = hashIndex !== -1 ? rawUrl.substring(hashIndex + 1) : '';
+            const queryStr = queryIndex !== -1 ? rawUrl.substring(queryIndex + 1).split('#')[0] : '';
+
+            const hashParams = new URLSearchParams(hashStr);
+            const queryParams = new URLSearchParams(queryStr);
+
+            const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
+            const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
+            const code = queryParams.get('code') || hashParams.get('code');
+
+            if (accessToken && refreshToken) {
+                const { data: sessionData, error: sessionErr } = await client.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: refreshToken
+                });
+                if (sessionErr) throw sessionErr;
+
+                if (sessionData && sessionData.user) {
+                    localStorage.setItem('sabi_user_id', sessionData.user.id);
+                    localStorage.setItem('sabi_user_email', sessionData.user.email);
+                    await SabiAuth.fetchAndCacheProfile(sessionData.user.id);
+                    const needs = await SabiAuth.needsOnboarding();
+                    window.location.href = needs ? 'auth.html?onboarding=true' : 'index.html';
+                }
+            } else if (code) {
+                const { data: exData, error: exErr } = await client.auth.exchangeCodeForSession(code);
+                if (exErr) throw exErr;
+
+                if (exData && exData.user) {
+                    localStorage.setItem('sabi_user_id', exData.user.id);
+                    localStorage.setItem('sabi_user_email', exData.user.email);
+                    await SabiAuth.fetchAndCacheProfile(exData.user.id);
+                    const needs = await SabiAuth.needsOnboarding();
+                    window.location.href = needs ? 'auth.html?onboarding=true' : 'index.html';
+                }
+            }
+        } catch (err) {
+            console.error('[AUTH] Failed to process OAuth callback:', err);
+            alert('Authentication failed: ' + (err.message || 'Unknown error'));
+        }
+    }
+
+    function initMobileDeepLinkListener() {
+        if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.App) return;
+
+        // 1. Listen for deep link when app is already running or brought to foreground
+        window.Capacitor.Plugins.App.addListener('appUrlOpen', (event) => {
+            if (event && event.url) {
+                processOAuthCallbackUrl(event.url);
+            }
+        });
+
+        // 2. Check if app was cold-launched from deep link
+        window.Capacitor.Plugins.App.getLaunchUrl().then((launch) => {
+            if (launch && launch.url) {
+                processOAuthCallbackUrl(launch.url);
+            }
+        }).catch(() => {});
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileDeepLinkListener);
+    } else {
+        initMobileDeepLinkListener();
+    }
 
     window.SabiAuth = SabiAuth;
 })(window);
