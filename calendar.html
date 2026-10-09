@@ -349,41 +349,59 @@
     </div>
 </button>
 
-<!-- BOTTOM FLOATING DOCK -->
-<nav class="app-bottom-nav">
+<!-- LIQUID GLASS FLOATING DOCK (APPLE GALLERY STYLE - BOTTOM FAR LEFT) -->
+<nav class="app-bottom-nav liquid-dock-left" id="app-bottom-nav">
     <div class="nav-indicator" id="nav-indicator"></div>
 
-    <a href="index.html" class="nav-item">
-        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-        </svg>
-        <span class="nav-label">Home</span>
-    </a>
-
-    <a href="library.html" class="nav-item">
-        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-        </svg>
-        <span class="nav-label">Library</span>
-    </a>
-
-    <a href="pq.html" class="nav-item"> 
-        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-        </svg>
-        <span class="nav-label">PQ Engine</span>
-    </a>
-
-    <a href="calendar.html" class="nav-item active">
-        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="3" y="4" width="18" height="18" rx="3" ry="3"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
+    <!-- CALENDAR TAB (ACTIVE) -->
+    <a href="calendar.html" class="nav-item active" id="nav-item-calendar" aria-label="Calendar">
+        <div class="nav-icon-wrapper">
+            <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="4" ry="4"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+                <circle cx="8" cy="14" r="1.1" fill="currentColor"/>
+                <circle cx="12" cy="14" r="1.1" fill="currentColor"/>
+                <circle cx="16" cy="14" r="1.1" fill="currentColor"/>
+                <circle cx="8" cy="18" r="1.1" fill="currentColor"/>
+                <circle cx="12" cy="18" r="1.1" fill="currentColor"/>
+            </svg>
+        </div>
         <span class="nav-label">Calendar</span>
     </a>
+
+    <!-- FRIENDS TAB (PLACEHOLDER WITH LIQUID GLASS TOAST) -->
+    <button type="button" class="nav-item" id="nav-item-friends" onclick="showFriendsPlaceholder(event)" aria-label="Friends">
+        <div class="nav-icon-wrapper">
+            <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+        </div>
+        <span class="nav-label">Friends</span>
+    </button>
 </nav>
+
+<!-- LIQUID GLASS TOAST NOTIFICATION -->
+<div id="liquid-glass-toast" class="liquid-glass-toast hidden" onclick="this.classList.add('hidden')" role="status" aria-live="polite">
+    <div class="liquid-toast-content">
+        <div class="liquid-toast-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+        </div>
+        <div class="liquid-toast-text">
+            <span class="liquid-toast-title">Friends & Study Buddies</span>
+            <span class="liquid-toast-sub">Live multiplayer sessions coming soon! 🤝</span>
+        </div>
+    </div>
+</div>
 
 <!-- ======================================================== -->
 <!-- POPUP MENU 0: FIRST-TIME SETUP POPUP MENU (WITH SKIP BUTTON) -->

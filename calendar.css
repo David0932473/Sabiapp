@@ -5602,8 +5602,8 @@ body {
    Displays Steady's custom Notionist Avatar with online beacon */
 .steady-fab-avatar {
     position: fixed;
-    bottom: 84px;
-    right: 18px;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    right: calc(20px + env(safe-area-inset-right, 0px));
     z-index: 95;
     width: 58px;
     height: 58px;
@@ -5617,13 +5617,15 @@ body {
     justify-content: center;
     padding: 0;
     outline: none;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, bottom 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, opacity 0.35s ease;
     -webkit-tap-highlight-color: transparent;
 }
 
 /* Float smoothly down when bottom nav bar hides on scroll */
 body.nav-is-hidden .steady-fab-avatar {
-    bottom: 24px !important;
+    transform: translateY(calc(100% + 40px)) scale(0.92);
+    opacity: 0;
+    pointer-events: none;
 }
 
 [data-theme="dark"] .steady-fab-avatar {

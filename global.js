@@ -110,10 +110,44 @@ document.addEventListener('DOMContentLoaded', () => {
     initSabiDock();
     initDockScrollListener();
     applySabiTheme();
+
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(initSabiDock);
+    }
 });
 
 // Run on window resize (to keep pill aligned)
 window.addEventListener('resize', initSabiDock);
+
+// Interactive placeholder handler for Friends tab
+let friendsToastTimeout = null;
+function showFriendsPlaceholder(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    const toast = document.getElementById('liquid-glass-toast');
+    const friendsBtn = document.getElementById('nav-item-friends');
+
+    if (friendsBtn) {
+        friendsBtn.style.transform = 'scale(0.92)';
+        setTimeout(() => {
+            friendsBtn.style.transform = '';
+        }, 180);
+    }
+
+    if (!toast) return;
+
+    if (friendsToastTimeout) {
+        clearTimeout(friendsToastTimeout);
+    }
+
+    toast.classList.remove('hidden');
+
+    friendsToastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 3400);
+}
 
 // Theme Initialization & Sync
 function applySabiTheme(themeName) {
@@ -123,3 +157,4 @@ function applySabiTheme(themeName) {
 
 // Immediate execution to prevent flash of wrong theme
 applySabiTheme();
+

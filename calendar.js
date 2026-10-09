@@ -4614,7 +4614,13 @@ async function processBuddyConversation(userText, history, media, onToken) {
     };
 
     // 0. Primary Sabi Cloud / Local Stream Endpoint (/api/chat)
-    const apiEndpoints = ['/api/chat'];
+    // On native mobile (Capacitor) or standalone local, skip /api/chat because there is no local backend server
+    const isNativeMobile = typeof window !== 'undefined' && (
+        (window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) ||
+        (window.location && (window.location.protocol === 'file:' || (window.location.hostname === 'localhost' && !window.location.port)))
+    );
+
+    const apiEndpoints = isNativeMobile ? [] : ['/api/chat'];
     if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
         apiEndpoints.push('http://localhost:3000/api/chat');
     }
@@ -4662,9 +4668,12 @@ async function processBuddyConversation(userText, history, media, onToken) {
         }
     }
 
-    // 1. Direct OpenRouter Frontier AI (Native Browser CORS, Stream SSE)
+    // 1. Direct OpenRouter Frontier AI (Native Browser CORS, Stream SSE + non-streaming fallback)
     if (openRouterKey && openRouterKey.startsWith('sk-or-')) {
         const openRouterModels = ['deepseek/deepseek-chat', 'meta-llama/llama-3.3-70b-instruct'];
+        const refererUrl = (typeof window !== 'undefined' && window.location && window.location.origin && !window.location.origin.includes('localhost'))
+            ? window.location.origin
+            : 'https://sabi.app';
 
         for (const modelName of openRouterModels) {
             try {
@@ -4674,7 +4683,7 @@ async function processBuddyConversation(userText, history, media, onToken) {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${openRouterKey}`,
-                        'HTTP-Referer': typeof window !== 'undefined' && window.location ? window.location.origin : 'https://sabi.app',
+                        'HTTP-Referer': refererUrl,
                         'X-Title': 'Steady - Sabi Academic OS'
                     },
                     body: JSON.stringify({
@@ -4690,7 +4699,39 @@ async function processBuddyConversation(userText, history, media, onToken) {
                 }, 25000);
 
                 if (res.ok) {
-                    const replyText = await readSseStream(res, onToken);
+                    let replyText = await readSseStream(res, onToken);
+                    // Fallback to non-streaming if stream reader yielded empty string
+                    if (!replyText) {
+                        try {
+                            const nonStreamRes = await fetchWithTimeout('https://openrouter.ai/api/v1/chat/completions', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${openRouterKey}`,
+                                    'HTTP-Referer': refererUrl,
+                                    'X-Title': 'Steady - Sabi Academic OS'
+                                },
+                                body: JSON.stringify({
+                                    model: modelName,
+                                    messages: [
+                                        { role: 'system', content: systemContent },
+                                        ...messagesPayload
+                                    ],
+                                    temperature: 0.7,
+                                    max_tokens: 1500,
+                                    stream: false
+                                })
+                            }, 25000);
+                            if (nonStreamRes.ok) {
+                                const data = await nonStreamRes.json();
+                                replyText = data.choices?.[0]?.message?.content || '';
+                                if (replyText && typeof onToken === 'function') onToken(replyText, replyText);
+                            }
+                        } catch (nsErr) {
+                            console.warn('Non-streaming retry error:', nsErr.message || nsErr);
+                        }
+                    }
+
                     if (replyText) {
                         setAiBadgeActive();
                         return parseAiReplyAndApply(replyText);
